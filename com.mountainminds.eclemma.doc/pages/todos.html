@@ -1,0 +1,142 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN"><HTML>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+  <link rel="stylesheet" href="../book.css" charset="ISO-8859-1" type="text/css">
+  <link rel="stylesheet" href="extra.css" charset="ISO-8859-1" type="text/css">
+  <title>Open Issues and Tasks</title>
+</head>
+
+<body>
+
+<h2>Open Issues and Tasks</h2>
+
+<h3>Features</h3>
+
+<h4>Coverage View</h4>
+<ul>
+  <li class="ok">Select between blocks/instructions/lines mode.</li>
+  <li class="ok">Adjust column labels accordingly.</li>
+  <li class="ok">Provide sorting options.</li>
+  <li class="ok">Select entry level objects: rrojects, fragment roots, packages, classes.</li>
+  <li class="ok">Re-run last coverage launch.</li>
+  <li class="ok">Filter entries with total instruction count 0.</li>
+  <li class="ok">Persist blocks/instructions/lines selection, counter mode, columns width and sorting.</li>
+  <li class="ok">Provide dynamic coverage icons.</li>
+  <li class="ok">Label text for project root source folders.</li>
+  <li class="ok">View should reflect the fact that coverage info is currently loading.</li>
+  <li class="inwork">Include parent info in text labels of source folder, package and
+    type entry objects.</li>
+  <li class="investigate">Counter mode as drop-down action?</li>
+  <li class="investigate">Mark modified entries? Gray out?</li>
+  <li class="investigate">Link with editor toggle?</li>
+  <li class="investigate">Show hint if no line information was available?</li>
+  <li class="investigate">Allow merging of multiple sessions?</li>
+</ul>
+
+<h4>Preferences</h4>
+<ul>
+  <li class="inwork">Option: Make terminated launches current session</li>
+  <li class="inwork">Option: Remove sessions for removed launches</li>
+  <li class="inwork">Option: Pop-up Coverage view on new session</li>
+  <li class="inwork">Include link to annotations preference page</li>
+  <li class="investigate">Modification of Emma properties?</li>
+</ul>
+
+<h4>Launching</h4>
+<ul>
+  <li class="ok">Allow selecting the package fragment roots to instrument.</li>
+  <li class="ok">Option for inplace instrumentation.</li>
+  <li class="ok">Show warning for in-place instrumentation.</li>
+  <li class="ok">Support PDE launch type.</li>
+  <li class="investigate">Handle "appears to be instrumented already" in a better way.</li>
+  <li class="investigate">Intermediate profile dump via context menu in
+    Debug view.</li>
+  <li class="investigate">Decorate profile launches in Debug view?</li>
+</ul>
+
+<h4>Import</h4>
+
+<ul>
+  <li class="inwork">Import external coverage data file. This should
+    be properly integrated into the workbench through an import wizard.</li>
+</ul>
+
+<h4>Export</h4>
+
+<ul>
+  <li class="inwork">A export wizard should allow to export session data
+   in the formats provided by Emma. This includes exporting metadata and
+   coverage files to a defined location.</li>
+</ul>
+
+
+<h3>Implementation Tasks</h3>
+
+<h4>Core: Instrumentation</h4>
+<ul>
+  <li class="investigate">Clean-up obsolete instrumented classes and metadata
+    files. Maybe register as IResourceChanged listeners.</li>
+</ul>
+
+<h4>Core: Analysis</h4>
+<ul>
+  <li class="investigate">Clarify timestamp usage to show coverage information
+      only for source files that still correspond to the meta data.</li>
+  <li class="investigate">Several classes with the same name may occur multiple
+      times in the classpath. Make sure that the correct meta data is used and
+      the coverage information is assigned to the corresponding Java model
+      elements only.</li>
+  <li class="investigate">Handle named inner classes within anonymous inner
+      classes for source based classpath entries correctly
+      (<code>here/mypackage/JavaConstructs$1$NamedInner</code>).</li>
+  <li class="investigate">Perform memory and CPU profiling and check for
+      possible optimizations.</li>
+  <li class="investigate">Consider using the ASTParser directly to resolve
+  method signatures.</li>
+</ul>
+
+<h4>Launching UI</h4>
+<ul>
+  <li class="ok">Icon for Coverage tab.</li>
+  <li class="ok">Instrumented classes selection (with default option).</li>
+</ul>
+
+<h4>Editor Highlighting</h4>
+
+<ul>
+  <li class="ok">Add highlighting to open and opened windows.</li>
+  <li class="ok">Only add highlighting if resource has same modification stamp.</li>
+  <li class="ok">Update highlighting on session activation.</li>
+  <li class="ok">Remove Highlighting on resource modification.</li>
+  <li class="ok">Combine consecutive lines to single annotation if possible.</li>
+  <li class="ok">Should also work on class files with source attachement.</li>
+  <li class="ok">Provide Ruler Images (off by default).</li>
+  <li class="ok">Don't try to highlight class files without source attachement.</li>
+  <li class="ok">Clarify why editor highlighting is only visible in class file editor with workaround.</li>
+</ul>
+
+<h4>General Core Issues</h4>
+<ul>
+  <li class="ok">Provide specific error messages for status objects.</li>
+  <li class="inwork">Insert NLS-Tags where necessary.</li>
+</ul>
+
+<h4>General UI Issues</h4>
+<ul>
+  <li class="inwork">Define commands for all action.</li>
+  <li class="investigate">See where keyboard shortcuts makes sense and should
+    be configured by default.</li>
+  <li class="inwork">Add help topic about keyboard configuration.</li>
+  <li class="inwork">Insert NLS-Tags where necessary.</li>
+</ul>
+
+<h4>Packaging and Deployment</h4>
+<ul>
+  <li class="ok">Provide license statement.</li>
+  <li class="inwork">Create EclEmma feature.</li>
+  <li class="inwork">Provide about.ini etc in the UI plugin.</li>
+  <li class="inwork">Provide source plugin.</li>
+</ul>
+
+</body>
+</html>

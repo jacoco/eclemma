@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc label="EclEmma Java Code Coverage">
+	<topic label="Introduction" href="pages/introduction.html">
+    <topic label="Emma Home" href="http://emma.sourceforge.net"/>
+	</topic>
+	<topic label="User Guide">
+    <topic label="Running in Coverage Mode" href="pages/none.html"/>
+    <topic label="Using the Coverage View" href="pages/coverageview.html"/>
+    <topic label="Editor Annotation" href="pages/none.html"/>
+	</topic>
+	<topic label="Developer Information">
+    <topic label="Architecture" href="pages/architecture.html"/>
+    <topic label="Open Issues" href="pages/todos.html"/>
+    <topic label="Release Checklist" href="pages/checklist.html"/>
+    <topic label="Change Log" href="pages/changes.html"/>
+	</topic>
+  <topic label="License" href="pages/license.html"/>
+</toc>

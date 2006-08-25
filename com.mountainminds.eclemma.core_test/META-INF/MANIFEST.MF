@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: EclEmma Java Coverage Core - Unit Tests
+Bundle-SymbolicName: com.mountainminds.eclemma.core_test
+Bundle-Version: 0.1.1
+Bundle-Vendor: Marc R. Hoffmann
+Fragment-Host: com.mountainminds.eclemma.core;bundle-version="[0.1.0,1.0.0)"
+Bundle-Localization: plugin
+Require-Bundle: org.junit

@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %pluginName
+Bundle-SymbolicName: com.mountainminds.eclemma.core; singleton:=true
+Bundle-Version: 0.1.1
+Bundle-Vendor: %providerName
+Bundle-Localization: plugin
+Export-Package: com.mountainminds.eclemma.core,
+ com.mountainminds.eclemma.core.analysis,
+ com.mountainminds.eclemma.core.launching
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ org.eclipse.debug.core,
+ org.eclipse.jdt.core,
+ org.eclipse.jdt.launching
+Bundle-ClassPath: .,
+ emma.jar
+Bundle-Activator: com.mountainminds.eclemma.internal.core.EclEmmaCorePlugin
+Eclipse-AutoStart: true
+

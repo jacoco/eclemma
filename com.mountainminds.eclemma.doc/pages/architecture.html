@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN"><HTML>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+  <link rel="stylesheet" href="../book.css" charset="ISO-8859-1" type="text/css">
+  <title>EclEmma Architecture</title>
+</head>
+
+<body>
+
+<h1>Architecture</h1>
+
+<h2>Participants</h2>
+
+<h3>Coverage Session</h3>
+
+  <p>
+    A coverage session is the result of a coverage run (or multiple
+    merged runs) or coverage data imported from an external source.
+    It is an immutable container for all data necessary to
+  </p>
+  
+  <ul>
+    <li>provide coverage highlighting in Java editors,</li>
+    <li>populate the coverage view and</li>
+    <li>export coverage reports using Emma's report capabilities.</li>
+  </ul>
+  
+  <p>
+    In detail a session holds the following information:
+  </p>
+  
+  <ul>
+    <li>Textual description used to label it in the user interface</li>
+    <li>Path to the coverage data file</li>
+    <li>Instrumented code descriptors, for each providing:
+      <ul>
+        <li>Path to the meta data file</li>
+        <li>Original class files or JAR (internal or external)</li>
+        <li>Output location for instrumented classes</li>
+        <li>List of corresponding package fragment roots</li>
+        <li>Source location (folder or archive)
+      </ul>
+    </li>
+  </ul>
+  
+
+<h3>Setup</h3>
+
+<ul>
+  <li>No or minimal modification on existing projects to enable coverage
+      profiling.</li>
+
+</ul>
+
+<h3>Runtime</h3>
+
+<ul>
+  <li>Allow recording of standalone Java applications, JUnit tests,
+      runtime workbenches and PDE JUnit tests.
+</ul>
+
+<h3>Analysis</h3>
+
+<ul>
+  <li>Manage coverage data of multiple sessions.</li>
+  <li>Use Eclipse source lookup mechanisms to properly attach coverage data to
+      compilation units.</li>
+  <li>Attach coverage details via adapter pattern to Java model elements.</li>
+  <li>Provide inplace text line coloring in the Java editors</li>
+  <li>Provide hierarchical package/class/method view for coverage statistics.</li>
+  <li>Automatically update session data from last finished launch.</li>
+  <li>Import coverage session data from a set of external *.em and *.ec files.</li>
+  <li>Export session data in the formats offered by Emma (text, XML, HTML).</li>
+</ul>
+
+<h3>Instrumentation</h3>
+
+<p>
+  EclEmma follows the <i>offline instrumentation</i> approach, i.e. class files
+  are modified at build time to add instructions, that record coverage
+  information at runtime. Once activated EclEmma takes care about the
+  instrumentation process.
+</p>
+
+
+
+<h3>Extensibility</h3>
+
+</body>
+
+</html>

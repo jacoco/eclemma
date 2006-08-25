@@ -1,0 +1,14 @@
+# Verbosity level for Emma
+com.mountainminds.eclemma.core/debug/emmaVerbosityLevel=info
+
+# Enable trace output for performance (time/memory)
+com.mountainminds.eclemma.core/debug/performance=true
+
+# Enable trace output for instrumentation
+com.mountainminds.eclemma.core/debug/instrumentation=true
+
+# Enable trace output for coverage launching
+com.mountainminds.eclemma.core/debug/launching=true
+
+# Enable trace output for coverage analysis
+com.mountainminds.eclemma.core/debug/analysis=true

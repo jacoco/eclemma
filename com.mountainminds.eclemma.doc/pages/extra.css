@@ -1,0 +1,9 @@
+li.ok {
+	list-style-image:url(icons/ok.gif);
+}
+li.inwork {
+	list-style-image:url(icons/progress.gif);
+}
+li.investigate {
+	list-style-image:url(icons/glass.gif);
+}

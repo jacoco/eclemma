@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.eclipse.jdt.core.IJavaElement"
+            class="com.mountainminds.eclemma.internal.core.analysis.JavaElementCoverageAdapterFactory">
+         <adapter type="com.mountainminds.eclemma.core.analysis.IJavaElementCoverage"/>
+         <adapter type="com.mountainminds.eclemma.core.analysis.ILineCoverage"/>
+      </factory>
+      <factory
+            adaptableType="org.eclipse.core.resources.IResource"
+            class="com.mountainminds.eclemma.internal.core.analysis.JavaElementCoverageAdapterFactory">
+         <adapter type="com.mountainminds.eclemma.core.analysis.IJavaElementCoverage"/>
+         <adapter type="com.mountainminds.eclemma.core.analysis.ILineCoverage"/>
+      </factory>
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.launchModes">
+      <launchMode
+            label="%coverage"
+            mode="coverage"/>
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.launchDelegates">
+      <launchDelegate
+            delegate="com.mountainminds.eclemma.internal.core.launching.JavaApplicationLauncher"
+            id="com.mountainminds.eclemma.core.javaApplicationLauncher"
+            modes="coverage"
+            type="org.eclipse.jdt.launching.localJavaApplication"/>
+      <launchDelegate
+            delegate="com.mountainminds.eclemma.internal.core.launching.JUnitLauncher"
+            id="com.mountainminds.eclemma.core.junitLauncher"
+            modes="coverage"
+            type="org.eclipse.jdt.junit.launchconfig"/>
+      <launchDelegate
+            delegate="com.mountainminds.eclemma.internal.core.launching.WorkbenchLauncher"
+            id="com.mountainminds.eclemma.core.workbenchLauncher"
+            modes="coverage"
+            type="org.eclipse.pde.ui.RuntimeWorkbench"/>
+      <launchDelegate
+            delegate="com.mountainminds.eclemma.internal.core.launching.JUnitPluginLauncher"
+            id="com.mountainminds.eclemma.core.junitPluginLauncher"
+            modes="coverage"
+            type="org.eclipse.pde.ui.JunitLaunchConfig"/>
+   </extension>
+   <extension
+         point="org.eclipse.jdt.launching.classpathProviders">
+      <classpathProvider
+            class="com.mountainminds.eclemma.internal.core.launching.InstrumentedClasspathProvider"
+            id="com.mountainminds.eclemma.core.instrumentedClasspathProvider"/>
+   </extension>
+
+</plugin>
