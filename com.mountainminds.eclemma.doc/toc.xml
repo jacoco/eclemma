@@ -5,12 +5,12 @@
 	<topic label="Introduction" href="pages/introduction.html">
     <topic label="Emma Home" href="http://emma.sourceforge.net"/>
 	</topic>
-	<topic label="User Guide">
-    <topic label="Running in Coverage Mode" href="pages/none.html"/>
+	<topic label="User Guide" href="pages/userguide.html">
+    <topic label="Launching in Coverage Mode" href="pages/launching.html"/>
     <topic label="Using the Coverage View" href="pages/coverageview.html"/>
-    <topic label="Editor Annotation" href="pages/none.html"/>
+    <topic label="Editor Annotation" href="pages/annotations.html"/>
 	</topic>
-	<topic label="Developer Information">
+	<topic label="Developer Information" href="pages/developerinfo.html">
     <topic label="Architecture" href="pages/architecture.html"/>
     <topic label="Open Issues" href="pages/todos.html"/>
     <topic label="Release Checklist" href="pages/checklist.html"/>
