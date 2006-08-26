@@ -1,4 +1,5 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN"><HTML>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
   <link rel="stylesheet" href="../book.css" charset="ISO-8859-1" type="text/css">
@@ -8,7 +9,33 @@
 
 <body>
 
-<h1 class="HEAD">Editor Annotations</h1>
+<h2>Editor Annotations</h2>
+
+
+<ul>
+  <li class="ok">Add highlighting to open and opened windows.</li>
+  <li class="ok">Only add highlighting if resource has same modification stamp.</li>
+  <li class="ok">Update highlighting on session activation.</li>
+  <li class="ok">Remove Highlighting on resource modification.</li>
+  <li class="ok">Combine consecutive lines to single annotation if possible.</li>
+  <li class="ok">Should also work on class files with source attachement.</li>
+  <li class="ok">Provide Ruler Images (off by default).</li>
+  <li class="ok">Don't try to highlight class files without source attachement.</li>
+  <li class="ok">Clarify why editor highlighting is only visible in class file editor with workaround.</li>
+</ul>
+
+<h3>Remarks About Coverage Measurement</h3>
+
+<p>
+  In some situations it is not obvious, why particular lines are partially
+  covered only. Please see 
+  <a href="http://emma.sourceforge.net/faq.html#q.fractional.examples">EMMA's 
+  FAQ entry about partially covered lines</a> for details. EMMA's concept of
+  <a href="http://emma.sourceforge.net/faq.html#q.blockcoverage">basic block
+  coverage</a> explains, how coverage is measured in case of Java exceptions.
+</p>
+
+
 
 </body>
 </html>

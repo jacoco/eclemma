@@ -1,90 +1,141 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN"><HTML>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
   <link rel="stylesheet" href="../book.css" charset="ISO-8859-1" type="text/css">
+  <link rel="stylesheet" href="extra.css" charset="ISO-8859-1" type="text/css">
   <title>EclEmma Architecture</title>
 </head>
 
 <body>
 
-<h1>Architecture</h1>
+<h2>Architecture</h2>
 
-<h2>Participants</h2>
-
-<h3>Coverage Session</h3>
-
-  <p>
-    A coverage session is the result of a coverage run (or multiple
-    merged runs) or coverage data imported from an external source.
-    It is an immutable container for all data necessary to
-  </p>
-  
-  <ul>
-    <li>provide coverage highlighting in Java editors,</li>
-    <li>populate the coverage view and</li>
-    <li>export coverage reports using Emma's report capabilities.</li>
-  </ul>
-  
-  <p>
-    In detail a session holds the following information:
-  </p>
-  
-  <ul>
-    <li>Textual description used to label it in the user interface</li>
-    <li>Path to the coverage data file</li>
-    <li>Instrumented code descriptors, for each providing:
-      <ul>
-        <li>Path to the meta data file</li>
-        <li>Original class files or JAR (internal or external)</li>
-        <li>Output location for instrumented classes</li>
-        <li>List of corresponding package fragment roots</li>
-        <li>Source location (folder or archive)
-      </ul>
-    </li>
-  </ul>
-  
-
-<h3>Setup</h3>
+<p>
+  Design decisions for the EclEmma plugin should be based on the following
+  guidelines:
+</p>
 
 <ul>
-  <li>No or minimal modification on existing projects to enable coverage
-      profiling.</li>
-
+  <li>A high usability should allow developers to efficiently analyse coverage
+  results and improve test coverage interactively. Technically motivated extra
+  steps must be avoided.</li>
+  <li>Seemless integration into the Eclipse workbench: Use existing tools and
+  paradigms, adopt the Eclipse look &amp; feel.</li>
+  <li>The primary focus are local launches and interactive coverage analysis
+  within the Eclipse workbench. For automated instrumentation builds and report
+  generation EMMA's Ant tasks are the better choice.</li>
+  <li>No project modification: Coverage analysis is a way to look at your
+  projects, but it is not a inherent part of your projects. Therefore a coverage
+  tool should work without touching your project's source tree or configuration.</li>
+  <li>Extensibility: Allow other developers to extends EclEmma's functionality
+  or build new features using the services provided by EclEmma.</li>
+  <li>And finally: Keep it simple!</li>
 </ul>
 
-<h3>Runtime</h3>
+<p>
+  The following sections provide a high level overview about EclEmma's key
+  implementation strategies.
+</p>
 
-<ul>
-  <li>Allow recording of standalone Java applications, JUnit tests,
-      runtime workbenches and PDE JUnit tests.
-</ul>
 
-<h3>Analysis</h3>
+<h3>EMMA Data Files</h3>
 
-<ul>
-  <li>Manage coverage data of multiple sessions.</li>
-  <li>Use Eclipse source lookup mechanisms to properly attach coverage data to
-      compilation units.</li>
-  <li>Attach coverage details via adapter pattern to Java model elements.</li>
-  <li>Provide inplace text line coloring in the Java editors</li>
-  <li>Provide hierarchical package/class/method view for coverage statistics.</li>
-  <li>Automatically update session data from last finished launch.</li>
-  <li>Import coverage session data from a set of external *.em and *.ec files.</li>
-  <li>Export session data in the formats offered by Emma (text, XML, HTML).</li>
-</ul>
+<p>
+  EMMA creates meta data and coverage results files. To avoid modifying 
+  projects these files are stored in the plug-in's state location.
+</p>
+
+<h3>Launching in Coverage Mode</h3>
+
+<p>
+  Instead of re-implementing launcher for the different launch types, the
+  existing launchers for the <i>Run</i> mode are used with adjusted launch
+  configurations. The coverage launchers perform these steps:
+</p>
+
+<ol>
+  <li>Instrument selected class files.</li>
+  <li>Create a temporary working copy of the launch configuration and adjust
+  it to inject the instrumented classes and EMMA runtime properties.</li>
+  <li>Delegate to the laucher for <i>Run</i> mode of this lauch type.</li>
+</ol>
 
 <h3>Instrumentation</h3>
 
 <p>
   EclEmma follows the <i>offline instrumentation</i> approach, i.e. class files
-  are modified at build time to add instructions, that record coverage
-  information at runtime. Once activated EclEmma takes care about the
-  instrumentation process.
+  are prepared before the application is started. The class file instrumentation 
+  is triggered by the coverage laucher and always performed incrementally.
+  Depending on the launch type two different instrumentation modes are possible:
+  The class files can be instrumented <i>in-place</i>, i.e. the compiled
+  binaries are replaced with instrumented versions. This is only allowed for
+  class files compiled from source folders, as these file can easily be
+  reconstructed with a new <i>clean</i> build. In <i>copy</i> mode instrumented
+  versions of the class files are stored in a the plug-in's state location.
+  While this requires tweaking the classpath also binary libraries can
+  savely be instrumented this way.  
 </p>
 
+<h3>EMMA Runtime Properties</h3>
 
+<p>
+  At runtime EMMA needs some basic properties like the file's location where to
+  write the coverage information. These poperties are defined in a dynamically
+  created <code>emma.properties</code> file, which in turn is packed into a JAR
+  archive and injected into the class path.
+</p>
 
-<h3>Extensibility</h3>
+<h3>Coverage Session</h3>
+
+<p>
+  A coverage session (<code>com.mountainminds.eclemma.core.ICoverageSession</code>)
+  is the result of a coverage run (or multiple merged runs) or coverage data
+  imported from an external source. It is an immutable container for all data
+  necessary to
+</p>
+  
+<ul>
+  <li>provide coverage highlighting in Java editors,</li>
+  <li>populate the <i>Coverage</i> view and</li>
+  <li>export coverage reports using EMMA's reporting capabilities.</li>
+</ul>
+
+<p>
+  Whenever a lauch started in coverage mode terminates a coverage session is 
+  automatically created. While there can be a list of coverage sessions, at most
+  one session can be the <i>active session</i> which is used to provide coverage
+  summaries for Java elements and source code highlighting.
+</p>
+
+<h3>Coverage Analysis</h3>
+
+<p>
+  When a coverage session becomes active the corresponding meta data and coverage
+  data files are processed directly using the <code>com.vladium.emma.data</code>
+  package. Coverage information is described by
+  <code>com.mountainminds.eclemma.core.analysis.IJavaElementCoverage</code>
+  instances for each Java model element (see 
+  <code>org.eclipse.jdt.core</code> package). A adapter factory allows obtaining
+  the corresponding <code>IJavaElementCoverage</code> instances for a particular
+  Java model element via <code>IJavaElement.getAdapter()</code>.
+</p>
+
+<h3>Editor Highlighting</h3>
+
+<p>
+  The EclEmma UI plug-in tracks the currently opened Java editors and
+  piggybacks a specialized annotation model to the editors annotation model.
+</p>
+
+<p>
+  
+</p>
+
+  
+
+  
+
 
 </body>
 

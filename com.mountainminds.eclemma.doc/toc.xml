@@ -3,7 +3,7 @@
 
 <toc label="EclEmma Java Code Coverage">
 	<topic label="Introduction" href="pages/introduction.html">
-    <topic label="Emma Home" href="http://emma.sourceforge.net"/>
+    <topic label="EMMA Home" href="http://emma.sourceforge.net"/>
 	</topic>
 	<topic label="User Guide" href="pages/userguide.html">
     <topic label="Launching in Coverage Mode" href="pages/launching.html"/>

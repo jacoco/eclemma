@@ -1,4 +1,5 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN"><HTML>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
   <link rel="stylesheet" href="../book.css" charset="ISO-8859-1" type="text/css">
@@ -14,16 +15,6 @@
 
 <h4>Coverage View</h4>
 <ul>
-  <li class="ok">Select between blocks/instructions/lines mode.</li>
-  <li class="ok">Adjust column labels accordingly.</li>
-  <li class="ok">Provide sorting options.</li>
-  <li class="ok">Select entry level objects: rrojects, fragment roots, packages, classes.</li>
-  <li class="ok">Re-run last coverage launch.</li>
-  <li class="ok">Filter entries with total instruction count 0.</li>
-  <li class="ok">Persist blocks/instructions/lines selection, counter mode, columns width and sorting.</li>
-  <li class="ok">Provide dynamic coverage icons.</li>
-  <li class="ok">Label text for project root source folders.</li>
-  <li class="ok">View should reflect the fact that coverage info is currently loading.</li>
   <li class="inwork">Include parent info in text labels of source folder, package and
     type entry objects.</li>
   <li class="investigate">Counter mode as drop-down action?</li>
@@ -45,11 +36,9 @@
 
 <h4>Launching</h4>
 <ul>
-  <li class="ok">Allow selecting the package fragment roots to instrument.</li>
-  <li class="ok">Option for inplace instrumentation.</li>
-  <li class="ok">Show warning for in-place instrumentation.</li>
-  <li class="ok">Support PDE launch type.</li>
-  <li class="investigate">Handle "appears to be instrumented already" in a better way.</li>
+  <li class="inwork">Provide better sorting for class path entries.</li>
+  <li class="inwork">Add select all/deselect all buttons.</li>
+  <li class="investigate">Handle "appears to be instrumented already" exception in a better way.</li>
   <li class="investigate">Intermediate profile dump via context menu in
     Debug view.</li>
   <li class="investigate">Decorate profile launches in Debug view?</li>
@@ -93,49 +82,23 @@
   <li class="investigate">Perform memory and CPU profiling and check for
       possible optimizations.</li>
   <li class="investigate">Consider using the ASTParser directly to resolve
-  method signatures.</li>
+      method signatures.</li>
   <li class="investigate">Mark classes with outdated metadata files with
-  a special singleton of ICoverageData.</li>
-</ul>
-
-<h4>Launching UI</h4>
-<ul>
-  <li class="ok">Icon for Coverage tab.</li>
-  <li class="ok">Instrumented classes selection (with default option).</li>
-</ul>
-
-<h4>Editor Highlighting</h4>
-
-<ul>
-  <li class="ok">Add highlighting to open and opened windows.</li>
-  <li class="ok">Only add highlighting if resource has same modification stamp.</li>
-  <li class="ok">Update highlighting on session activation.</li>
-  <li class="ok">Remove Highlighting on resource modification.</li>
-  <li class="ok">Combine consecutive lines to single annotation if possible.</li>
-  <li class="ok">Should also work on class files with source attachement.</li>
-  <li class="ok">Provide Ruler Images (off by default).</li>
-  <li class="ok">Don't try to highlight class files without source attachement.</li>
-  <li class="ok">Clarify why editor highlighting is only visible in class file editor with workaround.</li>
-</ul>
-
-<h4>General Core Issues</h4>
-<ul>
-  <li class="ok">Provide specific error messages for status objects.</li>
-  <li class="inwork">Insert NLS-Tags where necessary.</li>
+      a special singleton of ICoverageData.</li>
 </ul>
 
 <h4>General UI Issues</h4>
 <ul>
   <li class="inwork">Define commands for all action.</li>
   <li class="investigate">See where keyboard shortcuts makes sense and should
-    be configured by default.</li>
+      be configured by default.</li>
   <li class="inwork">Add help topic about keyboard configuration.</li>
-  <li class="inwork">Insert NLS-Tags where necessary.</li>
+  <li class="inwork">Allow optional Java elements decoration.</li>
+  
 </ul>
 
 <h4>Packaging and Deployment</h4>
 <ul>
-  <li class="ok">Provide license statement.</li>
   <li class="inwork">Create EclEmma feature.</li>
   <li class="inwork">Provide about.ini etc in the UI plugin.</li>
   <li class="inwork">Provide source plugin.</li>
