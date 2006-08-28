@@ -48,6 +48,9 @@ public class UIMessages extends NLS {
 
   public static String InstrumentationWarning_title;
   public static String InstrumentationWarning_message;
+  public static String AlreadyInstrumentedError_title;
+  public static String AlreadyInstrumentedError_message;
+
   
   static {
     NLS.initializeMessages(BUNDLE_NAME, UIMessages.class);

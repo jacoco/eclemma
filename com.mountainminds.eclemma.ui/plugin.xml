@@ -203,9 +203,14 @@
    <extension
          point="org.eclipse.debug.core.statusHandlers">
       <statusHandler
-            class="com.mountainminds.eclemma.internal.ui.launching.InplaceInstrumentationWarning"
+            class="com.mountainminds.eclemma.internal.ui.launching.InplaceInstrumentationHandler"
             code="2000"
-            id="com.mountainminds.eclemma.ui.inplaceInstrumentationWarning"
+            id="com.mountainminds.eclemma.ui.inplaceInstrumentationHandler"
+            plugin="com.mountainminds.eclemma.core"/>
+      <statusHandler
+            class="com.mountainminds.eclemma.internal.ui.launching.AlreadyInstrumentedHandler"
+            code="5100"
+            id="com.mountainminds.eclemma.ui.alreadyInstrumentedHandler"
             plugin="com.mountainminds.eclemma.core"/>
    </extension>
    <extension

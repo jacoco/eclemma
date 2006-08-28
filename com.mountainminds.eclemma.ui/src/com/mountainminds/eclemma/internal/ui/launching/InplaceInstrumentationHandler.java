@@ -24,7 +24,7 @@ import com.mountainminds.eclemma.internal.ui.UIPreferences;
  * @author  Marc R. Hoffmann
  * @version $Revision$
  */
-public class InplaceInstrumentationWarning implements IStatusHandler {
+public class InplaceInstrumentationHandler implements IStatusHandler {
 
   public Object handleStatus(IStatus status, Object source)
       throws CoreException {
