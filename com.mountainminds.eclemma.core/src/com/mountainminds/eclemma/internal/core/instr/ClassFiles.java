@@ -91,6 +91,7 @@ public class ClassFiles implements IClassFiles {
     outputlocation.toFile().mkdirs();
     IPath metadatafile = outputlocation.addFileExtension(METADATAFILE_EXT);
     if (inplace) {
+      InstrMarker.mark(location);
       outputlocation = EclEmmaCorePlugin.getAbsolutePath(location);
     }
     InstrProcessor processor = InstrProcessor.create();

@@ -105,5 +105,12 @@ public final class EclEmmaStatus {
    */
   public static final EclEmmaStatus METADATA_FILE_READ_ERROR = new EclEmmaStatus(
       5007, IStatus.ERROR, CoreMessages.StatusMessage_METADATA_FILE_READ_ERROR);
+  
+  /**
+   * Trying to instrument instrumented class files. This status is used to issue
+   * an eeor prompt during launching.
+   */
+  public static final EclEmmaStatus ALREADY_INSTRUMENTED_ERROR = new EclEmmaStatus(
+      5100, IStatus.ERROR, CoreMessages.StatusMessage_ALREADY_INSTRUMENTED_ERROR);
 
 }

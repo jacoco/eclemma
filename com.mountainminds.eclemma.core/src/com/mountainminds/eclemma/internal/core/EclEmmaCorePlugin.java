@@ -35,7 +35,6 @@ import com.mountainminds.eclemma.core.ICoverageSession;
 import com.mountainminds.eclemma.core.ISessionManager;
 import com.mountainminds.eclemma.core.launching.ICoverageLaunchInfo;
 import com.mountainminds.eclemma.internal.core.instr.ClassFiles;
-import com.mountainminds.eclemma.internal.core.session.CoverageSession;
 
 /**
  * Bundle activator for the EclEmma core.

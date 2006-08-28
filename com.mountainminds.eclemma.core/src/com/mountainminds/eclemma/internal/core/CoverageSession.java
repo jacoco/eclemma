@@ -1,7 +1,7 @@
 /*
  * $Id$
  */
-package com.mountainminds.eclemma.internal.core.session;
+package com.mountainminds.eclemma.internal.core;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.PlatformObject;

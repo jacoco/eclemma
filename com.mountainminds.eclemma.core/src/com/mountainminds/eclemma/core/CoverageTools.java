@@ -25,9 +25,9 @@ import com.mountainminds.eclemma.core.analysis.IJavaModelCoverage;
 import com.mountainminds.eclemma.core.analysis.ILineCoverage;
 import com.mountainminds.eclemma.core.launching.ICoverageLaunchConfigurationConstants;
 import com.mountainminds.eclemma.core.launching.ICoverageLaunchInfo;
+import com.mountainminds.eclemma.internal.core.CoverageSession;
 import com.mountainminds.eclemma.internal.core.EclEmmaCorePlugin;
 import com.mountainminds.eclemma.internal.core.launching.CoverageLaunchInfo;
-import com.mountainminds.eclemma.internal.core.session.CoverageSession;
 
 /**
  * For central access to the tools provided by the coverage core plugin this

@@ -32,10 +32,12 @@ import org.eclipse.osgi.util.NLS;
 
 import com.mountainminds.eclemma.core.CoverageTools;
 import com.mountainminds.eclemma.core.EclEmmaStatus;
+import com.mountainminds.eclemma.core.IClassFiles;
 import com.mountainminds.eclemma.core.launching.ICoverageLaunchConfigurationConstants;
 import com.mountainminds.eclemma.core.launching.ICoverageLaunchInfo;
 import com.mountainminds.eclemma.internal.core.CoreMessages;
 import com.mountainminds.eclemma.internal.core.DebugOptions;
+import com.mountainminds.eclemma.internal.core.instr.InstrMarker;
 import com.vladium.emma.AppLoggers;
 import com.vladium.emma.EMMAProperties;
 
@@ -196,16 +198,18 @@ public abstract class CoverageLauncher implements ILaunchConfigurationDelegate2 
 
   public boolean preLaunchCheck(ILaunchConfiguration configuration,
       String mode, IProgressMonitor monitor) throws CoreException {
-    // First issue inplace instrumentation warning:
     if (hasInplaceInstrumentation(configuration)) {
-      IStatusHandler prompter = DebugPlugin.getDefault().getStatusHandler(
-          PROMPT_STATUS);
+      // Issue an inplace instrumentation warning:
       IStatus status = EclEmmaStatus.INPLACE_INSTRUMENTATION_INFO.getStatus();
-      if (prompter != null) {
-        Boolean result = (Boolean) prompter.handleStatus(status, configuration);
-        if (!result.booleanValue()) {
+      if (!showPrompt(status, configuration)) {
           return false;
-        }
+      }
+    } else {
+      // check whether inpace instrumentation has been performed before
+      if (checkForPreviousInplace(configuration)) {
+        IStatus status = EclEmmaStatus.ALREADY_INSTRUMENTED_ERROR.getStatus();
+        showPrompt(status, configuration);
+        return false;
       }
     }
     // Then allow the delegate's veto:
@@ -215,6 +219,30 @@ public abstract class CoverageLauncher implements ILaunchConfigurationDelegate2 
       return launchdelegate2.preLaunchCheck(configuration, DELEGATELAUNCHMODE,
           monitor);
     }
+  }
+  
+  private boolean showPrompt(IStatus status, Object info) throws CoreException {
+    IStatusHandler prompter = DebugPlugin.getDefault().getStatusHandler(
+        PROMPT_STATUS);
+    if (prompter == null) {
+      if (status.getSeverity() == IStatus.ERROR) {
+        throw new CoreException(status);
+      } else {
+        return true;
+      }
+    } else {
+      return ((Boolean) prompter.handleStatus(status, info)).booleanValue();
+    }    
+  }
+  
+  private boolean checkForPreviousInplace(ILaunchConfiguration conig) throws CoreException {
+    IClassFiles[] classfiles = CoverageTools.getClassFilesForInstrumentation(conig, false);
+    for (int i = 0; i < classfiles.length; i++) {
+      if (InstrMarker.isMarked(classfiles[i].getLocation())) {
+        return true;
+      }
+    }
+    return false;
   }
 
   public boolean finalLaunchCheck(ILaunchConfiguration configuration,

@@ -31,6 +31,7 @@ public class CoreMessages extends NLS {
   public static String StatusMessage_EMMA_PROPERTIES_CREATION_ERROR;
   public static String StatusMessage_COVERAGEDATA_FILE_READ_ERROR;
   public static String StatusMessage_METADATA_FILE_READ_ERROR;
+  public static String StatusMessage_ALREADY_INSTRUMENTED_ERROR;
 
   static {
     NLS.initializeMessages(BUNDLE_NAME, CoreMessages.class);
