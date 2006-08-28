@@ -24,7 +24,7 @@ import org.eclipse.debug.ui.ILaunchConfigurationTabGroup;
  */
 public abstract class AbstractCoverageTabGroup implements ILaunchConfigurationTabGroup {
   
-  private static final String DELEGATE_LAUNCHMODE = "run";
+  private static final String DELEGATE_LAUNCHMODE = "run"; //$NON-NLS-1$
 
   private ILaunchConfigurationTabGroup tabGroupDelegate;
   private ILaunchConfigurationTab coverageTab;
@@ -34,20 +34,20 @@ public abstract class AbstractCoverageTabGroup implements ILaunchConfigurationTa
   }
   
   protected ILaunchConfigurationTabGroup createDelegate(String type) throws CoreException {
-    IExtensionPoint extensionpoint = Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.debug.ui.launchConfigurationTabGroups");
+    IExtensionPoint extensionpoint = Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.debug.ui.launchConfigurationTabGroups"); //$NON-NLS-1$
     IConfigurationElement[] tabGroupConfigs = extensionpoint.getConfigurationElements();
     for (int i = 0; i < tabGroupConfigs.length; i++) {
       IConfigurationElement tabGroupConfig = tabGroupConfigs[i];
-      if (type.equals(tabGroupConfig.getAttribute("type"))) {
-        IConfigurationElement[] modeConfigs = tabGroupConfig.getChildren("launchMode");
+      if (type.equals(tabGroupConfig.getAttribute("type"))) { //$NON-NLS-1$
+        IConfigurationElement[] modeConfigs = tabGroupConfig.getChildren("launchMode"); //$NON-NLS-1$
         for (int j = 0; j < modeConfigs.length; j++) {
-          if (DELEGATE_LAUNCHMODE.equals(modeConfigs[j].getAttribute("mode"))) {
-            return (ILaunchConfigurationTabGroup) tabGroupConfig.createExecutableExtension("class");
+          if (DELEGATE_LAUNCHMODE.equals(modeConfigs[j].getAttribute("mode"))) { //$NON-NLS-1$
+            return (ILaunchConfigurationTabGroup) tabGroupConfig.createExecutableExtension("class"); //$NON-NLS-1$
           }
         }
       }
     }
-    throw new RuntimeException("No tab group registered to run " + type);
+    throw new RuntimeException("No tab group registered to run " + type); //$NON-NLS-1$
   }
   
   public void createTabs(ILaunchConfigurationDialog dialog, String mode) {

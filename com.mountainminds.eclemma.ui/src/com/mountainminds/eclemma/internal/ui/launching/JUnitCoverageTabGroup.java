@@ -16,7 +16,7 @@ import org.eclipse.core.runtime.CoreException;
 public class JUnitCoverageTabGroup extends AbstractCoverageTabGroup {
 
   public JUnitCoverageTabGroup() throws CoreException {
-    super("org.eclipse.jdt.junit.launchconfig");
+    super("org.eclipse.jdt.junit.launchconfig"); //$NON-NLS-1$
   }
 
 }

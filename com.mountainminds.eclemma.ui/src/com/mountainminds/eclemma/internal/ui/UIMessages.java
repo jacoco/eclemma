@@ -49,6 +49,10 @@ public class UIMessages extends NLS {
   public static String SessionsView_columnTotalLinesLabel;
   public static String SessionsView_columnCoverageValue;
   public static String SessionsView_loadingMessage;
+  
+  public static String CoverageTab_title;
+  public static String CoverageTab_groupInstrumentedClassesLabel;
+  public static String CoverageTab_buttonInplaceIntrLabel;
 
   public static String InstrumentationWarning_title;
   public static String InstrumentationWarning_message;

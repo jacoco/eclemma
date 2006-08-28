@@ -38,6 +38,7 @@ import org.eclipse.swt.widgets.Group;
 
 import com.mountainminds.eclemma.core.IClassFiles;
 import com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin;
+import com.mountainminds.eclemma.internal.ui.UIMessages;
 
 /**
  * The "Coverage" tab of the launch configuration dialog.
@@ -78,7 +79,7 @@ public class CoverageTab extends AbstractLaunchConfigurationTab {
   private void createInstrumentedClasses(Composite parent) {
     Group group = new Group(parent, SWT.NONE);
     group.setLayoutData(new GridData(GridData.FILL_BOTH));
-    group.setText("Instrumented classes:");
+    group.setText(UIMessages.CoverageTab_groupInstrumentedClassesLabel);
     GridLayout layout = new GridLayout();
     group.setLayout(layout);
     classesviewer = CheckboxTableViewer.newCheckList(group, SWT.BORDER);
@@ -109,7 +110,7 @@ public class CoverageTab extends AbstractLaunchConfigurationTab {
     
     
     buttonInplaceInstrumentation = new Button(group, SWT.CHECK);
-    buttonInplaceInstrumentation.setText("In place instrumentation");
+    buttonInplaceInstrumentation.setText(UIMessages.CoverageTab_buttonInplaceIntrLabel);
     buttonInplaceInstrumentation.setEnabled(!forceInplace);
     buttonInplaceInstrumentation.addSelectionListener(new SelectionAdapter() {
       public void widgetSelected(SelectionEvent e) {
@@ -122,14 +123,8 @@ public class CoverageTab extends AbstractLaunchConfigurationTab {
     });
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.eclipse.debug.ui.ILaunchConfigurationTab#setDefaults(org.eclipse.debug.core.ILaunchConfigurationWorkingCopy)
-   */
   public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
-    // TODO Auto-generated method stub
-
+    // nothing to do
   }
 
   public void initializeFrom(ILaunchConfiguration configuration) {
@@ -148,8 +143,7 @@ public class CoverageTab extends AbstractLaunchConfigurationTab {
   }
 
   public String getName() {
-    // TODO Auto-generated method stub
-    return "Coverage";
+    return UIMessages.CoverageTab_title;
   }
 
   public Image getImage() {

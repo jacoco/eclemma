@@ -20,7 +20,7 @@ import org.eclipse.debug.ui.ILaunchConfigurationTab;
 public class JUnitPluginCoverageTabGroup extends AbstractCoverageTabGroup {
 
   public JUnitPluginCoverageTabGroup() throws CoreException {
-    super("org.eclipse.pde.ui.JunitLaunchConfig");
+    super("org.eclipse.pde.ui.JunitLaunchConfig"); //$NON-NLS-1$
   }
   
   protected ILaunchConfigurationTab createCoverageTab(ILaunchConfigurationDialog dialog, String mode) {

@@ -20,7 +20,7 @@ import org.eclipse.debug.ui.ILaunchConfigurationTab;
 public class WorkbenchCoverageTabGroup extends AbstractCoverageTabGroup {
 
   public WorkbenchCoverageTabGroup() throws CoreException {
-    super("org.eclipse.pde.ui.RuntimeWorkbench");
+    super("org.eclipse.pde.ui.RuntimeWorkbench"); //$NON-NLS-1$
   }
   
   protected ILaunchConfigurationTab createCoverageTab(ILaunchConfigurationDialog dialog, String mode) {

@@ -16,7 +16,7 @@ import org.eclipse.core.runtime.CoreException;
 public class JavaApplicationCoverageTabGroup extends AbstractCoverageTabGroup {
 
   public JavaApplicationCoverageTabGroup() throws CoreException {
-    super("org.eclipse.jdt.launching.localJavaApplication");
+    super("org.eclipse.jdt.launching.localJavaApplication"); //$NON-NLS-1$
   }
 
 }
