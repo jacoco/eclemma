@@ -50,7 +50,7 @@ public class InplaceInstrumentationWarning implements IStatusHandler {
     dialog.setPrefStore(store);
     dialog.open();
 
-    return new Boolean(dialog.getReturnCode() == IDialogConstants.OK_ID);
+    return Boolean.valueOf(dialog.getReturnCode() == IDialogConstants.OK_ID);
   }
 
 }
