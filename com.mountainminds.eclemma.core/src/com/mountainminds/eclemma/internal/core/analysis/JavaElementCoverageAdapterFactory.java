@@ -23,8 +23,6 @@ import com.mountainminds.eclemma.core.analysis.ILineCoverage;
  */
 public class JavaElementCoverageAdapterFactory implements IAdapterFactory {
 
-  private static final Class[] ADAPTERLIST = new Class[] { IJavaElementCoverage.class, ILineCoverage.class };
-
   public Object getAdapter(Object object, Class adapterType) {
     // if the object is a IResource find the corresponding IJavaElement
     if (object instanceof IResource) {
@@ -48,7 +46,7 @@ public class JavaElementCoverageAdapterFactory implements IAdapterFactory {
   }
 
   public Class[] getAdapterList() {
-    return ADAPTERLIST;
+    return new Class[] { IJavaElementCoverage.class, ILineCoverage.class };
   }
 
 }

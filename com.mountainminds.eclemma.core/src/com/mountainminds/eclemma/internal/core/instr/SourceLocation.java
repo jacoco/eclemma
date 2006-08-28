@@ -47,7 +47,7 @@ public class SourceLocation implements ISourceLocation {
     for (int i = 0; i < roots.length; i++) {
       ISourceLocation loc = findLocation(roots[i]);
       if (loc != null) {
-        l.add(l);
+        l.add(loc);
       }
     }
     return (ISourceLocation[]) l.toArray(new ISourceLocation[l.size()]);

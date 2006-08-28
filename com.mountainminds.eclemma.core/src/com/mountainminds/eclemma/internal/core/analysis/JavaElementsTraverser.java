@@ -159,7 +159,7 @@ public class JavaElementsTraverser {
     }
   }
 
-  public class AnonymousTypeEnumerator {
+  private static class AnonymousTypeEnumerator {
 
     private static final int FIRST_INDEX = 1;
 
