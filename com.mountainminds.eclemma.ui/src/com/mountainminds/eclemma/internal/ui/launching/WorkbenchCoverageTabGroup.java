@@ -12,9 +12,9 @@ import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
 
 /**
- * TODO
+ * Coverage tab group for runtime workbench launch type.
  * 
- * @author  Marc R. Hoffmann
+ * @author Marc R. Hoffmann
  * @version $Revision: 33 $
  */
 public class WorkbenchCoverageTabGroup extends AbstractCoverageTabGroup {
@@ -22,8 +22,9 @@ public class WorkbenchCoverageTabGroup extends AbstractCoverageTabGroup {
   public WorkbenchCoverageTabGroup() throws CoreException {
     super("org.eclipse.pde.ui.RuntimeWorkbench"); //$NON-NLS-1$
   }
-  
-  protected ILaunchConfigurationTab createCoverageTab(ILaunchConfigurationDialog dialog, String mode) {
+
+  protected ILaunchConfigurationTab createCoverageTab(
+      ILaunchConfigurationDialog dialog, String mode) {
     return new CoverageTab(true);
   }
 

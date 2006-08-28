@@ -14,22 +14,34 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
+import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
 import org.eclipse.debug.ui.ILaunchConfigurationTabGroup;
 
 /**
- * @author  Marc R. Hoffmann
+ * The coverage tab group simply uses the tab group for the launch type "run"
+ * and inserts the "Coverage" tab at the second position.
+ * 
+ * @author Marc R. Hoffmann
  * @version $Revision$
  */
 public abstract class AbstractCoverageTabGroup implements ILaunchConfigurationTabGroup {
   
-  private static final String DELEGATE_LAUNCHMODE = "run"; //$NON-NLS-1$
+  private static final String DELEGATE_LAUNCHMODE = ILaunchManager.RUN_MODE;
 
   private ILaunchConfigurationTabGroup tabGroupDelegate;
   private ILaunchConfigurationTab coverageTab;
   
-  public AbstractCoverageTabGroup(String type) throws CoreException {
+  /**
+   * Create a tab group for the given launch type.
+   * 
+   * @param type
+   *           launch type id that is used to create the tabs from
+   * @throws CoreException
+   *           May happen when creating the tab group for delegation.
+   */
+  protected AbstractCoverageTabGroup(String type) throws CoreException {
     this.tabGroupDelegate = createDelegate(type);
   }
   

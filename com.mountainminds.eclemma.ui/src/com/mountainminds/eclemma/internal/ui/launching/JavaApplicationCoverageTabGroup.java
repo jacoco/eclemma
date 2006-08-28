@@ -10,6 +10,8 @@ package com.mountainminds.eclemma.internal.ui.launching;
 import org.eclipse.core.runtime.CoreException;
 
 /**
+ * Coverage tab group for local Java application launch type.
+ * 
  * @author  Marc R. Hoffmann
  * @version $Revision$
  */

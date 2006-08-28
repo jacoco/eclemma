@@ -25,13 +25,10 @@ import com.mountainminds.eclemma.core.IClassFiles;
 import com.mountainminds.eclemma.core.launching.ICoverageLaunchConfigurationConstants;
 
 /**
- * <p>
- * TODO_ie69 - Kommentieren
- * </p>
- * @author  ie69
- * @since   Erstmalig entwickelt: 25.08.2006, 11:56:12
- * @version $Revision$
- *
+ * Internal utility to track selected package fragment roots.
+ * 
+ * @author Marc R. Hoffmann
+ * @version $Revision: $
  */
 public class ClassesSelection {
   

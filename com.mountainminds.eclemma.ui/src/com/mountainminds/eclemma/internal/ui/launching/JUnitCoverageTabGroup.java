@@ -10,7 +10,9 @@ package com.mountainminds.eclemma.internal.ui.launching;
 import org.eclipse.core.runtime.CoreException;
 
 /**
- * @author  Marc R. Hoffmann
+ * Coverage tab group for JUnit test launch type.
+ * 
+ * @author Marc R. Hoffmann
  * @version $Revision$
  */
 public class JUnitCoverageTabGroup extends AbstractCoverageTabGroup {

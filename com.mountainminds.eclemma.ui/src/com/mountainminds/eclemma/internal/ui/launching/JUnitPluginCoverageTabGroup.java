@@ -12,9 +12,9 @@ import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
 
 /**
- * TODO
+ * Coverage tab group for JUnit plug-in test launch type.
  * 
- * @author  Marc R. Hoffmann
+ * @author Marc R. Hoffmann
  * @version $Revision$
  */
 public class JUnitPluginCoverageTabGroup extends AbstractCoverageTabGroup {
@@ -22,8 +22,9 @@ public class JUnitPluginCoverageTabGroup extends AbstractCoverageTabGroup {
   public JUnitPluginCoverageTabGroup() throws CoreException {
     super("org.eclipse.pde.ui.JunitLaunchConfig"); //$NON-NLS-1$
   }
-  
-  protected ILaunchConfigurationTab createCoverageTab(ILaunchConfigurationDialog dialog, String mode) {
+
+  protected ILaunchConfigurationTab createCoverageTab(
+      ILaunchConfigurationDialog dialog, String mode) {
     return new CoverageTab(true);
   }
 
