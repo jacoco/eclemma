@@ -8,13 +8,17 @@
 package com.mountainminds.eclemma.core.analysis;
 
 /**
- * TODO
+ * Callback interface implemented by clients that want to be informed, when the
+ * current Java model coverage has changes.
  * 
- * @author  Marc R. Hoffmann
+ * @author Marc R. Hoffmann
  * @version $Revision$
  */
 public interface IJavaCoverageListener {
 
+  /**
+   * Called when the current coverage data has changed. 
+   */
   public void coverageChanged();
   
 }

@@ -14,7 +14,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import com.mountainminds.eclemma.core.IInstrumentation;
 
 /**
- * TODO
+ * Descriptor how a particular launch was instrumented. To every launch in
+ * "Coverage" mode a instance is attached.
  * 
  * @author  Marc R. Hoffmann
  * @version $Revision$
