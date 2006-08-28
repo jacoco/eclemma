@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <?NLS TYPE="org.eclipse.help.toc"?>
 
-<toc label="EclEmma Java Code Coverage">
-	<topic label="Introduction" href="pages/introduction.html">
-    <topic label="EMMA Home" href="http://emma.sourceforge.net"/>
-	</topic>
+<toc label="EclEmma Java Code Coverage" topic="pages/introduction.html">
 	<topic label="User Guide" href="pages/userguide.html">
     <topic label="Launching in Coverage Mode" href="pages/launching.html"/>
     <topic label="Using the Coverage View" href="pages/coverageview.html"/>

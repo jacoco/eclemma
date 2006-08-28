@@ -38,6 +38,16 @@
   implementation strategies.
 </p>
 
+<h3>Separate Backend from GUI</h3>
+
+<p>
+  EclEmma is packaged in two plugins: The core plug-in offers all functionality
+  for launching and analysis. It has no dependencies on the Eclipse UI and all
+  functionality can also be used in <i>headless</i> mode. The JUnit tests for
+  the core plug-in run <i>headless</i>. The UI plug-in provides the workbench
+  integration and relies on the core's public API only (no "x-friend"
+  declarations). This aproach also verifies the usability of the core API.
+</p>
 
 <h3>EMMA Data Files</h3>
 
@@ -125,7 +135,7 @@
 
 <p>
   The EclEmma UI plug-in tracks the currently opened Java editors and
-  piggybacks a specialized annotation model to the editors annotation model.
+  piggybacks a specialized annotation model to the editors' annotation model.
 </p>
 
 <p>

@@ -85,6 +85,9 @@
       (<code>here/mypackage/JavaConstructs$1$NamedInner</code>).</li>
   <li class="investigate">Perform memory and CPU profiling and check for
       possible optimizations.</li>
+  <li class="investigate">Memory/performance optimization: Don't map coverage
+      info for all elements, e.g. only down to type summary information only.
+      Type details (covered lines/methods) could be created on demand.</li>
   <li class="investigate">Consider using the ASTParser directly to resolve
       method signatures.</li>
   <li class="investigate">Mark classes with outdated metadata files with
@@ -106,6 +109,15 @@
   <li class="inwork">Create EclEmma feature.</li>
   <li class="inwork">Provide about.ini etc in the UI plugin.</li>
   <li class="inwork">Provide source plugin.</li>
+</ul>
+
+<hr/>
+
+<ul>
+  <li class="ok">Done, part of this release.</li>
+  <li class="inwork">Just has to be done, will be available in one of the next releases.</li>
+  <li class="investigate">Needs some investigation whether it makes sense to
+      implement this feature or how to implement it.</li>
 </ul>
 
 </body>
