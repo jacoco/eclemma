@@ -87,7 +87,7 @@ public class SourceLocation implements ISourceLocation {
     // TODO find unique temporary location
     // TODO extract files from archive starting with rootpath
     // TODO modify path and rootpath
-    throw new RuntimeException("Not implemented");
+    throw new RuntimeException("Not implemented"); //$NON-NLS-1$
   }
 
 }

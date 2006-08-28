@@ -37,10 +37,10 @@ public class WorkbenchLauncher extends CoverageLauncher {
 
   protected void modifyConfiguration(ILaunchConfigurationWorkingCopy workingcopy,
       ICoverageLaunchInfo info) throws CoreException {
-    StringBuffer sb = new StringBuffer(workingcopy.getAttribute(VMARGS, ""));
-    sb.append(" ").append(BOOTPATHARG);
+    StringBuffer sb = new StringBuffer(workingcopy.getAttribute(VMARGS, "")); //$NON-NLS-1$
+    sb.append(" ").append(BOOTPATHARG); //$NON-NLS-1$
     sb.append(info.getPropertiesJARFile());
-    sb.append(";").append(CoverageTools.getEmmaJar().toOSString());
+    sb.append(";").append(CoverageTools.getEmmaJar().toOSString()); //$NON-NLS-1$
     workingcopy.setAttribute(VMARGS, sb.toString());
   }
 

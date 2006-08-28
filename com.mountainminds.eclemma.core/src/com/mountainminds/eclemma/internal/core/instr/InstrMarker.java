@@ -29,7 +29,7 @@ import org.eclipse.core.runtime.IPath;
  */
 public class InstrMarker {
 
-  private static final String MARKERFILE = ".emma_instrumented";
+  private static final String MARKERFILE = ".emma_instrumented"; //$NON-NLS-1$
 
   /**
    * Sets a mark on the given output folder.
@@ -67,7 +67,7 @@ public class InstrMarker {
   }
 
   private static InputStream getMarkerContent() {
-    String text = "Class files instrumented at " + new Date();
+    String text = "Class files instrumented at " + new Date(); //$NON-NLS-1$
     return new ByteArrayInputStream(text.getBytes());
   }
 

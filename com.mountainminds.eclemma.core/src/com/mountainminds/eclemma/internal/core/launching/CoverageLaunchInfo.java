@@ -35,7 +35,7 @@ import com.mountainminds.eclemma.internal.core.EclEmmaCorePlugin;
  */
 public class CoverageLaunchInfo implements ICoverageLaunchInfo {
 
-  private static final String LAUNCHINFO_KEY = "com.mountainminds.eclemma.core.LAUNCHINFO";
+  private static final String LAUNCHINFO_KEY = "com.mountainminds.eclemma.core.LAUNCHINFO"; //$NON-NLS-1$
 
   private static int idcounter = (int) System.currentTimeMillis();
   private static final Map instances = new HashMap();
@@ -54,7 +54,7 @@ public class CoverageLaunchInfo implements ICoverageLaunchInfo {
       launch.setAttribute(LAUNCHINFO_KEY, id);
       instances.put(id, this);
       configuration = launch.getLaunchConfiguration();
-      coveragefile = getBase().append(id).addFileExtension("ec");
+      coveragefile = getBase().append(id).addFileExtension("ec"); //$NON-NLS-1$
       importonexit = true;
       instrumentations = new ArrayList();
       instrumentationpaths = new HashMap();
@@ -88,7 +88,7 @@ public class CoverageLaunchInfo implements ICoverageLaunchInfo {
   }
 
   public IPath getPropertiesJARFile() {
-    return getBase().append(id).addFileExtension("jar");
+    return getBase().append(id).addFileExtension("jar"); //$NON-NLS-1$
   }
 
   public boolean getImportOnExit() {

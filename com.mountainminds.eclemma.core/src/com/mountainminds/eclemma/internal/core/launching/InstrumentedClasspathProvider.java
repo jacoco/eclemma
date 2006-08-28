@@ -34,7 +34,7 @@ import com.mountainminds.eclemma.internal.core.DebugOptions.ITracer;
  */
 public class InstrumentedClasspathProvider implements IRuntimeClasspathProvider {
 
-  public static final String ID = "com.mountainminds.eclemma.core.instrumentedClasspathProvider";
+  public static final String ID = "com.mountainminds.eclemma.core.instrumentedClasspathProvider"; //$NON-NLS-1$
 
   private static final ITracer TRACER = DebugOptions.LAUNCHINGTRACER;
 
@@ -77,24 +77,24 @@ public class InstrumentedClasspathProvider implements IRuntimeClasspathProvider 
       ILaunchConfiguration configuration) throws CoreException {
     IRuntimeClasspathEntry[] entries = getOriginalClasspathProvider().computeUnresolvedClasspath(
         configuration);
-    TRACER.trace("computeUnresolvedClasspath() -> {0}", Arrays.asList(entries));
+    TRACER.trace("computeUnresolvedClasspath() -> {0}", Arrays.asList(entries)); //$NON-NLS-1$
     return entries;
   }
 
   public IRuntimeClasspathEntry[] resolveClasspath(
       IRuntimeClasspathEntry[] entries, ILaunchConfiguration configuration)
       throws CoreException {
-    TRACER.trace("resolveClasspath()");
+    TRACER.trace("resolveClasspath()"); //$NON-NLS-1$
     ICoverageLaunchInfo info = getLaunchInfo();
     entries = getOriginalClasspathProvider().resolveClasspath(entries, configuration);
     List newentries = new ArrayList();
     boolean emmartinserted = false;
     for (int i = 0; i < entries.length; i++) {
       if (entries[i].getClasspathProperty() == IRuntimeClasspathEntry.USER_CLASSES) {
-        TRACER.trace("Resolved classpath entry: {0}", entries[i].getLocation());
+        TRACER.trace("Resolved classpath entry: {0}", entries[i].getLocation()); //$NON-NLS-1$
         IInstrumentation instr = info.getInstrumentation(entries[i].getLocation());
         if (instr != null) {
-          TRACER.trace("Found instrumented classes for {0}", entries[i].getLocation());
+          TRACER.trace("Found instrumented classes for {0}", entries[i].getLocation()); //$NON-NLS-1$
           if (!emmartinserted) {
             addEmmaRuntime(info, newentries);
             emmartinserted = true;

@@ -54,6 +54,12 @@ import com.vladium.emma.EMMAProperties;
  * @version $Revision$
  */
 public abstract class CoverageLauncher implements ILaunchConfigurationDelegate2 {
+  
+  /**
+   * Name of the file that will EMMA pick from the classpath to reads its
+   * properties.
+   */
+  protected static final String EMMA_PROPERTIES_FILE = "emma.properties"; //$NON-NLS-1$
 
   /** Status used to trigger user prompts */
   protected static final IStatus PROMPT_STATUS = new Status(IStatus.INFO,
@@ -143,8 +149,8 @@ public abstract class CoverageLauncher implements ILaunchConfigurationDelegate2 
     try {
       JarOutputStream jar = new JarOutputStream(new FileOutputStream(jarfile
           .toFile()), mf);
-      jar.putNextEntry(new ZipEntry("emma.properties"));
-      properties.store(jar, "Created for launch configuration " + configuration.getName());
+      jar.putNextEntry(new ZipEntry(EMMA_PROPERTIES_FILE));
+      properties.store(jar, "Created for launch configuration " + configuration.getName()); //$NON-NLS-1$
       jar.close();
     } catch (IOException e) {
       throw new CoreException(EclEmmaStatus.EMMA_PROPERTIES_CREATION_ERROR.getStatus(jarfile, e));
