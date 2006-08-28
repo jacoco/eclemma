@@ -17,9 +17,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
-import org.eclipse.debug.ui.ILaunchConfigurationTab;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.ui.JavaElementSorter;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
@@ -40,13 +40,12 @@ import com.mountainminds.eclemma.core.IClassFiles;
 import com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin;
 
 /**
- * TODO
+ * The "Coverage" tab of the launch configuration dialog.
  * 
  * @author Marc R. Hoffmann
  * @version $Revision$
  */
-public class CoverageTab extends AbstractLaunchConfigurationTab implements
-    ILaunchConfigurationTab {
+public class CoverageTab extends AbstractLaunchConfigurationTab {
 
   private final boolean forceInplace;
 
@@ -84,6 +83,7 @@ public class CoverageTab extends AbstractLaunchConfigurationTab implements
     group.setLayout(layout);
     classesviewer = CheckboxTableViewer.newCheckList(group, SWT.BORDER);
     classesviewer.setContentProvider(new ArrayContentProvider());
+    classesviewer.setSorter(new JavaElementSorter());
     classesviewer.addFilter(new ViewerFilter() {
       public boolean select(Viewer viewer, Object parentElement, Object element) {
         IPackageFragmentRoot root = (IPackageFragmentRoot) element;
@@ -147,11 +147,6 @@ public class CoverageTab extends AbstractLaunchConfigurationTab implements
     classesselection.save(configuration);
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.eclipse.debug.ui.ILaunchConfigurationTab#getName()
-   */
   public String getName() {
     // TODO Auto-generated method stub
     return "Coverage";

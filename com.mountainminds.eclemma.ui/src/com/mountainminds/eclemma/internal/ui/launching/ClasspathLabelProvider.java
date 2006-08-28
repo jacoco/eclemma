@@ -14,24 +14,23 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 
 /**
+ * Label provider for the IPackageFragmentRoot objects listed on the
+ * instrumentation tab.
  * 
- * @author  Marc R. Hoffmann
+ * @author Marc R. Hoffmann
  * @version $Revision$
  */
 public class ClasspathLabelProvider extends LabelProvider {
 
   private ILabelProvider delegate = new WorkbenchLabelProvider();
-  
+
   public Image getImage(Object element) {
     return delegate.getImage(element);
   }
 
   public String getText(Object element) {
-    StringBuffer sb = new StringBuffer(delegate.getText(element));
-    sb.append(" - ");
-    sb.append(delegate.getText(((IPackageFragmentRoot) element).getJavaProject()));
-    return sb.toString();
+    IPackageFragmentRoot root = (IPackageFragmentRoot) element;
+    return root.getPath().toString();
   }
 
-  
 }
