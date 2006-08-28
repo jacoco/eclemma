@@ -1,6 +1,10 @@
-/*
- * $Id: $
- */
+/*******************************************************************************
+ * Copyright (c) 2006 Mountainminds GmbH & Co. KG
+ * This software is provided under the terms of the Eclipse Public License v1.0
+ * See http://www.eclipse.org/legal/epl-v10.html.
+ *
+ * $Id$
+ ******************************************************************************/
 package com.mountainminds.eclemma.internal.core.testutils;
 
 import java.io.IOException;
@@ -34,7 +38,7 @@ import org.eclipse.jdt.launching.JavaRuntime;
  * to setup Java projects.
  * 
  * @author  Marc R. Hoffmann
- * @version $Revision: $
+ * @version $Revision$
  */
 public abstract class JavaProjectTestBase extends TestCase {
 

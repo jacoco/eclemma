@@ -1,6 +1,10 @@
-/*
- * $Id: $
- */
+/*******************************************************************************
+ * Copyright (c) 2006 Mountainminds GmbH & Co. KG
+ * This software is provided under the terms of the Eclipse Public License v1.0
+ * See http://www.eclipse.org/legal/epl-v10.html.
+ *
+ * $Id$
+ ******************************************************************************/
 package com.mountainminds.eclemma.internal.core.analysis;
 
 import com.mountainminds.eclemma.core.analysis.ILineCoverage;
@@ -10,7 +14,7 @@ import junit.framework.TestCase;
 
 /**
  * @author  Marc R. Hoffmann
- * @version $Revision: $
+ * @version $Revision$
  */
 public class LinesTest extends TestCase {
 
