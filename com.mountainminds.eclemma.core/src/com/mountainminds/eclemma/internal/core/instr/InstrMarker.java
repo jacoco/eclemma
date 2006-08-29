@@ -43,8 +43,10 @@ public class InstrMarker {
     IFolder folder = getFolder(path);
     if (folder != null) {
       IFile marker = folder.getFile(MARKERFILE);
-      marker.create(getMarkerContent(), true, null);
-      marker.setDerived(true);
+      if (!marker.exists()) {
+        marker.create(getMarkerContent(), true, null);
+        marker.setDerived(true);
+      }
     }
   }
 
