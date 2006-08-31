@@ -98,7 +98,7 @@ public class EclEmmaCorePlugin extends Plugin {
                 CoreMessages.LaunchSessionLabel, args);
             ICoverageSession session = new CoverageSession(description, info
                 .getInstrumentations(), new IPath[] { info.getCoverageFile() },
-                launch.getLaunchConfiguration(), true);
+                launch.getLaunchConfiguration());
             // TODO it will be optional, whether the new session is activated
             sessionManager.addSession(session, true, launch);
             info.dispose();
@@ -121,7 +121,7 @@ public class EclEmmaCorePlugin extends Plugin {
     sessionManager = new SessionManager();
     coverageLoader = new JavaCoverageLoader(sessionManager);
     stateFiles = new StateFiles(getStateLocation());
-    stateFiles.removeObsoleteFiles();
+    stateFiles.deleteLaunchFiles();
     DebugPlugin.getDefault().getLaunchManager().addLaunchListener(
         launchListener);
     DebugPlugin.getDefault().addDebugEventListener(debugListener);
@@ -131,6 +131,7 @@ public class EclEmmaCorePlugin extends Plugin {
 
   public void stop(BundleContext context) throws Exception {
     instance = null;
+    stateFiles.deleteLaunchFiles();
     JavaCore.removeElementChangedListener(elementListener);
     DebugPlugin.getDefault().removeDebugEventListener(debugListener);
     DebugPlugin.getDefault().getLaunchManager().removeLaunchListener(

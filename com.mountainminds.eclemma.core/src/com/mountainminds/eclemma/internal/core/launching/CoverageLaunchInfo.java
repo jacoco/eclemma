@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -26,6 +27,7 @@ import com.mountainminds.eclemma.core.IInstrumentation;
 import com.mountainminds.eclemma.core.launching.ICoverageLaunchInfo;
 import com.mountainminds.eclemma.internal.core.CoreMessages;
 import com.mountainminds.eclemma.internal.core.EclEmmaCorePlugin;
+import com.mountainminds.eclemma.internal.core.StateFiles;
 
 /**
  * Implementation of {@link ICoverageLaunchInfo}.
@@ -35,30 +37,31 @@ import com.mountainminds.eclemma.internal.core.EclEmmaCorePlugin;
  */
 public class CoverageLaunchInfo implements ICoverageLaunchInfo {
 
-  private static final String LAUNCHINFO_KEY = "com.mountainminds.eclemma.core.LAUNCHINFO"; //$NON-NLS-1$
-
   private static int idcounter = (int) System.currentTimeMillis();
-  private static final Map instances = new HashMap();
+  private static final Map instances = new WeakHashMap();
 
   private final String id;
   private final ILaunchConfiguration configuration;
-  private final IPath coveragefile;
+  private IPath coveragefile;
+  private IPath propertiesjarfile;
   private boolean importonexit;
   private final List instrumentations;
   private final Map instrumentationpaths;
 
   public CoverageLaunchInfo(ILaunch launch) {
-    synchronized (instances) {
-      // calculate id and make an association to this object
       id = Integer.toHexString(idcounter++);
-      launch.setAttribute(LAUNCHINFO_KEY, id);
       instances.put(id, this);
       configuration = launch.getLaunchConfiguration();
-      coveragefile = getBase().append(id).addFileExtension("ec"); //$NON-NLS-1$
+      StateFiles statefiles = EclEmmaCorePlugin.getInstance().getStateFiles();
+      IPath base = statefiles.getLaunchDataFolder().append(id);
+      coveragefile = base.addFileExtension("ec"); //$NON-NLS-1$
+      statefiles.registerForCleanup(coveragefile);
+      propertiesjarfile = base.addFileExtension("jar"); //$NON-NLS-1$
+      statefiles.registerForCleanup(propertiesjarfile);
       importonexit = true;
       instrumentations = new ArrayList();
       instrumentationpaths = new HashMap();
-    }
+      instances.put(launch, this);
   }
 
   /**
@@ -71,14 +74,7 @@ public class CoverageLaunchInfo implements ICoverageLaunchInfo {
    * @return the info data object or <code>null</code>
    */
   public static ICoverageLaunchInfo getInfo(ILaunch launch) {
-    synchronized (instances) {
-      String id = launch.getAttribute(LAUNCHINFO_KEY);
-      return id == null ? null : (ICoverageLaunchInfo) instances.get(id);
-    }
-  }
-
-  private IPath getBase() {
-    return EclEmmaCorePlugin.getInstance().getStateFiles().getLaunchDataFolder();
+    return (ICoverageLaunchInfo) instances.get(launch);
   }
 
   // ICoverageLaunchInfo interface
@@ -88,7 +84,7 @@ public class CoverageLaunchInfo implements ICoverageLaunchInfo {
   }
 
   public IPath getPropertiesJARFile() {
-    return getBase().append(id).addFileExtension("jar"); //$NON-NLS-1$
+    return propertiesjarfile;
   }
 
   public boolean getImportOnExit() {
@@ -128,10 +124,10 @@ public class CoverageLaunchInfo implements ICoverageLaunchInfo {
   }
 
   public void dispose() {
-    synchronized (instances) {
-      instances.remove(id);
-      getPropertiesJARFile().toFile().delete();
-    }
+    // TODO check why this is still necessary, someone seems to hold a reference
+    // to the launch objects. 
+    coveragefile = null;
+    propertiesjarfile = null;
   }
 
 }

@@ -62,9 +62,4 @@ public interface ICoverageSession extends IAdaptable {
    */
   public ILaunchConfiguration getLaunchConfiguration();
   
-  /**
-   * Disposes any resource owned by this session.  
-   */
-  public void dispose();
-
 }
