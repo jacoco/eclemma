@@ -2,16 +2,17 @@
 <?NLS TYPE="org.eclipse.help.toc"?>
 
 <toc label="EclEmma Java Code Coverage" topic="pages/introduction.html">
-	<topic label="User Guide" href="pages/userguide.html">
+  <topic label="User Guide" href="pages/userguide.html">
     <topic label="Launching in Coverage Mode" href="pages/launching.html"/>
     <topic label="Using the Coverage View" href="pages/coverageview.html"/>
     <topic label="Editor Annotation" href="pages/annotations.html"/>
-	</topic>
-	<topic label="Developer Information" href="pages/developerinfo.html">
+    <topic label="Managing Coverage Sessions" href="pages/sessions.html"/>
+  </topic>
+  <topic label="Developer Information" href="pages/developerinfo.html">
     <topic label="Architecture" href="pages/architecture.html"/>
     <topic label="Open Issues" href="pages/todos.html"/>
     <topic label="Release Checklist" href="pages/checklist.html"/>
     <topic label="Change Log" href="pages/changes.html"/>
-	</topic>
+  </topic>
   <topic label="License" href="pages/license.html"/>
 </toc>
