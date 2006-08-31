@@ -26,14 +26,16 @@ public class CoverageSession extends PlatformObject implements ICoverageSession 
   private final IInstrumentation[] instrumentations;
   private final IPath[] coveragedatafiles;
   private final ILaunchConfiguration launchconfiguration;
+  private final boolean disposecoveragefiles;
 
   public CoverageSession(String description,
       IInstrumentation[] instrumentations, IPath[] coveragedatafiles,
-      ILaunchConfiguration launchconfiguration) {
+      ILaunchConfiguration launchconfiguration, boolean disposecoveragefiles) {
     this.description = description;
     this.instrumentations = instrumentations;
     this.coveragedatafiles = coveragedatafiles;
     this.launchconfiguration = launchconfiguration;
+    this.disposecoveragefiles = disposecoveragefiles;
   }
 
   // ICoverageSession implementation
@@ -52,6 +54,14 @@ public class CoverageSession extends PlatformObject implements ICoverageSession 
 
   public ILaunchConfiguration getLaunchConfiguration() {
     return launchconfiguration;
+  }
+
+  public void dispose() {
+    if (disposecoveragefiles) {
+      for (int i = 0; i < coveragedatafiles.length; i++) {
+        coveragedatafiles[i].toFile().delete();
+      }
+    }
   }
 
 }

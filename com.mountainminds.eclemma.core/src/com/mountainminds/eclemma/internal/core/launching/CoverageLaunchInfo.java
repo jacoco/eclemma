@@ -130,7 +130,6 @@ public class CoverageLaunchInfo implements ICoverageLaunchInfo {
   public void dispose() {
     synchronized (instances) {
       instances.remove(id);
-      getCoverageFile().toFile().delete();
       getPropertiesJARFile().toFile().delete();
     }
   }

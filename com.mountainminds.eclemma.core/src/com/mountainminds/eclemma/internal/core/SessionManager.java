@@ -60,6 +60,7 @@ public class SessionManager implements ISessionManager {
       sessions.remove(session);
       keymap.values().remove(session);
       fireSessionRemoved(session);
+      session.dispose();
       if (sessionActivated) {
         fireSessionActivated(activeSession);
       }
@@ -75,6 +76,7 @@ public class SessionManager implements ISessionManager {
       ICoverageSession session = (ICoverageSession) sessions.remove(0);
       keymap.values().remove(session);
       fireSessionRemoved(session);
+      session.dispose();
     }
     if (activeSession != null) {
       activeSession = null;

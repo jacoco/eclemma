@@ -65,12 +65,14 @@ public class EclEmmaCorePlugin extends Plugin {
 
   private ILaunchListener launchListener = new ILaunchListener() {
     public void launchRemoved(ILaunch launch) {
-      // TODO this behaviour should be optional
-      sessionManager.removeSession(launch);
-      ICoverageLaunchInfo data = CoverageTools.getLaunchInfo(launch);
-      if (data != null) {
-        data.dispose();
+      // TODO this behaviour will be optional
+      /*
+      ICoverageSession session = sessionManager.getSession(launch);
+      if (session != null) {
+        session.dispose();
+        sessionManager.removeSession(session);
       }
+      */
     }
 
     public void launchAdded(ILaunch launch) {
@@ -96,8 +98,10 @@ public class EclEmmaCorePlugin extends Plugin {
                 CoreMessages.LaunchSessionLabel, args);
             ICoverageSession session = new CoverageSession(description, info
                 .getInstrumentations(), new IPath[] { info.getCoverageFile() },
-                launch.getLaunchConfiguration());
+                launch.getLaunchConfiguration(), true);
+            // TODO it will be optional, whether the new session is activated
             sessionManager.addSession(session, true, launch);
+            info.dispose();
           }
         }
       }

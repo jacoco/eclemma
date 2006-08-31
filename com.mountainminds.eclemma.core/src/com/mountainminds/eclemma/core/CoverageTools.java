@@ -211,7 +211,7 @@ public final class CoverageTools {
       IInstrumentation[] instrumentations, IPath[] coveragedatafiles,
       ILaunchConfiguration launchconfiguration) {
     return new CoverageSession(description, instrumentations, coveragedatafiles,
-        launchconfiguration);
+        launchconfiguration, false);
   }
 
   public static IJavaModelCoverage getJavaModelCoverage() {
