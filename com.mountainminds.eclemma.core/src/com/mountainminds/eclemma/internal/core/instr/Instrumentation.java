@@ -49,4 +49,16 @@ public class Instrumentation implements IInstrumentation {
     return metadatafile;
   }
 
+  public boolean equals(Object obj) {
+    if (obj instanceof IInstrumentation) {
+      return metadatafile.equals(((IInstrumentation) obj).getMetaDataFile());
+    } else {
+      return false;
+    }
+  }
+
+  public int hashCode() {
+    return metadatafile.hashCode();
+  }
+
 }

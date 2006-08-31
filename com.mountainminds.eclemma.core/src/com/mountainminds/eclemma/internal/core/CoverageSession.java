@@ -7,6 +7,10 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.core;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -55,6 +59,24 @@ public class CoverageSession extends PlatformObject implements ICoverageSession 
 
   public ILaunchConfiguration getLaunchConfiguration() {
     return launchconfiguration;
+  }
+
+  public ICoverageSession merge(ICoverageSession other, String description) {
+    List i = merge(instrumentations, other.getInstrumentations());
+    List c = merge(coveragedatafiles, other.getCoverageDataFiles());
+    return new CoverageSession(description, 
+        (IInstrumentation[]) i.toArray(new IInstrumentation[i.size()]),
+        (IPath[]) c.toArray(new IPath[c.size()]), launchconfiguration);
+  }
+
+  private List merge(Object[] arr1, Object[] arr2) {
+    List l = new ArrayList(Arrays.asList(arr1));
+    for (int i = 0; i < arr2.length; i++) {
+      if (!l.contains(arr2[i])) {
+        l.add(arr2[i]);
+      }
+    }
+    return l;
   }
 
 }

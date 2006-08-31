@@ -62,4 +62,17 @@ public interface ICoverageSession extends IAdaptable {
    */
   public ILaunchConfiguration getLaunchConfiguration();
   
+  /**
+   * Merges this session with the given session creating a new session with the
+   * given description.
+   * 
+   * @param other
+   *   Session to merge with
+   * @param description
+   *   Name of the new session
+   * @return
+   *   New session object merged from this and the given session
+   */
+  public ICoverageSession merge(ICoverageSession other, String description);
+  
 }
