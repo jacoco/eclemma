@@ -16,7 +16,7 @@ import com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin;
 import com.mountainminds.eclemma.internal.ui.UIMessages;
 
 /**
- * This action reruns the active coverage session. Internally used by the
+ * This action removes the active coverage session. Internally used by the
  * coverage view.
  * 
  * @author  Marc R. Hoffmann

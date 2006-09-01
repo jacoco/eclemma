@@ -11,6 +11,7 @@ import java.text.DecimalFormat;
 
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.ui.actions.OpenAction;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
@@ -78,10 +79,11 @@ public class CoverageView extends ViewPart {
   
   // Actions
   private OpenAction openaction;
-  private RelaunchSessionAction relaunchSessionAction;
-  private RemoveActiveSessionAction removeActiveSessionAction;
-  private RemoveAllSessionsAction removeAllSessionsAction;
-  private SelectSessionAction selectSessionAction;
+  private IAction relaunchSessionAction;
+  private IAction removeActiveSessionAction;
+  private IAction removeAllSessionsAction;
+  private IAction mergeSessionsAction;
+  private IAction selectSessionAction;
   
   private CoverageViewSorter sorter = new CoverageViewSorter(settings, this);
   
@@ -259,6 +261,7 @@ public class CoverageView extends ViewPart {
     relaunchSessionAction = new RelaunchSessionAction();
     removeActiveSessionAction = new RemoveActiveSessionAction();
     removeAllSessionsAction = new RemoveAllSessionsAction();
+    mergeSessionsAction = new MergeSessionsAction(getSite().getWorkbenchWindow());
     selectSessionAction = new SelectSessionAction();
   }
   
@@ -270,6 +273,7 @@ public class CoverageView extends ViewPart {
     tbm.add(new Separator());
     tbm.add(removeActiveSessionAction);
     tbm.add(removeAllSessionsAction);
+    tbm.add(mergeSessionsAction);
     tbm.add(selectSessionAction);
     tbm.add(new Separator());
     tbm.add(new SelectEntryModeAction(ViewSettings.ENTRYMODE_PROJECTS, settings, this));
@@ -314,6 +318,7 @@ public class CoverageView extends ViewPart {
         removeActiveSessionAction.setEnabled(atLeastOne);
         removeAllSessionsAction.setEnabled(atLeastOne);
         boolean atLeastTwo = sessions.length >= 2;
+        mergeSessionsAction.setEnabled(atLeastTwo);
         selectSessionAction.setEnabled(atLeastTwo);
       }
     });

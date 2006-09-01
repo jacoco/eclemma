@@ -43,22 +43,24 @@ public class EclEmmaUIPlugin extends AbstractUIPlugin {
   
   // Icons used by the Plugin
   
-  public static String ELCL_REMOVE    = "icons/full/elcl16/remove.gif"; //$NON-NLS-1$
-  public static String DLCL_REMOVE    = "icons/full/dlcl16/remove.gif"; //$NON-NLS-1$
-  public static String ELCL_REMOVEALL = "icons/full/elcl16/removeall.gif"; //$NON-NLS-1$
-  public static String DLCL_REMOVEALL = "icons/full/dlcl16/removeall.gif"; //$NON-NLS-1$
-  public static String ELCL_RELAUNCH  = "icons/full/elcl16/relaunch.gif"; //$NON-NLS-1$
-  public static String DLCL_RELAUNCH  = "icons/full/dlcl16/relaunch.gif"; //$NON-NLS-1$
-  public static String ELCL_SESSION   = "icons/full/elcl16/session.gif"; //$NON-NLS-1$
-  public static String DLCL_SESSION   = "icons/full/dlcl16/session.gif"; //$NON-NLS-1$
-  public static String ELCL_SHOWPROJECTS = "icons/full/elcl16/showprojects.gif"; //$NON-NLS-1$
+  public static String ELCL_REMOVE        = "icons/full/elcl16/remove.gif"; //$NON-NLS-1$
+  public static String DLCL_REMOVE        = "icons/full/dlcl16/remove.gif"; //$NON-NLS-1$
+  public static String ELCL_REMOVEALL     = "icons/full/elcl16/removeall.gif"; //$NON-NLS-1$
+  public static String DLCL_REMOVEALL     = "icons/full/dlcl16/removeall.gif"; //$NON-NLS-1$
+  public static String ELCL_MERGESESSIONS = "icons/full/elcl16/mergesessions.gif"; //$NON-NLS-1$
+  public static String DLCL_MERGESESSIONS = "icons/full/dlcl16/mergesessions.gif"; //$NON-NLS-1$
+  public static String ELCL_RELAUNCH      = "icons/full/elcl16/relaunch.gif"; //$NON-NLS-1$
+  public static String DLCL_RELAUNCH      = "icons/full/dlcl16/relaunch.gif"; //$NON-NLS-1$
+  public static String ELCL_SESSION       = "icons/full/elcl16/session.gif"; //$NON-NLS-1$
+  public static String DLCL_SESSION       = "icons/full/dlcl16/session.gif"; //$NON-NLS-1$
+  public static String ELCL_SHOWPROJECTS  = "icons/full/elcl16/showprojects.gif"; //$NON-NLS-1$
   public static String ELCL_SHOWPACKAGEROOTS = "icons/full/elcl16/showpackageroots.gif"; //$NON-NLS-1$
-  public static String ELCL_SHOWPACKAGES = "icons/full/elcl16/showpackages.gif"; //$NON-NLS-1$
-  public static String ELCL_SHOWTYPES = "icons/full/elcl16/showtypes.gif"; //$NON-NLS-1$
+  public static String ELCL_SHOWPACKAGES  = "icons/full/elcl16/showpackages.gif"; //$NON-NLS-1$
+  public static String ELCL_SHOWTYPES     = "icons/full/elcl16/showtypes.gif"; //$NON-NLS-1$
 
-  public static String EVIEW_COVERAGE = "icons/full/eview16/coverage.gif"; //$NON-NLS-1$
+  public static String EVIEW_COVERAGE     = "icons/full/eview16/coverage.gif"; //$NON-NLS-1$
 
-  public static String OBJ_SESSION    = "icons/full/obj16/session.gif"; //$NON-NLS-1$
+  public static String OBJ_SESSION        = "icons/full/obj16/session.gif"; //$NON-NLS-1$
 
   public static String[] OBJ_COVERAGE = new String[] { 
     "icons/full/obj16/coverage00.gif", //$NON-NLS-1$

@@ -25,6 +25,8 @@ public class UIMessages extends NLS {
   public static String SessionsView_removeAllSessionsActionTooltip;
   public static String SessionsView_relaunchCoverageSessionLabel;
   public static String SessionsView_relaunchCoverageSessionTooltip;
+  public static String SessionsView_mergeSessionsLabel;
+  public static String SessionsView_mergeSessionsTooltip;
   public static String SessionsView_selectSessionsActionLabel;
   public static String SessionsView_selectSessionsActionTooltip;
   public static String SessionsView_selectSessionsEntryLabel;
