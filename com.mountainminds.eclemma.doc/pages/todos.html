@@ -17,13 +17,14 @@
 <ul>
   <li class="inwork">Include parent info in text labels of source folder, package and
     type entry objects.</li>
-  <li class="inwork">Merge sessions dialog.</li>
-  <li class="inwork">Option to automatically merge-in newly added sessions.</li>
-  <li class="inwork">Mark classes not loaded at all.</li>
-  <li class="investigate">Counter mode as drop-down action?</li>
-  <li class="investigate">Mark modified entries? Gray out?</li>
+  <li class="inwork">[Request by Vikram] Merge sessions dialog.</li>
+  <li class="inwork">[Request by Vikram] Mark classes not loaded at all.</li>
+  <li class="investigate">Add method and class counters.</li>
+  <li class="investigate">[Request by Vikram] Option to automatically merge-in
+    newly added sessions (toggle button in toolbaer?).</li>
   <li class="investigate">Link with editor toggle?</li>
   <li class="investigate">Show hint if no line information was available?</li>
+  <li class="investigate">Mark modified entries? Gray out?</li>
   <li class="investigate">Mark classes with outdated metadata files.</li>
 </ul>
 
@@ -41,10 +42,10 @@
 <ul>
   <li class="inwork">Provide better sorting for class path entries.</li>
   <li class="inwork">Add select all/deselect all buttons.</li>
-  <li class="ok">Handle "appears to be instrumented already" exception in a better way.</li>
+  <li class="investigate">[Request by David] Add TestNG support.</li>
   <li class="investigate">Intermediate profile dump via context menu in
-    Debug view.</li>
-  <li class="investigate">Decorate profile launches in Debug view?</li>
+    Debug view using EMMA's new CTL feature.</li>
+  <li class="investigate">Decorate (CTL) profile launches in Debug view?</li>
 </ul>
 
 <h4>Import</h4>
@@ -65,14 +66,21 @@
   <li class="inwork">User guide: Add section about session management.</li>
 </ul>
 
+<h4>Packaging/Installation</h4>
+<ul>
+  <li class="investigate">Create update site as soon as permanent home is
+    clarified.</li>
+  <li class="investigate">Provide separate SDK feature with sources and unit
+    test plug-ins.</li>
+    
+</ul>
 
-<h3>Implementation Tasks</h3>
+<h3>Internal Implementation</h3>
 
 <h4>Core: Instrumentation</h4>
 <ul>
   <li class="investigate">Clean-up obsolete instrumented classes and metadata
     files. Maybe register as IResourceChanged listeners.</li>
-  <li class="investigate">Consider adding IClassFiles[] to ILaunchInfo.</li>
   <li class="investigate">Provide launch type specific computation of affected
   IClassFiles[]. Eventually define interface, that is implemented by the launch
   delegates, or provide new extension point.</li>
@@ -105,16 +113,14 @@
   <li class="inwork">Define commands for all action.</li>
   <li class="investigate">See where keyboard shortcuts makes sense and should
       be configured by default.</li>
-  <li class="inwork">Add help topic about keyboard configuration.</li>
-  <li class="inwork">Allow optional Java elements decoration.</li>
-  
+  <li class="investigate">Add help topic about keyboard configuration.</li>
+  <li class="investigate">Allow optional Java elements decoration.</li>
 </ul>
 
 <h4>Packaging and Deployment</h4>
 <ul>
   <li class="inwork">Create EclEmma feature.</li>
   <li class="inwork">Provide about.ini etc in the UI plugin.</li>
-  <li class="inwork">Provide source plugin.</li>
 </ul>
 
 <hr/>
