@@ -44,6 +44,11 @@
             id="com.mountainminds.eclemma.core.junitPluginLauncher"
             modes="coverage"
             type="org.eclipse.pde.ui.JunitLaunchConfig"/>
+      <launchDelegate
+            delegate="com.mountainminds.eclemma.internal.core.launching.TestNGLauncher"
+            id="com.mountainminds.eclemma.core.testNGLauncher"
+            modes="coverage"
+            type="org.testng.eclipse.launchconfig"/>
    </extension>
    <extension
          point="org.eclipse.jdt.launching.classpathProviders">
