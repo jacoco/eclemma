@@ -48,10 +48,10 @@ import com.mountainminds.eclemma.internal.ui.UIMessages;
  */
 public class CoverageTab extends AbstractLaunchConfigurationTab {
 
-  private final boolean forceInplace;
+  private final boolean inplaceonly;
 
-  public CoverageTab(boolean forceInplace) {
-    this.forceInplace = forceInplace;
+  public CoverageTab(boolean inplaceonly) {
+    this.inplaceonly = inplaceonly;
   }
 
   private CheckboxTableViewer classesviewer;
@@ -111,7 +111,7 @@ public class CoverageTab extends AbstractLaunchConfigurationTab {
     
     buttonInplaceInstrumentation = new Button(group, SWT.CHECK);
     buttonInplaceInstrumentation.setText(UIMessages.CoverageTab_buttonInplaceIntrLabel);
-    buttonInplaceInstrumentation.setEnabled(!forceInplace);
+    buttonInplaceInstrumentation.setEnabled(!inplaceonly);
     buttonInplaceInstrumentation.addSelectionListener(new SelectionAdapter() {
       public void widgetSelected(SelectionEvent e) {
         classesselection.setInplace(buttonInplaceInstrumentation.getSelection());
@@ -129,7 +129,7 @@ public class CoverageTab extends AbstractLaunchConfigurationTab {
 
   public void initializeFrom(ILaunchConfiguration configuration) {
     try {
-      classesselection.init(configuration, forceInplace);
+      classesselection.init(configuration, inplaceonly);
       buttonInplaceInstrumentation.setSelection(classesselection.getInplace());
       classesviewer.setInput(classesselection.getAllRoots());
       classesviewer.setCheckedElements(classesselection.getSelectedRoots());

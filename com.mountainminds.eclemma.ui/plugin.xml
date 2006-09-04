@@ -172,7 +172,7 @@
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTabGroups">
       <launchConfigurationTabGroup
-            class="com.mountainminds.eclemma.internal.ui.launching.JavaApplicationCoverageTabGroup"
+            class="com.mountainminds.eclemma.internal.ui.launching.CoverageTabGroup"
             id="com.mountainminds.eclemma.ui.JavaApplicationTabGroup"
             type="org.eclipse.jdt.launching.localJavaApplication">
          <launchMode
@@ -180,7 +180,7 @@
                mode="coverage"/>
       </launchConfigurationTabGroup>
       <launchConfigurationTabGroup
-            class="com.mountainminds.eclemma.internal.ui.launching.JUnitCoverageTabGroup"
+            class="com.mountainminds.eclemma.internal.ui.launching.CoverageTabGroup"
             id="com.mountainminds.eclemma.ui.JUnitTabGroup"
             type="org.eclipse.jdt.junit.launchconfig">
          <launchMode
@@ -188,15 +188,27 @@
                mode="coverage"/>
       </launchConfigurationTabGroup>
       <launchConfigurationTabGroup
-            class="com.mountainminds.eclemma.internal.ui.launching.WorkbenchCoverageTabGroup"
+            class="com.mountainminds.eclemma.internal.ui.launching.CoverageTabGroup:inplaceonly"
             id="com.mountainminds.eclemma.ui.WorkbenchTabGroup"
-            type="org.eclipse.pde.ui.RuntimeWorkbench"/>
+            type="org.eclipse.pde.ui.RuntimeWorkbench">
+         <launchMode
+               description="%eclipseAppTabGroupDescription.coverage"
+               mode="coverage"/>
+      </launchConfigurationTabGroup>
       <launchConfigurationTabGroup
-            class="com.mountainminds.eclemma.internal.ui.launching.JUnitPluginCoverageTabGroup"
+            class="com.mountainminds.eclemma.internal.ui.launching.CoverageTabGroup:inplaceonly"
             id="com.mountainminds.eclemma.ui.JUnitPluginTabGroup"
             type="org.eclipse.pde.ui.JunitLaunchConfig">
          <launchMode
-               description="%junitTabGroupDescription.coverage"
+               description="%junitPluginTabGroupDescription.coverage"
+               mode="coverage"/>
+      </launchConfigurationTabGroup>
+      <launchConfigurationTabGroup
+            class="com.mountainminds.eclemma.internal.ui.launching.CoverageTabGroup"
+            id="com.mountainminds.eclemma.ui.TestNGTabGroup"
+            type="org.testng.eclipse.launchconfig">
+         <launchMode
+               description="%testNGTabGroupDescription.coverage"
                mode="coverage"/>
       </launchConfigurationTabGroup>
    </extension>

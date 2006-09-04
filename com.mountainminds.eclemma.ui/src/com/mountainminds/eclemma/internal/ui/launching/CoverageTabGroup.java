@@ -9,8 +9,11 @@ package com.mountainminds.eclemma.internal.ui.launching;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExecutableExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
@@ -19,6 +22,8 @@ import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
 import org.eclipse.debug.ui.ILaunchConfigurationTabGroup;
 
+import com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin;
+
 /**
  * The coverage tab group simply uses the tab group for the launch type "run"
  * and inserts the "Coverage" tab at the second position.
@@ -26,41 +31,52 @@ import org.eclipse.debug.ui.ILaunchConfigurationTabGroup;
  * @author Marc R. Hoffmann
  * @version $Revision$
  */
-public abstract class AbstractCoverageTabGroup implements ILaunchConfigurationTabGroup {
+public class CoverageTabGroup implements ILaunchConfigurationTabGroup, IExecutableExtension {
   
   private static final String DELEGATE_LAUNCHMODE = ILaunchManager.RUN_MODE;
-
+  private static final String EXPOINT_TABGROUP    = "org.eclipse.debug.ui.launchConfigurationTabGroups"; //$NON-NLS-1$
+  private static final String CONFIGATTR_TYPE     = "type"; //$NON-NLS-1$
+  private static final String INPLACEONLY_FLAG    = "inplaceonly"; //$NON-NLS-1$
+  
   private ILaunchConfigurationTabGroup tabGroupDelegate;
   private ILaunchConfigurationTab coverageTab;
+  private boolean inplaceonly;
   
-  /**
-   * Create a tab group for the given launch type.
-   * 
-   * @param type
-   *           launch type id that is used to create the tabs from
-   * @throws CoreException
-   *           May happen when creating the tab group for delegation.
-   */
-  protected AbstractCoverageTabGroup(String type) throws CoreException {
-    this.tabGroupDelegate = createDelegate(type);
+  // IExecutableExtension interface
+  
+  public void setInitializationData(IConfigurationElement config, String propertyName, Object data) throws CoreException {
+    tabGroupDelegate = createDelegate(config.getAttribute(CONFIGATTR_TYPE));
+    inplaceonly = String.valueOf(data).contains(INPLACEONLY_FLAG);
   }
-  
+
   protected ILaunchConfigurationTabGroup createDelegate(String type) throws CoreException {
-    IExtensionPoint extensionpoint = Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.debug.ui.launchConfigurationTabGroups"); //$NON-NLS-1$
+    IExtensionPoint extensionpoint = Platform.getExtensionRegistry().getExtensionPoint(EXPOINT_TABGROUP);
     IConfigurationElement[] tabGroupConfigs = extensionpoint.getConfigurationElements();
-    for (int i = 0; i < tabGroupConfigs.length; i++) {
+    IConfigurationElement element = null;
+    findloop: for (int i = 0; i < tabGroupConfigs.length; i++) {
       IConfigurationElement tabGroupConfig = tabGroupConfigs[i];
-      if (type.equals(tabGroupConfig.getAttribute("type"))) { //$NON-NLS-1$
+      if (type.equals(tabGroupConfig.getAttribute(CONFIGATTR_TYPE))) {
         IConfigurationElement[] modeConfigs = tabGroupConfig.getChildren("launchMode"); //$NON-NLS-1$
+        if (modeConfigs.length == 0) {
+          element = tabGroupConfig;
+        }
         for (int j = 0; j < modeConfigs.length; j++) {
           if (DELEGATE_LAUNCHMODE.equals(modeConfigs[j].getAttribute("mode"))) { //$NON-NLS-1$
-            return (ILaunchConfigurationTabGroup) tabGroupConfig.createExecutableExtension("class"); //$NON-NLS-1$
+            element = tabGroupConfig;
+            break findloop;
           }
         }
       }
     }
-    throw new RuntimeException("No tab group registered to run " + type); //$NON-NLS-1$
+    if (element == null) {
+      String msg = "No tab group registered to run " + type; //$NON-NLS-1$;
+      throw new CoreException(new Status(IStatus.ERROR, EclEmmaUIPlugin.ID, 0, msg, null));
+    } else {
+      return (ILaunchConfigurationTabGroup) element.createExecutableExtension("class"); //$NON-NLS-1$
+    }
   }
+  
+  // ILaunchConfigurationTabGroup interface
   
   public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
     tabGroupDelegate.createTabs(dialog, mode);
@@ -68,7 +84,7 @@ public abstract class AbstractCoverageTabGroup implements ILaunchConfigurationTa
   }
   
   protected ILaunchConfigurationTab createCoverageTab(ILaunchConfigurationDialog dialog, String mode) {
-    return new CoverageTab(false);
+    return new CoverageTab(inplaceonly);
   }
 
   public ILaunchConfigurationTab[] getTabs() {
