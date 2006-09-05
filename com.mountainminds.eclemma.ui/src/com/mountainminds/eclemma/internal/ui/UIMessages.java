@@ -51,6 +51,12 @@ public class UIMessages extends NLS {
   public static String SessionsView_columnTotalLinesLabel;
   public static String SessionsView_columnCoverageValue;
   public static String SessionsView_loadingMessage;
+
+  public static String MergeSessionsDialog_title;
+  public static String MergeSessionsDialog_descriptionLabel;
+  public static String MergeSessionsDialog_descriptionDefault;
+  public static String MergeSessionsDialog_selectionLabel;
+
   
   public static String CoverageTab_title;
   public static String CoverageTab_groupInstrumentedClassesLabel;

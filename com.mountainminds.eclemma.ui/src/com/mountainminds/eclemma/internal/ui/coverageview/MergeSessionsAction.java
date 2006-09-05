@@ -7,12 +7,16 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.ui.coverageview;
 
+import java.text.MessageFormat;
+import java.util.Date;
+
 import org.eclipse.jface.action.Action;
-import org.eclipse.swt.widgets.Event;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.ui.IWorkbenchWindow;
 
 import com.mountainminds.eclemma.core.CoverageTools;
 import com.mountainminds.eclemma.core.ICoverageSession;
+import com.mountainminds.eclemma.core.ISessionManager;
 import com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin;
 import com.mountainminds.eclemma.internal.ui.UIMessages;
 import com.mountainminds.eclemma.internal.ui.dialogs.MergeSessionsDialog;
@@ -36,10 +40,23 @@ class MergeSessionsAction extends Action {
     setEnabled(false);
   }
   
-  public void runWithEvent(Event event) {
-    ICoverageSession[] sessions = CoverageTools.getSessionManager().getSessions();
-    MergeSessionsDialog d = new MergeSessionsDialog(window.getShell(), sessions, "Merged");
-    d.open();
+  public void run() {
+    ISessionManager sm = CoverageTools.getSessionManager();
+    ICoverageSession[] sessions = sm.getSessions();
+    String descr = UIMessages.MergeSessionsDialog_descriptionDefault;
+    descr = MessageFormat.format(descr, new Object[] { new Date() });
+    MergeSessionsDialog d = new MergeSessionsDialog(window.getShell(), sessions, descr);
+    if (d.open() == IDialogConstants.OK_ID) {
+      Object[] result = d.getResult();
+      ICoverageSession merged = (ICoverageSession) result[0];
+      for (int i = 1; i < result.length; i++) {
+        merged = merged.merge((ICoverageSession) result[i], d.getDescription());
+      }
+      sm.addSession(merged, true, null);
+      for (int i = 0; i < result.length; i++) {
+        sm.removeSession((ICoverageSession) result[i]);
+      }
+    }
   }
 
 }
