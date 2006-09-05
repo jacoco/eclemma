@@ -38,7 +38,7 @@ class MergeSessionsAction extends Action {
   
   public void runWithEvent(Event event) {
     ICoverageSession[] sessions = CoverageTools.getSessionManager().getSessions();
-    MergeSessionsDialog d = new MergeSessionsDialog(window.getShell(), sessions);
+    MergeSessionsDialog d = new MergeSessionsDialog(window.getShell(), sessions, "Merged");
     d.open();
   }
 
