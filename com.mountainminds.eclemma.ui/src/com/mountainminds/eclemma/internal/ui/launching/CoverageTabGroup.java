@@ -46,7 +46,7 @@ public class CoverageTabGroup implements ILaunchConfigurationTabGroup, IExecutab
   
   public void setInitializationData(IConfigurationElement config, String propertyName, Object data) throws CoreException {
     tabGroupDelegate = createDelegate(config.getAttribute(CONFIGATTR_TYPE));
-    inplaceonly = String.valueOf(data).contains(INPLACEONLY_FLAG);
+    inplaceonly = String.valueOf(data).indexOf(INPLACEONLY_FLAG) != -1;
   }
 
   protected ILaunchConfigurationTabGroup createDelegate(String type) throws CoreException {
