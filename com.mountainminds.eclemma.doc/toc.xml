@@ -5,7 +5,7 @@
   <topic label="User Guide" href="pages/userguide.html">
     <topic label="Launching in Coverage Mode" href="pages/launching.html"/>
     <topic label="Using the Coverage View" href="pages/coverageview.html"/>
-    <topic label="Editor Annotation" href="pages/annotations.html"/>
+    <topic label="Source Code Annotation" href="pages/annotations.html"/>
     <topic label="Managing Coverage Sessions" href="pages/sessions.html"/>
   </topic>
   <topic label="Developer Information" href="pages/developerinfo.html">
