@@ -70,6 +70,7 @@ public class MethodResolver {
     } else {
       cresolved = clocalName;
     }
+    cresolved = Signature.getTypeErasure(cresolved);
     if (Signature.getTypeSignatureKind(cresolved) == Signature.CLASS_TYPE_SIGNATURE) {
       String[][] hits = type.resolveType(new String(cresolved, 1,
           cresolved.length - 2));
