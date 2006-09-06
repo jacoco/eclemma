@@ -69,6 +69,8 @@ public class MethodResolverTest1 extends JavaProjectTestBase {
     suite.addTest(new MethodResolverTest1("QUnknownType;", "LUnknownType;"));
     suite.addTest(new MethodResolverTest1("Qunknownpackage.UnknownType;", "Lunknownpackage/UnknownType;"));
 
+    suite.addTest(new MethodResolverTest1("Qjava.util.Map<String,String>;", "Ljava/util/Map;"));
+    
     return suite;
   }
 
