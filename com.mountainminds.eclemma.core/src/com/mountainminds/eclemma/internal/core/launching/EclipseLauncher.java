@@ -3,7 +3,7 @@
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
- * $Id$
+ * $Id: $
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.core.launching;
 
@@ -15,19 +15,15 @@ import com.mountainminds.eclemma.core.CoverageTools;
 import com.mountainminds.eclemma.core.launching.ICoverageLaunchInfo;
 
 /**
- * Laucher for plug-in based JUnit tests.
+ * Laucher for the Eclipse runtime workbench.
  * 
  * @author Marc R. Hoffmann
- * @version $Revision$
+ * @version $Revision: 32 $
  */
-public class JUnitPluginLauncher extends CoverageLauncher {
+public class EclipseLauncher extends CoverageLauncher {
 
   public static final String VMARGS = "vmargs"; //$NON-NLS-1$
   public static final String BOOTPATHARG = "-Xbootclasspath/a:"; //$NON-NLS-1$
-
-  public JUnitPluginLauncher() throws CoreException {
-    super("org.eclipse.pde.ui.JunitLaunchConfig"); //$NON-NLS-1$
-  }
 
   protected boolean hasInplaceInstrumentation(ILaunchConfiguration configuration) {
     // Inplace instrumentation is required for plugin launches, as we can't

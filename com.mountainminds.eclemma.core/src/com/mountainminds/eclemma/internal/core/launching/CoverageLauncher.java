@@ -15,6 +15,8 @@ import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExecutableExtension;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -46,15 +48,16 @@ import com.vladium.emma.AppLoggers;
 import com.vladium.emma.EMMAProperties;
 
 /**
- * Abstract base class for coverage mode launchers. Coverage launchers
- * perform class instrumentation and then delegate to the corresponding
- * launcher responsible for the "run" mode.
+ * Abstract base class for coverage mode launchers. Coverage launchers perform
+ * class instrumentation and then delegate to the corresponding launcher
+ * responsible for the "run" mode.
  * 
  * @author Marc R. Hoffmann
  * @version $Revision$
  */
-public abstract class CoverageLauncher implements ILaunchConfigurationDelegate2 {
-  
+public abstract class CoverageLauncher implements
+    ILaunchConfigurationDelegate2, IExecutableExtension {
+
   /**
    * Name of the file that will EMMA pick from the classpath to reads its
    * properties.
@@ -68,46 +71,26 @@ public abstract class CoverageLauncher implements ILaunchConfigurationDelegate2 
   /** Launch mode for the launch delegates used internally. */
   public static final String DELEGATELAUNCHMODE = ILaunchManager.RUN_MODE;
 
-  protected final String launchtypeid;
+  protected String launchtype;
 
-  protected final ILaunchConfigurationDelegate launchdelegate;
+  protected ILaunchConfigurationDelegate launchdelegate;
 
-  protected final ILaunchConfigurationDelegate2 launchdelegate2;
-
-  protected CoverageLauncher(String launchtypeid) throws CoreException {
-    this.launchtypeid = launchtypeid;
-    launchdelegate = getLaunchDelegate(launchtypeid);
-    if (launchdelegate instanceof ILaunchConfigurationDelegate2) {
-      launchdelegate2 = (ILaunchConfigurationDelegate2) launchdelegate;
-    } else {
-      launchdelegate2 = null;
-    }
-  }
-
-  private ILaunchConfigurationDelegate getLaunchDelegate(String launchtypeid)
-      throws CoreException {
-    ILaunchConfigurationType type = DebugPlugin.getDefault().getLaunchManager()
-        .getLaunchConfigurationType(launchtypeid);
-    if (type == null) {
-      throw new CoreException(EclEmmaStatus.UNKOWN_LAUNCH_TYPE_ERROR.getStatus(
-          launchtypeid, null));
-    }
-    return type.getDelegate(DELEGATELAUNCHMODE);
-  }
+  protected ILaunchConfigurationDelegate2 launchdelegate2;
 
   /**
    * Hook method to modify the launch configuration before it is passed on to
    * the delegate launcher.
-   *  
+   * 
    * @param workingcopy
    *          Configuration to modify
    * @param info
    *          Info object of this launch
    * @throws CoreException
-   *          may be thrown by implementations
+   *           may be thrown by implementations
    */
-  protected void modifyConfiguration(ILaunchConfigurationWorkingCopy workingcopy,
-                                     ICoverageLaunchInfo info) throws CoreException {
+  protected void modifyConfiguration(
+      ILaunchConfigurationWorkingCopy workingcopy, ICoverageLaunchInfo info)
+      throws CoreException {
     // Does nothing by default
   }
 
@@ -120,7 +103,7 @@ public abstract class CoverageLauncher implements ILaunchConfigurationDelegate2 
    *          launch configuration for coverage run
    * @return true, if instrumentation should be performed in-place
    * @throws CoreException
-   *   May be thrown when accessing the launch configuration
+   *           May be thrown when accessing the launch configuration
    */
   protected boolean hasInplaceInstrumentation(ILaunchConfiguration configuration)
       throws CoreException {
@@ -134,29 +117,56 @@ public abstract class CoverageLauncher implements ILaunchConfigurationDelegate2 
    * injected in the class path.
    * 
    * @param configuration
-   *   Configuration object for this launch
+   *          Configuration object for this launch
    * @param info
-   *   Launch Info object of this launch
+   *          Launch Info object of this launch
    * @throws CoreException
-   *   Thrown when the JAR file cannot be created
+   *           Thrown when the JAR file cannot be created
    */
-  private void createPropertiesJAR(ILaunchConfiguration configuration, ICoverageLaunchInfo info) throws CoreException {
+  private void createPropertiesJAR(ILaunchConfiguration configuration,
+      ICoverageLaunchInfo info) throws CoreException {
     Properties properties = new Properties();
-    properties.put(EMMAProperties.PROPERTY_COVERAGE_DATA_OUT_FILE, info.getCoverageFile().toOSString());
-    properties.put(AppLoggers.PROPERTY_VERBOSITY_LEVEL, DebugOptions.EMMAVERBOSITYLEVEL);
+    properties.put(EMMAProperties.PROPERTY_COVERAGE_DATA_OUT_FILE, info
+        .getCoverageFile().toOSString());
+    properties.put(AppLoggers.PROPERTY_VERBOSITY_LEVEL,
+        DebugOptions.EMMAVERBOSITYLEVEL);
     IPath jarfile = info.getPropertiesJARFile();
     Manifest mf = new Manifest();
     try {
       JarOutputStream jar = new JarOutputStream(new FileOutputStream(jarfile
           .toFile()), mf);
       jar.putNextEntry(new ZipEntry(EMMA_PROPERTIES_FILE));
-      properties.store(jar, "Created for launch configuration " + configuration.getName()); //$NON-NLS-1$
+      properties.store(jar,
+          "Created for launch configuration " + configuration.getName()); //$NON-NLS-1$
       jar.close();
     } catch (IOException e) {
-      throw new CoreException(EclEmmaStatus.EMMA_PROPERTIES_CREATION_ERROR.getStatus(jarfile, e));
+      throw new CoreException(EclEmmaStatus.EMMA_PROPERTIES_CREATION_ERROR
+          .getStatus(jarfile, e));
     }
   }
-  
+
+  // IExecutableExtension interface:
+
+  public void setInitializationData(IConfigurationElement config,
+      String propertyName, Object data) throws CoreException {
+    launchtype = config.getAttribute("type");
+    launchdelegate = getLaunchDelegate(launchtype);
+    if (launchdelegate instanceof ILaunchConfigurationDelegate2) {
+      launchdelegate2 = (ILaunchConfigurationDelegate2) launchdelegate;
+    }
+  }
+
+  private ILaunchConfigurationDelegate getLaunchDelegate(String launchtype)
+      throws CoreException {
+    ILaunchConfigurationType type = DebugPlugin.getDefault().getLaunchManager()
+        .getLaunchConfigurationType(launchtype);
+    if (type == null) {
+      throw new CoreException(EclEmmaStatus.UNKOWN_LAUNCH_TYPE_ERROR.getStatus(
+          launchtype, null));
+    }
+    return type.getDelegate(DELEGATELAUNCHMODE);
+  }
+
   // ILaunchConfigurationDelegate interface:
 
   public void launch(ILaunchConfiguration configuration, String mode,
@@ -168,9 +178,11 @@ public abstract class CoverageLauncher implements ILaunchConfigurationDelegate2 
     ICoverageLaunchInfo info = CoverageTools.getLaunchInfo(launch);
     if (info == null) {
       // Must not happen as we should have created the launch
-      throw new CoreException(EclEmmaStatus.MISSING_LAUNCH_INFO_ERROR.getStatus(null));
+      throw new CoreException(EclEmmaStatus.MISSING_LAUNCH_INFO_ERROR
+          .getStatus(null));
     }
-    info.instrument(new SubProgressMonitor(monitor, 1), hasInplaceInstrumentation(configuration));
+    info.instrument(new SubProgressMonitor(monitor, 1),
+        hasInplaceInstrumentation(configuration));
     if (monitor.isCanceled()) {
       return;
     }
@@ -212,7 +224,7 @@ public abstract class CoverageLauncher implements ILaunchConfigurationDelegate2 
       // Issue an inplace instrumentation warning:
       IStatus status = EclEmmaStatus.INPLACE_INSTRUMENTATION_INFO.getStatus();
       if (!showPrompt(status, configuration)) {
-          return false;
+        return false;
       }
     } else {
       // check whether inpace instrumentation has been performed before
@@ -230,7 +242,7 @@ public abstract class CoverageLauncher implements ILaunchConfigurationDelegate2 
           monitor);
     }
   }
-  
+
   private boolean showPrompt(IStatus status, Object info) throws CoreException {
     IStatusHandler prompter = DebugPlugin.getDefault().getStatusHandler(
         PROMPT_STATUS);
@@ -242,11 +254,13 @@ public abstract class CoverageLauncher implements ILaunchConfigurationDelegate2 
       }
     } else {
       return ((Boolean) prompter.handleStatus(status, info)).booleanValue();
-    }    
+    }
   }
-  
-  private boolean checkForPreviousInplace(ILaunchConfiguration conig) throws CoreException {
-    IClassFiles[] classfiles = CoverageTools.getClassFilesForInstrumentation(conig, false);
+
+  private boolean checkForPreviousInplace(ILaunchConfiguration conig)
+      throws CoreException {
+    IClassFiles[] classfiles = CoverageTools.getClassFilesForInstrumentation(
+        conig, false);
     for (int i = 0; i < classfiles.length; i++) {
       if (InstrMarker.isMarked(classfiles[i].getLocation())) {
         return true;

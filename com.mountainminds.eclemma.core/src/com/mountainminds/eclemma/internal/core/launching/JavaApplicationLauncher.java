@@ -21,10 +21,6 @@ import com.mountainminds.eclemma.core.launching.ICoverageLaunchInfo;
  */
 public class JavaApplicationLauncher extends CoverageLauncher {
 
-  public JavaApplicationLauncher() throws CoreException {
-    super("org.eclipse.jdt.launching.localJavaApplication"); //$NON-NLS-1$
-  }
-
   protected void modifyConfiguration(ILaunchConfigurationWorkingCopy workingcopy,
       ICoverageLaunchInfo info) throws CoreException {
     workingcopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER,
