@@ -29,6 +29,7 @@ class RemoveActiveSessionAction extends Action {
     setToolTipText(UIMessages.SessionsView_removeActiveSessionActionTooltip);
     setImageDescriptor(EclEmmaUIPlugin.getImageDescriptor(EclEmmaUIPlugin.ELCL_REMOVE));
     setDisabledImageDescriptor(EclEmmaUIPlugin.getImageDescriptor(EclEmmaUIPlugin.DLCL_REMOVE));
+    setActionDefinitionId("org.eclipse.ui.edit.delete"); //$NON-NLS-1$
     setEnabled(false);
   }
   

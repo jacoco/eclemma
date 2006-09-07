@@ -37,37 +37,51 @@
                disabledIcon="icons/full/dlcl16/runcoverage.gif"
                hoverIcon="icons/full/elcl16/runcoverage.gif"
                icon="icons/full/elcl16/runcoverage.gif"
-               id="com.mountainminds.eclemma.ui.CoverageDropDownAction"
+               id="com.mountainminds.eclemma.ui.actions.CoverageDropDownAction"
                label="%CoverageDropDownAction.label"
                style="pulldown"
                toolbarPath="org.eclipse.debug.ui.launchActionSet/debug"/>
          <action
                class="com.mountainminds.eclemma.internal.ui.actions.OpenCoverageConfigurations"
-               id="com.mountainminds.eclemma.ui.OpenCoverageConfiguration"
-               label="%OpenCoverageConfigurations.label"
-               menubarPath="org.eclipse.ui.run/emptyLaunchGroup"
-               />
+               definitionId="com.mountainminds.eclemma.ui.commands.OpenCoverageConfiguration"
+               id="com.mountainminds.eclemma.ui.actions.OpenCoverageConfiguration"
+               label="%OpenCoverageConfigurationsAction.label"
+               menubarPath="org.eclipse.ui.run/emptyLaunchGroup"/>
          <action
                class="com.mountainminds.eclemma.internal.ui.actions.CoverageAsAction"
-               id="com.mountainminds.eclemma.ui.CoverageAsAction"
+               id="com.mountainminds.eclemma.ui.actions.CoverageAsAction"
                label="%CoverageAsAction.label"
                menubarPath="org.eclipse.ui.run/emptyLaunchGroup"
                style="pulldown"/>
          <action
                class="com.mountainminds.eclemma.internal.ui.actions.CoverageHistoryAction"
-               id="com.mountainminds.eclemma.ui.CoverageHistoryAction"
+               id="com.mountainminds.eclemma.ui.actions.CoverageHistoryAction"
                label="%CoverageHistoryAction.label"
                menubarPath="org.eclipse.ui.run/emptyLaunchGroup"
                style="pulldown"/>
          <action
                class="com.mountainminds.eclemma.internal.ui.actions.CoverageLastAction"
+               definitionId="com.mountainminds.eclemma.ui.commands.CoverageLast"
                disabledIcon="icons/full/dlcl16/runcoverage.gif"
                hoverIcon="icons/full/elcl16/runcoverage.gif"
                icon="icons/full/elcl16/runcoverage.gif"
-               id="com.mountainminds.eclemma.ui.CoverageLast"
+               id="com.mountainminds.eclemma.ui.actions.CoverageLast"
                label="%CoverageLastAction.label"
                menubarPath="org.eclipse.ui.run/relaunchGroup"/>
       </actionSet>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            categoryId="org.eclipse.debug.ui.category.run"
+            description="%CoverageLastCommand.description"
+            id="com.mountainminds.eclemma.ui.commands.CoverageLast"
+            name="%CoverageLastCommand.name"/>
+      <command
+            categoryId="org.eclipse.debug.ui.category.run"
+            description="%OpenCoverageConfigurationsCommand.description"
+            id="com.mountainminds.eclemma.ui.commands.OpenCoverageConfiguration"
+            name="%OpenCoverageConfigurationsCommand.name"/>
    </extension>
    <extension
          point="org.eclipse.ui.perspectiveExtensions">

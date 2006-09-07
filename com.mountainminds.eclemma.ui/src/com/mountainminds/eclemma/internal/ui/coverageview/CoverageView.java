@@ -29,6 +29,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
+import org.eclipse.ui.IKeyBindingService;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
@@ -241,6 +242,7 @@ public class CoverageView extends ViewPart {
     viewer.setContentProvider(new CoveredElementsContentProvider(settings));
     viewer.setLabelProvider(labelprovider);
     viewer.setInput(CoverageTools.getJavaModelCoverage());
+    getSite().setSelectionProvider(viewer);
     
     createActions();
     updateActions();
@@ -257,12 +259,20 @@ public class CoverageView extends ViewPart {
   }
   
   protected void createActions() {
+    IKeyBindingService kb = getSite().getKeyBindingService();
     openaction = new OpenAction(getSite());
+    openaction.setActionDefinitionId("org.eclipse.jdt.ui.edit.text.java.open.editor"); //$NON-NLS-1$
+    kb.registerAction(openaction);
     relaunchSessionAction = new RelaunchSessionAction();
+    kb.registerAction(relaunchSessionAction);
     removeActiveSessionAction = new RemoveActiveSessionAction();
+    kb.registerAction(removeActiveSessionAction);
     removeAllSessionsAction = new RemoveAllSessionsAction();
+    kb.registerAction(removeAllSessionsAction);
     mergeSessionsAction = new MergeSessionsAction(getSite().getWorkbenchWindow());
+    kb.registerAction(mergeSessionsAction);
     selectSessionAction = new SelectSessionAction();
+    kb.registerAction(selectSessionAction);
   }
   
   protected void configureToolbar() {
