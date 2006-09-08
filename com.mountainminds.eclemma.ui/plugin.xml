@@ -243,4 +243,14 @@
          point="org.eclipse.core.runtime.preferences">
       <initializer class="com.mountainminds.eclemma.internal.ui.UIPreferences"/>
    </extension>
+   <extension
+         point="org.eclipse.ui.exportWizards">
+      <wizard
+            class="com.mountainminds.eclemma.internal.ui.wizards.SessionExportWizard"
+            icon="icons/full/eview16/coverage.gif"
+            id="com.mountainminds.eclemma.ui.sessionExportWizard"
+            name="%exportReport.title">
+         <description>%exportReport.description</description>
+      </wizard>
+   </extension>
 </plugin>

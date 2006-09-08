@@ -67,6 +67,9 @@ public class UIMessages extends NLS {
   public static String AlreadyInstrumentedError_title;
   public static String AlreadyInstrumentedError_message;
 
+  public static String ExportReport_title;
+  public static String ExportReportSessionSelection_description;
+
   
   static {
     NLS.initializeMessages(BUNDLE_NAME, UIMessages.class);
