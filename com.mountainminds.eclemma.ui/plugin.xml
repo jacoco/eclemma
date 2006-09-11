@@ -12,7 +12,7 @@
    <extension
          point="org.eclipse.debug.ui.launchGroups">
       <launchGroup
-            bannerImage="icons/full/wizban/coverage_wiz.gif"
+            bannerImage="icons/full/wizban/run_coverage.gif"
             id="com.mountainminds.eclemma.ui.launchGroup.coverage"
             image="icons/full/elcl16/runcoverage.gif"
             label="%CoverageLaunchGroup.label"

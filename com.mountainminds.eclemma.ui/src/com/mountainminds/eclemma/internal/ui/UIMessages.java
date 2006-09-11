@@ -70,6 +70,8 @@ public class UIMessages extends NLS {
   public static String Browse_action;
   public static String ExportReport_title;
   public static String ExportReportPage1_description;
+  public static String ExportReportPage1NoSession_message;
+  public static String ExportReportPage1MissingDestination_message;
   public static String ExportReportPage1Sessions_label;
   public static String ExportReportPage1DestinationGroup_label;
   public static String ExportReportPage1Format_label;
@@ -79,6 +81,8 @@ public class UIMessages extends NLS {
   public static String ExportReportPage1XMLFormat_value;
   public static String ExportReportPage1TextFormat_value;
   public static String ExportReportPage1EMMAFormat_value;
+  public static String ExportReportPage1ErrorDialog_title;
+  public static String ExportReportPage1ErrorDialog_message;
 
   
   static {

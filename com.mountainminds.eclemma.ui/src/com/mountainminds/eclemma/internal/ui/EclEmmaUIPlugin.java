@@ -78,6 +78,8 @@ public class EclEmmaUIPlugin extends AbstractUIPlugin {
     "icons/full/obj16/coverage12.gif", //$NON-NLS-1$
   };
 
+  public static String WIZBAN_EXPORT_SESSION  = "icons/full/wizban/export_session.gif"; //$NON-NLS-1$
+
   
   private static EclEmmaUIPlugin instance;
 
