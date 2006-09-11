@@ -10,8 +10,10 @@ package com.mountainminds.eclemma.core;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
@@ -32,6 +34,7 @@ import com.mountainminds.eclemma.core.launching.ICoverageLaunchInfo;
 import com.mountainminds.eclemma.internal.core.CoverageSession;
 import com.mountainminds.eclemma.internal.core.EclEmmaCorePlugin;
 import com.mountainminds.eclemma.internal.core.launching.CoverageLaunchInfo;
+import com.vladium.emma.report.ReportProcessor;
 
 /**
  * For central access to the tools provided by the coverage core plugin this
@@ -46,6 +49,11 @@ public final class CoverageTools {
    * The launch mode used for coverage sessions.
    */
   public static final String LAUNCH_MODE = "coverage"; //$NON-NLS-1$
+  
+  public static final int EXPORT_HTML = 0;
+  public static final int EXPORT_XML  = 1;
+  public static final int EXPORT_TEXT = 2;
+  public static final int EXPORT_ES   = 3;
 
   /**
    * Returns the global session manager.
@@ -227,4 +235,35 @@ public final class CoverageTools {
     EclEmmaCorePlugin.getInstance().getJavaCoverageLoader().removeJavaCoverageListener(l);
   }
 
+  public static void exportSession(ICoverageSession session, String destination, int format) throws CoreException {
+    List datapath = new ArrayList();
+    List sourcepath = new ArrayList();
+    IInstrumentation[] instrs = session.getInstrumentations();
+    for (int i = 0; i < instrs.length; i++) {
+      datapath.add(instrs[i].getMetaDataFile().toOSString());
+      ISourceLocation[] srcs = instrs[i].getClassFiles().getSourceLocations();
+      for (int j = 0; j < srcs.length; j++) {
+        sourcepath.add(srcs[j].getPath().toOSString());
+      }
+    }
+    IPath[] coveragefiles = session.getCoverageDataFiles();
+    for (int i = 0; i < coveragefiles.length; i++) {
+      datapath.add(coveragefiles[i].toOSString());
+    }
+    ReportProcessor processor = ReportProcessor.create();
+    processor.setDataPath((String[]) datapath.toArray(new String[0]));
+    processor.setSourcePath((String[]) sourcepath.toArray(new String[0]));
+    String reporttype = null;
+    switch (format) {
+      case EXPORT_HTML: reporttype = "html"; break;
+      case EXPORT_XML: reporttype  = "xml"; break;
+      case EXPORT_TEXT: reporttype = "txt"; break;
+    }
+    processor.setReportTypes(new String[] { reporttype });
+    Properties props = new Properties();
+    props.setProperty("report.out.file", destination);
+    processor.setPropertyOverrides(props);
+    processor.run();
+  }
+  
 }
