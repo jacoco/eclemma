@@ -7,10 +7,13 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.ui.wizards;
 
+import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
+
+import com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin;
 
 /**
  * The export wizard for coverage sessions.
@@ -19,6 +22,19 @@ import org.eclipse.ui.IWorkbench;
  * @version $Revision: $
  */
 public class SessionExportWizard extends Wizard implements IExportWizard {
+  
+  private static final String SETTINGSID = "SessionExportWizard"; //$NON-NLS-1$
+  
+  private SessionExportPage1 page1;
+  
+  public SessionExportWizard() {
+    IDialogSettings pluginsettings = EclEmmaUIPlugin.getInstance().getDialogSettings();
+    IDialogSettings wizardsettings = pluginsettings.getSection(SETTINGSID);
+    if (wizardsettings == null) {
+      wizardsettings = pluginsettings.addNewSection(SETTINGSID);
+    }
+    setDialogSettings(wizardsettings);
+  }
 
   /* (non-Javadoc)
    * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench, org.eclipse.jface.viewers.IStructuredSelection)
@@ -31,7 +47,7 @@ public class SessionExportWizard extends Wizard implements IExportWizard {
   
   
   public void addPages() {
-    addPage(new SessionSelectionPage());
+    addPage(page1 = new SessionExportPage1());
   }
 
 
@@ -40,8 +56,9 @@ public class SessionExportWizard extends Wizard implements IExportWizard {
    * @see org.eclipse.jface.wizard.Wizard#performFinish()
    */
   public boolean performFinish() {
+    page1.saveWidgetValues();
     // TODO Auto-generated method stub
-    return false;
+    return true;
   }
 
 

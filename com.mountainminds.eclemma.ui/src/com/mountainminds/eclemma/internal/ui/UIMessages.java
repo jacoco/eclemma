@@ -67,8 +67,18 @@ public class UIMessages extends NLS {
   public static String AlreadyInstrumentedError_title;
   public static String AlreadyInstrumentedError_message;
 
+  public static String Browse_action;
   public static String ExportReport_title;
-  public static String ExportReportSessionSelection_description;
+  public static String ExportReportPage1_description;
+  public static String ExportReportPage1Sessions_label;
+  public static String ExportReportPage1DestinationGroup_label;
+  public static String ExportReportPage1Format_label;
+  public static String ExportReportPage1Destination_label;
+  public static String ExportReportPage1BrowseDialog_title;
+  public static String ExportReportPage1HTMLFormat_value;
+  public static String ExportReportPage1XMLFormat_value;
+  public static String ExportReportPage1TextFormat_value;
+  public static String ExportReportPage1EMMAFormat_value;
 
   
   static {
