@@ -121,7 +121,7 @@ public class EclEmmaCorePlugin extends Plugin {
     sessionManager = new SessionManager();
     coverageLoader = new JavaCoverageLoader(sessionManager);
     stateFiles = new StateFiles(getStateLocation());
-    stateFiles.deleteLaunchFiles();
+    stateFiles.deleteTemporaryFiles();
     DebugPlugin.getDefault().getLaunchManager().addLaunchListener(
         launchListener);
     DebugPlugin.getDefault().addDebugEventListener(debugListener);
@@ -131,7 +131,7 @@ public class EclEmmaCorePlugin extends Plugin {
 
   public void stop(BundleContext context) throws Exception {
     instance = null;
-    stateFiles.deleteLaunchFiles();
+    stateFiles.deleteTemporaryFiles();
     JavaCore.removeElementChangedListener(elementListener);
     DebugPlugin.getDefault().removeDebugEventListener(debugListener);
     DebugPlugin.getDefault().getLaunchManager().removeLaunchListener(

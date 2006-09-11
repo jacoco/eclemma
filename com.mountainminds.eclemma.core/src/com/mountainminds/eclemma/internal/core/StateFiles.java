@@ -33,6 +33,8 @@ public class StateFiles {
 
   private static final String INSTRDATA_FOLDER = ".instr/"; //$NON-NLS-1$
 
+  private static final String SOURCE_FOLDER = ".src/"; //$NON-NLS-1$
+  
   private static final ReferenceQueue CLEANUPQUEUE = new ReferenceQueue();
   
   private static final Set CLEANUPFILES = new HashSet();
@@ -44,25 +46,46 @@ public class StateFiles {
     this.stateLocation = stateLocation;
     this.stateLocation.toFile().mkdirs();
     getLaunchDataFolder().toFile().mkdirs();
+    getInstrDataFolder().toFile().mkdirs();
+    getSourceDataFolder().toFile().mkdirs();
   }
 
-  public void deleteLaunchFiles() {
-    File[] files = getLaunchDataFolder().toFile().listFiles();
-    for (int i = 0; i < files.length; i++) {
-      files[i].delete();
+  public void deleteTemporaryFiles() {
+    deleteFiles(getLaunchDataFolder().toFile(), false);
+    deleteFiles(getInstrDataFolder().toFile(), false);
+    deleteFiles(getSourceDataFolder().toFile(), false);
+  }
+  
+  private static void deleteFiles(File file, boolean deleteparent) {
+    if (file.isDirectory()) {
+      File[] files = file.listFiles();
+      for (int i = 0; files != null && i < files.length; i++) {
+        deleteFiles(files[i], true);
+      }
     }
+    if (deleteparent) file.delete();
   }
 
   public IPath getLaunchDataFolder() {
     return stateLocation.append(LAUNCHDATA_FOLDER);
   }
 
+  private IPath getInstrDataFolder() {
+    return stateLocation.append(INSTRDATA_FOLDER);
+  }
+  
   public IPath getInstrDataFolder(IPath location) throws CoreException {
-    IPath path = stateLocation.append(INSTRDATA_FOLDER).append(
-        getInternalId(location.toString()));
-    return path;
+    return getInstrDataFolder().append(getInternalId(location.toString()));
   }
 
+  private IPath getSourceDataFolder() {
+    return stateLocation.append(SOURCE_FOLDER);
+  }
+
+  public IPath getSourceDataFolder(IPath location) throws CoreException {
+    return getSourceDataFolder().append(getInternalId(location.toString()));
+  }
+  
   private static String getInternalId(String location) throws CoreException {
     StringBuffer sb = new StringBuffer();
     try {
@@ -115,7 +138,7 @@ public class StateFiles {
     }
 
     public void delete() {
-      file.delete();
+      deleteFiles(file, true);
       clear();
     }
 
