@@ -56,12 +56,14 @@ public class SessionExportPage1 extends WizardPage {
   private static final String STORE_SESSION = STORE_PREFIX + "session"; //$NON-NLS-1$
   private static final String STORE_FORMAT = STORE_PREFIX + "format"; //$NON-NLS-1$
   private static final String STORE_DESTINATIONS = STORE_PREFIX + "destinations"; //$NON-NLS-1$
+  private static final String STORE_OPENREPORT = STORE_PREFIX + "openreport"; //$NON-NLS-1$
   
   private static final int HISTORY_LIMIT = 10;
 
   private TableViewer sessionstable;
   private Combo formatcombo;
   private Combo destinationcombo;
+  private Button opencheckbox;
   
   public SessionExportPage1() {
     super(ID);
@@ -83,6 +85,8 @@ public class SessionExportPage1 extends WizardPage {
     group.setText(UIMessages.ExportReportPage1DestinationGroup_label);
     group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
     createExportOptionsGroup(group);
+    opencheckbox = new Button(parent, SWT.CHECK);
+    opencheckbox.setText(UIMessages.ExportReportOpenReport_label);
     setControl(parent);
     restoreWidgetValues();
   }
@@ -100,7 +104,8 @@ public class SessionExportPage1 extends WizardPage {
         // Adjust the extension to the new format
         IPath path = Path.fromOSString(destinationcombo.getText());
         path = path.removeFileExtension();
-        path = path.addFileExtension(ISessionExporter.DEFAULT_EXTENSIONS[formatcombo.getSelectionIndex()]);
+        String ext = ISessionExporter.DEFAULT_EXTENSIONS[formatcombo.getSelectionIndex()];
+        path = path.addFileExtension(ext);
         destinationcombo.setText(path.toOSString());
       }
     });
@@ -174,6 +179,7 @@ public class SessionExportPage1 extends WizardPage {
         destinationcombo.setText(destinations[0]);
       }
     }
+    opencheckbox.setSelection(settings.getBoolean(STORE_OPENREPORT));
   }
   
   private ICoverageSession findSession(String name) {
@@ -198,6 +204,7 @@ public class SessionExportPage1 extends WizardPage {
       history = history.subList(0, HISTORY_LIMIT);
     }
     settings.put(STORE_DESTINATIONS, (String[]) history.toArray(new String[0]));
+    settings.put(STORE_OPENREPORT, opencheckbox.getSelection());
   }
   
   public ICoverageSession getSelectedSession() {
@@ -211,6 +218,10 @@ public class SessionExportPage1 extends WizardPage {
   
   public String getDestination() {
     return destinationcombo.getText().trim();
+  }
+  
+  public boolean getOpenReport() {
+    return opencheckbox.getSelection();
   }
 
 }

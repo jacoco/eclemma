@@ -7,11 +7,16 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.ui.wizards;
 
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
@@ -19,8 +24,12 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.part.FileEditorInput;
 
 import com.mountainminds.eclemma.core.CoverageTools;
 import com.mountainminds.eclemma.core.ICoverageSession;
@@ -38,6 +47,8 @@ public class SessionExportWizard extends Wizard implements IExportWizard {
 
   private static final String SETTINGSID = "SessionExportWizard"; //$NON-NLS-1$
 
+  private IWorkbench workbench;
+  
   private SessionExportPage1 page1;
 
   public SessionExportWizard() {
@@ -53,15 +64,8 @@ public class SessionExportWizard extends Wizard implements IExportWizard {
     setNeedsProgressMonitor(true);
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench,
-   *      org.eclipse.jface.viewers.IStructuredSelection)
-   */
   public void init(IWorkbench workbench, IStructuredSelection selection) {
-    // TODO Auto-generated method stub
-
+    this.workbench = workbench;
   }
 
   public void addPages() {
@@ -101,8 +105,8 @@ public class SessionExportWizard extends Wizard implements IExportWizard {
     } catch (InvocationTargetException ite) {
       Throwable ex = ite.getTargetException();
       EclEmmaUIPlugin.log(ex);
-      String title = UIMessages.ExportReportPage1ErrorDialog_title;
-      String msg = UIMessages.ExportReportPage1ErrorDialog_message;
+      String title = UIMessages.ExportReportErrorDialog_title;
+      String msg = UIMessages.ExportReportErrorDialog_message;
       msg = NLS.bind(msg, session.getDescription());
       IStatus status;
       if (ex instanceof CoreException) {
@@ -114,7 +118,22 @@ public class SessionExportWizard extends Wizard implements IExportWizard {
       ErrorDialog.openError(getShell(), title, msg, status);
       return false;
     }
+    if (page1.getOpenReport()) {
+      openReport();
+    }
     return true;
   }
+  
+  private void openReport() {
+    IPath path = Path.fromOSString(new File(page1.getDestination()).getAbsolutePath());
+    IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
+    IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
+    try {
+      page.openEditor(new FileEditorInput(file), IEditorRegistry.SYSTEM_INPLACE_EDITOR_ID);
+    } catch (PartInitException e) {
+      EclEmmaUIPlugin.log(e);
+    }
+  }
+  
 
 }
