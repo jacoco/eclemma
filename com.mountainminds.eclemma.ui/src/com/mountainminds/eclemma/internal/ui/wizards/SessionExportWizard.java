@@ -24,12 +24,11 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.part.FileEditorInput;
+import org.eclipse.ui.ide.IDE;
 
 import com.mountainminds.eclemma.core.CoverageTools;
 import com.mountainminds.eclemma.core.ICoverageSession;
@@ -129,7 +128,7 @@ public class SessionExportWizard extends Wizard implements IExportWizard {
     IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
     IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
     try {
-      page.openEditor(new FileEditorInput(file), IEditorRegistry.SYSTEM_INPLACE_EDITOR_ID);
+      IDE.openEditor(page, file);
     } catch (PartInitException e) {
       EclEmmaUIPlugin.log(e);
     }
