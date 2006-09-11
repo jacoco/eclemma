@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osgi.util.NLS;
 
 import com.mountainminds.eclemma.core.ICoverageSession;
 import com.mountainminds.eclemma.core.ISessionListener;
@@ -78,7 +79,7 @@ public class JavaCoverageLoader {
     private final ICoverageSession session;
 
     public LoadSessionJob(ICoverageSession session) {
-      super(CoreMessages.AnalyzingCoverageSessionTask);
+      super(NLS.bind(CoreMessages.AnalyzingCoverageSessionTask, session.getDescription()));
       this.session = session;
     }
 

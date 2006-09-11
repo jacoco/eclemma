@@ -28,7 +28,6 @@ import com.mountainminds.eclemma.internal.core.DebugOptions.ITracer;
 import com.vladium.emma.AppLoggers;
 import com.vladium.emma.instr.InstrProcessor;
 import com.vladium.emma.instr.InstrProcessor.OutMode;
-import com.vladium.util.XProperties;
 
 /**
  * 
@@ -106,7 +105,7 @@ public class ClassFiles implements IClassFiles {
     processor.setMetaOutMerge(Boolean.TRUE);
     processor.setOutMode(inplace ? OutMode.OUT_MODE_OVERWRITE
         : OutMode.OUT_MODE_COPY);
-    Properties props = new XProperties();
+    Properties props = new Properties();
     props.put(AppLoggers.PROPERTY_VERBOSITY_LEVEL,
         DebugOptions.EMMAVERBOSITYLEVEL);
     processor.setPropertyOverrides(props);

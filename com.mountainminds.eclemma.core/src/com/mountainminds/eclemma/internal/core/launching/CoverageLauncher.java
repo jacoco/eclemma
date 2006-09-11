@@ -149,7 +149,7 @@ public abstract class CoverageLauncher implements
 
   public void setInitializationData(IConfigurationElement config,
       String propertyName, Object data) throws CoreException {
-    launchtype = config.getAttribute("type");
+    launchtype = config.getAttribute("type"); //$NON-NLS-1$
     launchdelegate = getLaunchDelegate(launchtype);
     if (launchdelegate instanceof ILaunchConfigurationDelegate2) {
       launchdelegate2 = (ILaunchConfigurationDelegate2) launchdelegate;

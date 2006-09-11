@@ -26,6 +26,7 @@ import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
+import org.eclipse.osgi.util.NLS;
 
 import com.mountainminds.eclemma.core.EclEmmaStatus;
 import com.mountainminds.eclemma.core.ICoverageSession;
@@ -79,8 +80,8 @@ public class JavaModelCoverage extends JavaElementCoverage implements
       throws CoreException {
     IPath[] coveragefiles = session.getCoverageDataFiles();
     IInstrumentation[] instrumentations = session.getInstrumentations();
-    monitor.beginTask(CoreMessages.AnalyzingCoverageSessionTask, coveragefiles.length
-        + instrumentations.length);
+    monitor.beginTask(NLS.bind(CoreMessages.AnalyzingCoverageSessionTask, session.getDescription()),
+        coveragefiles.length + instrumentations.length);
     ICoverageData coveragedata = null;
     for (int i = 0; i < coveragefiles.length && !monitor.isCanceled(); i++) {
       coveragedata = processCoveragedataFile(coveragedata, coveragefiles[i]);

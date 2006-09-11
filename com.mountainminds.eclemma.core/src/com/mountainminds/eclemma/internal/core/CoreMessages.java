@@ -25,6 +25,7 @@ public class CoreMessages extends NLS {
   public static String InstrumentingClassesInTask;
   public static String LaunchingTask;
   public static String AnalyzingCoverageSessionTask;
+  public static String ExportingSessionTask;
   
   public static String StatusMessage_INPLACE_INSTRUMENTATION_INFO;
   public static String StatusMessage_NO_LOCAL_EMMAJAR_ERROR;

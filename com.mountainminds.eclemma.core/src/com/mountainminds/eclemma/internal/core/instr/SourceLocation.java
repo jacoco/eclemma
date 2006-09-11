@@ -84,10 +84,12 @@ public class SourceLocation implements ISourceLocation {
   }
 
   public void extract(IProgressMonitor monitor) throws CoreException {
+    monitor.beginTask("", 1); //$NON-NLS-1$
     // TODO find unique temporary location
     // TODO extract files from archive starting with rootpath
     // TODO modify path and rootpath
-    throw new RuntimeException("Not implemented"); //$NON-NLS-1$
+    // throw new RuntimeException("Not implemented"); //$NON-NLS-1$
+    monitor.done();
   }
 
 }
