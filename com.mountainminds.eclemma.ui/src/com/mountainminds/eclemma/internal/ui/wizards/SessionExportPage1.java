@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -29,6 +30,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 
 import com.mountainminds.eclemma.core.CoverageTools;
+import com.mountainminds.eclemma.core.ICoverageSession;
 import com.mountainminds.eclemma.internal.ui.UIMessages;
 
 /**
@@ -43,12 +45,13 @@ public class SessionExportPage1 extends WizardPage {
   
   private static final String STORE_PREFIX = ID + "."; //$NON-NLS-1$
   
+  private static final String STORE_SESSION = STORE_PREFIX + "session"; //$NON-NLS-1$
   private static final String STORE_FORMAT = STORE_PREFIX + "format"; //$NON-NLS-1$
   private static final String STORE_DESTINATIONS = STORE_PREFIX + "destinations"; //$NON-NLS-1$
   
   private static final int HISTORY_LIMIT = 10;
 
-  private TableViewer viewer;
+  private TableViewer sessionstable;
   private Combo formatcombo;
   private Combo destinationcombo;
   
@@ -63,11 +66,11 @@ public class SessionExportPage1 extends WizardPage {
     parent = new Composite(parent, SWT.NONE);
     parent.setLayout(new GridLayout());
     new Label(parent, SWT.NONE).setText(UIMessages.ExportReportPage1Sessions_label);
-    viewer = new TableViewer(parent, SWT.BORDER);
-    viewer.setLabelProvider(new WorkbenchLabelProvider());
-    viewer.setContentProvider(new ArrayContentProvider());
-    viewer.setInput(CoverageTools.getSessionManager().getSessions());
-    viewer.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
+    sessionstable = new TableViewer(parent, SWT.BORDER);
+    sessionstable.setLabelProvider(new WorkbenchLabelProvider());
+    sessionstable.setContentProvider(new ArrayContentProvider());
+    sessionstable.setInput(CoverageTools.getSessionManager().getSessions());
+    sessionstable.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
     Group group = new Group(parent, SWT.NONE);
     group.setText(UIMessages.ExportReportPage1DestinationGroup_label);
     group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -124,6 +127,21 @@ public class SessionExportPage1 extends WizardPage {
         destinationcombo.setText(destinations[0]);
       }
     }
+    
+  }
+  
+  private ICoverageSession findSession(String name) {
+    ICoverageSession[] sessions = (ICoverageSession[]) sessionstable.getInput();
+    for (int i = 0; i < sessions.length; i++) {
+      if (sessions[i].getDescription().equals(name)) {
+        return sessions[i];
+      }
+    }
+    if (sessions.length > 0) {
+      return sessions[0];
+    } else {
+      return null;
+    }
   }
   
   public void saveWidgetValues() {
@@ -138,6 +156,17 @@ public class SessionExportPage1 extends WizardPage {
     settings.put(STORE_DESTINATIONS, (String[]) history.toArray(new String[0]));
   }
   
+  public ICoverageSession getSelectedSession() {
+    IStructuredSelection sel = (IStructuredSelection) sessionstable.getSelection();
+    return (ICoverageSession) sel.getFirstElement();
+  }
   
+  public int getReportFormat() {
+    return formatcombo.getSelectionIndex();
+  }
+  
+  public String getDestination() {
+    return destinationcombo.getText();
+  }
 
 }

@@ -7,12 +7,19 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.ui.wizards;
 
+import java.lang.reflect.InvocationTargetException;
+
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
 
+import com.mountainminds.eclemma.core.CoverageTools;
+import com.mountainminds.eclemma.core.ICoverageSession;
 import com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin;
 
 /**
@@ -34,6 +41,7 @@ public class SessionExportWizard extends Wizard implements IExportWizard {
       wizardsettings = pluginsettings.addNewSection(SETTINGSID);
     }
     setDialogSettings(wizardsettings);
+    setNeedsProgressMonitor(true);
   }
 
   /* (non-Javadoc)
@@ -57,10 +65,36 @@ public class SessionExportWizard extends Wizard implements IExportWizard {
    */
   public boolean performFinish() {
     page1.saveWidgetValues();
-    // TODO Auto-generated method stub
-    return true;
+    return createReport();
+
   }
 
-
+  private boolean createReport() {
+    final ICoverageSession session = page1.getSelectedSession();
+    final String destination = page1.getDestination();
+    final int format = page1.getReportFormat();
+    IRunnableWithProgress op = new IRunnableWithProgress() {
+      public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+        monitor.beginTask("Creating report", IProgressMonitor.UNKNOWN);
+        try {
+          CoverageTools.exportSession(session, destination, format);
+        } catch (CoreException e) {
+          throw new InvocationTargetException(e);
+        } finally {   
+          monitor.done();
+        }
+      }
+    };
+    try {
+      getContainer().run(true, true, op);
+    } catch (InterruptedException e) {
+      return false;
+    } catch (InvocationTargetException e) {
+      EclEmmaUIPlugin.log(e.getTargetException());
+      // TODO error message
+      return false;
+    }
+    return true;
+  }
 
 }
