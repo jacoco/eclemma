@@ -7,10 +7,6 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.ui.wizards;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IDialogSettings;
@@ -57,8 +53,6 @@ public class SessionExportPage1 extends WizardPage {
   private static final String STORE_FORMAT = STORE_PREFIX + "format"; //$NON-NLS-1$
   private static final String STORE_DESTINATIONS = STORE_PREFIX + "destinations"; //$NON-NLS-1$
   private static final String STORE_OPENREPORT = STORE_PREFIX + "openreport"; //$NON-NLS-1$
-  
-  private static final int HISTORY_LIMIT = 10;
 
   private TableViewer sessionstable;
   private Combo formatcombo;
@@ -172,13 +166,7 @@ public class SessionExportPage1 extends WizardPage {
     } catch (NumberFormatException nfe) {
       formatcombo.select(0);
     }
-    String[] destinations = settings.getArray(STORE_DESTINATIONS);
-    if (destinations != null) {
-      destinationcombo.setItems(destinations);
-      if (destinations.length > 0) {
-        destinationcombo.setText(destinations[0]);
-      }
-    }
+    ComboHistory.restore(settings, STORE_DESTINATIONS, destinationcombo);
     opencheckbox.setSelection(settings.getBoolean(STORE_OPENREPORT));
   }
   
@@ -197,13 +185,7 @@ public class SessionExportPage1 extends WizardPage {
       settings.put(STORE_SESSION, session.getDescription());
     }
     settings.put(STORE_FORMAT, formatcombo.getSelectionIndex());
-    List history = new ArrayList(Arrays.asList(destinationcombo.getItems()));
-    history.remove(destinationcombo.getText());
-    history.add(0, destinationcombo.getText());
-    if (history.size() > HISTORY_LIMIT) {
-      history = history.subList(0, HISTORY_LIMIT);
-    }
-    settings.put(STORE_DESTINATIONS, (String[]) history.toArray(new String[0]));
+    ComboHistory.save(settings, STORE_DESTINATIONS, destinationcombo);
     settings.put(STORE_OPENREPORT, opencheckbox.getSelection());
   }
   
