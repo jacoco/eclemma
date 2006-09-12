@@ -10,13 +10,9 @@ package com.mountainminds.eclemma.internal.ui.wizards;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
@@ -24,6 +20,8 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.ui.IEditorDescriptor;
+import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
@@ -71,15 +69,13 @@ public class SessionExportWizard extends Wizard implements IExportWizard {
     addPage(page1 = new SessionExportPage1());
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.eclipse.jface.wizard.Wizard#performFinish()
-   */
   public boolean performFinish() {
     page1.saveWidgetValues();
-    return createReport();
-
+    boolean result = createReport();
+    if (result && page1.getOpenReport()) {
+        openReport();
+    }
+    return result;
   }
 
   private boolean createReport() {
@@ -117,22 +113,26 @@ public class SessionExportWizard extends Wizard implements IExportWizard {
       ErrorDialog.openError(getShell(), title, msg, status);
       return false;
     }
-    if (page1.getOpenReport()) {
-      openReport();
-    }
     return true;
   }
   
   private void openReport() {
-    IPath path = Path.fromOSString(new File(page1.getDestination()).getAbsolutePath());
-    IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
     IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
-    try {
-      IDE.openEditor(page, file);
-    } catch (PartInitException e) {
-      EclEmmaUIPlugin.log(e);
+    File f = new File(page1.getDestination());
+    String editorid = getEditorId(f);
+    if (editorid != null) {
+      try {
+        IDE.openEditor(page, new ExternalFileEditorInput(f), editorid);
+      } catch (PartInitException e) {
+        EclEmmaUIPlugin.log(e);
+      }
     }
   }
   
+  private String getEditorId(File file) {
+    IEditorRegistry editorRegistry= workbench.getEditorRegistry();
+    IEditorDescriptor descriptor = editorRegistry.getDefaultEditor(file.getName());
+    return descriptor == null ? null : descriptor.getId();
+  }
 
 }

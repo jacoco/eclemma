@@ -253,4 +253,11 @@
          <description>%exportReport.description</description>
       </wizard>
    </extension>
+   <extension
+         point="org.eclipse.ui.editors.documentProviders">
+      <provider
+            class="org.eclipse.ui.editors.text.TextFileDocumentProvider"
+            id="com.mountainminds.eclemma.ui.externalFileDocumentProvider"
+            inputTypes="com.mountainminds.eclemma.internal.ui.wizards.ExternalFileEditorInput"/>
+   </extension>
 </plugin>
