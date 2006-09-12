@@ -49,7 +49,6 @@ public class SessionExportPage1 extends WizardPage {
   private static final int TEXT_FIELD_WIDTH = 250;
   
   private static final String STORE_PREFIX = ID + "."; //$NON-NLS-1$
-  private static final String STORE_SESSION = STORE_PREFIX + "session"; //$NON-NLS-1$
   private static final String STORE_FORMAT = STORE_PREFIX + "format"; //$NON-NLS-1$
   private static final String STORE_DESTINATIONS = STORE_PREFIX + "destinations"; //$NON-NLS-1$
   private static final String STORE_OPENREPORT = STORE_PREFIX + "openreport"; //$NON-NLS-1$
@@ -74,6 +73,10 @@ public class SessionExportPage1 extends WizardPage {
     sessionstable.setLabelProvider(new WorkbenchLabelProvider());
     sessionstable.setContentProvider(new ArrayContentProvider());
     sessionstable.setInput(CoverageTools.getSessionManager().getSessions());
+    ICoverageSession active = CoverageTools.getSessionManager().getActiveSession();
+    if (active != null) {
+      sessionstable.setSelection(new StructuredSelection(active));
+    }
     sessionstable.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
     Group group = new Group(parent, SWT.NONE);
     group.setText(UIMessages.ExportReportPage1DestinationGroup_label);
@@ -157,10 +160,6 @@ public class SessionExportPage1 extends WizardPage {
   
   protected void restoreWidgetValues() {
     IDialogSettings settings = getDialogSettings();
-    ICoverageSession session = findSession(settings.get(STORE_SESSION));
-    if (session != null) {
-      sessionstable.setSelection(new StructuredSelection(session));
-    }
     try {
       formatcombo.select(settings.getInt(STORE_FORMAT));
     } catch (NumberFormatException nfe) {
@@ -170,20 +169,8 @@ public class SessionExportPage1 extends WizardPage {
     opencheckbox.setSelection(settings.getBoolean(STORE_OPENREPORT));
   }
   
-  private ICoverageSession findSession(String name) {
-    ICoverageSession[] sessions = (ICoverageSession[]) sessionstable.getInput();
-    for (int i = 0; i < sessions.length; i++) {
-      if (sessions[i].getDescription().equals(name)) return sessions[i];
-    }
-    return sessions.length > 0 ? sessions[0] : null;
-  }
-  
   public void saveWidgetValues() {
     IDialogSettings settings = getDialogSettings();
-    ICoverageSession session = getSelectedSession();
-    if (session != null) {
-      settings.put(STORE_SESSION, session.getDescription());
-    }
     settings.put(STORE_FORMAT, formatcombo.getSelectionIndex());
     ComboHistory.save(settings, STORE_DESTINATIONS, destinationcombo);
     settings.put(STORE_OPENREPORT, opencheckbox.getSelection());

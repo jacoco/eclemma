@@ -12,15 +12,19 @@ import java.text.DecimalFormat;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.ui.actions.OpenAction;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
@@ -79,7 +83,7 @@ public class CoverageView extends ViewPart {
   
   
   // Actions
-  private OpenAction openaction;
+  private OpenAction openAction;
   private IAction relaunchSessionAction;
   private IAction removeActiveSessionAction;
   private IAction removeAllSessionsAction;
@@ -242,6 +246,11 @@ public class CoverageView extends ViewPart {
     viewer.setContentProvider(new CoveredElementsContentProvider(settings));
     viewer.setLabelProvider(labelprovider);
     viewer.setInput(CoverageTools.getJavaModelCoverage());
+    viewer.addSelectionChangedListener(new ISelectionChangedListener() {
+      public void selectionChanged(SelectionChangedEvent event) {
+        openAction.selectionChanged((IStructuredSelection) event.getSelection());
+      }
+    });
     getSite().setSelectionProvider(viewer);
     
     createActions();
@@ -250,7 +259,16 @@ public class CoverageView extends ViewPart {
     
     viewer.addDoubleClickListener(new IDoubleClickListener() {
       public void doubleClick(DoubleClickEvent event) {
-        openaction.run((IStructuredSelection) event.getSelection());
+        openAction.run((IStructuredSelection) event.getSelection());
+      }
+    });
+    
+    MenuManager menuMgr= new MenuManager("#PopupMenu"); //$NON-NLS-1$
+    menuMgr.setRemoveAllWhenShown(true);
+    viewer.getTree().setMenu(menuMgr.createContextMenu(viewer.getTree()));
+    menuMgr.addMenuListener(new IMenuListener() {
+      public void menuAboutToShow(IMenuManager menuMgr) {
+        configureContextMenu(menuMgr);
       }
     });
     
@@ -260,9 +278,10 @@ public class CoverageView extends ViewPart {
   
   protected void createActions() {
     IKeyBindingService kb = getSite().getKeyBindingService();
-    openaction = new OpenAction(getSite());
-    openaction.setActionDefinitionId("org.eclipse.jdt.ui.edit.text.java.open.editor"); //$NON-NLS-1$
-    kb.registerAction(openaction);
+    openAction = new OpenAction(getSite());
+    openAction.setActionDefinitionId("org.eclipse.jdt.ui.edit.text.java.open.editor"); //$NON-NLS-1$
+    openAction.setEnabled(false);
+    kb.registerAction(openAction);
     relaunchSessionAction = new RelaunchSessionAction();
     kb.registerAction(relaunchSessionAction);
     removeActiveSessionAction = new RemoveActiveSessionAction();
@@ -298,6 +317,11 @@ public class CoverageView extends ViewPart {
     mm.add(new Separator());
     mm.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
   }
+  
+  public void configureContextMenu(IMenuManager menuMgr) {
+    menuMgr.add(openAction);
+  }
+
   
   public void setFocus() {
     tree.setFocus();
