@@ -67,7 +67,7 @@ public class SessionExportPage1 extends WizardPage {
   
   public SessionExportPage1() {
     super(ID);
-    setTitle(UIMessages.ExportReport_title);
+    setTitle(UIMessages.ExportReportPage1_title);
     setDescription(UIMessages.ExportReportPage1_description);
   }
 

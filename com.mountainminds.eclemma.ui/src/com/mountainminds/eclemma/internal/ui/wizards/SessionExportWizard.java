@@ -3,7 +3,7 @@
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
- * $Id: $
+ * $Id$
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.ui.wizards;
 
@@ -38,7 +38,7 @@ import com.mountainminds.eclemma.internal.ui.UIMessages;
  * The export wizard for coverage sessions.
  * 
  * @author Marc R. Hoffmann
- * @version $Revision: $
+ * @version $Revision$
  */
 public class SessionExportWizard extends Wizard implements IExportWizard {
 
@@ -56,6 +56,7 @@ public class SessionExportWizard extends Wizard implements IExportWizard {
       wizardsettings = pluginsettings.addNewSection(SETTINGSID);
     }
     setDialogSettings(wizardsettings);
+    setWindowTitle(UIMessages.ExportReport_title);
     setDefaultPageImageDescriptor(
         EclEmmaUIPlugin.getImageDescriptor(EclEmmaUIPlugin.WIZBAN_EXPORT_SESSION));
     setNeedsProgressMonitor(true);

@@ -71,6 +71,7 @@ public class UIMessages extends NLS {
   public static String ExportReport_title;
   public static String ExportReportErrorDialog_title;
   public static String ExportReportErrorDialog_message;
+  public static String ExportReportPage1_title;
   public static String ExportReportPage1_description;
   public static String ExportReportPage1NoSession_message;
   public static String ExportReportPage1MissingDestination_message;
