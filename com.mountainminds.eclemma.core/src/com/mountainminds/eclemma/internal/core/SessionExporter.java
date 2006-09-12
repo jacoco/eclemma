@@ -82,10 +82,17 @@ public class SessionExporter implements ISessionExporter {
     for (int i = 0; i < instrs.length; i++) {
       datapath.add(instrs[i].getMetaDataFile().toOSString());
       monitor.worked(1);
-      ISourceLocation[] srcs = instrs[i].getClassFiles().getSourceLocations();
-      for (int j = 0; j < srcs.length; j++) {
-        srcs[j].extract(new SubProgressMonitor(monitor, 1));
-        sourcepath.add(srcs[j].getPath().toOSString());
+      if (format == HTML_FORMAT) {
+        ISourceLocation[] srcs = instrs[i].getClassFiles().getSourceLocations();
+        IProgressMonitor srcmonitor = new SubProgressMonitor(monitor, 1);
+        srcmonitor.beginTask("", srcs.length);
+        for (int j = 0; j < srcs.length; j++) {
+          srcs[j].extract(new SubProgressMonitor(srcmonitor, 1));
+          sourcepath.add(srcs[j].getPath().toOSString());
+        }
+        srcmonitor.done();
+      } else {
+        monitor.worked(1);
       }
     }
     for (int i = 0; i < coveragefiles.length; i++) {

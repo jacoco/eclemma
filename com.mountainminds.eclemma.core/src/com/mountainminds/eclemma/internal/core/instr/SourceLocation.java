@@ -7,8 +7,14 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.core.instr;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -85,10 +91,41 @@ public class SourceLocation implements ISourceLocation {
 
   public void extract(IProgressMonitor monitor) throws CoreException {
     monitor.beginTask("", 1); //$NON-NLS-1$
+    if (isArchive()) {
+      monitor.beginTask("Extracting source archive " + path, 1); //$NON-NLS-1$
+      String prefix = rootpath == null ? "" : rootpath.toString();
+      byte[] buffer = new byte[0x1000];
+      IPath srcfolder = EclEmmaCorePlugin.getInstance().getStateFiles().getSourceFolder(path);
+      try {
+        ZipInputStream zip = new ZipInputStream(new FileInputStream(path.toFile()));
+        while (true) {
+          ZipEntry entry = zip.getNextEntry();
+          if (entry == null) break;
+          if (!entry.isDirectory() && entry.getName().startsWith(prefix)) {
+            IPath path = srcfolder.append(entry.getName().substring(prefix.length()));
+            path.removeLastSegments(1).toFile().mkdirs();
+            OutputStream out = new FileOutputStream(path.toFile());
+            int len;
+            while ((len = zip.read(buffer)) != -1) {
+              out.write(buffer, 0, len);
+            }
+            out.close();
+          }
+          zip.closeEntry();
+        }
+        zip.close();
+        path = srcfolder;
+      } catch (IOException e) {
+        // TODO core exception
+        e.printStackTrace();
+      }
+    System.out.println("Archive " + getPath());
+    System.out.println("RootPath " + getRootPath());
     // TODO find unique temporary location
     // TODO extract files from archive starting with rootpath
     // TODO modify path and rootpath
     // throw new RuntimeException("Not implemented"); //$NON-NLS-1$
+    }
     monitor.done();
   }
 

@@ -75,22 +75,30 @@ public class StateFiles {
   }
   
   public IPath getInstrDataFolder(IPath location) throws CoreException {
-    return getInstrDataFolder().append(getInternalId(location.toString()));
+    return getInstrDataFolder().append(getInternalId(location, false));
   }
 
   private IPath getSourceDataFolder() {
     return stateLocation.append(SOURCE_FOLDER);
   }
 
-  public IPath getSourceDataFolder(IPath location) throws CoreException {
-    return getSourceDataFolder().append(getInternalId(location.toString()));
+  public IPath getSourceFolder(IPath location) throws CoreException {
+    return getSourceDataFolder().append(getInternalId(location, true));
   }
   
-  private static String getInternalId(String location) throws CoreException {
+  private static String getInternalId(IPath location, boolean withtimestamp) throws CoreException {
+    long timestamp = 0;
+    if (withtimestamp) {
+      File f = location.toFile();
+      if (f.exists()) {
+        timestamp = f.lastModified();
+      }
+    }
     StringBuffer sb = new StringBuffer();
     try {
       MessageDigest md = MessageDigest.getInstance("MD5"); //$NON-NLS-1$
-      md.update(location.getBytes("UTF8")); //$NON-NLS-1$
+      md.update(location.toString().getBytes("UTF8")); //$NON-NLS-1$
+      md.update(Long.toHexString(timestamp).getBytes("UTF8")); //$NON-NLS-1$
       byte[] sig = md.digest();
       for (int i = 0; i < sig.length; i++) {
         sb.append(Character.forDigit((sig[i] >> 4) & 0xf, 0x10));

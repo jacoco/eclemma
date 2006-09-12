@@ -11,12 +11,44 @@
 
 <h2>Managing Coverage Sessions</h2>
 
-- Session lifecycle
-- Creating Sessions
-- Deleting (all) Sessions
-- Merging Sessions
-- Auto Merge
+<p>
+  A <i>coverage session</i> is the code coverage information of particular
+  program run. It contains the list of considered Java classes along with the
+  recorded coverage details.
+</p>
 
+<h3>Session Lifecycle</h3>
+
+<p>
+  A coverage session is automatically created for each
+  <a href="launching.html">coverage launch</a>. Alternatively sessions can be
+  imported from external launches. The <a href="coverageview.html">coverage
+  view</a> allows removing the sessions again.
+</p>
+ 
+<p>
+  All coverage sessions are deleted when the workbench is closed.
+</p>
+
+<h3>The Active Session</h3>
+
+<p>
+  Even if there can be multiple coverage sessions, only one session can be the
+  <i>active</i> coverage session. The active session can be selected from a
+  drop-down list in the <a href="coverageview.html">coverage view</a> and defines
+  the input of this view as well as the Java editor highlighting.
+</p>
+
+<h3>Merging Sessions</h3>
+
+<p>
+  If the overall test set consists of multiple test launches, they will result in
+  multiple different coverage session. For analysis it may make sense to combine
+  these sessions to a single session. If there is more than one session the
+  <a href="coverageview.html">coverage view</a> provides the <i>Merge Sessions</i>
+  command. This command allows selecting a subset from the existing sessions
+  and combining to a single session.
+</p>
 
 </body>
 </html>
