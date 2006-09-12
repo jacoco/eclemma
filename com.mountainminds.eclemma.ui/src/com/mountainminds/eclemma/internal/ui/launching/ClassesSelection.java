@@ -3,7 +3,7 @@
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
- * $Id: $
+ * $Id$
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.ui.launching;
 
@@ -28,7 +28,7 @@ import com.mountainminds.eclemma.core.launching.ICoverageLaunchConfigurationCons
  * Internal utility to track selected package fragment roots.
  * 
  * @author Marc R. Hoffmann
- * @version $Revision: $
+ * @version $Revision$
  */
 public class ClassesSelection {
   
