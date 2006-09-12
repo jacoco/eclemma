@@ -244,6 +244,16 @@
       <initializer class="com.mountainminds.eclemma.internal.ui.UIPreferences"/>
    </extension>
    <extension
+         point="org.eclipse.ui.importWizards">
+      <wizard
+            class="com.mountainminds.eclemma.internal.ui.wizards.SessionImportWizard"
+            icon="icons/full/eview16/coverage.gif"
+            id="com.mountainminds.eclemma.ui.sessionImportWizard"
+            name="%importReport.title">
+         <description>%importReport.description</description>
+      </wizard>
+   </extension>
+   <extension
          point="org.eclipse.ui.exportWizards">
       <wizard
             class="com.mountainminds.eclemma.internal.ui.wizards.SessionExportWizard"

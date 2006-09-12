@@ -86,6 +86,14 @@ public class UIMessages extends NLS {
   public static String ExportReportPage1EMMAFormat_value;
   public static String ExportReportOpenReport_label;
   
+  public static String ImportSession_title;
+  public static String ImportSessionPage1_title;
+  public static String ImportSessionPage1_description;
+  public static String ImportSessionPage1CoverageFile_label;
+  public static String ImportSessionPage1BrowseDialog_title;
+  public static String ImportSessionPage1ModeGroup_label;
+  public static String ImportSessionPage1Reference_label;
+  public static String ImportSessionPage1Copy_label;
   
   static {
     NLS.initializeMessages(BUNDLE_NAME, UIMessages.class);
