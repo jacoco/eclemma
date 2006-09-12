@@ -22,8 +22,11 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.osgi.util.NLS;
 
+import com.mountainminds.eclemma.core.EclEmmaStatus;
 import com.mountainminds.eclemma.core.ISourceLocation;
+import com.mountainminds.eclemma.internal.core.CoreMessages;
 import com.mountainminds.eclemma.internal.core.EclEmmaCorePlugin;
 
 /**
@@ -33,6 +36,8 @@ import com.mountainminds.eclemma.internal.core.EclEmmaCorePlugin;
  * @version $Revision$
  */
 public class SourceLocation implements ISourceLocation {
+  
+  private static final String JAVA_EXT = ".java"; //$NON-NLS-1$
 
   public static ISourceLocation findLocation(IPackageFragmentRoot root)
       throws JavaModelException {
@@ -90,42 +95,37 @@ public class SourceLocation implements ISourceLocation {
   }
 
   public void extract(IProgressMonitor monitor) throws CoreException {
-    monitor.beginTask("", 1); //$NON-NLS-1$
     if (isArchive()) {
-      monitor.beginTask("Extracting source archive " + path, 1); //$NON-NLS-1$
-      String prefix = rootpath == null ? "" : rootpath.toString();
+      monitor.beginTask(NLS.bind(CoreMessages.ExtractingSourceArchiveTask, path), 1); 
+      String prefix = rootpath == null ? "" : rootpath.toString(); //$NON-NLS-1$
       byte[] buffer = new byte[0x1000];
       IPath srcfolder = EclEmmaCorePlugin.getInstance().getStateFiles().getSourceFolder(path);
-      try {
-        ZipInputStream zip = new ZipInputStream(new FileInputStream(path.toFile()));
-        while (true) {
-          ZipEntry entry = zip.getNextEntry();
-          if (entry == null) break;
-          if (!entry.isDirectory() && entry.getName().startsWith(prefix)) {
-            IPath path = srcfolder.append(entry.getName().substring(prefix.length()));
-            path.removeLastSegments(1).toFile().mkdirs();
-            OutputStream out = new FileOutputStream(path.toFile());
-            int len;
-            while ((len = zip.read(buffer)) != -1) {
-              out.write(buffer, 0, len);
+      if (!srcfolder.toFile().exists()) {
+        try {
+          ZipInputStream zip = new ZipInputStream(new FileInputStream(path.toFile()));
+          while (true) {
+            ZipEntry entry = zip.getNextEntry();
+            if (entry == null) break;
+            if (!entry.isDirectory() && entry.getName().startsWith(prefix) && entry.getName().endsWith(JAVA_EXT)) {
+              IPath path = srcfolder.append(entry.getName().substring(prefix.length()));
+              path.removeLastSegments(1).toFile().mkdirs();
+              OutputStream out = new FileOutputStream(path.toFile());
+              int len;
+              while ((len = zip.read(buffer)) != -1) {
+                out.write(buffer, 0, len);
+              }
+              out.close();
             }
-            out.close();
+            zip.closeEntry();
           }
-          zip.closeEntry();
+          zip.close();
+        } catch (IOException e) {
+          throw new CoreException(EclEmmaStatus.SOURCE_EXTRACTION_ERROR.getStatus(path, e));
         }
-        zip.close();
-        path = srcfolder;
-      } catch (IOException e) {
-        // TODO core exception
-        e.printStackTrace();
       }
-    System.out.println("Archive " + getPath());
-    System.out.println("RootPath " + getRootPath());
-    // TODO find unique temporary location
-    // TODO extract files from archive starting with rootpath
-    // TODO modify path and rootpath
-    // throw new RuntimeException("Not implemented"); //$NON-NLS-1$
-    }
+      path = srcfolder;
+      rootpath = null;
+   }
     monitor.done();
   }
 

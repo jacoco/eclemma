@@ -109,6 +109,12 @@ public final class EclEmmaStatus {
    */
   public static final EclEmmaStatus METADATA_FILE_READ_ERROR = new EclEmmaStatus(
       5007, IStatus.ERROR, CoreMessages.StatusMessage_METADATA_FILE_READ_ERROR);
+
+  /**
+   * Error while extracting source files.
+   */
+  public static final EclEmmaStatus SOURCE_EXTRACTION_ERROR = new EclEmmaStatus(
+      5008, IStatus.ERROR, CoreMessages.StatusMessage_SOURCE_EXTRACTION_ERROR);
   
   /**
    * Trying to instrument instrumented class files. This status is used to issue

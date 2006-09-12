@@ -85,7 +85,7 @@ public class SessionExporter implements ISessionExporter {
       if (format == HTML_FORMAT) {
         ISourceLocation[] srcs = instrs[i].getClassFiles().getSourceLocations();
         IProgressMonitor srcmonitor = new SubProgressMonitor(monitor, 1);
-        srcmonitor.beginTask("", srcs.length);
+        srcmonitor.beginTask("", srcs.length); //$NON-NLS-1$
         for (int j = 0; j < srcs.length; j++) {
           srcs[j].extract(new SubProgressMonitor(srcmonitor, 1));
           sourcepath.add(srcs[j].getPath().toOSString());
