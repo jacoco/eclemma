@@ -10,6 +10,8 @@ package com.mountainminds.eclemma.internal.ui.coverageview;
 import java.text.DecimalFormat;
 
 import org.eclipse.jdt.core.IPackageFragmentRoot;
+import org.eclipse.jdt.ui.actions.IJavaEditorActionDefinitionIds;
+import org.eclipse.jdt.ui.actions.JdtActionConstants;
 import org.eclipse.jdt.ui.actions.OpenAction;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
@@ -38,6 +40,7 @@ import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.part.ViewPart;
 
@@ -89,6 +92,7 @@ public class CoverageView extends ViewPart {
   private IAction removeAllSessionsAction;
   private IAction mergeSessionsAction;
   private IAction selectSessionAction;
+  private IAction refreshAction;
   
   private CoverageViewSorter sorter = new CoverageViewSorter(settings, this);
   
@@ -279,7 +283,8 @@ public class CoverageView extends ViewPart {
   protected void createActions() {
     IKeyBindingService kb = getSite().getKeyBindingService();
     openAction = new OpenAction(getSite());
-    openAction.setActionDefinitionId("org.eclipse.jdt.ui.edit.text.java.open.editor"); //$NON-NLS-1$
+    openAction.setActionDefinitionId(IJavaEditorActionDefinitionIds.OPEN_EDITOR);
+    getViewSite().getActionBars().setGlobalActionHandler(JdtActionConstants.OPEN, openAction);
     openAction.setEnabled(false);
     kb.registerAction(openAction);
     relaunchSessionAction = new RelaunchSessionAction();
@@ -292,6 +297,9 @@ public class CoverageView extends ViewPart {
     kb.registerAction(mergeSessionsAction);
     selectSessionAction = new SelectSessionAction();
     kb.registerAction(selectSessionAction);
+    refreshAction = new RefreshAction();
+    kb.registerAction(refreshAction);
+    getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.REFRESH.getId(), refreshAction);
   }
   
   protected void configureToolbar() {
@@ -320,6 +328,7 @@ public class CoverageView extends ViewPart {
   
   public void configureContextMenu(IMenuManager menuMgr) {
     menuMgr.add(openAction);
+    menuMgr.add(refreshAction);
   }
 
   
@@ -351,6 +360,7 @@ public class CoverageView extends ViewPart {
         boolean atLeastOne = sessions.length >= 1;
         removeActiveSessionAction.setEnabled(atLeastOne);
         removeAllSessionsAction.setEnabled(atLeastOne);
+        refreshAction.setEnabled(atLeastOne);
         boolean atLeastTwo = sessions.length >= 2;
         mergeSessionsAction.setEnabled(atLeastTwo);
         selectSessionAction.setEnabled(atLeastTwo);

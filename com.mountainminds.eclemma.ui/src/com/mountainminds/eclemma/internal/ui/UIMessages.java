@@ -41,6 +41,8 @@ public class UIMessages extends NLS {
   public static String SessionsView_showPackagesActionTooltip;
   public static String SessionsView_showTypesActionLabel;
   public static String SessionsView_showTypesActionTooltip;
+  public static String SessionsView_refreshAction_label;
+  public static String SessionsView_refreshAction_tooltip;
   public static String SessionsView_columnElementLabel;
   public static String SessionsView_columnCoverageLabel;
   public static String SessionsView_columnCoveredInstructionsLabel;
