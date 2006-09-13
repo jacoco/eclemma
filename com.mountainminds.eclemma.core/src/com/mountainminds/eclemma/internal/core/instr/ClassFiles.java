@@ -30,6 +30,7 @@ import com.vladium.emma.instr.InstrProcessor;
 import com.vladium.emma.instr.InstrProcessor.OutMode;
 
 /**
+ * Implementation if IClassFiles.
  * 
  * @author Marc R. Hoffmann
  * @version $Revision$
@@ -42,26 +43,32 @@ public class ClassFiles implements IClassFiles {
 
   private final IPackageFragmentRoot[] roots;
   private final IPath location;
+  private final boolean binary;
 
-  public ClassFiles(IPackageFragmentRoot[] roots, IPath location) {
+  public ClassFiles(IPackageFragmentRoot[] roots, IPath location) throws JavaModelException {
     this.roots = roots;
     this.location = location;
+    boolean b = true; 
+    for (int i = 0; i < roots.length; i++) {
+      if (roots[i].getKind() == IPackageFragmentRoot.K_SOURCE) {
+        b = false;
+        break;
+      }
+    }
+    binary = b;
   }
 
-  public ClassFiles addRoot(IPackageFragmentRoot root) {
+  public ClassFiles addRoot(IPackageFragmentRoot root) throws JavaModelException {
     IPackageFragmentRoot[] newroots = new IPackageFragmentRoot[roots.length + 1];
     System.arraycopy(roots, 0, newroots, 0, roots.length);
     newroots[roots.length] = root;
     return new ClassFiles(newroots, location);
   }
 
-  public boolean isBinary() throws JavaModelException {
-    for (int i = 0; i < roots.length; i++) {
-      if (roots[i].getKind() == IPackageFragmentRoot.K_SOURCE) {
-        return false;
-      }
-    }
-    return true;
+  // IClassFiles implementation
+  
+  public boolean isBinary() {
+    return binary;
   }
 
   public IPackageFragmentRoot[] getPackageFragmentRoots() {

@@ -28,10 +28,8 @@ public interface IClassFiles {
    * this instance belong to a binary archive.
    * 
    * @return <code>true</code> if the class files are a binary archive
-   * @throws JavaModelException
-   *           Thrown by the underlying Java model
    */
-  public boolean isBinary() throws JavaModelException;
+  public boolean isBinary();
 
   /**
    * Returns the list of package fragment roots that belong to the class files.
