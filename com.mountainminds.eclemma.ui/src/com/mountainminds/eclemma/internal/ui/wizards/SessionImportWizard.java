@@ -53,6 +53,7 @@ public class SessionImportWizard extends Wizard implements IExportWizard {
   }
 
   public boolean performFinish() {
+    page1.saveWidgetValues();
     // TODO Auto-generated method stub
     return true;
   }

@@ -46,6 +46,7 @@ public class SessionExportPage1 extends WizardPage {
   
   private static final String ID = "SessionExportPage1"; //$NON-NLS-1$
   
+  private static final int LIST_HEIGHT = 120;
   private static final int TEXT_FIELD_WIDTH = 250;
   
   private static final String STORE_PREFIX = ID + "."; //$NON-NLS-1$
@@ -77,7 +78,9 @@ public class SessionExportPage1 extends WizardPage {
     if (active != null) {
       sessionstable.setSelection(new StructuredSelection(active));
     }
-    sessionstable.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
+    GridData gd = new GridData(GridData.FILL_BOTH);
+    gd.heightHint = LIST_HEIGHT;
+    sessionstable.getControl().setLayoutData(gd);
     Group group = new Group(parent, SWT.NONE);
     group.setText(UIMessages.ExportReportPage1DestinationGroup_label);
     group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
