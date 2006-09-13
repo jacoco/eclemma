@@ -40,8 +40,6 @@ public class JavaCoverageLoader {
 
   private ICoverageSession activeSession;
 
-  private ICoverageSession loadedSession;
-
   private IJavaModelCoverage coverage;
 
   private final List listeners = new ArrayList();
@@ -50,17 +48,15 @@ public class JavaCoverageLoader {
 
     public void sessionActivated(ICoverageSession session) {
       activeSession = session;
-      if (activeSession != loadedSession) {
-        // TODO Looks like this has no effect
-        Platform.getJobManager().cancel(LOADJOB);
-        if (session == null) {
-          coverage = null;
-          fireCoverageChanged();
-        } else {
-          coverage = IJavaModelCoverage.LOADING;
-          fireCoverageChanged();
-          new LoadSessionJob(activeSession).schedule();
-        }
+      // TODO Looks like this has no effect
+      Platform.getJobManager().cancel(LOADJOB);
+      if (session == null) {
+        coverage = null;
+        fireCoverageChanged();
+      } else {
+        coverage = IJavaModelCoverage.LOADING;
+        fireCoverageChanged();
+        new LoadSessionJob(activeSession).schedule();
       }
     }
 
@@ -90,13 +86,7 @@ public class JavaCoverageLoader {
       } catch (CoreException e) {
         return e.getStatus();
       }
-      if (monitor.isCanceled()) {
-        coverage = null;
-        loadedSession = null;
-      } else {
-        coverage = c;
-        loadedSession = session;
-      }
+      coverage = monitor.isCanceled() ? null : c;
       fireCoverageChanged();
       return Status.OK_STATUS;
     }

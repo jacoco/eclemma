@@ -105,6 +105,12 @@ public class SessionManager implements ISessionManager {
     return activeSession;
   }
 
+  public void refreshActiveSession() {
+    if (activeSession != null) {
+      fireSessionActivated(activeSession);
+    }
+  }
+  
   public void addSessionListener(ISessionListener listener) {
     if (listener == null) throw new NullPointerException();
     if (!listeners.contains(listener)) {

@@ -109,6 +109,12 @@ public interface ISessionManager {
   public ICoverageSession getActiveSession();
 
   /**
+   * Triggers a reload of the active session. If there is no active session
+   * this method has no effect.
+   */
+  public void refreshActiveSession();
+  
+  /**
    * Adds the given session listener unless it has been added before.
    * 
    * @param listener
