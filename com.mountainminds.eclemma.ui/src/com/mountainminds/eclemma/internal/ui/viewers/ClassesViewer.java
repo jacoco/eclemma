@@ -7,17 +7,21 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.ui.viewers;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.jdt.core.IPackageFragmentRoot;
+import org.eclipse.jdt.ui.JavaElementSorter;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -57,10 +61,11 @@ public class ClassesViewer {
 
   private final Table table;
   private final CheckboxTableViewer viewer;
-  
+  private final List listeners = new ArrayList();
+
   private IClassFiles[] input;
   private boolean includebinaries;
-  private final Set checkedclasses = new HashSet();
+  private final Set selectedclasses = new HashSet();
 
   /**
    * Creates a new viewer within the given parent.
@@ -85,6 +90,7 @@ public class ClassesViewer {
     viewer = new CheckboxTableViewer(table);
     viewer.setContentProvider(new ArrayContentProvider());
     viewer.setLabelProvider(new PackageFragmentRootLabelProvider());
+    viewer.setSorter(new JavaElementSorter());
     viewer.addCheckStateListener(new ICheckStateListener() {
       public void checkStateChanged(CheckStateChangedEvent event) {
         updateCheckedStatus(event.getElement(), event.getChecked());
@@ -121,7 +127,7 @@ public class ClassesViewer {
   public void setIncludeBinaries(boolean includebinaries) {
     this.includebinaries = includebinaries;
     if (!includebinaries) {
-      for (Iterator i = checkedclasses.iterator(); i.hasNext(); ) {
+      for (Iterator i = selectedclasses.iterator(); i.hasNext();) {
         if (((IClassFiles) i.next()).isBinary()) {
           i.remove();
         }
@@ -138,27 +144,28 @@ public class ClassesViewer {
    * @param classfiles
    *          list of classfiles that should be checked
    */
-  public void setCheckedClasses(IClassFiles[] classfiles) {
-    checkedclasses.clear();
-    checkedclasses.addAll(Arrays.asList(classfiles));
+  public void setSelectedClasses(IClassFiles[] classfiles) {
+    selectedclasses.clear();
+    selectedclasses.addAll(Arrays.asList(classfiles));
     viewer.setCheckedElements(getPackageFragmentRoots(classfiles));
   }
-  
+
   /**
-   * Sets the initially checked classes from the given locations. 
-   *
+   * Sets the initially checked classes from the given locations.
+   * 
    * @param locations
-   *   location strings of the classes to select
+   *          location strings of the classes to select
    */
-  public void setCheckedClasses(String[] locations) {
+  public void setSelectedClasses(String[] locations) {
     Set lset = new HashSet(Arrays.asList(locations));
-    checkedclasses.clear();
+    selectedclasses.clear();
     for (int i = 0; i < input.length; i++) {
       if (lset.contains(input[i].getLocation().toString())) {
-        checkedclasses.add(input[i]);
+        selectedclasses.add(input[i]);
       }
     }
-    IClassFiles[] ccs = (IClassFiles[]) checkedclasses.toArray(new IClassFiles[0]);
+    IClassFiles[] ccs = (IClassFiles[]) selectedclasses
+        .toArray(new IClassFiles[0]);
     viewer.setCheckedElements(getPackageFragmentRoots(ccs));
   }
 
@@ -168,21 +175,43 @@ public class ClassesViewer {
    * @return list of class files that are currently checked
    */
   public IClassFiles[] getCheckedClasses() {
-    return (IClassFiles[]) checkedclasses.toArray(new IClassFiles[0]);
+    return (IClassFiles[]) selectedclasses.toArray(new IClassFiles[0]);
   }
-  
+
   /**
    * Returns the locations of the currently checked classes.
    * 
    * @return list of locations of class files that are currently checked
    */
   public String[] getCheckedClassesLocations() {
-    String[] locs = new String[checkedclasses.size()];
+    String[] locs = new String[selectedclasses.size()];
     int idx = 0;
-    for (Iterator i = checkedclasses.iterator(); i.hasNext(); ) {
+    for (Iterator i = selectedclasses.iterator(); i.hasNext();) {
       locs[idx++] = ((IClassFiles) i.next()).getLocation().toString();
     }
     return locs;
+  }
+
+  /**
+   * Registers the given selection listener if not already registered.
+   * 
+   * @param listener
+   *          listener to add
+   */
+  public void addSelectionChangedListener(ISelectionChangedListener listener) {
+    if (!listeners.contains(listener)) {
+      listeners.add(listener);
+    }
+  }
+
+  /**
+   * Removes the given selection listener.
+   * 
+   * @param listener
+   *          listener to remove
+   */
+  public void removeSelectionChangedListener(ISelectionChangedListener listener) {
+    listeners.remove(listener);
   }
   
   private IPackageFragmentRoot[] getPackageFragmentRoots(Object[] classfiles) {
@@ -193,7 +222,8 @@ public class ClassesViewer {
         roots.addAll(Arrays.asList(cf.getPackageFragmentRoots()));
       }
     }
-    return (IPackageFragmentRoot[]) roots.toArray(new IPackageFragmentRoot[roots.size()]);
+    return (IPackageFragmentRoot[]) roots
+        .toArray(new IPackageFragmentRoot[roots.size()]);
   }
 
   private void updateCheckedStatus(Object root, boolean checked) {
@@ -201,14 +231,20 @@ public class ClassesViewer {
       IClassFiles cf = input[i];
       if (Arrays.asList(cf.getPackageFragmentRoots()).contains(root)) {
         if (checked) {
-          checkedclasses.add(cf);
+          selectedclasses.add(cf);
         } else {
-          checkedclasses.remove(cf);
+          selectedclasses.remove(cf);
         }
         break;
       }
     }
-    viewer.setCheckedElements(getPackageFragmentRoots(checkedclasses.toArray()));
+    viewer
+        .setCheckedElements(getPackageFragmentRoots(selectedclasses.toArray()));
+  }
+
+  private void fireSelectionEvent() {
+    // SelectionChangedEvent
+    
   }
   
 }

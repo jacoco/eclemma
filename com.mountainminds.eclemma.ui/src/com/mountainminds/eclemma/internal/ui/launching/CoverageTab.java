@@ -17,15 +17,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
-import org.eclipse.jdt.core.IPackageFragmentRoot;
-import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jdt.ui.JavaElementSorter;
-import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.CheckStateChangedEvent;
-import org.eclipse.jface.viewers.CheckboxTableViewer;
-import org.eclipse.jface.viewers.ICheckStateListener;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -36,9 +27,12 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 
+import com.mountainminds.eclemma.core.CoverageTools;
 import com.mountainminds.eclemma.core.IClassFiles;
+import com.mountainminds.eclemma.core.launching.ICoverageLaunchConfigurationConstants;
 import com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin;
 import com.mountainminds.eclemma.internal.ui.UIMessages;
+import com.mountainminds.eclemma.internal.ui.viewers.ClassesViewer;
 
 /**
  * The "Coverage" tab of the launch configuration dialog.
@@ -54,11 +48,9 @@ public class CoverageTab extends AbstractLaunchConfigurationTab {
     this.inplaceonly = inplaceonly;
   }
 
-  private CheckboxTableViewer classesviewer;
+  private ClassesViewer classesviewer;
   private Button buttonInplaceInstrumentation;
   
-  private final ClassesSelection classesselection = new ClassesSelection();
-
   public List getPackageFragmentRoots(IClassFiles[] classfiles) {
     Set elements = new HashSet();
     for (int i = 0; i < classfiles.length; i++) {
@@ -82,23 +74,9 @@ public class CoverageTab extends AbstractLaunchConfigurationTab {
     group.setText(UIMessages.CoverageTab_groupInstrumentedClassesLabel);
     GridLayout layout = new GridLayout();
     group.setLayout(layout);
-    classesviewer = CheckboxTableViewer.newCheckList(group, SWT.BORDER);
-    classesviewer.setContentProvider(new ArrayContentProvider());
-    classesviewer.setSorter(new JavaElementSorter());
-    classesviewer.addFilter(new ViewerFilter() {
-      public boolean select(Viewer viewer, Object parentElement, Object element) {
-        IPackageFragmentRoot root = (IPackageFragmentRoot) element;
-        boolean inplace = classesselection.getInplace();
-        try {
-          return !inplace || root.getKind() == IPackageFragmentRoot.K_SOURCE;
-        } catch (JavaModelException e) {
-          EclEmmaUIPlugin.log(e);
-          return false;
-        }
-      }
-    });
-    classesviewer.setLabelProvider(new ClasspathLabelProvider());
-    classesviewer.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
+    classesviewer = new ClassesViewer(group, SWT.BORDER);
+    classesviewer.getTable().setLayoutData(new GridData(GridData.FILL_BOTH));
+    /*
     classesviewer.addCheckStateListener(new ICheckStateListener() {
       public void checkStateChanged(CheckStateChangedEvent event) {
         classesselection.setSelection((IPackageFragmentRoot) event.getElement(), event.getChecked()); 
@@ -107,16 +85,14 @@ public class CoverageTab extends AbstractLaunchConfigurationTab {
         updateLaunchConfigurationDialog();
       }
     });
-    
+    */
     
     buttonInplaceInstrumentation = new Button(group, SWT.CHECK);
     buttonInplaceInstrumentation.setText(UIMessages.CoverageTab_buttonInplaceIntrLabel);
     buttonInplaceInstrumentation.setEnabled(!inplaceonly);
     buttonInplaceInstrumentation.addSelectionListener(new SelectionAdapter() {
       public void widgetSelected(SelectionEvent e) {
-        classesselection.setInplace(buttonInplaceInstrumentation.getSelection());
-        classesviewer.refresh();
-        classesviewer.setCheckedElements(classesselection.getSelectedRoots());
+        classesviewer.setIncludeBinaries(!buttonInplaceInstrumentation.getSelection());
         setDirty(true);
         updateLaunchConfigurationDialog();
       }
@@ -129,17 +105,28 @@ public class CoverageTab extends AbstractLaunchConfigurationTab {
 
   public void initializeFrom(ILaunchConfiguration configuration) {
     try {
-      classesselection.init(configuration, inplaceonly);
-      buttonInplaceInstrumentation.setSelection(classesselection.getInplace());
-      classesviewer.setInput(classesselection.getAllRoots());
-      classesviewer.setCheckedElements(classesselection.getSelectedRoots());
+      boolean inplace = inplaceonly || configuration.getAttribute(
+          ICoverageLaunchConfigurationConstants.ATTR_INPLACE_INSTRUMENTATION, false);
+      buttonInplaceInstrumentation.setSelection(inplace);
+      classesviewer.setIncludeBinaries(!inplace);
+      classesviewer.setInput(CoverageTools.getClassFiles(configuration, false));
+      classesviewer.setSelectedClasses(
+          CoverageTools.getClassFilesForInstrumentation(configuration, inplace));
     } catch (CoreException e) {
       EclEmmaUIPlugin.log(e);
     }
   }
-
+  
   public void performApply(ILaunchConfigurationWorkingCopy configuration) {
-    classesselection.save(configuration);
+    configuration.setAttribute(
+        ICoverageLaunchConfigurationConstants.ATTR_INPLACE_INSTRUMENTATION,
+        buttonInplaceInstrumentation.getSelection());
+    IClassFiles[] classes = classesviewer.getCheckedClasses();
+    List l = new ArrayList();
+    for (int i = 0; i < classes.length; i++) {
+      l.add(classes[i].getLocation().toString());
+    }
+    configuration.setAttribute(ICoverageLaunchConfigurationConstants.ATTR_INSTRUMENTATION_PATHS, l);
   }
 
   public String getName() {

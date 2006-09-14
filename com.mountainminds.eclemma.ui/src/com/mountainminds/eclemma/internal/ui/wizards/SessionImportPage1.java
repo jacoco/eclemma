@@ -129,7 +129,7 @@ public class SessionImportPage1 extends WizardPage {
     binariescheck.setSelection(binaries);
     String[] classes = settings.getArray(STORE_CLASSES);
     if (classes != null) {
-      classesviewer.setCheckedClasses(classes);
+      classesviewer.setSelectedClasses(classes);
     }
     boolean copy = settings.getBoolean(STORE_COPY);
     referenceradio.setSelection(!copy);
