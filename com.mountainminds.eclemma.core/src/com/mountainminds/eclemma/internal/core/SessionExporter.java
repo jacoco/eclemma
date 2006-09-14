@@ -3,7 +3,7 @@
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
- * $Id: $
+ * $Id$
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.core;
 
@@ -37,7 +37,7 @@ import com.vladium.emma.report.ReportProcessor;
  * Implementation of ISessionExporter.
  * 
  * @author Marc R. Hoffmann
- * @version $Revision: $
+ * @version $Revision$
  */
 public class SessionExporter implements ISessionExporter {
 

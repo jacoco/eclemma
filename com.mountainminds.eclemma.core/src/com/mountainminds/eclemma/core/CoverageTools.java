@@ -32,6 +32,7 @@ import com.mountainminds.eclemma.core.launching.ICoverageLaunchInfo;
 import com.mountainminds.eclemma.internal.core.CoverageSession;
 import com.mountainminds.eclemma.internal.core.EclEmmaCorePlugin;
 import com.mountainminds.eclemma.internal.core.SessionExporter;
+import com.mountainminds.eclemma.internal.core.SessionImporter;
 import com.mountainminds.eclemma.internal.core.launching.CoverageLaunchInfo;
 
 /**
@@ -236,7 +237,9 @@ public final class CoverageTools {
   public static ISessionExporter getExporter(ICoverageSession session) {
     return new SessionExporter(session);
   }
-
-
+  
+  public static ISessionImporter getImporter() {
+    return new SessionImporter();
+  }
   
 }
