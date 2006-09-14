@@ -54,27 +54,27 @@ public final class EclEmmaStatus {
    */
   public static final EclEmmaStatus INPLACE_INSTRUMENTATION_INFO = new EclEmmaStatus(
       2000, IStatus.INFO,
-      CoreMessages.StatusMessage_INPLACE_INSTRUMENTATION_INFO);
+      CoreMessages.StatusINPLACE_INSTRUMENTATION_INFO_message);
 
   /**
    * Status indicating that it was not possible to obtain a local version of the
    * emma.jar file.
    */
   public static final EclEmmaStatus NO_LOCAL_EMMAJAR_ERROR = new EclEmmaStatus(
-      5000, IStatus.ERROR, CoreMessages.StatusMessage_NO_LOCAL_EMMAJAR_ERROR);
+      5000, IStatus.ERROR, CoreMessages.StatusNO_LOCAL_EMMAJAR_ERROR_message);
 
   /**
    * Status indication that it was not possible to generate a internal id for a
    * resource.
    */
   public static final EclEmmaStatus ID_CREATION_ERROR = new EclEmmaStatus(5001,
-      IStatus.ERROR, CoreMessages.StatusMessage_ID_CREATION_ERROR);
+      IStatus.ERROR, CoreMessages.StatusID_CREATION_ERROR_message);
 
   /**
    * The requested launch type is not known.
    */
   public static final EclEmmaStatus UNKOWN_LAUNCH_TYPE_ERROR = new EclEmmaStatus(
-      5002, IStatus.ERROR, CoreMessages.StatusMessage_UNKOWN_LAUNCH_TYPE_ERROR);
+      5002, IStatus.ERROR, CoreMessages.StatusUNKOWN_LAUNCH_TYPE_ERROR_message);
 
   /**
    * The coverage runtime classpath provider has been called in an invalid
@@ -82,45 +82,45 @@ public final class EclEmmaStatus {
    */
   public static final EclEmmaStatus INVALID_CLASSPATH_PROVIDER_CONTEXT_ERROR = new EclEmmaStatus(
       5003, IStatus.ERROR,
-      CoreMessages.StatusMessage_INVALID_CLASSPATH_PROVIDER_CONTEXT_ERROR);
+      CoreMessages.StatusINVALID_CLASSPATH_PROVIDER_CONTEXT_ERROR_message);
 
   /**
    * The coverage launch info object is missing unexpectedly.
    */
   public static final EclEmmaStatus MISSING_LAUNCH_INFO_ERROR = new EclEmmaStatus(
-      5004, IStatus.ERROR, CoreMessages.StatusMessage_MISSING_LAUNCH_INFO_ERROR);
+      5004, IStatus.ERROR, CoreMessages.StatusMISSING_LAUNCH_INFO_ERROR_message);
 
   /**
    * Error while creating the JAR containing emma runtime properties.
    */
   public static final EclEmmaStatus EMMA_PROPERTIES_CREATION_ERROR = new EclEmmaStatus(
       5005, IStatus.ERROR,
-      CoreMessages.StatusMessage_EMMA_PROPERTIES_CREATION_ERROR);
+      CoreMessages.StatusEMMA_PROPERTIES_CREATION_ERROR_message);
 
   /**
    * Error while reading coverage data file.
    */
   public static final EclEmmaStatus COVERAGEDATA_FILE_READ_ERROR = new EclEmmaStatus(
       5006, IStatus.ERROR,
-      CoreMessages.StatusMessage_COVERAGEDATA_FILE_READ_ERROR);
+      CoreMessages.StatusCOVERAGEDATA_FILE_READ_ERROR_message);
 
   /**
    * Error while reading meta data file.
    */
   public static final EclEmmaStatus METADATA_FILE_READ_ERROR = new EclEmmaStatus(
-      5007, IStatus.ERROR, CoreMessages.StatusMessage_METADATA_FILE_READ_ERROR);
+      5007, IStatus.ERROR, CoreMessages.StatusMETADATA_FILE_READ_ERROR_message);
 
   /**
    * Error while extracting source files.
    */
   public static final EclEmmaStatus SOURCE_EXTRACTION_ERROR = new EclEmmaStatus(
-      5008, IStatus.ERROR, CoreMessages.StatusMessage_SOURCE_EXTRACTION_ERROR);
+      5008, IStatus.ERROR, CoreMessages.StatusSOURCE_EXTRACTION_ERROR_message);
   
   /**
    * Trying to instrument instrumented class files. This status is used to issue
    * an eeor prompt during launching.
    */
   public static final EclEmmaStatus ALREADY_INSTRUMENTED_ERROR = new EclEmmaStatus(
-      5100, IStatus.ERROR, CoreMessages.StatusMessage_ALREADY_INSTRUMENTED_ERROR);
+      5100, IStatus.ERROR, CoreMessages.StatusALREADY_INSTRUMENTED_ERROR_message);
 
 }

@@ -19,26 +19,26 @@ public class CoreMessages extends NLS {
   
   private static final String BUNDLE_NAME = "com.mountainminds.eclemma.internal.core.coremessages";//$NON-NLS-1$
 
-  public static String LaunchSessionLabel;
+  public static String LaunchSessionDescription_value;
   
-  public static String InstrumentingRuntimeClassesTask;
-  public static String InstrumentingClassesInTask;
-  public static String LaunchingTask;
-  public static String AnalyzingCoverageSessionTask;
-  public static String ExportingSessionTask;
-  public static String ExtractingSourceArchiveTask;
+  public static String InstrumentingClasses_task;
+  public static String InstrumentingClassesIn_task;
+  public static String Launching_task;
+  public static String AnalyzingCoverageSession_task;
+  public static String ExportingSession_task;
+  public static String ExtractingSourceArchive_task;
   
-  public static String StatusMessage_INPLACE_INSTRUMENTATION_INFO;
-  public static String StatusMessage_NO_LOCAL_EMMAJAR_ERROR;
-  public static String StatusMessage_ID_CREATION_ERROR;
-  public static String StatusMessage_UNKOWN_LAUNCH_TYPE_ERROR;
-  public static String StatusMessage_INVALID_CLASSPATH_PROVIDER_CONTEXT_ERROR;
-  public static String StatusMessage_MISSING_LAUNCH_INFO_ERROR;
-  public static String StatusMessage_EMMA_PROPERTIES_CREATION_ERROR;
-  public static String StatusMessage_COVERAGEDATA_FILE_READ_ERROR;
-  public static String StatusMessage_METADATA_FILE_READ_ERROR;
-  public static String StatusMessage_ALREADY_INSTRUMENTED_ERROR;
-  public static String StatusMessage_SOURCE_EXTRACTION_ERROR;
+  public static String StatusINPLACE_INSTRUMENTATION_INFO_message;
+  public static String StatusNO_LOCAL_EMMAJAR_ERROR_message;
+  public static String StatusID_CREATION_ERROR_message;
+  public static String StatusUNKOWN_LAUNCH_TYPE_ERROR_message;
+  public static String StatusINVALID_CLASSPATH_PROVIDER_CONTEXT_ERROR_message;
+  public static String StatusMISSING_LAUNCH_INFO_ERROR_message;
+  public static String StatusEMMA_PROPERTIES_CREATION_ERROR_message;
+  public static String StatusCOVERAGEDATA_FILE_READ_ERROR_message;
+  public static String StatusMETADATA_FILE_READ_ERROR_message;
+  public static String StatusALREADY_INSTRUMENTED_ERROR_message;
+  public static String StatusSOURCE_EXTRACTION_ERROR_message;
 
   static {
     NLS.initializeMessages(BUNDLE_NAME, CoreMessages.class);

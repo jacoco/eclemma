@@ -75,7 +75,7 @@ public class JavaCoverageLoader {
     private final ICoverageSession session;
 
     public LoadSessionJob(ICoverageSession session) {
-      super(NLS.bind(CoreMessages.AnalyzingCoverageSessionTask, session.getDescription()));
+      super(NLS.bind(CoreMessages.AnalyzingCoverageSession_task, session.getDescription()));
       this.session = session;
     }
 

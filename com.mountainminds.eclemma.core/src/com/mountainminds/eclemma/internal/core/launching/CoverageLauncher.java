@@ -171,7 +171,7 @@ public abstract class CoverageLauncher implements
 
   public void launch(ILaunchConfiguration configuration, String mode,
       ILaunch launch, IProgressMonitor monitor) throws CoreException {
-    monitor.beginTask(NLS.bind(CoreMessages.LaunchingTask, configuration
+    monitor.beginTask(NLS.bind(CoreMessages.Launching_task, configuration
         .getName()), 2);
     IRuntimeClasspathProvider provider = JavaRuntime
         .getClasspathProvider(configuration);

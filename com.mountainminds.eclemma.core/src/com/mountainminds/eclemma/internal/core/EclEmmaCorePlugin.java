@@ -95,7 +95,7 @@ public class EclEmmaCorePlugin extends Plugin {
             Object[] args = new Object[] {
                 launch.getLaunchConfiguration().getName(), new Date() };
             String description = MessageFormat.format(
-                CoreMessages.LaunchSessionLabel, args);
+                CoreMessages.LaunchSessionDescription_value, args);
             ICoverageSession session = new CoverageSession(description, info
                 .getInstrumentations(), new IPath[] { info.getCoverageFile() },
                 launch.getLaunchConfiguration());

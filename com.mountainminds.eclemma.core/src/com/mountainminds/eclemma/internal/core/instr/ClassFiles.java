@@ -94,7 +94,7 @@ public class ClassFiles implements IClassFiles {
   public IInstrumentation instrument(boolean inplace, IProgressMonitor monitor)
       throws CoreException {
     PERFORMANCE.startTimer();
-    monitor.beginTask(NLS.bind(CoreMessages.InstrumentingClassesInTask,
+    monitor.beginTask(NLS.bind(CoreMessages.InstrumentingClassesIn_task,
         location), 1);
     IPath outputlocation = EclEmmaCorePlugin.getInstance().getStateFiles()
         .getInstrDataFolder(location);

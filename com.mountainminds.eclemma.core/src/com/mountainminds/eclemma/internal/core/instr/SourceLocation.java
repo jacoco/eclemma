@@ -96,7 +96,7 @@ public class SourceLocation implements ISourceLocation {
 
   public void extract(IProgressMonitor monitor) throws CoreException {
     if (isArchive()) {
-      monitor.beginTask(NLS.bind(CoreMessages.ExtractingSourceArchiveTask, path), 1); 
+      monitor.beginTask(NLS.bind(CoreMessages.ExtractingSourceArchive_task, path), 1); 
       String prefix = rootpath == null ? "" : rootpath.toString(); //$NON-NLS-1$
       byte[] buffer = new byte[0x1000];
       IPath srcfolder = EclEmmaCorePlugin.getInstance().getStateFiles().getSourceFolder(path);

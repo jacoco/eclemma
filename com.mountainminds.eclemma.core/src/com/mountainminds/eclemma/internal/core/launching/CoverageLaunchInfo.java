@@ -96,13 +96,13 @@ public class CoverageLaunchInfo implements ICoverageLaunchInfo {
     instrumentationpaths.clear();
     IClassFiles[] classfiles = CoverageTools.getClassFilesForInstrumentation(
         configuration, inplace);
-    monitor.beginTask(CoreMessages.InstrumentingRuntimeClassesTask,
+    monitor.beginTask(CoreMessages.InstrumentingClasses_task,
         classfiles.length);
     for (int i = 0; i < classfiles.length; i++) {
       if (monitor.isCanceled()) {
         return;
       }
-      monitor.subTask(NLS.bind(CoreMessages.InstrumentingClassesInTask, classfiles[i].getLocation()));
+      monitor.subTask(NLS.bind(CoreMessages.InstrumentingClassesIn_task, classfiles[i].getLocation()));
       addInstrumentation(classfiles[i].instrument(inplace, new SubProgressMonitor(monitor, 1)));
     }
     monitor.done();

@@ -80,7 +80,7 @@ public class JavaModelCoverage extends JavaElementCoverage implements
       throws CoreException {
     IPath[] coveragefiles = session.getCoverageDataFiles();
     IInstrumentation[] instrumentations = session.getInstrumentations();
-    monitor.beginTask(NLS.bind(CoreMessages.AnalyzingCoverageSessionTask, session.getDescription()),
+    monitor.beginTask(NLS.bind(CoreMessages.AnalyzingCoverageSession_task, session.getDescription()),
         coveragefiles.length + instrumentations.length);
     ICoverageData coveragedata = null;
     for (int i = 0; i < coveragefiles.length && !monitor.isCanceled(); i++) {

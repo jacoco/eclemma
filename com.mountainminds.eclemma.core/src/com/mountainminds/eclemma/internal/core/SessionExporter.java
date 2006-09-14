@@ -75,7 +75,7 @@ public class SessionExporter implements ISessionExporter {
   private void createReport(IProgressMonitor monitor) throws CoreException {
     IInstrumentation[] instrs = session.getInstrumentations();
     IPath[] coveragefiles = session.getCoverageDataFiles();
-    monitor.beginTask(NLS.bind(CoreMessages.ExportingSessionTask, session.getDescription()),
+    monitor.beginTask(NLS.bind(CoreMessages.ExportingSession_task, session.getDescription()),
         2 * instrs.length + coveragefiles.length + 1);
     List datapath = new ArrayList();
     List sourcepath = new ArrayList();
@@ -113,7 +113,7 @@ public class SessionExporter implements ISessionExporter {
   private void createSessionFile(IProgressMonitor monitor) throws CoreException {
     IInstrumentation[] instrs = session.getInstrumentations();
     IPath[] coveragefiles = session.getCoverageDataFiles();
-    monitor.beginTask(NLS.bind(CoreMessages.ExportingSessionTask, session.getDescription()),
+    monitor.beginTask(NLS.bind(CoreMessages.ExportingSession_task, session.getDescription()),
       instrs.length + coveragefiles.length + 1);
     IMergeable metadata = null;
     for (int i = 0; i < instrs.length; i++) {
