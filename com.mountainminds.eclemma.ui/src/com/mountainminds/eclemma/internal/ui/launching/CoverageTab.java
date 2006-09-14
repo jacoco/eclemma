@@ -17,6 +17,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -76,16 +78,12 @@ public class CoverageTab extends AbstractLaunchConfigurationTab {
     group.setLayout(layout);
     classesviewer = new ClassesViewer(group, SWT.BORDER);
     classesviewer.getTable().setLayoutData(new GridData(GridData.FILL_BOTH));
-    /*
-    classesviewer.addCheckStateListener(new ICheckStateListener() {
-      public void checkStateChanged(CheckStateChangedEvent event) {
-        classesselection.setSelection((IPackageFragmentRoot) event.getElement(), event.getChecked()); 
-        classesviewer.setCheckedElements(classesselection.getSelectedRoots());
+    classesviewer.addSelectionChangedListener(new ISelectionChangedListener() {
+      public void selectionChanged(SelectionChangedEvent event) {
         setDirty(true);
         updateLaunchConfigurationDialog();
       }
     });
-    */
     
     buttonInplaceInstrumentation = new Button(group, SWT.CHECK);
     buttonInplaceInstrumentation.setText(UIMessages.CoverageTab_buttonInplaceIntrLabel);
@@ -121,7 +119,7 @@ public class CoverageTab extends AbstractLaunchConfigurationTab {
     configuration.setAttribute(
         ICoverageLaunchConfigurationConstants.ATTR_INPLACE_INSTRUMENTATION,
         buttonInplaceInstrumentation.getSelection());
-    IClassFiles[] classes = classesviewer.getCheckedClasses();
+    IClassFiles[] classes = classesviewer.getSelectedClasses();
     List l = new ArrayList();
     for (int i = 0; i < classes.length; i++) {
       l.add(classes[i].getLocation().toString());

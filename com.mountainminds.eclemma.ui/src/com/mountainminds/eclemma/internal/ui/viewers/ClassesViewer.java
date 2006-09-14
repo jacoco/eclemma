@@ -3,7 +3,7 @@
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
- * $Id: $
+ * $Id$
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.ui.viewers;
 
@@ -21,8 +21,13 @@ import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
@@ -33,12 +38,14 @@ import com.mountainminds.eclemma.core.IClassFiles;
 
 /**
  * Viewer for selecting <code>IClassFiles</code> objects from a given list.
- * The viewer lists the corresponding package fragment roots.
+ * The viewer lists the corresponding IPackageFragmentRoots. Source based class
+ * files may have multiple corresponding roots, their selection status is
+ * connected.
  * 
  * @author Marc R. Hoffmann
- * @version $Revision: $
+ * @version $Revision$
  */
-public class ClassesViewer {
+public class ClassesViewer implements ISelectionProvider {
 
   private static class PackageFragmentRootLabelProvider extends LabelProvider {
 
@@ -174,7 +181,7 @@ public class ClassesViewer {
    * 
    * @return list of class files that are currently checked
    */
-  public IClassFiles[] getCheckedClasses() {
+  public IClassFiles[] getSelectedClasses() {
     return (IClassFiles[]) selectedclasses.toArray(new IClassFiles[0]);
   }
 
@@ -183,7 +190,7 @@ public class ClassesViewer {
    * 
    * @return list of locations of class files that are currently checked
    */
-  public String[] getCheckedClassesLocations() {
+  public String[] getSelectedClassesLocations() {
     String[] locs = new String[selectedclasses.size()];
     int idx = 0;
     for (Iterator i = selectedclasses.iterator(); i.hasNext();) {
@@ -238,13 +245,29 @@ public class ClassesViewer {
         break;
       }
     }
-    viewer
-        .setCheckedElements(getPackageFragmentRoots(selectedclasses.toArray()));
+    viewer.setCheckedElements(getPackageFragmentRoots(selectedclasses.toArray()));
+    fireSelectionEvent();
   }
 
   private void fireSelectionEvent() {
-    // SelectionChangedEvent
-    
+    SelectionChangedEvent evt = new SelectionChangedEvent(this, getSelection());
+    for (Iterator i = listeners.iterator(); i.hasNext();) {
+      ISelectionChangedListener l = (ISelectionChangedListener) i.next();
+      l.selectionChanged(evt);
+    }
+  }
+  
+  // ISelectionProvider interface
+
+  public ISelection getSelection() {
+    return new StructuredSelection(getSelectedClasses());
+  }
+
+  public void setSelection(ISelection selection) {
+    Object[] classfiles = ((IStructuredSelection) selection).toArray();
+    selectedclasses.clear();
+    selectedclasses.addAll(Arrays.asList(classfiles));
+    viewer.setCheckedElements(getPackageFragmentRoots(classfiles));
   }
   
 }

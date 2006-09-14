@@ -136,14 +136,17 @@ public class EclEmmaUIPlugin extends AbstractUIPlugin {
   public Shell getShell() {
     return getWorkbench().getActiveWorkbenchWindow().getShell();
   }
+  
+  public static IStatus errorStatus(String message, Throwable t) {
+    return new Status(IStatus.ERROR, ID, IStatus.ERROR, message, t);
+  }
 
   public static void log(Throwable t) {
     String message = t.getMessage();
     if (message == null) {
       message = "Internal Error"; //$NON-NLS-1$
     }
-    IStatus s = new Status(IStatus.ERROR, ID, IStatus.ERROR, message, t);
-    instance.getLog().log(s);
+    instance.getLog().log(errorStatus(message, t));
   }
   
   public static ImageDescriptor getImageDescriptor(String key) {

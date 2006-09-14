@@ -139,7 +139,7 @@ public class SessionImportPage1 extends WizardPage {
   public void saveWidgetValues() {
     IDialogSettings settings = getDialogSettings();
     ComboHistory.save(settings, STORE_FILES, filecombo);
-    settings.put(STORE_CLASSES, classesviewer.getCheckedClassesLocations());
+    settings.put(STORE_CLASSES, classesviewer.getSelectedClassesLocations());
     settings.put(STORE_BINARIES, binariescheck.getSelection());
     settings.put(STORE_COPY, copyradio.getSelection());
   }

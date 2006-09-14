@@ -11,9 +11,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExecutableExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
@@ -70,7 +68,7 @@ public class CoverageTabGroup implements ILaunchConfigurationTabGroup, IExecutab
     }
     if (element == null) {
       String msg = "No tab group registered to run " + type; //$NON-NLS-1$;
-      throw new CoreException(new Status(IStatus.ERROR, EclEmmaUIPlugin.ID, 0, msg, null));
+      throw new CoreException(EclEmmaUIPlugin.errorStatus(msg, null));
     } else {
       return (ILaunchConfigurationTabGroup) element.createExecutableExtension("class"); //$NON-NLS-1$
     }
