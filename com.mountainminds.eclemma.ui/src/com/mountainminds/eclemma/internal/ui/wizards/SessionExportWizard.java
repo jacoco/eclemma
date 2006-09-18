@@ -13,7 +13,6 @@ import java.lang.reflect.InvocationTargetException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -108,8 +107,7 @@ public class SessionExportWizard extends Wizard implements IExportWizard {
       if (ex instanceof CoreException) {
         status = ((CoreException) ex).getStatus();
       } else {
-        status = new Status(IStatus.ERROR, EclEmmaUIPlugin.ID, IStatus.ERROR,
-            String.valueOf(ex.getMessage()), ex);
+        status = EclEmmaUIPlugin.errorStatus(String.valueOf(ex.getMessage()), ex);
       }
       ErrorDialog.openError(getShell(), title, msg, status);
       return false;

@@ -7,10 +7,18 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.ui.wizards;
 
+import java.io.File;
+import java.text.MessageFormat;
+import java.util.Date;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -21,8 +29,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 
 import com.mountainminds.eclemma.core.CoverageTools;
+import com.mountainminds.eclemma.core.IClassFiles;
 import com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin;
 import com.mountainminds.eclemma.internal.ui.UIMessages;
 import com.mountainminds.eclemma.internal.ui.viewers.ClassesViewer;
@@ -47,6 +57,7 @@ public class SessionImportPage1 extends WizardPage {
   private static final String STORE_BINARIES = STORE_PREFIX + "binaries"; //$NON-NLS-1$
   private static final String STORE_COPY = STORE_PREFIX + "copy"; //$NON-NLS-1$
   
+  private Text descriptiontext;
   private Combo filecombo;
   private ClassesViewer classesviewer;
   private Button binariescheck;
@@ -63,9 +74,24 @@ public class SessionImportPage1 extends WizardPage {
     initializeDialogUnits(parent);
     parent = new Composite(parent, SWT.NONE);
     parent.setLayout(new GridLayout(3, false));
+    new Label(parent, SWT.NONE).setText(UIMessages.ImportSessionPage1Description_label);
+    descriptiontext = new Text(parent, SWT.BORDER);
+    descriptiontext.addModifyListener(new ModifyListener() {
+      public void modifyText(ModifyEvent e) {
+        update();
+      }
+    });
+    GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+    gd.horizontalSpan = 2;
+    descriptiontext.setLayoutData(gd);
     new Label(parent, SWT.NONE).setText(UIMessages.ImportSessionPage1CoverageFile_label);
     filecombo = new Combo(parent, SWT.BORDER);
-    GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+    filecombo.addModifyListener(new ModifyListener() {
+      public void modifyText(ModifyEvent e) {
+        update();
+      }
+    });
+    gd = new GridData(GridData.FILL_HORIZONTAL);
     gd.widthHint = TEXT_FIELD_WIDTH;
     filecombo.setLayoutData(gd);
     Button browsebutton = new Button(parent, SWT.NONE);
@@ -82,6 +108,11 @@ public class SessionImportPage1 extends WizardPage {
     } catch (CoreException e) {
       EclEmmaUIPlugin.log(e);
     }
+    classesviewer.addSelectionChangedListener(new ISelectionChangedListener() {
+      public void selectionChanged(SelectionChangedEvent event) {
+        update();
+      }
+    });
     gd = new GridData(GridData.FILL_BOTH);
     gd.horizontalSpan = 3;
     gd.heightHint = LIST_HEIGHT;
@@ -91,6 +122,7 @@ public class SessionImportPage1 extends WizardPage {
     binariescheck.addSelectionListener(new SelectionAdapter() {
       public void widgetSelected(SelectionEvent e) {
         classesviewer.setIncludeBinaries(binariescheck.getSelection());
+        update();
       }
     });
     gd = new GridData();
@@ -108,20 +140,46 @@ public class SessionImportPage1 extends WizardPage {
     copyradio.setText(UIMessages.ImportSessionPage1Copy_label);
     setControl(parent);
     restoreWidgetValues();
+    update();
   }
 
   private void openBrowseDialog() {
     FileDialog fd = new FileDialog(getShell(), SWT.OPEN);
     fd.setText(UIMessages.ImportSessionPage1BrowseDialog_title);
     fd.setFileName(filecombo.getText());
-    fd.setFilterExtensions(new String[] { "*.ec", "*.es", "*.*"} ); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    fd.setFilterExtensions(new String[] { "*.ec;*.es", "*.*"} ); //$NON-NLS-1$ //$NON-NLS-2$
     String file = fd.open();
     if (file != null) {
       filecombo.setText(file);
     }
   }
   
+  private void update() {
+    if (getSessionDescription().length() == 0) {
+      setMessage(UIMessages.ExportReportPage1NoDescription_message);
+      setPageComplete(false);
+      return;
+    }
+    File cf = new File(getCoverageFile());
+    if (!cf.exists() || !cf.isFile()) {
+      setMessage(UIMessages.ExportReportPage1NoCoverageFile_message);
+      setPageComplete(false);
+      return;
+    }
+    if (getClassFiles().length == 0) {
+      setMessage(UIMessages.ExportReportPage1NoClassFiles_message);
+      setPageComplete(false);
+      return;
+    }
+    setErrorMessage(null);
+    setMessage(null);
+    setPageComplete(true);
+  }
+  
   protected void restoreWidgetValues() {
+    String descr = UIMessages.ImportSessionPage1Description_value;
+    Object[] arg = new Object[] { new Date() };
+    descriptiontext.setText(MessageFormat.format(descr, arg));
     IDialogSettings settings = getDialogSettings();
     ComboHistory.restore(settings, STORE_FILES, filecombo);
     boolean binaries = settings.getBoolean(STORE_BINARIES);
@@ -142,6 +200,22 @@ public class SessionImportPage1 extends WizardPage {
     settings.put(STORE_CLASSES, classesviewer.getSelectedClassesLocations());
     settings.put(STORE_BINARIES, binariescheck.getSelection());
     settings.put(STORE_COPY, copyradio.getSelection());
+  }
+  
+  public String getSessionDescription() {
+    return descriptiontext.getText().trim();
+  }
+
+  public String getCoverageFile() {
+    return filecombo.getText();
+  }
+
+  public IClassFiles[] getClassFiles() {
+    return classesviewer.getSelectedClasses();
+  }
+  
+  public boolean getCreateCopy() {
+    return copyradio.getSelection();
   }
   
 }

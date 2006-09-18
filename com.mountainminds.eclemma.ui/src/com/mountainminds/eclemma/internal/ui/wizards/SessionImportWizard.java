@@ -7,12 +7,21 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.ui.wizards;
 
+import java.lang.reflect.InvocationTargetException;
+
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
 
+import com.mountainminds.eclemma.core.CoverageTools;
+import com.mountainminds.eclemma.core.ISessionImporter;
 import com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin;
 import com.mountainminds.eclemma.internal.ui.UIMessages;
 
@@ -44,7 +53,7 @@ public class SessionImportWizard extends Wizard implements IExportWizard {
   }
 
   public void init(IWorkbench workbench, IStructuredSelection selection) {
-    // TODO Auto-generated method stub
+    // nothing to initialize
   }
 
   public void addPages() {
@@ -54,8 +63,43 @@ public class SessionImportWizard extends Wizard implements IExportWizard {
 
   public boolean performFinish() {
     page1.saveWidgetValues();
-    // TODO Auto-generated method stub
-    return true;
+    return importSession();
   }
+  
+  private boolean importSession() {
+    final ISessionImporter importer = CoverageTools.getImporter();
+    importer.setDescription(page1.getDescription());
+    importer.setCoverageFile(page1.getCoverageFile());
+    importer.setClassFiles(page1.getClassFiles());
+    IRunnableWithProgress op = new IRunnableWithProgress() {
+      public void run(IProgressMonitor monitor)
+          throws InvocationTargetException, InterruptedException {
+        try {
+          importer.importSession(monitor);
+        } catch (Exception e) {
+          throw new InvocationTargetException(e);
+        }
+      }
+    };
+    try {
+      getContainer().run(true, true, op);
+    } catch (InterruptedException e) {
+      return false;
+    } catch (InvocationTargetException ite) {
+      Throwable ex = ite.getTargetException();
+      EclEmmaUIPlugin.log(ex);
+      String title = UIMessages.ImportReportErrorDialog_title;
+      String msg = UIMessages.ImportReportErrorDialog_message;
+      IStatus status;
+      if (ex instanceof CoreException) {
+        status = ((CoreException) ex).getStatus();
+      } else {
+        status = EclEmmaUIPlugin.errorStatus(String.valueOf(ex.getMessage()), ex);
+      }
+      ErrorDialog.openError(getShell(), title, msg, status);
+      return false;
+    }
+    return true;
+  }  
 
 }

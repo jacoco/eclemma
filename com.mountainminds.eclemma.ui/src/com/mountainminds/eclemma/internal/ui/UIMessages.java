@@ -90,7 +90,14 @@ public class UIMessages extends NLS {
   
   public static String ImportSession_title;
   public static String ImportSessionPage1_title;
+  public static String ImportReportErrorDialog_title;
+  public static String ImportReportErrorDialog_message;
   public static String ImportSessionPage1_description;
+  public static String ExportReportPage1NoDescription_message;
+  public static String ExportReportPage1NoCoverageFile_message;
+  public static String ExportReportPage1NoClassFiles_message;
+  public static String ImportSessionPage1Description_label;
+  public static String ImportSessionPage1Description_value;
   public static String ImportSessionPage1CoverageFile_label;
   public static String ImportSessionPage1BrowseDialog_title;
   public static String ImportSessionPage1Binaries_label;
