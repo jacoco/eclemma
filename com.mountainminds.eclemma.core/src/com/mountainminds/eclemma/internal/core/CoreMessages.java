@@ -26,6 +26,7 @@ public class CoreMessages extends NLS {
   public static String Launching_task;
   public static String AnalyzingCoverageSession_task;
   public static String ExportingSession_task;
+  public static String ImportingSession_task;
   public static String ExtractingSourceArchive_task;
   
   public static String StatusINPLACE_INSTRUMENTATION_INFO_message;
@@ -37,8 +38,9 @@ public class CoreMessages extends NLS {
   public static String StatusEMMA_PROPERTIES_CREATION_ERROR_message;
   public static String StatusCOVERAGEDATA_FILE_READ_ERROR_message;
   public static String StatusMETADATA_FILE_READ_ERROR_message;
-  public static String StatusALREADY_INSTRUMENTED_ERROR_message;
   public static String StatusSOURCE_EXTRACTION_ERROR_message;
+  public static String StatusIMPORT_ERROR_message;
+  public static String StatusALREADY_INSTRUMENTED_ERROR_message;
 
   static {
     NLS.initializeMessages(BUNDLE_NAME, CoreMessages.class);

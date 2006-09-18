@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubProgressMonitor;
 
 import com.mountainminds.eclemma.core.CoverageTools;
+import com.mountainminds.eclemma.core.EclEmmaStatus;
 import com.mountainminds.eclemma.core.IClassFiles;
 import com.mountainminds.eclemma.core.ICoverageSession;
 import com.mountainminds.eclemma.core.IInstrumentation;
@@ -56,7 +57,7 @@ public class SessionImporter implements ISessionImporter {
   }
 
   public void importSession(IProgressMonitor monitor) throws CoreException {
-    monitor.beginTask("TODO", 2);
+    monitor.beginTask(CoreMessages.ImportingSession_task, 2);
     IInstrumentation[] instr = instrument(new SubProgressMonitor(monitor, 1));
     IPath[] cfiles = new IPath[1];
     cfiles[0] = createCopy(new SubProgressMonitor(monitor, 1));
@@ -66,7 +67,7 @@ public class SessionImporter implements ISessionImporter {
   }
   
   private IInstrumentation[] instrument(IProgressMonitor monitor) throws CoreException {
-    monitor.beginTask("", classfiles.length);
+    monitor.beginTask("", classfiles.length); //$NON-NLS-1$
     IInstrumentation[] instr = new IInstrumentation[classfiles.length]; 
     for (int i = 0; i < classfiles.length; i++) {
       instr[i] = classfiles[i].instrument(false, new SubProgressMonitor(monitor, 1));
@@ -81,7 +82,7 @@ public class SessionImporter implements ISessionImporter {
     if (copy) {
       file = EclEmmaCorePlugin.getInstance().getStateFiles().getImportSessionFile(file);
       File source = new File(coveragefile);
-      monitor.beginTask("", (int) source.length());
+      monitor.beginTask("", (int) source.length()); //$NON-NLS-1$
       byte[] buffer = new byte[0x1000];
       try {
         InputStream in = new FileInputStream(source);
@@ -94,8 +95,7 @@ public class SessionImporter implements ISessionImporter {
         in.close();
         out.close();
       } catch (IOException e) {
-        // TODO
-        e.printStackTrace();
+        throw new CoreException(EclEmmaStatus.IMPORT_ERROR.getStatus(e));
       }
     }
     monitor.done();

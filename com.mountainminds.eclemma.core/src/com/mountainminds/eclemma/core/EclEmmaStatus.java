@@ -67,8 +67,8 @@ public final class EclEmmaStatus {
    * Status indication that it was not possible to generate a internal id for a
    * resource.
    */
-  public static final EclEmmaStatus ID_CREATION_ERROR = new EclEmmaStatus(5001,
-      IStatus.ERROR, CoreMessages.StatusID_CREATION_ERROR_message);
+  public static final EclEmmaStatus ID_CREATION_ERROR = new EclEmmaStatus(
+      5001, IStatus.ERROR, CoreMessages.StatusID_CREATION_ERROR_message);
 
   /**
    * The requested launch type is not known.
@@ -115,10 +115,16 @@ public final class EclEmmaStatus {
    */
   public static final EclEmmaStatus SOURCE_EXTRACTION_ERROR = new EclEmmaStatus(
       5008, IStatus.ERROR, CoreMessages.StatusSOURCE_EXTRACTION_ERROR_message);
+
+  /**
+   * Error while importing external coverage session.
+   */
+  public static final EclEmmaStatus IMPORT_ERROR = new EclEmmaStatus(
+      5009, IStatus.ERROR, CoreMessages.StatusIMPORT_ERROR_message);
   
   /**
    * Trying to instrument instrumented class files. This status is used to issue
-   * an eeor prompt during launching.
+   * an error prompt during launching.
    */
   public static final EclEmmaStatus ALREADY_INSTRUMENTED_ERROR = new EclEmmaStatus(
       5100, IStatus.ERROR, CoreMessages.StatusALREADY_INSTRUMENTED_ERROR_message);
