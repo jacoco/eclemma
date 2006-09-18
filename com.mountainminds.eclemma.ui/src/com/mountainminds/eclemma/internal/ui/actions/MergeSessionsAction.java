@@ -5,7 +5,7 @@
  *
  * $Id$
  ******************************************************************************/
-package com.mountainminds.eclemma.internal.ui.coverageview;
+package com.mountainminds.eclemma.internal.ui.actions;
 
 import java.text.MessageFormat;
 import java.util.Date;
@@ -27,17 +27,16 @@ import com.mountainminds.eclemma.internal.ui.dialogs.MergeSessionsDialog;
  * @author  Marc R. Hoffmann
  * @version $Revision$
  */
-class MergeSessionsAction extends Action {
+public class MergeSessionsAction extends Action {
   
   private final IWorkbenchWindow window;
   
-  MergeSessionsAction(IWorkbenchWindow window) {
+  public MergeSessionsAction(IWorkbenchWindow window) {
     this.window = window; 
-    setText(UIMessages.SessionsView_mergeSessionsLabel);
-    setToolTipText(UIMessages.SessionsView_mergeSessionsTooltip);
+    setText(UIMessages.MergeSessionsAction_label);
+    setToolTipText(UIMessages.MergeSessionsAction_tooltip);
     setImageDescriptor(EclEmmaUIPlugin.getImageDescriptor(EclEmmaUIPlugin.ELCL_MERGESESSIONS));
     setDisabledImageDescriptor(EclEmmaUIPlugin.getImageDescriptor(EclEmmaUIPlugin.DLCL_MERGESESSIONS));
-    setEnabled(false);
   }
   
   public void run() {

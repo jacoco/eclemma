@@ -55,6 +55,9 @@ import com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin;
 import com.mountainminds.eclemma.internal.ui.UIMessages;
 import com.mountainminds.eclemma.internal.ui.actions.ExportSessionAction;
 import com.mountainminds.eclemma.internal.ui.actions.ImportSessionAction;
+import com.mountainminds.eclemma.internal.ui.actions.MergeSessionsAction;
+import com.mountainminds.eclemma.internal.ui.actions.RemoveActiveSessionAction;
+import com.mountainminds.eclemma.internal.ui.actions.RemoveAllSessionsAction;
 
 /**
  * Implementation of the coverage view.

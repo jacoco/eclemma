@@ -5,7 +5,7 @@
  *
  * $Id$
  ******************************************************************************/
-package com.mountainminds.eclemma.internal.ui.coverageview;
+package com.mountainminds.eclemma.internal.ui.actions;
 
 import org.eclipse.jface.action.Action;
 
@@ -16,21 +16,19 @@ import com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin;
 import com.mountainminds.eclemma.internal.ui.UIMessages;
 
 /**
- * This action removes the active coverage session. Internally used by the
- * coverage view.
+ * This action removes the active coverage session.
  * 
  * @author  Marc R. Hoffmann
  * @version $Revision$
  */
-class RemoveActiveSessionAction extends Action {
+public class RemoveActiveSessionAction extends Action {
   
-  RemoveActiveSessionAction() {
-    setText(UIMessages.SessionsView_removeActiveSessionActionLabel);
-    setToolTipText(UIMessages.SessionsView_removeActiveSessionActionTooltip);
+  public RemoveActiveSessionAction() {
+    setText(UIMessages.RemoveActiveSessionAction_label);
+    setToolTipText(UIMessages.RemoveActiveSessionAction_tooltip);
     setImageDescriptor(EclEmmaUIPlugin.getImageDescriptor(EclEmmaUIPlugin.ELCL_REMOVE));
     setDisabledImageDescriptor(EclEmmaUIPlugin.getImageDescriptor(EclEmmaUIPlugin.DLCL_REMOVE));
     setActionDefinitionId("org.eclipse.ui.edit.delete"); //$NON-NLS-1$
-    setEnabled(false);
   }
   
   public void run() {
