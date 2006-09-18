@@ -7,6 +7,7 @@
     <topic label="Using the Coverage View" href="pages/coverageview.html"/>
     <topic label="Source Code Annotation" href="pages/annotations.html"/>
     <topic label="Managing Coverage Sessions" href="pages/sessions.html"/>
+    <topic label="Session Import and Export" href="pages/importexport.html"/>
   </topic>
   <topic label="Developer Information" href="pages/developerinfo.html">
     <topic label="Architecture" href="pages/architecture.html"/>

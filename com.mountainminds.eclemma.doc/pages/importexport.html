@@ -1,0 +1,62 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+  <link rel="stylesheet" href="../book.css" charset="ISO-8859-1" type="text/css">
+  <link rel="stylesheet" href="extra.css" charset="ISO-8859-1" type="text/css">
+  <title>Session Import and Export</title>
+</head>
+
+<body>
+
+<h2>Session Import and Export</h2>
+
+<p>
+  While EclEmma is primarily designed for test runs and analysis within the
+  Eclipse workbench, it provides import and export functionality.
+</p>
+
+<h3>Session Import</h3>
+
+<p>
+  If your program is launched outside the Eclipse debugging environment, you
+  might import EMMA coverage (<code>*.ec</code>) or session files
+  (<code>*.es</code>) from these launches. This allows to study the coverage
+  results directly in your source code. Simply use the
+  <i>Coverage Session</i> wizard from the list of available import wizards.
+</p>
+
+<p>
+  <b>Tip:</b> If you keep a reference to the original coverage file (check the
+  corresponding import option) you can simply reload the coverage data after a
+  new program run. For this use the <i>Refresh</i> option from the context menu
+  of the <i>Coverage</i> view or simply hit the F5 key.
+</p>
+
+<h3>Session Export</h3>
+
+<p>
+  The session export wizard allows to export coverage sessions in one of these
+  formats:
+</p>
+
+<ul>
+  <li><b>HTML:</b> A detailed and browseable Report as a set if HTML
+  files.</li>
+  <li><b>XML:</b> Coverage data as a single, structured XML file.</li>
+  <li><b>Plain text:</b> Limited coverage information as a plain text
+  document.</li>
+  <li><b>EMMA coverage file:</b> Coverage file as used internally by EMMA.</li>
+</ul>
+
+<p>
+  Simply use the <i>Coverage Report</i> wizard from the list of available export
+  wizards.
+</p>
+
+<p>
+  <small>$LastChangedDate: $</small>
+</p>
+
+</body>
+</html>
