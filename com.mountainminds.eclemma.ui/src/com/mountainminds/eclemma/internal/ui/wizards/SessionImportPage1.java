@@ -156,18 +156,18 @@ public class SessionImportPage1 extends WizardPage {
   
   private void update() {
     if (getSessionDescription().length() == 0) {
-      setMessage(UIMessages.ExportReportPage1NoDescription_message);
+      setMessage(UIMessages.ImportReportPage1NoDescription_message);
       setPageComplete(false);
       return;
     }
     File cf = new File(getCoverageFile());
     if (!cf.exists() || !cf.isFile()) {
-      setMessage(UIMessages.ExportReportPage1NoCoverageFile_message);
+      setMessage(UIMessages.ImportReportPage1NoCoverageFile_message);
       setPageComplete(false);
       return;
     }
     if (getClassFiles().length == 0) {
-      setMessage(UIMessages.ExportReportPage1NoClassFiles_message);
+      setMessage(UIMessages.ImportReportPage1NoClassFiles_message);
       setPageComplete(false);
       return;
     }

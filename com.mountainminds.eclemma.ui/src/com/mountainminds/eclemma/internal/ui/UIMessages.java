@@ -93,9 +93,9 @@ public class UIMessages extends NLS {
   public static String ImportReportErrorDialog_title;
   public static String ImportReportErrorDialog_message;
   public static String ImportSessionPage1_description;
-  public static String ExportReportPage1NoDescription_message;
-  public static String ExportReportPage1NoCoverageFile_message;
-  public static String ExportReportPage1NoClassFiles_message;
+  public static String ImportReportPage1NoDescription_message;
+  public static String ImportReportPage1NoCoverageFile_message;
+  public static String ImportReportPage1NoClassFiles_message;
   public static String ImportSessionPage1Description_label;
   public static String ImportSessionPage1Description_value;
   public static String ImportSessionPage1CoverageFile_label;
