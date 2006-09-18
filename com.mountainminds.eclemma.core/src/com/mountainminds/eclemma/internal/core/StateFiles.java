@@ -33,6 +33,8 @@ public class StateFiles {
 
   private static final String INSTRDATA_FOLDER = ".instr/"; //$NON-NLS-1$
 
+  private static final String IMPORTDATA_FOLDER = ".import/"; //$NON-NLS-1$
+  
   private static final String SOURCE_FOLDER = ".src/"; //$NON-NLS-1$
   
   private static final ReferenceQueue CLEANUPQUEUE = new ReferenceQueue();
@@ -48,12 +50,14 @@ public class StateFiles {
     getLaunchDataFolder().toFile().mkdirs();
     getInstrDataFolder().toFile().mkdirs();
     getSourceDataFolder().toFile().mkdirs();
+    getImportDataFolder().toFile().mkdirs();
   }
 
   public void deleteTemporaryFiles() {
     deleteFiles(getLaunchDataFolder().toFile(), false);
     deleteFiles(getInstrDataFolder().toFile(), false);
     deleteFiles(getSourceDataFolder().toFile(), false);
+    deleteFiles(getImportDataFolder().toFile(), false);
   }
   
   private static void deleteFiles(File file, boolean deleteparent) {
@@ -84,6 +88,16 @@ public class StateFiles {
 
   public IPath getSourceFolder(IPath location) throws CoreException {
     return getSourceDataFolder().append(getInternalId(location, true));
+  }
+
+  private IPath getImportDataFolder() {
+    return stateLocation.append(IMPORTDATA_FOLDER);
+  }
+
+  public IPath getImportSessionFile(IPath original) throws CoreException {
+    IPath p = getImportDataFolder().append(getInternalId(original, true));
+    registerForCleanup(p);
+    return p;
   }
   
   private static String getInternalId(IPath location, boolean withtimestamp) throws CoreException {

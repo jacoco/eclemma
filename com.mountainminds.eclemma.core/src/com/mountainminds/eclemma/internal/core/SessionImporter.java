@@ -7,10 +7,23 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.core;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.SubProgressMonitor;
+
+import com.mountainminds.eclemma.core.CoverageTools;
 import com.mountainminds.eclemma.core.IClassFiles;
+import com.mountainminds.eclemma.core.ICoverageSession;
+import com.mountainminds.eclemma.core.IInstrumentation;
 import com.mountainminds.eclemma.core.ISessionImporter;
 
 /**
@@ -20,31 +33,73 @@ import com.mountainminds.eclemma.core.ISessionImporter;
  * @version $Revision$
  */
 public class SessionImporter implements ISessionImporter {
+  
+  private String description;
+  private String coveragefile;
+  private IClassFiles[] classfiles;
+  private boolean copy;
 
   public void setDescription(String description) {
-    // TODO Auto-generated method stub
-    
+    this.description = description;
   }
 
   public void setCoverageFile(String file) {
-    // TODO Auto-generated method stub
-    
+    this.coveragefile = file;
   }
 
   public void setClassFiles(IClassFiles[] classfiles) {
-    // TODO Auto-generated method stub
-    
+    this.classfiles = classfiles;
   }
 
   public void setCopy(boolean copy) {
-    // TODO Auto-generated method stub
-    
+    this.copy = copy;
   }
 
   public void importSession(IProgressMonitor monitor) throws CoreException {
-    // TODO Auto-generated method stub
-    
+    monitor.beginTask("TODO", 2);
+    IInstrumentation[] instr = instrument(new SubProgressMonitor(monitor, 1));
+    IPath[] cfiles = new IPath[1];
+    cfiles[0] = createCopy(new SubProgressMonitor(monitor, 1));
+    ICoverageSession s = CoverageTools.createCoverageSession(description, instr, cfiles, null);
+    CoverageTools.getSessionManager().addSession(s, true, null);
+    monitor.done();
   }
-
+  
+  private IInstrumentation[] instrument(IProgressMonitor monitor) throws CoreException {
+    monitor.beginTask("", classfiles.length);
+    IInstrumentation[] instr = new IInstrumentation[classfiles.length]; 
+    for (int i = 0; i < classfiles.length; i++) {
+      instr[i] = classfiles[i].instrument(false, new SubProgressMonitor(monitor, 1));
+      monitor.worked(1);
+    }
+    monitor.done();
+    return instr;
+  }
+  
+  private IPath createCopy(IProgressMonitor monitor) throws CoreException {
+    IPath file = new Path(coveragefile);
+    if (copy) {
+      file = EclEmmaCorePlugin.getInstance().getStateFiles().getImportSessionFile(file);
+      File source = new File(coveragefile);
+      monitor.beginTask("", (int) source.length());
+      byte[] buffer = new byte[0x1000];
+      try {
+        InputStream in = new FileInputStream(source);
+        OutputStream out = new FileOutputStream(file.toFile());
+        int l;
+        while ((l = in.read(buffer)) != -1) {
+          out.write(buffer, 0, l);
+          monitor.worked(l);
+        }
+        in.close();
+        out.close();
+      } catch (IOException e) {
+        // TODO
+        e.printStackTrace();
+      }
+    }
+    monitor.done();
+    return file;
+  }
 
 }
