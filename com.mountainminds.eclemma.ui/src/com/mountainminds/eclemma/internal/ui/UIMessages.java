@@ -19,6 +19,11 @@ public class UIMessages extends NLS {
 
   private static final String BUNDLE_NAME = "com.mountainminds.eclemma.internal.ui.uimessages";//$NON-NLS-1$
 
+  public static String ImportSessionAction_label;
+  public static String ImportSessionAction_tooltip;
+  public static String ExportSessionAction_label;
+  public static String ExportSessionAction_tooltip;
+  
   public static String SessionsView_removeActiveSessionActionLabel;
   public static String SessionsView_removeActiveSessionActionTooltip;
   public static String SessionsView_removeAllSessionsActionLabel;

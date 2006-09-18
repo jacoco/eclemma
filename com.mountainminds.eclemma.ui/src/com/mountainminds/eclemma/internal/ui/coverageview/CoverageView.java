@@ -10,6 +10,7 @@ package com.mountainminds.eclemma.internal.ui.coverageview;
 import java.text.DecimalFormat;
 
 import org.eclipse.jdt.core.IPackageFragmentRoot;
+import org.eclipse.jdt.ui.IContextMenuConstants;
 import org.eclipse.jdt.ui.actions.IJavaEditorActionDefinitionIds;
 import org.eclipse.jdt.ui.actions.JdtActionConstants;
 import org.eclipse.jdt.ui.actions.OpenAction;
@@ -52,6 +53,8 @@ import com.mountainminds.eclemma.core.analysis.IJavaCoverageListener;
 import com.mountainminds.eclemma.core.analysis.IJavaElementCoverage;
 import com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin;
 import com.mountainminds.eclemma.internal.ui.UIMessages;
+import com.mountainminds.eclemma.internal.ui.actions.ExportSessionAction;
+import com.mountainminds.eclemma.internal.ui.actions.ImportSessionAction;
 
 /**
  * Implementation of the coverage view.
@@ -92,6 +95,8 @@ public class CoverageView extends ViewPart {
   private IAction removeAllSessionsAction;
   private IAction mergeSessionsAction;
   private IAction selectSessionAction;
+  private IAction importAction;
+  private IAction exportAction;
   private IAction refreshAction;
   
   private CoverageViewSorter sorter = new CoverageViewSorter(settings, this);
@@ -297,6 +302,10 @@ public class CoverageView extends ViewPart {
     kb.registerAction(mergeSessionsAction);
     selectSessionAction = new SelectSessionAction();
     kb.registerAction(selectSessionAction);
+    importAction = new ImportSessionAction(getSite().getWorkbenchWindow());
+    kb.registerAction(importAction);
+    exportAction = new ExportSessionAction(getSite().getWorkbenchWindow());
+    kb.registerAction(exportAction);
     refreshAction = new RefreshAction();
     kb.registerAction(refreshAction);
     getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.REFRESH.getId(), refreshAction);
@@ -326,9 +335,14 @@ public class CoverageView extends ViewPart {
     mm.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
   }
   
-  public void configureContextMenu(IMenuManager menuMgr) {
-    menuMgr.add(openAction);
-    menuMgr.add(refreshAction);
+  public void configureContextMenu(IMenuManager mm) {
+    mm.add(openAction);
+    mm.add(new Separator());
+    mm.add(importAction);
+    mm.add(exportAction);
+    mm.add(new Separator());
+    mm.add(refreshAction);
+    mm.add(new Separator(IContextMenuConstants.GROUP_ADDITIONS));
   }
 
   
@@ -360,6 +374,7 @@ public class CoverageView extends ViewPart {
         boolean atLeastOne = sessions.length >= 1;
         removeActiveSessionAction.setEnabled(atLeastOne);
         removeAllSessionsAction.setEnabled(atLeastOne);
+        exportAction.setEnabled(atLeastOne);
         refreshAction.setEnabled(atLeastOne);
         boolean atLeastTwo = sessions.length >= 2;
         mergeSessionsAction.setEnabled(atLeastTwo);
