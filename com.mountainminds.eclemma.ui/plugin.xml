@@ -247,7 +247,7 @@
          point="org.eclipse.ui.importWizards">
       <wizard
             class="com.mountainminds.eclemma.internal.ui.wizards.SessionImportWizard"
-            icon="icons/full/eview16/coverage.gif"
+            icon="icons/full/etool16/session_import.gif"
             id="com.mountainminds.eclemma.ui.sessionImportWizard"
             name="%importReport.title">
          <description>%importReport.description</description>
@@ -257,7 +257,7 @@
          point="org.eclipse.ui.exportWizards">
       <wizard
             class="com.mountainminds.eclemma.internal.ui.wizards.SessionExportWizard"
-            icon="icons/full/eview16/coverage.gif"
+            icon="icons/full/etool16/session_export.gif"
             id="com.mountainminds.eclemma.ui.sessionExportWizard"
             name="%exportReport.title">
          <description>%exportReport.description</description>
