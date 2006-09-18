@@ -56,6 +56,7 @@ import com.mountainminds.eclemma.internal.ui.UIMessages;
 import com.mountainminds.eclemma.internal.ui.actions.ExportSessionAction;
 import com.mountainminds.eclemma.internal.ui.actions.ImportSessionAction;
 import com.mountainminds.eclemma.internal.ui.actions.MergeSessionsAction;
+import com.mountainminds.eclemma.internal.ui.actions.RefreshSessionAction;
 import com.mountainminds.eclemma.internal.ui.actions.RemoveActiveSessionAction;
 import com.mountainminds.eclemma.internal.ui.actions.RemoveAllSessionsAction;
 
@@ -309,7 +310,7 @@ public class CoverageView extends ViewPart {
     kb.registerAction(importAction);
     exportAction = new ExportSessionAction(getSite().getWorkbenchWindow());
     kb.registerAction(exportAction);
-    refreshAction = new RefreshAction();
+    refreshAction = new RefreshSessionAction();
     kb.registerAction(refreshAction);
     getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.REFRESH.getId(), refreshAction);
   }

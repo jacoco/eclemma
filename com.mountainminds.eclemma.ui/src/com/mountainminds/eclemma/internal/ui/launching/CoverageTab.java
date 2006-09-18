@@ -73,7 +73,7 @@ public class CoverageTab extends AbstractLaunchConfigurationTab {
   private void createInstrumentedClasses(Composite parent) {
     Group group = new Group(parent, SWT.NONE);
     group.setLayoutData(new GridData(GridData.FILL_BOTH));
-    group.setText(UIMessages.CoverageTab_groupInstrumentedClassesLabel);
+    group.setText(UIMessages.CoverageTabInstrumentedClassesGroup_label);
     GridLayout layout = new GridLayout();
     group.setLayout(layout);
     classesviewer = new ClassesViewer(group, SWT.BORDER);
@@ -86,7 +86,7 @@ public class CoverageTab extends AbstractLaunchConfigurationTab {
     });
     
     buttonInplaceInstrumentation = new Button(group, SWT.CHECK);
-    buttonInplaceInstrumentation.setText(UIMessages.CoverageTab_buttonInplaceIntrLabel);
+    buttonInplaceInstrumentation.setText(UIMessages.CoverageTabInplaceInstrumentation_label);
     buttonInplaceInstrumentation.setEnabled(!inplaceonly);
     buttonInplaceInstrumentation.addSelectionListener(new SelectionAdapter() {
       public void widgetSelected(SelectionEvent e) {

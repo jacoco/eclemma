@@ -37,8 +37,8 @@ class SelectSessionAction extends Action implements IMenuCreator {
   private Menu menu;
 
   SelectSessionAction() {
-    setText(UIMessages.SessionsView_selectSessionsActionLabel);
-    setToolTipText(UIMessages.SessionsView_selectSessionsActionTooltip);
+    setText(UIMessages.SessionsViewSelectSessionAction_label);
+    setToolTipText(UIMessages.SessionsViewSelectSessionAction_looltip);
     setImageDescriptor(EclEmmaUIPlugin
         .getImageDescriptor(EclEmmaUIPlugin.ELCL_SESSION));
     setDisabledImageDescriptor(EclEmmaUIPlugin
@@ -62,7 +62,7 @@ class SelectSessionAction extends Action implements IMenuCreator {
       MenuItem item = new MenuItem(menu, SWT.RADIO);
       Object[] labelparams = new Object[] { new Integer(i + 1),
           labelprovider.getText(session) };
-      item.setText(NLS.bind(UIMessages.SessionsView_selectSessionsEntryLabel,
+      item.setText(NLS.bind(UIMessages.SessionsViewSelectSessionActionEntry_label,
           labelparams));
       item.setImage(labelprovider.getImage(session));
       item.setSelection(session == active);

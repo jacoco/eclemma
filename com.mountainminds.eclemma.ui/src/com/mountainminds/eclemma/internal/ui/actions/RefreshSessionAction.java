@@ -5,7 +5,7 @@
  *
  * $Id: $
  ******************************************************************************/
-package com.mountainminds.eclemma.internal.ui.coverageview;
+package com.mountainminds.eclemma.internal.ui.actions;
 
 import org.eclipse.jface.action.Action;
 
@@ -14,17 +14,16 @@ import com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin;
 import com.mountainminds.eclemma.internal.ui.UIMessages;
 
 /**
- * This action reloads the active coverage session. Internally used by the
- * coverage view.
+ * This action reloads the active coverage session.
  * 
  * @author  Marc R. Hoffmann
  * @version $Revision: $
  */
-public class RefreshAction extends Action {
+public class RefreshSessionAction extends Action {
   
-  public RefreshAction() {
-    setText(UIMessages.SessionsView_refreshAction_label);
-    setToolTipText(UIMessages.SessionsView_refreshAction_tooltip);
+  public RefreshSessionAction() {
+    setText(UIMessages.RefreshSessionAction_label);
+    setToolTipText(UIMessages.RefreshSessionAction_tooltip);
     setImageDescriptor(EclEmmaUIPlugin.getImageDescriptor(EclEmmaUIPlugin.ELCL_REFRESH));
     setDisabledImageDescriptor(EclEmmaUIPlugin.getImageDescriptor(EclEmmaUIPlugin.DLCL_REFRESH));
     setActionDefinitionId("org.eclipse.ui.file.refresh"); //$NON-NLS-1$

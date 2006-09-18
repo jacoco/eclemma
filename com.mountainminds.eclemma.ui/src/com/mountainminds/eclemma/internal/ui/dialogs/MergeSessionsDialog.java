@@ -55,7 +55,7 @@ public class MergeSessionsDialog extends ListSelectionDialog {
       String description) {
     super(parent, sessions, new ArrayContentProvider(),
         new WorkbenchLabelProvider(),
-        UIMessages.MergeSessionsDialog_selectionLabel);
+        UIMessages.MergeSessionsDialogSelection_label);
     setTitle(UIMessages.MergeSessionsDialog_title);
     setInitialSelections(sessions);
     this.description = description;
@@ -73,7 +73,7 @@ public class MergeSessionsDialog extends ListSelectionDialog {
   protected Label createMessageArea(Composite composite) {
     Label l = new Label(composite, SWT.NONE);
     l.setFont(composite.getFont());
-    l.setText(UIMessages.MergeSessionsDialog_descriptionLabel);
+    l.setText(UIMessages.MergeSessionsDialogDescription_label);
 
     textdescr = new Text(composite, SWT.BORDER);
     textdescr.setFont(composite.getFont());

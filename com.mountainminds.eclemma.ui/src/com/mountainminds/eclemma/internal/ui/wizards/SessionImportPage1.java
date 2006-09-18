@@ -95,7 +95,7 @@ public class SessionImportPage1 extends WizardPage {
     gd.widthHint = TEXT_FIELD_WIDTH;
     filecombo.setLayoutData(gd);
     Button browsebutton = new Button(parent, SWT.NONE);
-    browsebutton.setText(UIMessages.Browse_action);
+    browsebutton.setText(UIMessages.BrowseAction_label);
     setButtonLayoutData(browsebutton);
     browsebutton.addSelectionListener(new SelectionAdapter() {
       public void widgetSelected(SelectionEvent e) {

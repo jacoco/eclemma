@@ -27,8 +27,8 @@ import com.mountainminds.eclemma.internal.ui.UIMessages;
 class RelaunchSessionAction extends Action {
   
   RelaunchSessionAction() {
-    setText(UIMessages.SessionsView_relaunchCoverageSessionLabel);
-    setToolTipText(UIMessages.SessionsView_relaunchCoverageSessionTooltip);
+    setText(UIMessages.SessionsViewRelaunchAction_label);
+    setToolTipText(UIMessages.SessionsViewRelaunchAction_tooltip);
     setImageDescriptor(EclEmmaUIPlugin.getImageDescriptor(EclEmmaUIPlugin.ELCL_RELAUNCH));
     setDisabledImageDescriptor(EclEmmaUIPlugin.getImageDescriptor(EclEmmaUIPlugin.DLCL_RELAUNCH));
     setEnabled(false);

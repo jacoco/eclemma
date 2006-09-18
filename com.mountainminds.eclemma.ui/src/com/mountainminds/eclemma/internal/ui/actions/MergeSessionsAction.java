@@ -42,7 +42,7 @@ public class MergeSessionsAction extends Action {
   public void run() {
     ISessionManager sm = CoverageTools.getSessionManager();
     ICoverageSession[] sessions = sm.getSessions();
-    String descr = UIMessages.MergeSessionsDialog_descriptionDefault;
+    String descr = UIMessages.MergeSessionsDialogDescriptionDefault_value;
     descr = MessageFormat.format(descr, new Object[] { new Date() });
     MergeSessionsDialog d = new MergeSessionsDialog(window.getShell(), sessions, descr);
     if (d.open() == IDialogConstants.OK_ID) {

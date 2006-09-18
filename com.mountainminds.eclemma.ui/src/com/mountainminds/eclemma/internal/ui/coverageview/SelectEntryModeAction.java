@@ -14,7 +14,7 @@ import com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin;
 import com.mountainminds.eclemma.internal.ui.UIMessages;
 
 /**
- * This action reruns the active coverage session. Internally used by the
+ * This action selects one of the counter modes. Internally used by the
  * coverage view.
  * 
  * @author  Marc R. Hoffmann
@@ -36,23 +36,23 @@ class SelectEntryModeAction extends Action {
     String iconkey = null;
     switch (mode) {
       case ViewSettings.ENTRYMODE_PROJECTS:
-        setText(UIMessages.SessionsView_showProjectsActionLabel);
-        setToolTipText(UIMessages.SessionsView_showProjectsActionTooltip);
+        setText(UIMessages.SessionsViewShowProjectsAction_label);
+        setToolTipText(UIMessages.SessionsViewShowProjectsAction_tooltip);
         iconkey = EclEmmaUIPlugin.ELCL_SHOWPROJECTS;
         break;
       case ViewSettings.ENTRYMODE_PACKAGEROOTS:
-        setText(UIMessages.SessionsView_showPackageRootsActionLabel);
-        setToolTipText(UIMessages.SessionsView_showPackageRootsActionTooltip);
+        setText(UIMessages.SessionsViewShowPackageRootsAction_label);
+        setToolTipText(UIMessages.SessionsViewShowPackageRootsAction_tooltip);
         iconkey = EclEmmaUIPlugin.ELCL_SHOWPACKAGEROOTS;
         break;
       case ViewSettings.ENTRYMODE_PACKAGES: 
-        setText(UIMessages.SessionsView_showPackagesActionLabel);
-        setToolTipText(UIMessages.SessionsView_showPackagesActionTooltip);
+        setText(UIMessages.SessionsViewShowPackagesAction_label);
+        setToolTipText(UIMessages.SessionsViewShowPackagesAction_tooltip);
         iconkey = EclEmmaUIPlugin.ELCL_SHOWPACKAGES;
         break;
       case ViewSettings.ENTRYMODE_TYPES: 
-        setText(UIMessages.SessionsView_showTypesActionLabel);
-        setToolTipText(UIMessages.SessionsView_showTypesActionTooltip);
+        setText(UIMessages.SessionsViewShowTypesAction_label);
+        setToolTipText(UIMessages.SessionsViewShowTypesAction_tooltip);
         iconkey = EclEmmaUIPlugin.ELCL_SHOWTYPES;
         break;
     }
