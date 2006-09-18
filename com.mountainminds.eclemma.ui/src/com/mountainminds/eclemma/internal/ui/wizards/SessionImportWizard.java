@@ -46,9 +46,8 @@ public class SessionImportWizard extends Wizard implements IExportWizard {
     }
     setDialogSettings(wizardsettings);
     setWindowTitle(UIMessages.ImportSession_title);
-    // TODO create proper wizban
-    // setDefaultPageImageDescriptor(EclEmmaUIPlugin
-    //    .getImageDescriptor(EclEmmaUIPlugin.WIZBAN_EXPORT_SESSION));
+    setDefaultPageImageDescriptor(EclEmmaUIPlugin
+        .getImageDescriptor(EclEmmaUIPlugin.WIZBAN_IMPORT_SESSION));
     setNeedsProgressMonitor(true);
   }
 
