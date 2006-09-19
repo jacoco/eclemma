@@ -7,6 +7,7 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.core;
 
+import com.mountainminds.eclemma.internal.core.SessionManagerTest;
 import com.mountainminds.eclemma.internal.core.analysis.CounterTest;
 import com.mountainminds.eclemma.internal.core.analysis.JavaElementCoverageTest;
 import com.mountainminds.eclemma.internal.core.analysis.JavaElementsTraverserTest;
@@ -27,6 +28,9 @@ public class AllEclEmmaCoreTests {
   
   public static Test suite() {
     TestSuite suite = new TestSuite();
+
+    // com.mountainminds.eclemma.internal.core.*
+    suite.addTestSuite(SessionManagerTest.class);
     
     // com.mountainminds.eclemma.internal.core.analysis.*
     suite.addTestSuite(CounterTest.class);
