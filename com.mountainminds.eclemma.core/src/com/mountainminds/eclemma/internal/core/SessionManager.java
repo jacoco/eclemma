@@ -31,6 +31,7 @@ public class SessionManager implements ISessionManager {
   private List listeners = new ArrayList();
 
   public void addSession(ICoverageSession session, boolean activate, Object key) {
+    if (session == null) throw new NullPointerException();
     if (!sessions.contains(session)) {
       sessions.add(session);
       if (key != null) {

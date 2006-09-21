@@ -77,6 +77,14 @@ public class SessionManagerTest extends TestCase {
     reflistener.sessionActivated(s1);
     assertEquals(reflistener, listener);
   }
+
+  public void testAddSession4() {
+    try {
+      manager.addSession(null, false, null);
+      fail("NullPointerException expected.");
+    } catch (NullPointerException npe) {
+    }
+  }
   
   public void testRemoveSession1() {
     ICoverageSession s0 = new DummySession();
@@ -108,6 +116,75 @@ public class SessionManagerTest extends TestCase {
     reflistener.sessionActivated(s0);
     assertEquals(reflistener, listener);
   }
+  
+  public void testRemoveSession3() {
+    Object key0 = new Object();
+    Object key1 = new Object();
+    ICoverageSession s0 = new DummySession();
+    ICoverageSession s1 = new DummySession();
+    manager.addSession(s0, false, key0);
+    manager.addSession(s1, true, key1);
+    manager.removeSession(key1);
+    ICoverageSession[] sessions = manager.getSessions();
+    assertEquals(1, sessions.length);
+    assertSame(s0, sessions[0]);
+    assertSame(s0, manager.getActiveSession());
+    reflistener.sessionAdded(s0);
+    reflistener.sessionAdded(s1);
+    reflistener.sessionActivated(s1);
+    reflistener.sessionRemoved(s1);
+    reflistener.sessionActivated(s0);
+    assertEquals(reflistener, listener);
+  }
+  
+  public void testRemoveSession4() {
+    Object key0 = new Object();
+    Object key1 = new Object();
+    Object key2 = new Object();
+    ICoverageSession s0 = new DummySession();
+    ICoverageSession s1 = new DummySession();
+    manager.addSession(s0, false, key0);
+    manager.addSession(s1, true, key1);
+    manager.removeSession(key2);
+    assertEquals(2, manager.getSessions().length);
+  }
+  
+  public void testRemoveAllSessions1() {
+    ICoverageSession s0 = new DummySession();
+    ICoverageSession s1 = new DummySession();
+    manager.addSession(s0, false, null);
+    manager.addSession(s1, true, null);
+    manager.removeAllSessions();
+    assertEquals(0, manager.getSessions().length);
+    assertNull(manager.getActiveSession());
+    reflistener.sessionAdded(s0);
+    reflistener.sessionAdded(s1);
+    reflistener.sessionActivated(s1);
+    reflistener.sessionRemoved(s0);
+    reflistener.sessionRemoved(s1);
+    reflistener.sessionActivated(null);
+    assertEquals(reflistener, listener);
+  }
+  
+  public void testGetSessions1() {
+    ICoverageSession[] sessions = manager.getSessions();
+    assertNotNull(sessions);
+    assertEquals(0, sessions.length);
+  }
+
+  public void testGetSession1() {
+    Object key0 = new Object();
+    Object key1 = new Object();
+    Object key2 = new Object();
+    ICoverageSession s0 = new DummySession();
+    ICoverageSession s1 = new DummySession();
+    manager.addSession(s0, false, key0);
+    manager.addSession(s1, false, key1);
+    assertEquals(s0, manager.getSession(key0));
+    assertEquals(s1, manager.getSession(key1));
+    assertNull(manager.getSession(key2));
+  }
+  
   
   private static class DummySession implements ICoverageSession {
 
