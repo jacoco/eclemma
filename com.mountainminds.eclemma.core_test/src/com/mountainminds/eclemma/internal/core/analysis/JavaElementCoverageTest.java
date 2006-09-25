@@ -38,6 +38,18 @@ public class JavaElementCoverageTest extends TestCase {
     assertEquals(17, c.getInstructionCounter().getCoveredCount());
   }
   
+  public void testNoLines3() {
+    JavaElementCoverage c = new JavaElementCoverage(null, true, 0);
+    c.addBlock(17, null, true);
+    c.addBlock(15, null, false);
+    assertEquals(2, c.getBlockCounter().getTotalCount());
+    assertEquals(1, c.getBlockCounter().getCoveredCount());
+    assertEquals(0, c.getLineCounter().getTotalCount());
+    assertEquals(0, c.getLineCounter().getCoveredCount());
+    assertEquals(32, c.getInstructionCounter().getTotalCount());
+    assertEquals(17, c.getInstructionCounter().getCoveredCount());
+  }
+  
   public void testNoLinesWithParent1() {
     JavaElementCoverage p = new JavaElementCoverage(null, false, 0);
     JavaElementCoverage c1 = new JavaElementCoverage(p, false, 0);
