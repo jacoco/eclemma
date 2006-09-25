@@ -73,13 +73,15 @@ public class JavaElementCoverage implements IJavaElementCoverage {
         parent.addBlock(instructions, lines, covered, totalLineDelta, coveredLineDelta);
       }
     } else {
-      long totalDelta = this.lines.getTotalCount();
-      long coveredDelta = this.lines.getCoveredCount();
-      this.lines.addLines(lines, covered);
-      if (parent != null) {
-        totalDelta = this.lines.getTotalCount() - totalDelta;
-        coveredDelta = this.lines.getCoveredCount() - coveredDelta;
-        parent.addBlock(instructions, lines, covered, (int) totalDelta, (int) coveredDelta);
+      if (lines != null) {
+        long totalDelta = this.lines.getTotalCount();
+        long coveredDelta = this.lines.getCoveredCount();
+        this.lines.addLines(lines, covered);
+        if (parent != null) {
+          totalDelta = this.lines.getTotalCount() - totalDelta;
+          coveredDelta = this.lines.getCoveredCount() - coveredDelta;
+          parent.addBlock(instructions, lines, covered, (int) totalDelta, (int) coveredDelta);
+        }
       }
     }
   }
