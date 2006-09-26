@@ -171,11 +171,24 @@ public class ClassesViewer implements ISelectionProvider {
         selectedclasses.add(input[i]);
       }
     }
-    IClassFiles[] ccs = (IClassFiles[]) selectedclasses
-        .toArray(new IClassFiles[0]);
-    viewer.setCheckedElements(getPackageFragmentRoots(ccs));
+    viewer.setCheckedElements(getPackageFragmentRoots(selectedclasses.toArray()));
+  }
+  
+  public void selectAll() {
+    selectedclasses.clear();
+    for (int i = 0; i < input.length; i++) {
+      if (includebinaries || !input[i].isBinary()) {
+        selectedclasses.add(input[i]);
+      }
+    }
+    viewer.setCheckedElements(getPackageFragmentRoots(selectedclasses.toArray()));
   }
 
+  public void deselectAll() {
+    selectedclasses.clear();
+    viewer.setCheckedElements(new Object[0]);
+  }
+  
   /**
    * Returns the currently checked classes.
    * 

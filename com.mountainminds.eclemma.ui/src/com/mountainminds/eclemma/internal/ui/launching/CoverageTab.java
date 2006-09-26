@@ -75,9 +75,12 @@ public class CoverageTab extends AbstractLaunchConfigurationTab {
     group.setLayoutData(new GridData(GridData.FILL_BOTH));
     group.setText(UIMessages.CoverageTabInstrumentedClassesGroup_label);
     GridLayout layout = new GridLayout();
+    layout.numColumns = 3;
     group.setLayout(layout);
     classesviewer = new ClassesViewer(group, SWT.BORDER);
-    classesviewer.getTable().setLayoutData(new GridData(GridData.FILL_BOTH));
+    GridData gd = new GridData(GridData.FILL_BOTH);
+    gd.horizontalSpan = 3;
+    classesviewer.getTable().setLayoutData(gd);
     classesviewer.addSelectionChangedListener(new ISelectionChangedListener() {
       public void selectionChanged(SelectionChangedEvent event) {
         setDirty(true);
@@ -91,6 +94,23 @@ public class CoverageTab extends AbstractLaunchConfigurationTab {
     buttonInplaceInstrumentation.addSelectionListener(new SelectionAdapter() {
       public void widgetSelected(SelectionEvent e) {
         classesviewer.setIncludeBinaries(!buttonInplaceInstrumentation.getSelection());
+        setDirty(true);
+        updateLaunchConfigurationDialog();
+      }
+    });
+    buttonInplaceInstrumentation.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL));
+    Button buttonSelectAll = createPushButton(group, UIMessages.SelectAllAction_label, null);
+    buttonSelectAll.addSelectionListener(new SelectionAdapter() {
+      public void widgetSelected(SelectionEvent e) {
+        classesviewer.selectAll();
+        setDirty(true);
+        updateLaunchConfigurationDialog();
+      }
+    });
+    Button buttonDeselectAll = createPushButton(group, UIMessages.DeselectAllAction_label, null);
+    buttonDeselectAll.addSelectionListener(new SelectionAdapter() {
+      public void widgetSelected(SelectionEvent e) {
+        classesviewer.deselectAll();
         setDirty(true);
         updateLaunchConfigurationDialog();
       }

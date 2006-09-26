@@ -32,6 +32,8 @@ public class UIMessages extends NLS {
   public static String ExportSessionAction_label;
   public static String ExportSessionAction_tooltip;
   public static String BrowseAction_label;
+  public static String SelectAllAction_label;
+  public static String DeselectAllAction_label;
 
   public static String SessionsViewRelaunchAction_label;
   public static String SessionsViewRelaunchAction_tooltip;
