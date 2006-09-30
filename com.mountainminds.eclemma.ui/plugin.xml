@@ -94,6 +94,9 @@
       <perspectiveExtension targetID="org.eclipse.pde.ui.PDEPerspective">
          <actionSet id="com.mountainminds.eclemma.ui.CoverageActionSet"/>
       </perspectiveExtension>
+      <perspectiveExtension targetID="org.eclipse.jst.j2ee.J2EEPerspective">
+         <actionSet id="com.mountainminds.eclemma.ui.CoverageActionSet"/>
+      </perspectiveExtension>
    </extension>
    <extension
          point="org.eclipse.ui.views">
