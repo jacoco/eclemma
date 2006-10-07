@@ -9,11 +9,6 @@
     <topic label="Managing Coverage Sessions" href="pages/sessions.html"/>
     <topic label="Session Import and Export" href="pages/importexport.html"/>
   </topic>
-  <topic label="Developer Information" href="pages/developerinfo.html">
-    <topic label="Architecture" href="pages/architecture.html"/>
-    <topic label="Open Issues" href="pages/todos.html"/>
-    <topic label="Release Checklist" href="pages/checklist.html"/>
-    <topic label="Change Log" href="pages/changes.html"/>
-  </topic>
+  <topic label="Change Log" href="pages/changes.html"/>
   <topic label="License" href="pages/license.html"/>
 </toc>
