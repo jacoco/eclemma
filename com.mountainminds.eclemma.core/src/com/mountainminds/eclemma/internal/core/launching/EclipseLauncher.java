@@ -10,9 +10,11 @@ package com.mountainminds.eclemma.internal.core.launching;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
+import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 
 import com.mountainminds.eclemma.core.CoverageTools;
 import com.mountainminds.eclemma.core.launching.ICoverageLaunchInfo;
+import com.mountainminds.eclemma.internal.core.PlatformVersion;
 
 /**
  * Laucher for the Eclipse runtime workbench.
@@ -22,9 +24,22 @@ import com.mountainminds.eclemma.core.launching.ICoverageLaunchInfo;
  */
 public class EclipseLauncher extends CoverageLauncher {
 
-  public static final String VMARGS = "vmargs"; //$NON-NLS-1$
+  /** Pre-Eclipse 3.2.0 VM arguments key */ 
+  protected static final String PRE320VMARGS = "vmargs"; //$NON-NLS-1$
+  protected static final String VMARGS = IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS;
+  
   public static final String BOOTPATHARG = "-Xbootclasspath/a:"; //$NON-NLS-1$
 
+  /**
+   * Returns the proper key for VM arguments depending on the Eclipse version
+   * 
+   * @return  launch configuration key for VM arguments
+   */
+  protected String getVMArgsKey() {
+    boolean is320 = PlatformVersion.CURRENT.isGreaterOrEqualTo(PlatformVersion.V320);
+    return is320 ? VMARGS : PRE320VMARGS;
+  }
+  
   protected boolean hasInplaceInstrumentation(ILaunchConfiguration configuration) {
     // Inplace instrumentation is required for plugin launches, as we can't
     // modify the classpath
@@ -33,11 +48,12 @@ public class EclipseLauncher extends CoverageLauncher {
 
   protected void modifyConfiguration(ILaunchConfigurationWorkingCopy workingcopy,
       ICoverageLaunchInfo info) throws CoreException {
-    StringBuffer sb = new StringBuffer(workingcopy.getAttribute(VMARGS, "")); //$NON-NLS-1$
+    String vmargskey = getVMArgsKey(); 
+    StringBuffer sb = new StringBuffer(workingcopy.getAttribute(vmargskey, "")); //$NON-NLS-1$
     sb.append(" ").append(BOOTPATHARG); //$NON-NLS-1$
     sb.append(info.getPropertiesJARFile());
     sb.append(";").append(CoverageTools.getEmmaJar().toOSString()); //$NON-NLS-1$
-    workingcopy.setAttribute(VMARGS, sb.toString());
+    workingcopy.setAttribute(vmargskey, sb.toString());
   }
 
 }
