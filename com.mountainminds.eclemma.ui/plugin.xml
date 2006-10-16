@@ -241,6 +241,11 @@
             code="5100"
             id="com.mountainminds.eclemma.ui.alreadyInstrumentedHandler"
             plugin="com.mountainminds.eclemma.core"/>
+      <statusHandler
+            class="com.mountainminds.eclemma.internal.ui.launching.NoCoverageDataHandler"
+            code="5101"
+            id="com.mountainminds.eclemma.ui.noCoverageDataHandler"
+            plugin="com.mountainminds.eclemma.core"/>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">
