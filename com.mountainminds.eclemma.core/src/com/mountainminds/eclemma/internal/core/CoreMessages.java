@@ -41,6 +41,7 @@ public class CoreMessages extends NLS {
   public static String StatusSOURCE_EXTRACTION_ERROR_message;
   public static String StatusIMPORT_ERROR_message;
   public static String StatusALREADY_INSTRUMENTED_ERROR_message;
+  public static String StatusNO_COVERAGE_DATA_ERROR_message;
 
   static {
     NLS.initializeMessages(BUNDLE_NAME, CoreMessages.class);

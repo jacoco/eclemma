@@ -20,7 +20,6 @@ import org.eclipse.core.runtime.IExecutableExtension;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
@@ -28,7 +27,6 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
-import org.eclipse.debug.core.IStatusHandler;
 import org.eclipse.debug.core.Launch;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate2;
@@ -43,6 +41,7 @@ import com.mountainminds.eclemma.core.launching.ICoverageLaunchConfigurationCons
 import com.mountainminds.eclemma.core.launching.ICoverageLaunchInfo;
 import com.mountainminds.eclemma.internal.core.CoreMessages;
 import com.mountainminds.eclemma.internal.core.DebugOptions;
+import com.mountainminds.eclemma.internal.core.EclEmmaCorePlugin;
 import com.mountainminds.eclemma.internal.core.instr.InstrMarker;
 import com.vladium.emma.AppLoggers;
 import com.vladium.emma.EMMAProperties;
@@ -63,10 +62,6 @@ public abstract class CoverageLauncher implements
    * properties.
    */
   protected static final String EMMA_PROPERTIES_FILE = "emma.properties"; //$NON-NLS-1$
-
-  /** Status used to trigger user prompts */
-  protected static final IStatus PROMPT_STATUS = new Status(IStatus.INFO,
-      "org.eclipse.debug.ui", 200, "", null); //$NON-NLS-1$//$NON-NLS-2$
 
   /** Launch mode for the launch delegates used internally. */
   public static final String DELEGATELAUNCHMODE = ILaunchManager.RUN_MODE;
@@ -223,14 +218,14 @@ public abstract class CoverageLauncher implements
     if (hasInplaceInstrumentation(configuration)) {
       // Issue an inplace instrumentation warning:
       IStatus status = EclEmmaStatus.INPLACE_INSTRUMENTATION_INFO.getStatus();
-      if (!showPrompt(status, configuration)) {
+      if (!EclEmmaCorePlugin.getInstance().showPrompt(status, configuration)) {
         return false;
       }
     } else {
       // check whether inpace instrumentation has been performed before
       if (checkForPreviousInplace(configuration)) {
         IStatus status = EclEmmaStatus.ALREADY_INSTRUMENTED_ERROR.getStatus();
-        showPrompt(status, configuration);
+        EclEmmaCorePlugin.getInstance().showPrompt(status, configuration);
         return false;
       }
     }
@@ -240,20 +235,6 @@ public abstract class CoverageLauncher implements
     } else {
       return launchdelegate2.preLaunchCheck(configuration, DELEGATELAUNCHMODE,
           monitor);
-    }
-  }
-
-  private boolean showPrompt(IStatus status, Object info) throws CoreException {
-    IStatusHandler prompter = DebugPlugin.getDefault().getStatusHandler(
-        PROMPT_STATUS);
-    if (prompter == null) {
-      if (status.getSeverity() == IStatus.ERROR) {
-        throw new CoreException(status);
-      } else {
-        return true;
-      }
-    } else {
-      return ((Boolean) prompter.handleStatus(status, info)).booleanValue();
     }
   }
 

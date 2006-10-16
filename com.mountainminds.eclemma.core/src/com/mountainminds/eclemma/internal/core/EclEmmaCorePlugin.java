@@ -16,13 +16,16 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Plugin;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.IDebugEventSetListener;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchListener;
+import org.eclipse.debug.core.IStatusHandler;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.jdt.core.ElementChangedEvent;
 import org.eclipse.jdt.core.IClasspathEntry;
@@ -35,6 +38,7 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.osgi.framework.BundleContext;
 
 import com.mountainminds.eclemma.core.CoverageTools;
+import com.mountainminds.eclemma.core.EclEmmaStatus;
 import com.mountainminds.eclemma.core.ICoverageSession;
 import com.mountainminds.eclemma.core.ISessionManager;
 import com.mountainminds.eclemma.core.launching.ICoverageLaunchInfo;
@@ -50,6 +54,10 @@ public class EclEmmaCorePlugin extends Plugin {
 
   public static final String ID = "com.mountainminds.eclemma.core"; //$NON-NLS-1$
 
+  /** Status used to trigger user prompts */
+  private static final IStatus PROMPT_STATUS = new Status(IStatus.INFO,
+      "org.eclipse.debug.ui", 200, "", null); //$NON-NLS-1$//$NON-NLS-2$
+  
   public static final IPath EMMA_JAR = new Path("/emma.jar"); //$NON-NLS-1$
 
   private static EclEmmaCorePlugin instance;
@@ -92,19 +100,33 @@ public class EclEmmaCorePlugin extends Plugin {
           final ILaunch launch = proc.getLaunch();
           ICoverageLaunchInfo info = CoverageTools.getLaunchInfo(launch);
           if (info != null) {
-            Object[] args = new Object[] {
-                launch.getLaunchConfiguration().getName(), new Date() };
-            String description = MessageFormat.format(
-                CoreMessages.LaunchSessionDescription_value, args);
-            ICoverageSession session = new CoverageSession(description, info
-                .getInstrumentations(), new IPath[] { info.getCoverageFile() },
-                launch.getLaunchConfiguration());
-            // TODO it will be optional, whether the new session is activated
-            sessionManager.addSession(session, true, launch);
+            IPath coveragedatafile = info.getCoverageFile();
+            if (checkCoverageDataFile(coveragedatafile)) {
+              Object[] args = new Object[] {
+                  launch.getLaunchConfiguration().getName(), new Date() };
+              String description = MessageFormat.format(
+                  CoreMessages.LaunchSessionDescription_value, args);
+              ICoverageSession session = new CoverageSession(description, info
+                  .getInstrumentations(), new IPath[] { coveragedatafile },
+                  launch.getLaunchConfiguration());
+              // TODO it will be optional, whether the new session is activated
+              sessionManager.addSession(session, true, launch);
+            }
             info.dispose();
           }
         }
       }
+    }
+    private boolean checkCoverageDataFile(IPath path) {
+      boolean ok = path.toFile().exists();
+      if (!ok) {
+        try {
+          showPrompt(EclEmmaStatus.NO_COVERAGE_DATA_ERROR.getStatus(), path);
+        } catch (CoreException e) {
+          getLog().log(e.getStatus());
+        }
+      }
+      return ok;
     }
   };
 
@@ -159,6 +181,32 @@ public class EclEmmaCorePlugin extends Plugin {
     return stateFiles;
   }
 
+  /**
+   * Issues an user prompt using the statis handler registered for the given
+   * status.
+   * 
+   * @param status
+   *          IStatus object to find prompter for
+   * @param info  
+   *          addional information passed to the handler 
+   * @return boolean result returned by the status handler
+   * @throws CoreException
+   *           if the status has severity error and no handler is available 
+   */
+  public boolean showPrompt(IStatus status, Object info) throws CoreException {
+    IStatusHandler prompter = DebugPlugin.getDefault().getStatusHandler(
+        PROMPT_STATUS);
+    if (prompter == null) {
+      if (status.getSeverity() == IStatus.ERROR) {
+        throw new CoreException(status);
+      } else {
+        return true;
+      }
+    } else {
+      return ((Boolean) prompter.handleStatus(status, info)).booleanValue();
+    }
+  }
+  
   /**
    * Tries to find the absolute path for the given workspace relative path.
    * 
