@@ -7,6 +7,8 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.ui.wizards;
 
+import java.io.File;
+
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IDialogSettings;
@@ -15,6 +17,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -146,14 +149,32 @@ public class SessionExportPage1 extends WizardPage {
   }
   
   private void update() {
+    // make sure we have a session to export
     if (getSelectedSession() == null) {
       setErrorMessage(UIMessages.ExportReportPage1NoSession_message);
       setPageComplete(false);
       return;
     }
+    // a destination file must be spezified
     if (getDestination().length() == 0) {
       setMessage(UIMessages.ExportReportPage1MissingDestination_message);
       setPageComplete(false);
+      return;
+    }
+    // the destination must be a file and must be in a existing directory
+    File f = new File(getDestination());
+    File p = f.getParentFile();
+    if (f.isDirectory() || (p != null && !p.isDirectory())) {
+      setErrorMessage(UIMessages.ExportReportPage1InvalidDestination_message);
+      setPageComplete(false);
+      return;
+    }
+    // the extension should correspond to the report type
+    String exta = Path.fromOSString(getDestination()).getFileExtension();
+    String exte = ISessionExporter.DEFAULT_EXTENSIONS[getReportFormat()];
+    if (!exte.equalsIgnoreCase(exta)) {
+      setMessage(NLS.bind(UIMessages.ExportReportPage1WrongExtension_message, exte), WARNING);
+      setPageComplete(true);
       return;
     }
     setErrorMessage(null);
