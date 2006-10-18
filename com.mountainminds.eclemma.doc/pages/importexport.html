@@ -23,9 +23,24 @@
   If your program is launched outside the Eclipse debugging environment, you
   might import EMMA coverage (<code>*.ec</code>) or session files
   (<code>*.es</code>) from these launches. This allows to study the coverage
-  results directly in your source code. Simply use the
-  <i>Coverage Session</i> wizard from the list of available import wizards.
+  results directly in your source code. The <i>Coverage Session</i> import
+  wizard can be activated form the <i>File &rarr; Import...</i> menu or from the
+  <i>Coverage</i> view's context menu.
 </p>
+
+<p>
+  <img src="images/importdialog.png" alt="Import Dialog">
+</p>
+
+<p>
+  The wizard dialog requires you to specify the following information:
+</p>
+
+<ul>
+  <li>Name of the imported session</li>
+  <li>Coverage (<code>*.ec</code>) or session file (<code>*.es</code>)
+  <li>Source folders or libraries that should be considered</li>
+</ul>
 
 <p>
   <b>Tip:</b> If you keep a reference to the original coverage file (check the
@@ -42,7 +57,7 @@
 </p>
 
 <ul>
-  <li><b>HTML:</b> A detailed and browseable Report as a set of HTML
+  <li><b>HTML:</b> A detailed and browseable report as a set of HTML
   files.</li>
   <li><b>XML:</b> Coverage data as a single, structured XML file.</li>
   <li><b>Plain text:</b> Limited coverage information as a plain text
@@ -51,8 +66,19 @@
 </ul>
 
 <p>
-  Simply use the <i>Coverage Report</i> wizard from the list of available export
-  wizards.
+  The <i>Coverage Report</i> export wizard can be activated form the
+  <i>File &rarr; Import...</i> menu or from the <i>Coverage</i> view's context
+  menu. There must be at least one coverage session available to use the export
+  wizard.
+</p>
+
+<p>
+  <img src="images/exportdialog.png" alt="Export Dialog">
+</p>
+
+<p>
+  Select one of the existing sessions and the export format. Note that in any
+  case the specified destination must point to a file in an existing folder.
 </p>
 
 </body>

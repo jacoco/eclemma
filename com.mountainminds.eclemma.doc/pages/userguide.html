@@ -13,15 +13,36 @@
 <h1>User Guide</h1>
 
 <p>
-  This section provides documentation for EclEmma users.
+  EclEmma records which parts of your Java code are executed during a particular
+  program launch. Therefore coverage analysis always involves two steps:
+</p>
+
+<ol>
+  <li>Run the program</li>
+  <li>Analyze coverage data</li>
+</ol>
+  
+<p>
+  For reproducible results the launched programs are typically automated tests
+  like JUnit tests.
 </p>
 
 <p>
   <a href="launching.html">Running</a> a coverage analysis is as simple as
   pressing a single button like the existing <i>Run</i> and <i>Debug</i>
-  buttons. The coverage results are automatically presented in the
+  buttons. The coverage results are automatically summarized in the
   <a href="coverageview.html"><i>Coverage</i> view</a> and highlighted in the
   <a href="annotations.html">Java editors</a>.
+</p>
+
+<p>
+  <b>Warning:</b> While EclEmma is internally based on EMMA it does not require
+  you to perform any EMMA specific parameters and classpath settings in your
+  projects. The fact that EMMA is used is completely transparent to the user and
+  all required settings are dynamically created by the
+  <a href="launching.html"><i>Coverage</i> launcher</a>. <b>Adding emma.jar to
+  your projects' classpath or setting properties for EMMA may result in errors
+  during the coverage launch.</b>
 </p>
 
 </body>
