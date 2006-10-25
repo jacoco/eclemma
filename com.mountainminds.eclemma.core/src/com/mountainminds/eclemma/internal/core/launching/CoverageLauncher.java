@@ -215,7 +215,13 @@ public abstract class CoverageLauncher implements
 
   public boolean preLaunchCheck(ILaunchConfiguration configuration,
       String mode, IProgressMonitor monitor) throws CoreException {
-    if (hasInplaceInstrumentation(configuration)) {
+    boolean inplace = hasInplaceInstrumentation(configuration);
+    if (CoverageTools.getClassFilesForInstrumentation(configuration, inplace).length == 0) {
+      IStatus status = EclEmmaStatus.NO_INSTRUMENTED_CLASSES.getStatus();
+      EclEmmaCorePlugin.getInstance().showPrompt(status, configuration);
+      return false;
+    }
+    if (inplace) {
       // Issue an inplace instrumentation warning:
       IStatus status = EclEmmaStatus.INPLACE_INSTRUMENTATION_INFO.getStatus();
       if (!EclEmmaCorePlugin.getInstance().showPrompt(status, configuration)) {
@@ -238,10 +244,10 @@ public abstract class CoverageLauncher implements
     }
   }
 
-  private boolean checkForPreviousInplace(ILaunchConfiguration conig)
+  private boolean checkForPreviousInplace(ILaunchConfiguration config)
       throws CoreException {
     IClassFiles[] classfiles = CoverageTools.getClassFilesForInstrumentation(
-        conig, false);
+        config, false);
     for (int i = 0; i < classfiles.length; i++) {
       if (InstrMarker.isMarked(classfiles[i].getLocation())) {
         return true;

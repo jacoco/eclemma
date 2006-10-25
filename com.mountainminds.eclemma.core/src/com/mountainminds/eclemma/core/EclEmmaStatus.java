@@ -135,5 +135,13 @@ public final class EclEmmaStatus {
    */
   public static final EclEmmaStatus NO_COVERAGE_DATA_ERROR = new EclEmmaStatus(
       5101, IStatus.ERROR, CoreMessages.StatusALREADY_INSTRUMENTED_ERROR_message);
+
+  /**
+   * No classes are selected for instrumentation. This status is used to issue
+   * an error prompt during launching.
+   */
+  public static final EclEmmaStatus NO_INSTRUMENTED_CLASSES = new EclEmmaStatus(
+      5102, IStatus.ERROR, CoreMessages.StatusNO_INSTRUMENTED_CLASSES_message);
+
   
 }

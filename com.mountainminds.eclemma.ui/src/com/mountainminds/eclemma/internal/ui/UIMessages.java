@@ -78,6 +78,8 @@ public class UIMessages extends NLS {
   public static String AlreadyInstrumentedError_message;
   public static String NoCoverageDataError_title;
   public static String NoCoverageDataError_message;
+  public static String NoInstrumentedClassesError_title;
+  public static String NoInstrumentedClassesError_message;
 
   public static String ExportReport_title;
   public static String ExportReportErrorDialog_title;
