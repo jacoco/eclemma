@@ -71,6 +71,7 @@ public class UIMessages extends NLS {
   public static String CoverageTab_title;
   public static String CoverageTabInstrumentedClassesGroup_label;
   public static String CoverageTabInplaceInstrumentation_label;
+  public static String CoverageTabNoClassesSelected_message;
 
   public static String InstrumentationWarning_title;
   public static String InstrumentationWarning_message;

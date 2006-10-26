@@ -84,6 +84,7 @@ public class CoverageTab extends AbstractLaunchConfigurationTab {
     classesviewer.addSelectionChangedListener(new ISelectionChangedListener() {
       public void selectionChanged(SelectionChangedEvent event) {
         setDirty(true);
+        updateErrorStatus();
         updateLaunchConfigurationDialog();
       }
     });
@@ -133,6 +134,7 @@ public class CoverageTab extends AbstractLaunchConfigurationTab {
     } catch (CoreException e) {
       EclEmmaUIPlugin.log(e);
     }
+    updateErrorStatus();
   }
   
   public void performApply(ILaunchConfigurationWorkingCopy configuration) {
@@ -146,6 +148,10 @@ public class CoverageTab extends AbstractLaunchConfigurationTab {
     }
     configuration.setAttribute(ICoverageLaunchConfigurationConstants.ATTR_INSTRUMENTATION_PATHS, l);
   }
+  
+  public boolean isValid(ILaunchConfiguration launchConfig) {
+    return !classesviewer.getSelection().isEmpty();
+  }
 
   public String getName() {
     return UIMessages.CoverageTab_title;
@@ -153,6 +159,14 @@ public class CoverageTab extends AbstractLaunchConfigurationTab {
 
   public Image getImage() {
     return EclEmmaUIPlugin.getImage(EclEmmaUIPlugin.EVIEW_COVERAGE);
+  }
+  
+  private void updateErrorStatus() {
+    if (classesviewer.getSelection().isEmpty()) {
+      setErrorMessage(UIMessages.CoverageTabNoClassesSelected_message);
+    } else {
+      setErrorMessage(null);
+    }
   }
 
 }

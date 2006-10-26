@@ -40,7 +40,17 @@
   In the <i>Coverage</i> tab the Java classes that should be prepared for
   coverage analysis can be selected. EMMA modifies these classes in a
   process called <i>instrumentation</i>. Instrumentation is possible for source
-  based classes as well as for binary libraries.
+  based classes as well as for binary libraries. At least one entry must be
+  selected to run an application in <i>Coverage</i> mode.
+</p>
+
+<h3>Coverage Data Collection</h3>
+
+<p>
+  Coverage data is collected and presented automatically <i>after</i> the
+  application has terminated on its own. If the Java VM is killed externally,
+  e.g. with the Eclipse <i>Terminate</i> action, coverage results can not be
+  shown.
 </p>
 
 <h3>In-place Instrumentation</h3>
