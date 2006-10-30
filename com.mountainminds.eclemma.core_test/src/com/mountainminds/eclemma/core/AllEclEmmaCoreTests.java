@@ -29,6 +29,9 @@ public class AllEclEmmaCoreTests {
   public static Test suite() {
     TestSuite suite = new TestSuite();
 
+    // com.mountainminds.eclemma.core.*
+    suite.addTestSuite(EclEmmaStatusTest.class);
+    
     // com.mountainminds.eclemma.internal.core.*
     suite.addTestSuite(SessionManagerTest.class);
     
