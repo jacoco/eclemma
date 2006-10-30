@@ -128,7 +128,7 @@ public class CoverageTab extends AbstractLaunchConfigurationTab {
           ICoverageLaunchConfigurationConstants.ATTR_INPLACE_INSTRUMENTATION, false);
       buttonInplaceInstrumentation.setSelection(inplace);
       classesviewer.setIncludeBinaries(!inplace);
-      classesviewer.setInput(CoverageTools.getClassFiles(configuration, false));
+      classesviewer.setInput(CoverageTools.getClassFiles(configuration, true));
       classesviewer.setSelectedClasses(
           CoverageTools.getClassFilesForInstrumentation(configuration, inplace));
     } catch (CoreException e) {

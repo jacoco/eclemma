@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
@@ -20,8 +19,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.jdt.launching.IRuntimeClasspathEntry;
-import org.eclipse.jdt.launching.JavaRuntime;
 
 import com.mountainminds.eclemma.core.analysis.IJavaCoverageListener;
 import com.mountainminds.eclemma.core.analysis.IJavaElementCoverage;
@@ -29,6 +26,7 @@ import com.mountainminds.eclemma.core.analysis.IJavaModelCoverage;
 import com.mountainminds.eclemma.core.analysis.ILineCoverage;
 import com.mountainminds.eclemma.core.launching.ICoverageLaunchConfigurationConstants;
 import com.mountainminds.eclemma.core.launching.ICoverageLaunchInfo;
+import com.mountainminds.eclemma.core.launching.ICoverageLauncher;
 import com.mountainminds.eclemma.internal.core.CoverageSession;
 import com.mountainminds.eclemma.internal.core.EclEmmaCorePlugin;
 import com.mountainminds.eclemma.internal.core.SessionExporter;
@@ -143,41 +141,22 @@ public final class CoverageTools {
     return (IClassFiles[]) l.toArray(arr);
   }
 
-  public static IClassFiles findClassFiles(
-      String location) throws CoreException {
-    Map map = EclEmmaCorePlugin.getInstance().getClassFiles();
-    return (IClassFiles) map.get(location);
-  }
-  
   /**
-   * Returns descriptors for class files from the class path of the given launch
-   * configuration.
+   * Returns descriptors for class files for the given launch configuration.
    * 
    * @param configuration
    *          launch configuration to look for class files 
-   * @param inplace 
-   *          flag whether instrumentation will happen inplace. In this case
-   *          binary libraries will be excluded
+   * @param includebinaries 
+   *          flag whether binary classpath entries should be included
    * 
-   * @return descriptors for all class for instrumentation
+   * @return descriptors for all class files
    *   
    * @throws CoreException
    */
-  public static IClassFiles[] getClassFiles(ILaunchConfiguration configuration, boolean inplace) throws CoreException {
-    List l = new ArrayList();
-    IRuntimeClasspathEntry[] entries = JavaRuntime
-        .computeUnresolvedRuntimeClasspath(configuration);
-    entries = JavaRuntime.resolveRuntimeClasspath(entries, configuration);
-    for (int i = 0; i < entries.length; i++) {
-      if (entries[i].getClasspathProperty() == IRuntimeClasspathEntry.USER_CLASSES) {
-        IClassFiles ic = findClassFiles(entries[i].getLocation());
-        if (ic != null && (!inplace || !ic.isBinary())) {
-          l.add(ic);
-        }
-      }
-    }
-    IClassFiles[] arr = new IClassFiles[l.size()];
-    return (IClassFiles[]) l.toArray(arr);
+  public static IClassFiles[] getClassFiles(ILaunchConfiguration configuration, boolean includebinaries) throws CoreException {
+    ICoverageLauncher launcher = (ICoverageLauncher)
+        configuration.getType().getDelegate(LAUNCH_MODE);
+    return launcher.getClassFiles(configuration, includebinaries);
   }
 
   /**
@@ -195,7 +174,7 @@ public final class CoverageTools {
    * @throws CoreException
    */
   public static IClassFiles[] getClassFilesForInstrumentation(ILaunchConfiguration configuration, boolean inplace) throws CoreException {
-    IClassFiles[] all = getClassFiles(configuration, inplace);
+    IClassFiles[] all = getClassFiles(configuration, !inplace);
     List filtered = new ArrayList();
     List selection = 
       configuration.getAttribute(ICoverageLaunchConfigurationConstants.ATTR_INSTRUMENTATION_PATHS, (List) null);

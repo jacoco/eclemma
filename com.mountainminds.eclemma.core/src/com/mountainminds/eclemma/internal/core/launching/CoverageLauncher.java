@@ -9,6 +9,9 @@ package com.mountainminds.eclemma.internal.core.launching;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
@@ -30,6 +33,7 @@ import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.Launch;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate2;
+import org.eclipse.jdt.launching.IRuntimeClasspathEntry;
 import org.eclipse.jdt.launching.IRuntimeClasspathProvider;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.osgi.util.NLS;
@@ -39,6 +43,7 @@ import com.mountainminds.eclemma.core.EclEmmaStatus;
 import com.mountainminds.eclemma.core.IClassFiles;
 import com.mountainminds.eclemma.core.launching.ICoverageLaunchConfigurationConstants;
 import com.mountainminds.eclemma.core.launching.ICoverageLaunchInfo;
+import com.mountainminds.eclemma.core.launching.ICoverageLauncher;
 import com.mountainminds.eclemma.internal.core.CoreMessages;
 import com.mountainminds.eclemma.internal.core.DebugOptions;
 import com.mountainminds.eclemma.internal.core.EclEmmaCorePlugin;
@@ -54,8 +59,7 @@ import com.vladium.emma.EMMAProperties;
  * @author Marc R. Hoffmann
  * @version $Revision$
  */
-public abstract class CoverageLauncher implements
-    ILaunchConfigurationDelegate2, IExecutableExtension {
+public abstract class CoverageLauncher implements ICoverageLauncher, IExecutableExtension {
 
   /**
    * Name of the file that will EMMA pick from the classpath to reads its
@@ -265,5 +269,32 @@ public abstract class CoverageLauncher implements
           DELEGATELAUNCHMODE, monitor);
     }
   }
+  
+  // ICoverageLauncher interface:
 
+  /* 
+   * The default implemenation delegates to the classpath provider.
+   */
+  public IClassFiles[] getClassFiles(ILaunchConfiguration configuration, boolean includebinaries) throws CoreException {
+    List l = new ArrayList();
+    IRuntimeClasspathEntry[] entries = JavaRuntime.computeUnresolvedRuntimeClasspath(configuration);
+    entries = JavaRuntime.resolveRuntimeClasspath(entries, configuration);
+    for (int i = 0; i < entries.length; i++) {
+      if (entries[i].getClasspathProperty() == IRuntimeClasspathEntry.USER_CLASSES) {
+        IClassFiles ic = findClassFiles(entries[i].getLocation());
+        if (ic != null && (includebinaries || !ic.isBinary())) {
+          l.add(ic);
+        }
+      }
+    }
+    IClassFiles[] arr = new IClassFiles[l.size()];
+    return (IClassFiles[]) l.toArray(arr);
+  }
+
+  protected IClassFiles findClassFiles(
+      String location) throws CoreException {
+    Map map = EclEmmaCorePlugin.getInstance().getClassFiles();
+    return (IClassFiles) map.get(location);
+  }
+  
 }
