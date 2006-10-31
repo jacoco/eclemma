@@ -39,6 +39,7 @@ import org.osgi.framework.BundleContext;
 
 import com.mountainminds.eclemma.core.CoverageTools;
 import com.mountainminds.eclemma.core.EclEmmaStatus;
+import com.mountainminds.eclemma.core.IClassFiles;
 import com.mountainminds.eclemma.core.ICoverageSession;
 import com.mountainminds.eclemma.core.ISessionManager;
 import com.mountainminds.eclemma.core.launching.ICoverageLaunchInfo;
@@ -224,7 +225,34 @@ public class EclEmmaCorePlugin extends Plugin {
     return path;
   }
 
+  /**
+   * Calculates the list of IClassFiles for the given Java project. Basically
+   * for every separate output location a entry will be returned.
+   *
+   * @param project  Java project to calculate IClassFiles for 
+   * @return
+   *   Array of IClassFiles objects
+   * @throws JavaModelException
+   *   Thrown when a problem with the underlying Java model occures.
+   */
+  public synchronized IClassFiles[] getClassFiles(IJavaProject project) throws JavaModelException {
+    Map binpaths = new HashMap();
+    IPackageFragmentRoot[] roots = project.getPackageFragmentRoots();
+    for (int j = 0; j < roots.length; j++) {
+      IPath binpath = getClassFileLocation(roots[j]);
+      ClassFiles classfiles = (ClassFiles) binpaths.get(binpath);
+      if (classfiles == null) {
+        IPackageFragmentRoot[] element = new IPackageFragmentRoot[] { roots[j] };
+        binpaths.put(binpath, new ClassFiles(element, binpath));
+      } else {
+        binpaths.put(binpath, classfiles.addRoot(roots[j]));
+      }
+    }
+    return (IClassFiles[]) binpaths.values().toArray(new IClassFiles[0]);
+  }
+  
   public synchronized Map getClassFiles() throws CoreException {
+    // TODO use getClassFiles(IJavaProject)
     if (instrumentedClasses == null) {
       instrumentedClasses = new HashMap();
       IJavaModel model = JavaCore.create(ResourcesPlugin.getWorkspace()

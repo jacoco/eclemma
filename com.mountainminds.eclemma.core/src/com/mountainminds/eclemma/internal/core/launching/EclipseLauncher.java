@@ -7,13 +7,22 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.core.launching;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
+import org.eclipse.jdt.core.IJavaModel;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 
 import com.mountainminds.eclemma.core.CoverageTools;
+import com.mountainminds.eclemma.core.IClassFiles;
 import com.mountainminds.eclemma.core.launching.ICoverageLaunchInfo;
+import com.mountainminds.eclemma.internal.core.EclEmmaCorePlugin;
 import com.mountainminds.eclemma.internal.core.PlatformVersion;
 
 /**
@@ -24,6 +33,8 @@ import com.mountainminds.eclemma.internal.core.PlatformVersion;
  */
 public class EclipseLauncher extends CoverageLauncher {
 
+  protected static final String PLUGIN_NATURE = "org.eclipse.pde.PluginNature"; //$NON-NLS-1$
+  
   /** Pre-Eclipse 3.2.0 VM arguments key */ 
   protected static final String PRE320VMARGS = "vmargs"; //$NON-NLS-1$
   protected static final String VMARGS = IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS;
@@ -54,6 +65,24 @@ public class EclipseLauncher extends CoverageLauncher {
     sb.append(info.getPropertiesJARFile());
     sb.append(";").append(CoverageTools.getEmmaJar().toOSString()); //$NON-NLS-1$
     workingcopy.setAttribute(vmargskey, sb.toString());
+  }
+
+  /*
+   * We list all source based class files of all plugins in the workspace. 
+   */
+  public IClassFiles[] getClassFiles(ILaunchConfiguration configuration, boolean includebinaries) throws CoreException {
+    IJavaModel model = JavaCore.create(ResourcesPlugin.getWorkspace().getRoot());
+    IJavaProject[] projects = model.getJavaProjects();
+    List l = new ArrayList();
+    for (int i = 0; i < projects.length; i++) {
+      if (projects[i].getProject().hasNature(PLUGIN_NATURE)) {
+        IClassFiles[] cf = EclEmmaCorePlugin.getInstance().getClassFiles(projects[i]);
+        for (int j = 0; j < cf.length; j++) {
+          if (!cf[j].isBinary()) l.add(cf[j]);
+        }
+      }
+    }
+    return (IClassFiles[]) l.toArray(new IClassFiles[0]);
   }
 
 }
