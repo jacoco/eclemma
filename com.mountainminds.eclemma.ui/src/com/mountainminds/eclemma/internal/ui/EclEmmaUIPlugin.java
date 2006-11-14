@@ -9,6 +9,7 @@ package com.mountainminds.eclemma.internal.ui;
 
 import java.net.URL;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -152,6 +153,10 @@ public class EclEmmaUIPlugin extends AbstractUIPlugin {
       message = "Internal Error"; //$NON-NLS-1$
     }
     instance.getLog().log(errorStatus(message, t));
+  }
+
+  public static void log(CoreException t) {
+    instance.getLog().log(t.getStatus());
   }
   
   public static ImageDescriptor getImageDescriptor(String key) {
