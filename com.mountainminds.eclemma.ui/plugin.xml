@@ -12,13 +12,108 @@
    <extension
          point="org.eclipse.debug.ui.launchGroups">
       <launchGroup
-            bannerImage="icons/full/wizban/run_coverage.gif"
+            bannerImage="$nl$/icons/full/wizban/run_coverage.gif"
             id="com.mountainminds.eclemma.ui.launchGroup.coverage"
-            image="icons/full/elcl16/runcoverage.gif"
+            image="$nl$/icons/full/elcl16/runcoverage.gif"
             label="%CoverageLaunchGroup.label"
             mode="coverage"
             title="%CoverageLaunchGroup.title"/>
    </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchShortcuts">
+      <shortcut
+            label="%JavaApplicationShortcut.label"
+            icon="$nl$/icons/full/etool16/java_launch.gif"
+            modes="coverage"
+            class="com.mountainminds.eclemma.internal.ui.launching.CoverageLaunchShortcut:org.eclipse.jdt.debug.ui.localJavaShortcut"
+            id="com.mountainminds.eclemma.ui.localJavaShortcut">
+         <contextualLaunch>
+           <enablement>
+             <with variable="selection">
+               <count value="1"/>
+               <iterate>
+                 <or>
+                   <test property="org.eclipse.debug.ui.matchesPattern" value="*.java"/>
+                   <test property="org.eclipse.debug.ui.matchesPattern" value="*.class"/>
+                   <adapt type="org.eclipse.jdt.core.IJavaElement"/>
+                   <instanceof value="org.eclipse.jdt.internal.ui.javaeditor.InternalClassFileEditorInput"/>
+                 </or>
+                 <test property="org.eclipse.jdt.debug.ui.hasMainType"/>
+               </iterate>
+             </with>
+           </enablement>
+  		 </contextualLaunch>
+      </shortcut>
+      <shortcut
+            label="%JUnitTestShortcut.label"
+            icon="$nl$/icons/full/etool16/junit_launch.gif"
+            class="com.mountainminds.eclemma.internal.ui.launching.CoverageLaunchShortcut:org.eclipse.jdt.junit.junitShortcut"
+            modes="coverage"
+            id="com.mountainminds.eclemma.ui.junitShortcut">
+         <contextualLaunch>
+           <enablement>
+             <with variable="selection">
+               <count value="1"/>
+               <iterate>
+                 <or>
+                   <test property="org.eclipse.debug.ui.matchesPattern" value="*.java"/>
+                   <test property="org.eclipse.debug.ui.matchesPattern" value="*.class"/>
+                   <adapt type="org.eclipse.jdt.core.IJavaElement"/>
+                 </or>
+                 <test property="org.eclipse.jdt.junit.isTest"/>
+               </iterate>
+             </with>
+           </enablement>
+         </contextualLaunch>
+      </shortcut>
+      <shortcut
+            label="%EclipseApplicationShortcut.label"
+            icon="$nl$/icons/full/etool16/eclipse_launch.gif"
+            modes="coverage"
+            class="com.mountainminds.eclemma.internal.ui.launching.CoverageLaunchShortcut:org.eclipse.pde.ui.runtimeWorkbenchShortcut"
+            id="com.mountainminds.eclemma.ui.workbenchShortcut">
+         <contextualLaunch>
+           <enablement>
+             <with variable="selection">
+               <or>
+                 <and>
+                   <count value="1"/>
+                   <iterate>
+                     <test property="org.eclipse.debug.ui.projectNature" value="org.eclipse.pde.PluginNature"/>
+                     <adapt type="org.eclipse.core.resources.IProject"/>
+		           </iterate>
+		         </and>
+		         <count value="0"/>
+		       </or>
+             </with>
+           </enablement>
+         </contextualLaunch>         
+      </shortcut>
+      <shortcut
+            label="%JUnitPluginTestShortcut.label"
+            icon="$nl$/icons/full/etool16/junitplugin_launch.gif"
+            modes="coverage"
+            class="com.mountainminds.eclemma.internal.ui.launching.CoverageLaunchShortcut:org.eclipse.pde.ui.junitWorkbenchShortcut"
+            id="com.mountainminds.eclemma.ui.junitPluginShortcut">
+         <contextualLaunch>
+           <enablement>
+             <with variable="selection">
+               <count value="1"/>
+               <iterate>
+                 <or>
+                   <test property="org.eclipse.debug.ui.matchesPattern" value="*.java"/>
+                   <test property="org.eclipse.debug.ui.matchesPattern" value="*.class"/>
+                   <adapt type="org.eclipse.jdt.core.IJavaElement"/>
+                 </or>
+                 <test property="org.eclipse.pde.core.PluginNature"/>
+                 <test property="org.eclipse.jdt.junit.isTest"/>
+               </iterate>
+             </with>
+           </enablement>
+         </contextualLaunch>
+      </shortcut>      
+   </extension>
+   
    <extension
          point="org.eclipse.ui.actionSets">
       <actionSet
@@ -34,9 +129,9 @@
          </menu>
          <action
                class="com.mountainminds.eclemma.internal.ui.actions.CoverageToolbarAction"
-               disabledIcon="icons/full/dlcl16/runcoverage.gif"
-               hoverIcon="icons/full/elcl16/runcoverage.gif"
-               icon="icons/full/elcl16/runcoverage.gif"
+               disabledIcon="$nl$/icons/full/dlcl16/runcoverage.gif"
+               hoverIcon="$nl$/icons/full/elcl16/runcoverage.gif"
+               icon="$nl$/icons/full/elcl16/runcoverage.gif"
                id="com.mountainminds.eclemma.ui.actions.CoverageDropDownAction"
                label="%CoverageDropDownAction.label"
                style="pulldown"
@@ -62,9 +157,9 @@
          <action
                class="com.mountainminds.eclemma.internal.ui.actions.CoverageLastAction"
                definitionId="com.mountainminds.eclemma.ui.commands.CoverageLast"
-               disabledIcon="icons/full/dlcl16/runcoverage.gif"
-               hoverIcon="icons/full/elcl16/runcoverage.gif"
-               icon="icons/full/elcl16/runcoverage.gif"
+               disabledIcon="$nl$/icons/full/dlcl16/runcoverage.gif"
+               hoverIcon="$nl$/icons/full/elcl16/runcoverage.gif"
+               icon="$nl$/icons/full/elcl16/runcoverage.gif"
                id="com.mountainminds.eclemma.ui.actions.CoverageLast"
                label="%CoverageLastAction.label"
                menubarPath="org.eclipse.ui.run/relaunchGroup"/>
@@ -104,7 +199,7 @@
             allowMultiple="false"
             category="org.eclipse.jdt.ui.java"
             class="com.mountainminds.eclemma.internal.ui.coverageview.CoverageView"
-            icon="icons/full/eview16/coverage.gif"
+            icon="$nl$/icons/full/eview16/coverage.gif"
             id="com.mountainminds.eclemma.ui.CoverageView"
             name="%coverageView.title"/>
    </extension>
@@ -117,7 +212,7 @@
             contributesToHeader="false"
             highlightPreferenceKey="fullcoverage_highlight"
             highlightPreferenceValue="true"
-            icon="icons/full/obj16/markerfull.gif"
+            icon="$nl$/icons/full/obj16/markerfull.gif"
             includeOnPreferencePage="true"
             isGoToNextNavigationTarget="false"
             isGoToNextNavigationTargetKey="fullcoverage_isGoToNextNavigationTargetKey"
@@ -142,7 +237,7 @@
             contributesToHeader="false"
             highlightPreferenceKey="partialcoverage_highlight"
             highlightPreferenceValue="true"
-            icon="icons/full/obj16/markerpartial.gif"
+            icon="$nl$/icons/full/obj16/markerpartial.gif"
             includeOnPreferencePage="true"
             isGoToNextNavigationTarget="false"
             isGoToNextNavigationTargetKey="fullcoverage_isGoToNextNavigationTargetKey"
@@ -167,7 +262,7 @@
             contributesToHeader="false"
             highlightPreferenceKey="nocoverage_highlight"
             highlightPreferenceValue="true"
-            icon="icons/full/obj16/markerno.gif"
+            icon="$nl$/icons/full/obj16/markerno.gif"
             includeOnPreferencePage="true"
             isGoToNextNavigationTarget="false"
             isGoToNextNavigationTargetKey="nocoverage_isGoToNextNavigationTargetKey"
@@ -260,7 +355,7 @@
          point="org.eclipse.ui.importWizards">
       <wizard
             class="com.mountainminds.eclemma.internal.ui.wizards.SessionImportWizard"
-            icon="icons/full/etool16/session_import.gif"
+            icon="$nl$/icons/full/etool16/session_import.gif"
             id="com.mountainminds.eclemma.ui.sessionImportWizard"
             name="%importReport.title">
          <description>%importReport.description</description>
@@ -270,7 +365,7 @@
          point="org.eclipse.ui.exportWizards">
       <wizard
             class="com.mountainminds.eclemma.internal.ui.wizards.SessionExportWizard"
-            icon="icons/full/etool16/session_export.gif"
+            icon="$nl$/icons/full/etool16/session_export.gif"
             id="com.mountainminds.eclemma.ui.sessionExportWizard"
             name="%exportReport.title">
          <description>%exportReport.description</description>
