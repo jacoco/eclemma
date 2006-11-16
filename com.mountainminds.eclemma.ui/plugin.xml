@@ -177,6 +177,26 @@
             description="%OpenCoverageConfigurationsCommand.description"
             id="com.mountainminds.eclemma.ui.commands.OpenCoverageConfiguration"
             name="%OpenCoverageConfigurationsCommand.name"/>
+      <command
+            categoryId="org.eclipse.debug.ui.category.run"
+            description="%CoverageJavaApplicationCommand.description"
+            id="com.mountainminds.eclemma.ui.localJavaShortcut.coverage"
+            name="%CoverageJavaApplicationCommand.name"/>
+      <command
+            categoryId="org.eclipse.debug.ui.category.run"
+            description="%CoverageJUnitTestCommand.description"
+            id="com.mountainminds.eclemma.ui.junitShortcut.coverage"
+            name="%CoverageJUnitTestCommand.name"/>
+      <command
+            categoryId="org.eclipse.debug.ui.category.run"
+            description="%CoverageEclipseApplicationCommand.description"
+            id="com.mountainminds.eclemma.ui.workbenchShortcut.coverage"
+            name="%CoverageEclipseApplicationCommand.name"/>
+      <command
+            categoryId="org.eclipse.debug.ui.category.run"
+            description="%CoverageJUnitPluginTestCommand.description"
+            id="com.mountainminds.eclemma.ui.junitPluginShortcut.coverage"
+            name="%CoverageJUnitPluginTestCommand.name"/>
    </extension>
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
