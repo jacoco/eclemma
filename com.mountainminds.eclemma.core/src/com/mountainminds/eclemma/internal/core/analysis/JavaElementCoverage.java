@@ -19,9 +19,9 @@ import com.mountainminds.eclemma.core.analysis.ILineCoverage;
  */
 public class JavaElementCoverage implements IJavaElementCoverage {
 
-  private final Counter blockCounter;
-  private final Counter lineCounter;
-  private final Counter instructionsCounter;
+  private Counter blockCounter;
+  private Counter lineCounter;
+  private Counter instructionsCounter;
   
   private final JavaElementCoverage parent;
   private final Lines lines;
@@ -29,9 +29,9 @@ public class JavaElementCoverage implements IJavaElementCoverage {
   
   public JavaElementCoverage(JavaElementCoverage parent, boolean haslines, long stamp) {
     this.parent = parent;
-    blockCounter = new Counter();
-    instructionsCounter = new Counter();
-    lineCounter = haslines ? null : new Counter();
+    blockCounter = Counter.COUNTER_0_0;
+    instructionsCounter = Counter.COUNTER_0_0;
+    lineCounter = haslines ? null : Counter.COUNTER_0_0;
     modificationStamp = stamp;
     this.lines = haslines ? new Lines() : null;
   }
@@ -65,10 +65,10 @@ public class JavaElementCoverage implements IJavaElementCoverage {
   }
   
   private void addBlock(int instructions, int[] lines, boolean covered, int totalLineDelta, int coveredLineDelta) {
-    blockCounter.increment(1, covered ? 1 : 0);
-    instructionsCounter.increment(instructions, covered ? instructions : 0);
+    blockCounter = blockCounter.increment(1, covered ? 1 : 0);
+    instructionsCounter = instructionsCounter.increment(instructions, covered ? instructions : 0);
     if (this.lines == null) {
-      lineCounter.increment(totalLineDelta, coveredLineDelta);
+      lineCounter = lineCounter.increment(totalLineDelta, coveredLineDelta);
       if (parent != null) {
         parent.addBlock(instructions, lines, covered, totalLineDelta, coveredLineDelta);
       }

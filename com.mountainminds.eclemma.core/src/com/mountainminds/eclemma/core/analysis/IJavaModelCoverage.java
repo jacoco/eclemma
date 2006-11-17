@@ -30,15 +30,15 @@ public interface IJavaModelCoverage extends IJavaElementCoverage {
     }
 
     public ICounter getBlockCounter() {
-      return new Counter();
+      return Counter.COUNTER_0_0;
     }
 
     public ICounter getLineCounter() {
-      return new Counter();
+      return Counter.COUNTER_0_0;
     }
 
     public ICounter getInstructionCounter() {
-      return new Counter();
+      return Counter.COUNTER_0_0;
     }
 
     public long getResourceModificationStamp() {

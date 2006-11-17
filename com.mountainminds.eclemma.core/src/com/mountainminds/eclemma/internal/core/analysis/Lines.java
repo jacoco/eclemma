@@ -32,6 +32,10 @@ public class Lines extends Counter implements ILineCoverage {
   private int lastline = 0;
 
   private int offset = 0;
+  
+  protected Lines() {
+    super(0, 0);
+  }
 
   private int getBlockAlignedOffset(int line) {
     return line - (line % BLOCK_INCREMENT);
@@ -98,6 +102,12 @@ public class Lines extends Counter implements ILineCoverage {
     }
   }
 
+  public Counter increment(int total, int covered) {
+    throw new UnsupportedOperationException();
+  }
+  
+  // ILineCoverage interface:
+  
   public byte[] getCoverage() {
     return coverage;
   }
