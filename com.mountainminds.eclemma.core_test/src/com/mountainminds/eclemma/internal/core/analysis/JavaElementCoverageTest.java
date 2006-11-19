@@ -73,7 +73,7 @@ public class JavaElementCoverageTest extends TestCase {
     assertEquals(2, c.getBlockCounter().getTotalCount());
     assertEquals(1, c.getBlockCounter().getCoveredCount());
     assertEquals(5, c.getLineCounter().getTotalCount());
-    assertEquals(2, c.getLineCounter().getCoveredCount());
+    assertEquals(3, c.getLineCounter().getCoveredCount());
     assertEquals(32, c.getInstructionCounter().getTotalCount());
     assertEquals(17, c.getInstructionCounter().getCoveredCount());
   }
@@ -103,9 +103,31 @@ public class JavaElementCoverageTest extends TestCase {
     assertEquals(2, p.getBlockCounter().getTotalCount());
     assertEquals(1, p.getBlockCounter().getCoveredCount());
     assertEquals(5, p.getLineCounter().getTotalCount());
-    assertEquals(2, p.getLineCounter().getCoveredCount());
+    assertEquals(3, p.getLineCounter().getCoveredCount());
     assertEquals(32, p.getInstructionCounter().getTotalCount());
     assertEquals(17, p.getInstructionCounter().getCoveredCount());
+  }
+  
+  public void testMethods() {
+    JavaElementCoverage p = new JavaElementCoverage(null, false, 0);
+    JavaElementCoverage c1 = new JavaElementCoverage(p, true, 0);
+    c1.addMethod(true);
+    JavaElementCoverage c2 = new JavaElementCoverage(p, true, 0);
+    c2.addMethod(false);
+
+    assertEquals(2, p.getMethodCounter().getTotalCount());
+    assertEquals(1, p.getMethodCounter().getCoveredCount());
+  }
+  
+  public void testTypes() {
+    JavaElementCoverage p = new JavaElementCoverage(null, false, 0);
+    JavaElementCoverage c1 = new JavaElementCoverage(p, true, 0);
+    c1.addType(true);
+    JavaElementCoverage c2 = new JavaElementCoverage(p, true, 0);
+    c2.addType(false);
+
+    assertEquals(2, p.getTypeCounter().getTotalCount());
+    assertEquals(1, p.getTypeCounter().getCoveredCount());
   }
   
 }

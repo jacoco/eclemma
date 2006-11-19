@@ -76,7 +76,7 @@ public class LinesTest extends TestCase {
     lines.addLines(new int[] {3}, true);
     lines.addLines(new int[] {3}, false);
     assertEquals("total", 1, lines.getTotalCount());
-    assertEquals("covered", 0, lines.getCoveredCount());
+    assertEquals("covered", 1, lines.getCoveredCount());
     assertEquals("line 3", ILineCoverage.PARTLY_COVERED, lines.getCoverage()[lines.getOffset() + 3]);
   }
   
@@ -84,7 +84,7 @@ public class LinesTest extends TestCase {
     lines.addLines(new int[] {3}, false);
     lines.addLines(new int[] {3}, true);
     assertEquals("total", 1, lines.getTotalCount());
-    assertEquals("covered", 0, lines.getCoveredCount());
+    assertEquals("covered", 1, lines.getCoveredCount());
     assertEquals("line 3", ILineCoverage.PARTLY_COVERED, lines.getCoverage()[lines.getOffset() + 3]);
   }
   
@@ -101,7 +101,7 @@ public class LinesTest extends TestCase {
     lines.addLines(new int[] {3}, false);
     lines.addLines(new int[] {3}, true);
     assertEquals("total", 1, lines.getTotalCount());
-    assertEquals("covered", 0, lines.getCoveredCount());
+    assertEquals("covered", 1, lines.getCoveredCount());
     assertEquals("line 3", ILineCoverage.PARTLY_COVERED, lines.getCoverage()[lines.getOffset() + 3]);
   }
   
@@ -110,7 +110,7 @@ public class LinesTest extends TestCase {
     lines.addLines(new int[] {3}, true);
     lines.addLines(new int[] {3}, false);
     assertEquals("total", 1, lines.getTotalCount());
-    assertEquals("covered", 0, lines.getCoveredCount());
+    assertEquals("covered", 1, lines.getCoveredCount());
     assertEquals("line 3", ILineCoverage.PARTLY_COVERED, lines.getCoverage()[lines.getOffset() + 3]);
   }
   
@@ -147,7 +147,7 @@ public class LinesTest extends TestCase {
     lines.addLines(new int[] {11, 12, 13}, true);
     lines.addLines(new int[] {12, 13, 14}, false);
     assertEquals("total", 5, lines.getTotalCount());
-    assertEquals("covered", 2, lines.getCoveredCount());
+    assertEquals("covered", 4, lines.getCoveredCount());
     byte[] c = lines.getCoverage();
     assertEquals("line 10", ILineCoverage.FULLY_COVERED,  c[lines.getOffset() + 10]);
     assertEquals("line 11", ILineCoverage.FULLY_COVERED,  c[lines.getOffset() + 11]);
@@ -168,13 +168,21 @@ public class LinesTest extends TestCase {
     lines.addLines(new int[] {11, 12, 13}, true);
     lines.addLines(new int[] {12, 13, 14}, false);
     assertEquals("total", 5, lines.getTotalCount());
-    assertEquals("covered", 0, lines.getCoveredCount());
+    assertEquals("covered", 3, lines.getCoveredCount());
     byte[] c = lines.getCoverage();
     assertEquals("line 10", ILineCoverage.NOT_COVERED,    c[lines.getOffset() + 10]);
     assertEquals("line 11", ILineCoverage.PARTLY_COVERED, c[lines.getOffset() + 11]);
     assertEquals("line 12", ILineCoverage.PARTLY_COVERED, c[lines.getOffset() + 12]);
     assertEquals("line 13", ILineCoverage.PARTLY_COVERED, c[lines.getOffset() + 13]);
     assertEquals("line 14", ILineCoverage.NOT_COVERED,    c[lines.getOffset() + 14]);
+  }
+  
+  public void testIncrement() {
+    try {
+      lines.increment(2, 1);
+      fail("Must not work.");
+    } catch (UnsupportedOperationException ex) { }
+    
   }
   
 }
