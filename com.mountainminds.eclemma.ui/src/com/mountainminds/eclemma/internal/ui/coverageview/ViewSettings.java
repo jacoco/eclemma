@@ -100,6 +100,44 @@ public class ViewSettings {
             UIMessages.SessionsViewColumnTotalLines_label
         };
       }
+    },
+    new ICounterMode() {
+      public int getIdx() {
+        return 3;
+      }
+      public String getActionLabel() {
+        return UIMessages.SessionsViewCounterModeMethodsAction_label;
+      }
+      public ICounter getCounter(IJavaElementCoverage coverage) {
+        return coverage.getMethodCounter();
+      }
+      public String[] getColumnHeaders() {
+        return new String[] {
+            UIMessages.SessionsViewColumnElement_label,
+            UIMessages.SessionsViewColumnCoverage_label,
+            UIMessages.SessionsViewColumnCoveredMethods_label,
+            UIMessages.SessionsViewColumnTotalMethods_label
+        };
+      }
+    },
+    new ICounterMode() {
+      public int getIdx() {
+        return 4;
+      }
+      public String getActionLabel() {
+        return UIMessages.SessionsViewCounterModeTypesAction_label;
+      }
+      public ICounter getCounter(IJavaElementCoverage coverage) {
+        return coverage.getTypeCounter();
+      }
+      public String[] getColumnHeaders() {
+        return new String[] {
+            UIMessages.SessionsViewColumnElement_label,
+            UIMessages.SessionsViewColumnCoverage_label,
+            UIMessages.SessionsViewColumnCoveredTypes_label,
+            UIMessages.SessionsViewColumnTotalTypes_label
+        };
+      }
     }
   };
   

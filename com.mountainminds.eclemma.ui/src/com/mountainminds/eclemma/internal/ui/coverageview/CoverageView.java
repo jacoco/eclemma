@@ -335,6 +335,8 @@ public class CoverageView extends ViewPart {
     mm.add(new SelectCounterModeAction(0, settings, this));
     mm.add(new SelectCounterModeAction(1, settings, this));
     mm.add(new SelectCounterModeAction(2, settings, this));
+    mm.add(new SelectCounterModeAction(3, settings, this));
+    mm.add(new SelectCounterModeAction(4, settings, this));
     mm.add(new Separator());
     mm.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
   }

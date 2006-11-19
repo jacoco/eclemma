@@ -43,6 +43,8 @@ public class UIMessages extends NLS {
   public static String SessionsViewCounterModeInstructionsAction_label;
   public static String SessionsViewCounterModeBlocksAction_label;
   public static String SessionsViewCounterModeLinesAction_label;
+  public static String SessionsViewCounterModeMethodsAction_label;
+  public static String SessionsViewCounterModeTypesAction_label;
   public static String SessionsViewShowProjectsAction_label;
   public static String SessionsViewShowProjectsAction_tooltip;
   public static String SessionsViewShowPackageRootsAction_label;
@@ -56,9 +58,13 @@ public class UIMessages extends NLS {
   public static String SessionsViewColumnCoveredInstructions_label;
   public static String SessionsViewColumnCoveredBlocks_label;
   public static String SessionsViewColumnCoveredLines_label;
+  public static String SessionsViewColumnCoveredMethods_label;
+  public static String SessionsViewColumnCoveredTypes_label;
   public static String SessionsViewColumnTotalInstructions_label;
   public static String SessionsViewColumnTotalBlocks_label;
   public static String SessionsViewColumnTotalLines_label;
+  public static String SessionsViewColumnTotalMethods_label;
+  public static String SessionsViewColumnTotalTypes_label;
   public static String SessionsView_columnCoverageValue;
   public static String SessionsView_loadingMessage;
 
