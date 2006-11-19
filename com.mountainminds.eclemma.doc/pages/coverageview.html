@@ -27,8 +27,8 @@
   The <i>Coverage</i> view shows all instrumented Java elements within the
   common Java hierarchy. For each element the total number of items and the
   number of items covered within the active session is shown, always including
-  the child elements of the respective Java element. You can select between the
-  number of bytecode instructions, basic blocks or lines.
+  the child elements of the respective Java element. You can select between
+  different metrics, see last section for details.
 </p>
 
 <p>
@@ -60,13 +60,41 @@
   in the coverage tree: Projects, package fragment roots (source folders or
   libraries), package fragments or types.</li>
   <li><b>Counter Mode</b>: Different counter modes can be selected from the
-  view's drop-down menu: bytecode instructions, basic blocks and lines.</li>  
+  view's drop-down menu: bytecode instructions, basic blocks, lines, methods
+  and types. See next sections for details.</li>  
 </ul>
 
 <p>
   Some of the actions are deactivated if there is no session or only a single
   session.
 </p>
+
+<h3>Counters</h3>
+
+<p>
+  When analyzing the coverage data collected during a coverage session different
+  counters are evaluated for each Java element. The <i>coverage
+  view</i> allows to select from its drop-down menu which counter should be
+  displayed:
+</p>
+
+<ul>
+  <li><b>Basic Blocks:</b> This is EMMA's fundamental unit of coverage. A basic
+  block is a sequence of bytecode instructions without any jumps or jump
+  targets. A basic block is considered as covered when its last instruction has
+  been executed.</li>
+  <li><b>Lines:</b> The number of covered Java source code lines. A source line
+  is considered as covered if it contains at least one covered basic block. This
+  counter is only available if the line numbers are included in the compiled
+  class files (debug mode).</li>
+  <li><b>Bytecode Instructions:</b> The number of bytecode instructions within
+  the basic blocks. If no line information is available this is a good
+  approximation for line coverage.</li>
+  <li><b>Methods:</b> A method is considered as covered if at least one basic
+  block of the method has been executed.</li>
+  <li><b>Types:</b> A Java type is considered as covered if it has been loaded
+  and initialized.</li>
+</ul>
 
 </body>
 </html>
