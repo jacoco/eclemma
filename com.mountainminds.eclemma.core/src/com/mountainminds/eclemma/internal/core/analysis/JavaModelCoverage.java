@@ -150,8 +150,7 @@ public class JavaModelCoverage extends JavaElementCoverage implements
       if (descriptor == null) {
         return null;
       } else {
-        DataHolder data = coveragedata == null ? null : coveragedata
-            .getCoverage(descriptor);
+        DataHolder data = coveragedata == null ? null : coveragedata.getCoverage(descriptor);
         if (data != null && data.m_stamp != descriptor.getStamp()) {
           TRACER.trace("Invalid meta data signature for {0}.", descriptor.getClassVMName()); //$NON-NLS-1$
           return null;
@@ -173,10 +172,12 @@ public class JavaModelCoverage extends JavaElementCoverage implements
   private class MethodVisitor implements IMethodVisitor {
 
     private final IType type;
+    private final DataHolder data;
     private final Map descriptors;
     
     MethodVisitor(IType type, ClassDescriptor descriptor, DataHolder data) {
       this.type = type;
+      this.data = data;
       descriptors = new HashMap();
       MethodDescriptor[] methods = descriptor.getMethods();
       boolean[][] covered = data == null ? null : data.m_coverage;
@@ -192,7 +193,7 @@ public class JavaModelCoverage extends JavaElementCoverage implements
       if (mc == null) {
         TRACER.trace("Method {0} not found in {1}", vmsignature, type.getElementName()); //$NON-NLS-1$
       } else {
-        processElementCoverage(method, mc);
+        processMethodCoverage(method, mc);
       }      
     }
 
@@ -200,8 +201,9 @@ public class JavaModelCoverage extends JavaElementCoverage implements
       // process additional code not available in the source model:
       for (Iterator i = descriptors.values().iterator(); i.hasNext(); ) {
         MethodCoverage mc = (MethodCoverage) i.next();
-        processElementCoverage(type, mc);
-      }      
+        processMethodCoverage(type, mc);
+      }
+      getCoverage(type, false).addType(data != null);
     }
     
   }
@@ -213,12 +215,18 @@ public class JavaModelCoverage extends JavaElementCoverage implements
       this.descriptor = descriptor;
       this.covered = covered;
     }
+    boolean isCovered() {
+      for (int i = 0; covered != null && i < covered.length; i++) {
+        if (covered[i]) return true;
+      }
+      return false;
+    }
   }
   
-  private void processElementCoverage(IJavaElement element, MethodCoverage mc) {
+  private void processMethodCoverage(IJavaElement element, MethodCoverage mc) {
     MethodDescriptor descriptor = mc.descriptor;
-    JavaElementCoverage coverage = getCoverage(element, descriptor
-        .getBlockMap() != null);
+    JavaElementCoverage coverage = getCoverage(element, descriptor.getBlockMap() != null);
+    coverage.addMethod(mc.isCovered());
     int[] blocksizes = descriptor.getBlockSizes();
     if (blocksizes == null)
       return;

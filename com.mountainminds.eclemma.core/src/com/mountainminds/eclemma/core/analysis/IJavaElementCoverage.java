@@ -39,6 +39,20 @@ public interface IJavaElementCoverage {
   public ICounter getLineCounter();
 
   /**
+   * Returns the counter for methods.
+   * 
+   * @return counter for methods
+   */
+  public ICounter getMethodCounter();
+  
+  /**
+   * Returns the counter for types.
+   * 
+   * @return counter for types
+   */
+  public ICounter getTypeCounter();
+  
+  /**
    * Returns the counter for instructions.
    * 
    * @return counter for instructions

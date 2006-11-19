@@ -41,6 +41,14 @@ public interface IJavaModelCoverage extends IJavaElementCoverage {
       return Counter.COUNTER_0_0;
     }
 
+    public ICounter getMethodCounter() {
+      return Counter.COUNTER_0_0;
+    }
+
+    public ICounter getTypeCounter() {
+      return Counter.COUNTER_0_0;
+    }
+
     public long getResourceModificationStamp() {
       return 0;
     }

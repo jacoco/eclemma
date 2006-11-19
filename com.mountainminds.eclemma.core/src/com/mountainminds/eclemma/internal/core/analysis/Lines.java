@@ -93,9 +93,9 @@ public class Lines extends Counter implements ILineCoverage {
         if (isCovered)
           covered++;
         break;
-      case FULLY_COVERED:
-        if (!isCovered)
-          covered--;
+      case NOT_COVERED:
+        if (isCovered)
+          covered++;
         break;
       }
       coverage[idx] |= isCovered ? FULLY_COVERED : NOT_COVERED;

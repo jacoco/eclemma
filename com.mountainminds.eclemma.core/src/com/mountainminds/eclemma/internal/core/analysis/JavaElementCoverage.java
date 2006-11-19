@@ -19,6 +19,8 @@ import com.mountainminds.eclemma.core.analysis.ILineCoverage;
  */
 public class JavaElementCoverage implements IJavaElementCoverage {
 
+  private Counter typeCounter;
+  private Counter methodCounter;
   private Counter blockCounter;
   private Counter lineCounter;
   private Counter instructionsCounter;
@@ -29,35 +31,13 @@ public class JavaElementCoverage implements IJavaElementCoverage {
   
   public JavaElementCoverage(JavaElementCoverage parent, boolean haslines, long stamp) {
     this.parent = parent;
+    typeCounter = Counter.COUNTER_0_0;
+    methodCounter = Counter.COUNTER_0_0;
     blockCounter = Counter.COUNTER_0_0;
     instructionsCounter = Counter.COUNTER_0_0;
     lineCounter = haslines ? null : Counter.COUNTER_0_0;
     modificationStamp = stamp;
     this.lines = haslines ? new Lines() : null;
-  }
-
-  public ICounter getBlockCounter() {
-    return blockCounter;
-  }
-
-  public ICounter getLineCounter() {
-    if (lines == null) {
-      return lineCounter;
-    } else {
-      return lines; 
-    }
-  }
-
-  public ICounter getInstructionCounter() {
-    return instructionsCounter;
-  }
-
-  public ILineCoverage getLineCoverage() {
-    return lines;
-  }
-  
-  public long getResourceModificationStamp() {
-    return modificationStamp;
   }
   
   public void addBlock(int instructions, int[] lines, boolean covered) {
@@ -84,6 +64,54 @@ public class JavaElementCoverage implements IJavaElementCoverage {
         }
       }
     }
+  }
+  
+  public void addMethod(boolean covered) {
+    methodCounter = methodCounter.increment(1, covered ? 1 : 0);
+    if (parent != null) {
+      parent.addMethod(covered);
+    }
+  }
+
+  public void addType(boolean covered) {
+    typeCounter = typeCounter.increment(1, covered ? 1 : 0);
+    if (parent != null) {
+      parent.addType(covered);
+    }
+  }
+
+  // IJavaElementCoverage implementation:
+  
+  public ICounter getBlockCounter() {
+    return blockCounter;
+  }
+
+  public ICounter getLineCounter() {
+    if (lines == null) {
+      return lineCounter;
+    } else {
+      return lines; 
+    }
+  }
+
+  public ICounter getInstructionCounter() {
+    return instructionsCounter;
+  }
+
+  public ILineCoverage getLineCoverage() {
+    return lines;
+  }
+    
+  public ICounter getMethodCounter() {
+    return methodCounter;
+  }
+
+  public ICounter getTypeCounter() {
+    return typeCounter;
+  }
+
+  public long getResourceModificationStamp() {
+    return modificationStamp;
   }
   
 }
