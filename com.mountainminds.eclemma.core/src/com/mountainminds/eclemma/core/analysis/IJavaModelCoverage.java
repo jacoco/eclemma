@@ -16,13 +16,19 @@ import org.eclipse.jdt.core.IType;
 import com.mountainminds.eclemma.internal.core.analysis.Counter;
 
 /**
- * TODO
+ * The interface for coverage information attached to the Java model. It allows
+ * to retrieve coverage information for any Java model element and holds lists
+ * of entry points.
  * 
  * @author  Marc R. Hoffmann
  * @version $Revision$
  */
 public interface IJavaModelCoverage extends IJavaElementCoverage {
   
+  /**
+   * This instance is used to indicate that a coverage session is currently
+   * loading.
+   */
   public static final IJavaModelCoverage LOADING = new IJavaModelCoverage() {
 
     public ILineCoverage getLineCoverage() {
@@ -75,14 +81,42 @@ public interface IJavaModelCoverage extends IJavaElementCoverage {
     
   };
   
+  /**
+   * Returns all Java projects where coverage information is available for.
+   * 
+   * @return  list of Java projects
+   */
   public IJavaProject[] getInstrumentedProjects();
 
+  /**
+   * Returns all package fragment roots where coverage information is available
+   * for.
+   * 
+   * @return  list of package fragment roots.
+   */
   public IPackageFragmentRoot[] getInstrumentedPackageFragmentRoots();
 
+  /**
+   * Returns all package fragments where coverage information is available for.
+   * 
+   * @return  list of package fragments
+   */
   public IPackageFragment[] getInstrumentedPackageFragments();
 
+  /**
+   * Returns all Java types where coverage information is available for.
+   * 
+   * @return  list of Java types
+   */
   public IType[] getInstrumentedTypes();
   
+  /**
+   * Returns the coverage information associated with the given Java element. If
+   * no information is available <code>null</code> is returned.
+   * 
+   * @param element  Java element to look for coverage information
+   * @return  associated coverage information of null
+   */
   public IJavaElementCoverage getCoverageFor(IJavaElement element);
   
 }
