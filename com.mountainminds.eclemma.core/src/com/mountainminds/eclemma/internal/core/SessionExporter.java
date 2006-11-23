@@ -76,21 +76,24 @@ public class SessionExporter implements ISessionExporter {
     IInstrumentation[] instrs = session.getInstrumentations();
     IPath[] coveragefiles = session.getCoverageDataFiles();
     monitor.beginTask(NLS.bind(CoreMessages.ExportingSession_task, session.getDescription()),
-        2 * instrs.length + coveragefiles.length + 1);
+       instrs.length + coveragefiles.length + 1);
     List datapath = new ArrayList();
     List sourcepath = new ArrayList();
     for (int i = 0; i < instrs.length; i++) {
-      datapath.add(instrs[i].getMetaDataFile().toOSString());
-      monitor.worked(1);
-      if (format == HTML_FORMAT) {
-        ISourceLocation[] srcs = instrs[i].getClassFiles().getSourceLocations();
-        IProgressMonitor srcmonitor = new SubProgressMonitor(monitor, 1);
-        srcmonitor.beginTask("", srcs.length); //$NON-NLS-1$
-        for (int j = 0; j < srcs.length; j++) {
-          srcs[j].extract(new SubProgressMonitor(srcmonitor, 1));
-          sourcepath.add(srcs[j].getPath().toOSString());
+      if (instrs[i].getMetaDataFile().toFile().exists()) {
+        datapath.add(instrs[i].getMetaDataFile().toOSString());
+        if (format == HTML_FORMAT) {
+          ISourceLocation[] srcs = instrs[i].getClassFiles().getSourceLocations();
+          IProgressMonitor srcmonitor = new SubProgressMonitor(monitor, 1);
+          srcmonitor.beginTask("", srcs.length); //$NON-NLS-1$
+          for (int j = 0; j < srcs.length; j++) {
+            srcs[j].extract(new SubProgressMonitor(srcmonitor, 1));
+            sourcepath.add(srcs[j].getPath().toOSString());
+          }
+          srcmonitor.done();
+        } else {
+          monitor.worked(1);
         }
-        srcmonitor.done();
       } else {
         monitor.worked(1);
       }
