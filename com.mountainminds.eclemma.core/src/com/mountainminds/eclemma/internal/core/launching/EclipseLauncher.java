@@ -7,6 +7,7 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.core.launching;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,7 +64,7 @@ public class EclipseLauncher extends CoverageLauncher {
     StringBuffer sb = new StringBuffer(workingcopy.getAttribute(vmargskey, "")); //$NON-NLS-1$
     sb.append(" ").append(BOOTPATHARG); //$NON-NLS-1$
     sb.append(info.getPropertiesJARFile());
-    sb.append(";").append(CoverageTools.getEmmaJar().toOSString()); //$NON-NLS-1$
+    sb.append(File.pathSeparatorChar).append(CoverageTools.getEmmaJar().toOSString()); //$NON-NLS-1$
     workingcopy.setAttribute(vmargskey, sb.toString());
   }
 
