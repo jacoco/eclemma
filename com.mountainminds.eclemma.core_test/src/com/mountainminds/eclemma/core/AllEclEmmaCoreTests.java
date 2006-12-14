@@ -7,16 +7,14 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.core;
 
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
 import com.mountainminds.eclemma.internal.core.SessionManagerTest;
 import com.mountainminds.eclemma.internal.core.analysis.CounterTest;
 import com.mountainminds.eclemma.internal.core.analysis.JavaElementCoverageTest;
-import com.mountainminds.eclemma.internal.core.analysis.JavaElementsTraverserTest;
 import com.mountainminds.eclemma.internal.core.analysis.LinesTest;
-import com.mountainminds.eclemma.internal.core.analysis.MethodResolverTest1;
-import com.mountainminds.eclemma.internal.core.analysis.MethodResolverTest2;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import com.mountainminds.eclemma.internal.core.analysis.TypeTraverserTest;
 
 /**
  * Suite of all EclEmma core tests.
@@ -38,11 +36,9 @@ public class AllEclEmmaCoreTests {
     // com.mountainminds.eclemma.internal.core.analysis.*
     suite.addTestSuite(CounterTest.class);
     suite.addTestSuite(JavaElementCoverageTest.class);
-    suite.addTestSuite(JavaElementsTraverserTest.class);
+    suite.addTestSuite(TypeTraverserTest.class);
     suite.addTestSuite(LinesTest.class);
-    suite.addTest(MethodResolverTest1.suite());
-    suite.addTest(MethodResolverTest2.suite());
-    
+   
     return suite;
   }
 

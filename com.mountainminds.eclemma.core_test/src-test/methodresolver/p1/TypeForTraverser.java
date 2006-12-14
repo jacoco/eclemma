@@ -8,38 +8,81 @@
 package methodresolver.p1;
 
 /**
- * Test project for unit tests.
+ * Test type for TypeTraverser.
  * 
- * @author  Marc R. Hoffmann
+ * @author Marc R. Hoffmann
  * @version $Revision$
  */
 public class TypeForTraverser {
-  
-  static {
-    new Runnable() {
-      public void run() {
-        System.out.println("do something");
-      }
-    };
-  }
-  
-  public Object member1 =  new Runnable() {
-    public void run() {
-      System.out.println("do something");
-    }
-  };
-  
-  public TypeForTraverser() {
-    System.out.println("do something");
+
+  public static void doit() {
   }
 
-  public void method1() {
+  // Nested class with anonymous inner class
+
+  static class InnerA {
+    public void test() {
+      new Runnable() {
+        public void run() {
+          doit();
+        }
+      };
+    }
+  }
+
+  // Anonymous class with named inner class:
+
+  static {
+    new Runnable() {
+      class InnerB {
+        public void test() {
+          doit();
+        }
+      }
+
+      public void run() {
+        new InnerB().test();
+      }
+    }.run();
+  }
+
+  // Another anonymous class with named inner class:
+
+  static {
+    new Runnable() {
+      class InnerC {
+        public void test() {
+          doit();
+        }
+      }
+
+      public void run() {
+        new InnerC().test();
+      }
+    }.run();
+  }
+
+  // Member Initializer with anonymous class:
+
+  public Object member1 = new Runnable() {
+    public void run() {
+      doit();
+    }
+  };
+
+  // Method with anonymous class:
+
+  public void test() {
     Runnable r = new Runnable() {
       public void run() {
-        System.out.println("do something");
+        doit();
       }
     };
     r.run();
   };
+
+  public static void main(String[] args) {
+
+  }
 
 }
