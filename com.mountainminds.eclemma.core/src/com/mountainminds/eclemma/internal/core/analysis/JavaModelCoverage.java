@@ -26,6 +26,7 @@ import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.Signature;
 import org.eclipse.osgi.util.NLS;
 
 import com.mountainminds.eclemma.core.EclEmmaStatus;
@@ -57,7 +58,21 @@ public class JavaModelCoverage extends JavaElementCoverage implements
 
   /** Maps Java elements to coverage objects */
   private final Map coveragemap = new HashMap();
+  
+  /** Maps IType to UnboundMethodCoverage[] for lazy method resolving */
+  private final Map lazymethodcoverage = new HashMap();
 
+  private static class UnboundMethodCoverage {
+    final String name;
+    final String signature;
+    final IJavaElementCoverage coverage;
+    UnboundMethodCoverage(String name, String signature, IJavaElementCoverage coverage) {
+      this.name = name;
+      this.signature = signature;
+      this.coverage = coverage;
+    }
+  }
+  
   private final List projects = new ArrayList();
 
   private final List fragmentroots = new ArrayList();
@@ -126,7 +141,7 @@ public class JavaModelCoverage extends JavaElementCoverage implements
             metadatafile, e));
       }
       IPackageFragmentRoot[] roots = instrumentation.getClassFiles().getPackageFragmentRoots();
-      JavaElementsTraverser jep = new JavaElementsTraverser(roots);
+      TypeTraverser jep = new TypeTraverser(roots);
       jep.process(new TypeVisitor(metadata, coveragedata), monitor);
     }
   }
@@ -145,17 +160,21 @@ public class JavaModelCoverage extends JavaElementCoverage implements
       }
     }
 
-    public IMethodVisitor visit(IType type, String vmname) {
+    public void visit(IType type, String vmname) {
       ClassDescriptor descriptor = (ClassDescriptor) descriptors.remove(vmname);
-      if (descriptor == null) {
-        return null;
-      } else {
+      if (descriptor != null) {
         DataHolder data = coveragedata == null ? null : coveragedata.getCoverage(descriptor);
         if (data != null && data.m_stamp != descriptor.getStamp()) {
           TRACER.trace("Invalid meta data signature for {0}.", descriptor.getClassVMName()); //$NON-NLS-1$
-          return null;
         } else {
-          return new MethodVisitor(type, descriptor, data);
+          MethodDescriptor[] methods = descriptor.getMethods();
+          UnboundMethodCoverage[] ubcoverage = new UnboundMethodCoverage[methods.length];
+          boolean[][] covered = data == null ? null : data.m_coverage;
+          for (int i = 0; i < methods.length; i++) {
+            ubcoverage[i] = processMethodCoverage(type, methods[i], covered == null ? null : covered[i]);
+          }
+          lazymethodcoverage.put(type, ubcoverage);
+          getCoverage(type, false).addType(data != null);
         }
       }
     }
@@ -169,79 +188,38 @@ public class JavaModelCoverage extends JavaElementCoverage implements
     
   }
   
-  private class MethodVisitor implements IMethodVisitor {
-
-    private final IType type;
-    private final DataHolder data;
-    private final Map descriptors;
-    
-    MethodVisitor(IType type, ClassDescriptor descriptor, DataHolder data) {
-      this.type = type;
-      this.data = data;
-      descriptors = new HashMap();
-      MethodDescriptor[] methods = descriptor.getMethods();
-      boolean[][] covered = data == null ? null : data.m_coverage;
-      for (int i = 0; i < methods.length; i++) {
-        MethodDescriptor md = methods[i];
-        MethodCoverage mc = new MethodCoverage(md, covered == null ? null : covered[i]);
-        descriptors.put(md.getName() + md.getDescriptor(), mc);
-      }
+  private boolean isMethodCovered(boolean[] blocks) {
+    for (int i = 0; blocks != null && i < blocks.length; i++) {
+      if (blocks[i]) return true;
     }
-    
-    public void visit(IMethod method, String vmsignature) {
-      MethodCoverage mc = (MethodCoverage) descriptors.remove(vmsignature);
-      if (mc == null) {
-        TRACER.trace("Method {0} not found in {1}", vmsignature, type.getElementName()); //$NON-NLS-1$
-      } else {
-        processMethodCoverage(method, mc);
-      }      
-    }
-
-    public void done() {
-      // process additional code not available in the source model:
-      for (Iterator i = descriptors.values().iterator(); i.hasNext(); ) {
-        MethodCoverage mc = (MethodCoverage) i.next();
-        processMethodCoverage(type, mc);
-      }
-      getCoverage(type, false).addType(data != null);
-    }
-    
+    return false;
   }
   
-  private static class MethodCoverage {
-    final MethodDescriptor descriptor;
-    final  boolean[] covered;
-    MethodCoverage(MethodDescriptor descriptor, boolean[] covered) {
-      this.descriptor = descriptor;
-      this.covered = covered;
-    }
-    boolean isCovered() {
-      for (int i = 0; covered != null && i < covered.length; i++) {
-        if (covered[i]) return true;
-      }
-      return false;
-    }
-  }
-  
-  private void processMethodCoverage(IJavaElement element, MethodCoverage mc) {
-    MethodDescriptor descriptor = mc.descriptor;
-    JavaElementCoverage coverage = getCoverage(element, descriptor.getBlockMap() != null);
-    coverage.addMethod(mc.isCovered());
+  private UnboundMethodCoverage processMethodCoverage(IType parenttype, MethodDescriptor descriptor, boolean[] covered) {
+    boolean haslines = descriptor.getBlockMap() != null;
+    JavaElementCoverage parentcoverage = getCoverage(parenttype, haslines);
+    IResource res = parenttype.getResource();
+    // TODO this is the current time stamp, actually we would need the stamp
+    // at the time the resource was instrumented.
+    long stamp = res == null ? 0 : res.getModificationStamp();
+    JavaElementCoverage coverage = new JavaElementCoverage(parentcoverage, haslines, stamp);
+    coverage.addMethod(isMethodCovered(covered));
     int[] blocksizes = descriptor.getBlockSizes();
-    if (blocksizes == null)
-      return;
-    int blockcount = blocksizes.length;
-    int[][] blocklines = descriptor.getBlockMap();
-    for (int i = 0; i < blockcount; i++) {
-      coverage.addBlock(blocksizes[i], blocklines == null ? null : blocklines[i],
-          mc.covered == null ? false : mc.covered[i]);
+    if (blocksizes != null) {
+      int blockcount = blocksizes.length;
+      int[][] blocklines = descriptor.getBlockMap();
+      for (int i = 0; i < blockcount; i++) {
+        coverage.addBlock(blocksizes[i], blocklines == null ? null : blocklines[i],
+            covered == null ? false : covered[i]);
+      }
     }
+    return new UnboundMethodCoverage(descriptor.getName(), descriptor.getDescriptor(), coverage);
   }
 
   private JavaElementCoverage getCoverage(IJavaElement element, boolean haslines) {
     if (element == null)
       return null;
-    JavaElementCoverage c = (JavaElementCoverage) coveragemap.get(element);
+    JavaElementCoverage c = (JavaElementCoverage) getCoverageFor(element);
     if (c == null) {
       IResource res = element.getResource();
       // TODO this is the current time stamp, actually we would need the stamp
@@ -280,6 +258,30 @@ public class JavaModelCoverage extends JavaElementCoverage implements
     return c;
   }
 
+  private void resolveUnboundMethods(IType type) {
+    UnboundMethodCoverage[] ubcoverage = (UnboundMethodCoverage[]) lazymethodcoverage.remove(type);
+    if (ubcoverage != null) {
+      for (int i = 0; i < ubcoverage.length; i++) {
+        String name = ubcoverage[i].name;
+        if (name.equals("<init>")) {
+          name = type.getElementName();
+        }
+        String[] paramtypes = Signature.getParameterTypes(ubcoverage[i].signature); 
+        for (int j = 0; j < paramtypes.length; j++) {
+          paramtypes[j] = paramtypes[j].replace('/', '.');
+        }
+        IMethod pattern = type.getMethod(name, paramtypes);
+        IMethod[] hits = type.findMethods(pattern);
+        if (hits != null && hits.length == 1) {
+          coveragemap.put(hits[0], ubcoverage[i].coverage);
+        } else {
+          TRACER.trace("Method not found in Java model: {0}.{1}{2}", type.getElementName(), name, ubcoverage[i].signature);
+        }
+      }
+    }
+  }
+  
+  
   // IJavaModelCoverage interface
 
   public IJavaProject[] getInstrumentedProjects() {
@@ -303,7 +305,12 @@ public class JavaModelCoverage extends JavaElementCoverage implements
   }
 
   public IJavaElementCoverage getCoverageFor(IJavaElement element) {
-    return (IJavaElementCoverage) coveragemap.get(element);
+    IJavaElementCoverage c = (IJavaElementCoverage) coveragemap.get(element);
+    if (c == null && element.getElementType() == IJavaElement.METHOD) {
+      resolveUnboundMethods((IType) element.getParent());
+      c = (IJavaElementCoverage) coveragemap.get(element);
+    }
+    return c;
   }
 
 }
