@@ -24,7 +24,7 @@ import com.mountainminds.eclemma.core.ISessionListener;
 import com.mountainminds.eclemma.core.ISessionManager;
 import com.mountainminds.eclemma.core.analysis.IJavaCoverageListener;
 import com.mountainminds.eclemma.core.analysis.IJavaModelCoverage;
-import com.mountainminds.eclemma.internal.core.analysis.JavaModelCoverage;
+import com.mountainminds.eclemma.internal.core.analysis.SessionAnalyzer;
 
 /**
  * Internal utility class that loads the coverage data asynchronously, holds the
@@ -82,7 +82,7 @@ public class JavaCoverageLoader {
     protected IStatus run(IProgressMonitor monitor) {
       IJavaModelCoverage c;
       try {
-        c = new JavaModelCoverage(session, monitor);
+        c = new SessionAnalyzer().processSession(session, monitor);
       } catch (CoreException e) {
         return e.getStatus();
       }

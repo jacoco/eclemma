@@ -7,6 +7,8 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.core.analysis;
 
+import org.eclipse.core.resources.IResource;
+
 import com.mountainminds.eclemma.core.analysis.ICounter;
 import com.mountainminds.eclemma.core.analysis.IJavaElementCoverage;
 import com.mountainminds.eclemma.core.analysis.ILineCoverage;
@@ -39,6 +41,11 @@ public class JavaElementCoverage implements IJavaElementCoverage {
     modificationStamp = stamp;
     this.lines = haslines ? new Lines() : null;
   }
+
+  public JavaElementCoverage(JavaElementCoverage parent, boolean haslines, IResource resource) {
+    this(parent, haslines, resource == null ? 0 : resource.getModificationStamp());
+  }
+
   
   public void addBlock(int instructions, int[] lines, boolean covered) {
     addBlock(instructions, lines, covered, 0, 0);
