@@ -52,20 +52,40 @@ public class EclipseLauncher extends CoverageLauncher {
     return is320 ? VMARGS : PRE320VMARGS;
   }
   
+  /**
+   * Adds the given single argument to the VM arguments. If it contains white
+   * spaces the argument is included in double quotes.
+   * 
+   * @param workingcopy  configuration to modify
+   * @param arg  additional VM argument
+   * @throws CoreException  may be thrown by the launch configuration
+   */
+  protected void addVMArgument(ILaunchConfigurationWorkingCopy workingcopy, String arg) throws CoreException {
+    String vmargskey = getVMArgsKey(); 
+    StringBuffer sb = new StringBuffer(workingcopy.getAttribute(vmargskey, "")); //$NON-NLS-1$
+    if (sb.length() > 0) {
+      sb.append(' ');
+    }
+    if (arg.indexOf(' ') == -1) {
+      sb.append(arg);
+    } else {
+      sb.append('"').append(arg).append('"');
+    }
+    workingcopy.setAttribute(vmargskey, sb.toString());
+  }
+  
   protected boolean hasInplaceInstrumentation(ILaunchConfiguration configuration) {
     // Inplace instrumentation is required for plugin launches, as we can't
     // modify the classpath
     return true;
   }
-
+  
   protected void modifyConfiguration(ILaunchConfigurationWorkingCopy workingcopy,
       ICoverageLaunchInfo info) throws CoreException {
-    String vmargskey = getVMArgsKey(); 
-    StringBuffer sb = new StringBuffer(workingcopy.getAttribute(vmargskey, "")); //$NON-NLS-1$
-    sb.append(" ").append(BOOTPATHARG); //$NON-NLS-1$
+    StringBuffer sb = new StringBuffer(BOOTPATHARG);
     sb.append(info.getPropertiesJARFile());
-    sb.append(File.pathSeparatorChar).append(CoverageTools.getEmmaJar().toOSString()); //$NON-NLS-1$
-    workingcopy.setAttribute(vmargskey, sb.toString());
+    sb.append(File.pathSeparatorChar).append(CoverageTools.getEmmaJar().toOSString());
+    addVMArgument(workingcopy, sb.toString());
   }
 
   /*
