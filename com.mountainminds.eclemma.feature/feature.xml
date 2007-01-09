@@ -3,14 +3,16 @@
       id="com.mountainminds.eclemma.feature"
       label="%featureName"
       version="0.1.8"
-      provider-name="%providerName">
+      provider-name="%providerName"
+      plugin="com.mountainminds.eclemma.ui">
 
-   <description url="http://www.mountainminds.com/products/eclemma">
-      EclEmma is a free Java code coverage tool for Eclipse, available under the Eclipse Public License (EPL).
+   <description url="http://www.eclemma.org/">
+      EclEmma is a free Java code coverage tool for Eclipse, available
+under the Eclipse Public License (EPL).
    </description>
 
-   <copyright url="http://www.mountainminds.com/products/eclemma">
-      Copyright (c) 2006 Mountainminds GmbH &amp; Co. KG
+   <copyright url="http://www.eclemma.org/">
+      (c) Copyright Mountainminds GmbH &amp; Co. KG 2006, 2007
    </copyright>
 
    <license url="http://www.eclipse.org/legal/epl-v10.html">
