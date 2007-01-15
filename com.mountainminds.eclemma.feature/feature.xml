@@ -7,8 +7,7 @@
       plugin="com.mountainminds.eclemma.ui">
 
    <description url="http://www.eclemma.org/">
-      EclEmma is a free Java code coverage tool for Eclipse, available
-under the Eclipse Public License (EPL).
+      EclEmma plug-ins for Eclipse with online help.
    </description>
 
    <copyright url="http://www.eclemma.org/">
