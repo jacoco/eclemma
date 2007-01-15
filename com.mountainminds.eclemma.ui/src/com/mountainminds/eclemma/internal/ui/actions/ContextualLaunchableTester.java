@@ -33,7 +33,7 @@ import com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin;
  * launch shortcut expression for the "run" mode.
  * 
  * @author  Marc R. Hoffmann
- * @version $
+ * @version $Revision$
  */
 public class ContextualLaunchableTester extends PropertyTester {
   
