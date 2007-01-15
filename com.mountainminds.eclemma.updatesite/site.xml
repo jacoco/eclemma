@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <description url="http://update.eclemma.org/">
+      Official EclEmma Update Site
+   </description>
+   <feature url="features/com.mountainminds.eclemma.feature_0.1.8.jar" id="com.mountainminds.eclemma.feature" version="0.1.8">
+      <category name="eclemma"/>
+   </feature>
+   <category-def name="eclemma" label="EclEmma">
+      <description>
+         EclEmma is a free Java code coverage tool for Eclipse, available under the Eclipse Public License. Internally it is based on the great EMMA  Java code coverage tool, trying to adopt EMMA's philosophy for the Eclipse workbench.
+      </description>
+   </category-def>
+</site>
