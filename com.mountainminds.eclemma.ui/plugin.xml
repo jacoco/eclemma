@@ -20,6 +20,15 @@
             title="%CoverageLaunchGroup.title"/>
    </extension>
    <extension
+         point="org.eclipse.core.expressions.propertyTesters">
+      <propertyTester
+            class="com.mountainminds.eclemma.internal.ui.actions.ContextualLaunchableTester"
+            id="com.mountainminds.eclemma.ui.propertyTester.contextualLaunchable"
+            namespace="com.mountainminds.eclemma.ui"
+            properties="launchable"
+            type="java.lang.Object"/>
+   </extension>
+   <extension
          point="org.eclipse.debug.ui.launchShortcuts">
       <shortcut
             label="%JavaApplicationShortcut.label"
@@ -30,16 +39,7 @@
          <contextualLaunch>
            <enablement>
              <with variable="selection">
-               <count value="1"/>
-               <iterate>
-                 <or>
-                   <test property="org.eclipse.debug.ui.matchesPattern" value="*.java"/>
-                   <test property="org.eclipse.debug.ui.matchesPattern" value="*.class"/>
-                   <adapt type="org.eclipse.jdt.core.IJavaElement"/>
-                   <instanceof value="org.eclipse.jdt.internal.ui.javaeditor.InternalClassFileEditorInput"/>
-                 </or>
-                 <test property="org.eclipse.jdt.debug.ui.hasMainType"/>
-               </iterate>
+               <test property="com.mountainminds.eclemma.ui.launchable" args="org.eclipse.jdt.debug.ui.localJavaShortcut"/>
              </with>
            </enablement>
   		 </contextualLaunch>
@@ -53,15 +53,7 @@
          <contextualLaunch>
            <enablement>
              <with variable="selection">
-               <count value="1"/>
-               <iterate>
-                 <or>
-                   <test property="org.eclipse.debug.ui.matchesPattern" value="*.java"/>
-                   <test property="org.eclipse.debug.ui.matchesPattern" value="*.class"/>
-                   <adapt type="org.eclipse.jdt.core.IJavaElement"/>
-                 </or>
-                 <test property="org.eclipse.jdt.junit.isTest"/>
-               </iterate>
+               <test property="com.mountainminds.eclemma.ui.launchable" args="org.eclipse.jdt.junit.junitShortcut"/>
              </with>
            </enablement>
          </contextualLaunch>
@@ -75,16 +67,7 @@
          <contextualLaunch>
            <enablement>
              <with variable="selection">
-               <or>
-                 <and>
-                   <count value="1"/>
-                   <iterate>
-                     <test property="org.eclipse.debug.ui.projectNature" value="org.eclipse.pde.PluginNature"/>
-                     <adapt type="org.eclipse.core.resources.IProject"/>
-		           </iterate>
-		         </and>
-		         <count value="0"/>
-		       </or>
+               <test property="com.mountainminds.eclemma.ui.launchable" args="org.eclipse.pde.ui.runtimeWorkbenchShortcut"/>
              </with>
            </enablement>
          </contextualLaunch>         
@@ -98,16 +81,7 @@
          <contextualLaunch>
            <enablement>
              <with variable="selection">
-               <count value="1"/>
-               <iterate>
-                 <or>
-                   <test property="org.eclipse.debug.ui.matchesPattern" value="*.java"/>
-                   <test property="org.eclipse.debug.ui.matchesPattern" value="*.class"/>
-                   <adapt type="org.eclipse.jdt.core.IJavaElement"/>
-                 </or>
-                 <test property="org.eclipse.pde.core.PluginNature"/>
-                 <test property="org.eclipse.jdt.junit.isTest"/>
-               </iterate>
+               <test property="com.mountainminds.eclemma.ui.launchable" args="org.eclipse.pde.ui.junitWorkbenchShortcut"/>
              </with>
            </enablement>
          </contextualLaunch>
