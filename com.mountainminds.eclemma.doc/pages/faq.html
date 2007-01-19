@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+  <meta name="LastChangedDate" content="$LastChangedDate$">
+  <meta name="Revision" content="$Revision$">
+  <link rel="stylesheet" href="../book.css" charset="ISO-8859-1" type="text/css">
+  <title>FAQ</title>
+</head>
+<body>
+
+<h1>Frequently Asked Quiestions</h1>
+
+<h3>Usage</h3>
+<ul>
+  <li><a href="#usage01">How can I remove the coverage coloring from the Java editors again?</a></li>
+  <li><a href="#usage02">Why can't I select source folders separately for instrumentation?</a></li>
+  <li><a href="#usage03">How can I run {whateverapplication} with EclEmma?</a></li>
+</ul>
+
+<h3>Troubleshooting</h3>
+<ul>
+  <li><a href="#trouble01">I get the error message "No coverage data file has been written". Please help!</a></li>
+</ul>
+
+
+<h2>Usage</h2>
+
+<h3><a name="usage01"></a>How can I remove the coverage coloring from the Java editors again?</h3>
+<p>
+  If you remove the coverage session, also the coverage coloring will disappear.
+  For this, hit <i>Remove Session</i> or <i>Remove All Sessions</i> in the
+  <i>Coverage</i> view's toolbar.
+</p>
+
+<h3><a name="usage02"></a>Why can't I select source folders separately for instrumentation?</h3>
+<p>
+  EMMA works on Java class files. If source folders have the same output
+  location, only all or none of them can be selected for instrumentation. If you
+  want to select them individually please specify a different output location
+  for each source folder. This can be done in the <i>Java Build Path</i>
+  settings in the project properties. Check <i>Allow output folders</i> on the
+  <i>Source</i> tab and specify different output folders for your source folders
+  (for example bin-src/, bin-test/ etc.).
+</p>
+
+<h3><a name="usage03"></a>How can I run {whateverapplication} with EclEmma?</h3>
+<p>
+  EclEmma is designed for Java programs launched within Eclipse. Java
+  Applications that run in a different environment may be analyzed with the
+  <a href="http://emma.sourceforge.net/">EMMA library</a> directly. There are
+  different supported launch types, other plug-ins may define additional launch
+  types which are not supported by EclEmma. Check user documentation for
+  currently supported launch types.
+</p>
+
+
+<h2>Troubleshooting</h2>
+
+<h3><a name="trouble01"></a>I get the error message "No coverage data file has been written". Please help!</h3>
+<p>
+  This may have several reasons:
+</p>
+<ul>
+  <li>No instrumented class has been loaded during the test run at all. Make
+  sure that the classes in focus are selected for instrumentation in the
+  coverage launch dialog.</li>
+  <li>The Java process did not terminate properly, e.g. has been manually killed
+  with the <i>Terminate</i> button. Make sure your program terminates on its
+  own.</li>
+  <li>Your project contains the emma.jar file file in its Java path or contains
+  a emma.properties file. To make EclEmma work properly, your project must not
+  contain any EMMA specific resources or settings.</li>
+  <li>Your launch configuration defines EMMA specific system properties. Make
+  sure no such definitions are made.</li>
+  <li>There is a emma.jar file in your JDK's lib/ext/ folder. Please remove this
+  and restart Eclipse.</li>
+</ul>
+
+</body>
+</html>
