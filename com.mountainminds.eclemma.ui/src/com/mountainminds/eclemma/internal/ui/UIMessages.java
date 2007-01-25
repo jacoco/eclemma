@@ -125,6 +125,19 @@ public class UIMessages extends NLS {
   public static String ImportSessionPage1Reference_label;
   public static String ImportSessionPage1Copy_label;
   
+  public static String CoveragePropertyPageSession_label;
+  public static String CoveragePropertyPageNoSession_value;
+  public static String CoveragePropertyPageColumnCounter_label;
+  public static String CoveragePropertyPageColumnCoverage_label;
+  public static String CoveragePropertyPageColumnCoverage_value;
+  public static String CoveragePropertyPageColumnCovered_label;
+  public static String CoveragePropertyPageColumnTotal_label;
+  public static String CoveragePropertyPageInstructions_label;
+  public static String CoveragePropertyPageBlocks_label;
+  public static String CoveragePropertyPageLines_label;
+  public static String CoveragePropertyPageMethods_label;
+  public static String CoveragePropertyPageTypes_label;
+
   static {
     NLS.initializeMessages(BUNDLE_NAME, UIMessages.class);
   }

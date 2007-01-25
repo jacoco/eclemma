@@ -372,4 +372,12 @@
             id="com.mountainminds.eclemma.ui.externalFileDocumentProvider"
             inputTypes="com.mountainminds.eclemma.internal.ui.wizards.ExternalFileEditorInput"/>
    </extension>
+   <extension
+         point="org.eclipse.ui.propertyPages">
+      <page
+            class="com.mountainminds.eclemma.internal.ui.dialogs.CoveragePropertyPage"
+            id="com.mountainminds.eclemma.ui.coveragePropertyPage"
+            name="%coveragePropertyPage.title"
+            objectClass="org.eclipse.jdt.core.IJavaElement"/>
+   </extension>
 </plugin>
