@@ -83,9 +83,9 @@ public class CoveragePropertyPage extends PropertyPage {
     table.setHeaderVisible(true);
     table.setLinesVisible(true);
     createColumn(table, SWT.LEFT,  24, UIMessages.CoveragePropertyPageColumnCounter_label);
-    createColumn(table, SWT.RIGHT, 12, UIMessages.CoveragePropertyPageColumnCoverage_label);
-    createColumn(table, SWT.RIGHT, 12, UIMessages.CoveragePropertyPageColumnCovered_label);
-    createColumn(table, SWT.RIGHT, 12, UIMessages.CoveragePropertyPageColumnTotal_label);
+    createColumn(table, SWT.RIGHT, 16, UIMessages.CoveragePropertyPageColumnCoverage_label);
+    createColumn(table, SWT.RIGHT, 16, UIMessages.CoveragePropertyPageColumnCovered_label);
+    createColumn(table, SWT.RIGHT, 16, UIMessages.CoveragePropertyPageColumnTotal_label);
     TableViewer viewer = new TableViewer(table);
     viewer.setContentProvider(new ArrayContentProvider());
     viewer.setInput(getLines());

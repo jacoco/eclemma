@@ -42,8 +42,10 @@ import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.dialogs.PropertyDialogAction;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.texteditor.IWorkbenchActionDefinitionIds;
 
 import com.mountainminds.eclemma.core.CoverageTools;
 import com.mountainminds.eclemma.core.ICoverageSession;
@@ -102,6 +104,7 @@ public class CoverageView extends ViewPart {
   private IAction importAction;
   private IAction exportAction;
   private IAction refreshAction;
+  private PropertyDialogAction propertiesAction;
   
   private CoverageViewSorter sorter = new CoverageViewSorter(settings, this);
   
@@ -262,6 +265,7 @@ public class CoverageView extends ViewPart {
     viewer.addSelectionChangedListener(new ISelectionChangedListener() {
       public void selectionChanged(SelectionChangedEvent event) {
         openAction.selectionChanged((IStructuredSelection) event.getSelection());
+        propertiesAction.selectionChanged(event);
       }
     });
     getSite().setSelectionProvider(viewer);
@@ -313,6 +317,9 @@ public class CoverageView extends ViewPart {
     refreshAction = new RefreshSessionAction();
     kb.registerAction(refreshAction);
     getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.REFRESH.getId(), refreshAction);
+    propertiesAction = new PropertyDialogAction(getSite(), viewer);
+    propertiesAction.setActionDefinitionId(IWorkbenchActionDefinitionIds.PROPERTIES);
+    getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.PROPERTIES.getId(), propertiesAction);
   }
   
   protected void configureToolbar() {
@@ -349,9 +356,9 @@ public class CoverageView extends ViewPart {
     mm.add(new Separator());
     mm.add(refreshAction);
     mm.add(new Separator(IContextMenuConstants.GROUP_ADDITIONS));
+    mm.add(propertiesAction);
   }
 
-  
   public void setFocus() {
     tree.setFocus();
   }
