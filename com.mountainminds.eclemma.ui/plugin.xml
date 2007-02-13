@@ -172,6 +172,36 @@
             id="com.mountainminds.eclemma.ui.junitPluginShortcut.coverage"
             name="%CoverageJUnitPluginTestCommand.name"/>
    </extension>
+   
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="com.mountainminds.eclemma.ui.localJavaShortcut.coverage"
+            contextId="org.eclipse.ui.globalScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M3+M2+E J"/>
+      <key
+            commandId="com.mountainminds.eclemma.ui.junitShortcut.coverage"
+            contextId="org.eclipse.ui.globalScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M3+M2+E T"/>
+      <key
+            commandId="com.mountainminds.eclemma.ui.workbenchShortcut.coverage"
+            contextId="org.eclipse.ui.globalScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M3+M2+E E"/>
+      <key
+            commandId="com.mountainminds.eclemma.ui.junitPluginShortcut.coverage"
+            contextId="org.eclipse.ui.globalScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M3+M2+E P"/>
+      <key
+            commandId="com.mountainminds.eclemma.ui.commands.CoverageLast"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+M2+F11"/>
+   </extension>
+   
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension targetID="org.eclipse.jdt.ui.JavaPerspective">
