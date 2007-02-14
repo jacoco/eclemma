@@ -126,7 +126,7 @@ public class CoveragePropertyPage extends PropertyPage {
   private static class CounterLabelProvider extends LabelProvider implements ITableLabelProvider {
 
     public Image getColumnImage(Object element, int columnIndex) {
-      if (columnIndex == COLUMN_COVERAGE) {
+      if (columnIndex == COLUMN_COUNTER) {
         Line l = (Line) element;
         return EclEmmaUIPlugin.getCoverageImage(l.counter.getRatio());
       } else {
