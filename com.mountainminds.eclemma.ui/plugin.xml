@@ -410,4 +410,21 @@
             name="%coveragePropertyPage.title"
             objectClass="org.eclipse.jdt.core.IJavaElement"/>
    </extension>
+   <extension
+         point="org.eclipse.ui.decorators">
+      <decorator
+            adaptable="false"
+            class="com.mountainminds.eclemma.internal.ui.decorators.CoverageDecorator"
+            id="com.mountainminds.eclemma.ui.coverageDecorator"
+            label="%coverageDecorator.label"
+            lightweight="true"
+            state="false">
+         <description>%coverageDecorator.description</description>
+         <enablement>
+            <objectClass
+                  name="org.eclipse.jdt.core.IJavaElement">
+            </objectClass>
+         </enablement>
+      </decorator>
+   </extension>   
 </plugin>

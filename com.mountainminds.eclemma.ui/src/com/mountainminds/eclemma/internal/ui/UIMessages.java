@@ -138,6 +138,8 @@ public class UIMessages extends NLS {
   public static String CoveragePropertyPageMethods_label;
   public static String CoveragePropertyPageTypes_label;
 
+  public static String CoverageDecoratorSuffix_label;
+  
   static {
     NLS.initializeMessages(BUNDLE_NAME, UIMessages.class);
   }

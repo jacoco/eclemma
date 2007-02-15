@@ -84,6 +84,17 @@ public class EclEmmaUIPlugin extends AbstractUIPlugin {
     "icons/full/obj16/coverage11.gif", //$NON-NLS-1$
     "icons/full/obj16/coverage12.gif", //$NON-NLS-1$
   };
+  
+  public static String[] OBJ_COVERAGE_OVERLAY = new String[] { 
+    "icons/full/ovr16/coverage00.gif", //$NON-NLS-1$
+    "icons/full/ovr16/coverage01.gif", //$NON-NLS-1$
+    "icons/full/ovr16/coverage02.gif", //$NON-NLS-1$
+    "icons/full/ovr16/coverage03.gif", //$NON-NLS-1$
+    "icons/full/ovr16/coverage04.gif", //$NON-NLS-1$
+    "icons/full/ovr16/coverage05.gif", //$NON-NLS-1$
+    "icons/full/ovr16/coverage06.gif", //$NON-NLS-1$
+    "icons/full/ovr16/coverage07.gif", //$NON-NLS-1$
+  };
 
   public static String WIZBAN_EXPORT_SESSION  = "icons/full/wizban/export_session.gif"; //$NON-NLS-1$
   public static String WIZBAN_IMPORT_SESSION  = "icons/full/wizban/import_session.gif"; //$NON-NLS-1$
@@ -99,8 +110,10 @@ public class EclEmmaUIPlugin extends AbstractUIPlugin {
         public void run() {
           showCoverageView();
         }
+
       });
     }
+    
     public void sessionRemoved(ICoverageSession removedSession) {
     }
     public void sessionActivated(ICoverageSession session) {
@@ -172,6 +185,13 @@ public class EclEmmaUIPlugin extends AbstractUIPlugin {
     if (idx < 0) idx = 0;
     if (idx >= OBJ_COVERAGE.length) idx = OBJ_COVERAGE.length - 1;
     return getImage(OBJ_COVERAGE[idx]);
+  }
+  
+  public static ImageDescriptor getCoverageOverlay(double ratio) {
+	  int idx = (int) Math.round(ratio * OBJ_COVERAGE_OVERLAY.length);
+	  if (idx < 0) idx = 0;
+	  if (idx >= OBJ_COVERAGE_OVERLAY.length) idx = OBJ_COVERAGE_OVERLAY.length - 1;
+	  return getImageDescriptor(OBJ_COVERAGE_OVERLAY[idx]);
   }
   
   private static ImageRegistry loadImage(String path) {
