@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2006, 2007 Mountainminds GmbH & Co. KG
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
@@ -45,6 +45,7 @@ public class UIMessages extends NLS {
   public static String SessionsViewCounterModeLinesAction_label;
   public static String SessionsViewCounterModeMethodsAction_label;
   public static String SessionsViewCounterModeTypesAction_label;
+  public static String SessionsViewHideUnusedTypesAction_label;
   public static String SessionsViewShowProjectsAction_label;
   public static String SessionsViewShowProjectsAction_tooltip;
   public static String SessionsViewShowPackageRootsAction_label;

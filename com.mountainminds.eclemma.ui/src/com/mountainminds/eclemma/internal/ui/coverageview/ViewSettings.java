@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2006, 2007 Mountainminds GmbH & Co. KG
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
@@ -22,19 +22,20 @@ import com.mountainminds.eclemma.internal.ui.UIMessages;
  */
 public class ViewSettings {
   
-  public static final int ENTRYMODE_PROJECTS     = 1; 
-  public static final int ENTRYMODE_PACKAGEROOTS = 2; 
-  public static final int ENTRYMODE_PACKAGES     = 3; 
-  public static final int ENTRYMODE_TYPES        = 4; 
+  public static final int ENTRYMODE_PROJECTS      = 1; 
+  public static final int ENTRYMODE_PACKAGEROOTS  = 2; 
+  public static final int ENTRYMODE_PACKAGES      = 3; 
+  public static final int ENTRYMODE_TYPES         = 4; 
   
-  private static final String KEY_SORTCOLUMN  = "sortcolumn"; //$NON-NLS-1$
-  private static final String KEY_REVERSESORT = "reversesort"; //$NON-NLS-1$
-  private static final String KEY_COUNTERMODE = "countermode"; //$NON-NLS-1$
-  private static final String KEY_ENTRYMODE   = "entrymode"; //$NON-NLS-1$
-  private static final String KEY_COLUMN0     = "column0"; //$NON-NLS-1$
-  private static final String KEY_COLUMN1     = "column1"; //$NON-NLS-1$
-  private static final String KEY_COLUMN2     = "column2"; //$NON-NLS-1$
-  private static final String KEY_COLUMN3     = "column3"; //$NON-NLS-1$
+  private static final String KEY_SORTCOLUMN      = "sortcolumn"; //$NON-NLS-1$
+  private static final String KEY_REVERSESORT     = "reversesort"; //$NON-NLS-1$
+  private static final String KEY_COUNTERMODE     = "countermode"; //$NON-NLS-1$
+  private static final String KEY_HIDEUNUSEDTYPES = "hideunusedtypes"; //$NON-NLS-1$
+  private static final String KEY_ENTRYMODE       = "entrymode"; //$NON-NLS-1$
+  private static final String KEY_COLUMN0         = "column0"; //$NON-NLS-1$
+  private static final String KEY_COLUMN1         = "column1"; //$NON-NLS-1$
+  private static final String KEY_COLUMN2         = "column2"; //$NON-NLS-1$
+  private static final String KEY_COLUMN3         = "column3"; //$NON-NLS-1$
   
   public interface ICounterMode {
     public int getIdx();
@@ -149,6 +150,7 @@ public class ViewSettings {
   private boolean reversesort;
   private int countermode;
   private int entrymode;
+  private boolean hideunusedtypes;
   private int[] columnwidths = new int[4];
   
   public int getSortColumn() {
@@ -184,6 +186,14 @@ public class ViewSettings {
     entrymode = mode;
   }
   
+  public boolean getHideUnusedTypes() {
+    return hideunusedtypes;    
+  }
+  
+  public void setHideUnusedTypes(boolean flag) {
+    hideunusedtypes = flag;
+  }
+  
   public int[] getColumnWidths() {
     return columnwidths;
   }
@@ -193,6 +203,7 @@ public class ViewSettings {
     reversesort = getInt(memento, KEY_REVERSESORT, 0) != 0;
     countermode = getInt(memento, KEY_COUNTERMODE, 0);
     entrymode = getInt(memento, KEY_ENTRYMODE, ENTRYMODE_PROJECTS);
+    hideunusedtypes = getInt(memento, KEY_HIDEUNUSEDTYPES, 0) != 0;
     columnwidths[0] = getInt(memento, KEY_COLUMN0, DEFAULT_COLUMNWIDTH[0]);
     columnwidths[1] = getInt(memento, KEY_COLUMN1, DEFAULT_COLUMNWIDTH[1]);
     columnwidths[2] = getInt(memento, KEY_COLUMN2, DEFAULT_COLUMNWIDTH[2]);
@@ -204,6 +215,7 @@ public class ViewSettings {
     memento.putInteger(KEY_REVERSESORT, reversesort ? 1 : 0);
     memento.putInteger(KEY_COUNTERMODE, countermode);
     memento.putInteger(KEY_ENTRYMODE, entrymode);
+    memento.putInteger(KEY_HIDEUNUSEDTYPES, hideunusedtypes ? 1 : 0);
     memento.putInteger(KEY_COLUMN0, columnwidths[0]);
     memento.putInteger(KEY_COLUMN1, columnwidths[1]);
     memento.putInteger(KEY_COLUMN2, columnwidths[2]);

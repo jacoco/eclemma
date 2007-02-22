@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2006, 2007 Mountainminds GmbH & Co. KG
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
@@ -254,7 +254,14 @@ public class CoverageView extends ViewPart {
           return true;
         } else {
           IJavaElementCoverage c = CoverageTools.getCoverageInfo(element);
-          return c != null && c.getInstructionCounter().getTotalCount() != 0;
+          if (c == null || c.getInstructionCounter().getTotalCount() == 0) {
+            return false;
+          }
+          if (settings.getHideUnusedTypes()) {
+            ICounter cnt = c.getTypeCounter();
+            return cnt.getTotalCount() == 0 || cnt.getCoveredCount() != 0; 
+          }
+          return true;
         }
       }
     });
@@ -344,6 +351,8 @@ public class CoverageView extends ViewPart {
     mm.add(new SelectCounterModeAction(2, settings, this));
     mm.add(new SelectCounterModeAction(3, settings, this));
     mm.add(new SelectCounterModeAction(4, settings, this));
+    mm.add(new Separator());
+    mm.add(new HideUnusedTypesAction(settings, this));
     mm.add(new Separator());
     mm.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
   }
