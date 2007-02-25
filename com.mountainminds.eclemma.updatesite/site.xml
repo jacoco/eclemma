@@ -3,9 +3,15 @@
    <description url="http://update.eclemma.org/">
       EclEmma Updates
    </description>
+   <feature url="http://downloads.sourceforge.net/eclemma/com.mountainminds.eclemma.feature_1.1.0.jar" id="com.mountainminds.eclemma.feature" version="1.1.0">
+      <category name="EclEmma"/>
+   </feature>
    <feature url="http://downloads.sourceforge.net/eclemma/com.mountainminds.eclemma.feature_1.0.0.jar" id="com.mountainminds.eclemma.feature" version="1.0.0">
       <category name="EclEmma"/>
    </feature>
+   <archive path="plugins/com.mountainminds.eclemma.core_1.1.0.jar" url="http://downloads.sourceforge.net/eclemma/com.mountainminds.eclemma.core_1.1.0.jar"/>
+   <archive path="plugins/com.mountainminds.eclemma.doc_1.1.0.jar" url="http://downloads.sourceforge.net/eclemma/com.mountainminds.eclemma.doc_1.1.0.jar"/>
+   <archive path="plugins/com.mountainminds.eclemma.ui_1.1.0.jar" url="http://downloads.sourceforge.net/eclemma/com.mountainminds.eclemma.ui_1.1.0.jar"/>
    <archive path="plugins/com.mountainminds.eclemma.core_1.0.0.jar" url="http://downloads.sourceforge.net/eclemma/com.mountainminds.eclemma.core_1.0.0.jar"/>
    <archive path="plugins/com.mountainminds.eclemma.doc_1.0.0.jar" url="http://downloads.sourceforge.net/eclemma/com.mountainminds.eclemma.doc_1.0.0.jar"/>
    <archive path="plugins/com.mountainminds.eclemma.ui_1.0.0.jar" url="http://downloads.sourceforge.net/eclemma/com.mountainminds.eclemma.ui_1.0.0.jar"/>
