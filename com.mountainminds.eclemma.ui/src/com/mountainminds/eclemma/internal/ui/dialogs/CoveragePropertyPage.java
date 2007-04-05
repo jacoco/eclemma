@@ -13,6 +13,8 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
@@ -88,6 +90,11 @@ public class CoveragePropertyPage extends PropertyPage {
     createColumn(table, SWT.RIGHT, 16, UIMessages.CoveragePropertyPageColumnTotal_label);
     TableViewer viewer = new TableViewer(table);
     viewer.setContentProvider(new ArrayContentProvider());
+    viewer.addFilter(new ViewerFilter() {
+      public boolean select(Viewer viewer, Object parentElement, Object element) {
+        return ((Line) element).counter.getTotalCount() != 0;
+      }
+    });
     viewer.setInput(getLines());
     viewer.setLabelProvider(new CounterLabelProvider());
     return table;
