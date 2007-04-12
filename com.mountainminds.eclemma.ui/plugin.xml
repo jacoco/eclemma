@@ -340,6 +340,14 @@
                mode="coverage"/>
       </launchConfigurationTabGroup>
       <launchConfigurationTabGroup
+            class="com.mountainminds.eclemma.internal.ui.launching.CoverageTabGroup:inplaceonly"
+            id="com.mountainminds.eclemma.ui.EquinoxTabGroup"
+            type="org.eclipse.pde.ui.EquinoxLauncher">
+         <launchMode
+               description="%equinoxTabGroupDescription.coverage"
+               mode="coverage"/>
+      </launchConfigurationTabGroup>
+      <launchConfigurationTabGroup
             class="com.mountainminds.eclemma.internal.ui.launching.CoverageTabGroup"
             id="com.mountainminds.eclemma.ui.TestNGTabGroup"
             type="org.testng.eclipse.launchconfig">
