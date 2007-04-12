@@ -1,0 +1,9 @@
+Index: core/java12/com/vladium/logging/Logger.java
+===================================================================
+RCS file: /cvsroot/emma/emma/core/java12/com/vladium/logging/Logger.java,v
+retrieving revision 1.1.1.1.2.2
+diff -r1.1.1.1.2.2 Logger.java
+73c73
+<         if ((out == null) || out.checkError ())
+---
+>         if (out == null)
