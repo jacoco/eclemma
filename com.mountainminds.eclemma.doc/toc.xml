@@ -6,6 +6,8 @@
     <topic label="Launching in Coverage Mode" href="pages/launching.html"/>
     <topic label="Using the Coverage View" href="pages/coverageview.html"/>
     <topic label="Source Code Annotation" href="pages/annotations.html"/>
+    <topic label="Coverage Properties" href="pages/coverageproperties.html"/>
+    <topic label="Decorators" href="pages/decorators.html"/>
     <topic label="Managing Coverage Sessions" href="pages/sessions.html"/>
     <topic label="Session Import and Export" href="pages/importexport.html"/>
     <topic label="Keyboard Usage" href="pages/keyboard.html"/>

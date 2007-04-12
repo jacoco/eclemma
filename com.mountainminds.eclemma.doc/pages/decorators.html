@@ -1,0 +1,49 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+  <meta name="LastChangedDate" content="$LastChangedDate: $">
+  <meta name="Revision" content="$Revision: $">
+  <link rel="stylesheet" href="../book.css" charset="ISO-8859-1" type="text/css">
+  <title>Coverage Decorators</title>
+</head>
+
+<body>
+
+<h2>Coverage Decorators</h2>
+
+<p>
+  <b>Note:</b> This is an optional feature not enabled by default.
+</p>
+
+<p>
+  The Eclipse workbench has the concept of so called <i>decorators</i> which
+  add graphical and textual information to elements shown in the workbench
+  views. EclEmma provides coverage decorators for the currently active coverage
+  session: A little green/red bar on the elements' icons and a percentage
+  value next to the names.
+</p>
+
+<p>
+  <img src="images/decorators.png" alt="Coverage Decorators" width="369" height="455">
+</p>
+
+<p>  
+  The percentage shown is calculated based upon the instruction counters. 
+  Coverage decorators are only visible if there is a active coverage session
+  and only shown for elements containing executable code, therefore e.g. 
+  <i>not</i> for abstract methods.
+</p>
+
+<p>  
+  This optional feature can be enabled in the Eclipse preferences dialog:
+</p>
+
+<ul>
+  <li>Open the preferences dialog from <i>Window</i> &rarr; <i>Preferences...</i></li>
+  <li>Navigate to page <i>General</i> &rarr; <i>Appearance</i> &rarr; <i>Label Decorators</i></li>
+  <li>Select <i>Java Code Coverage</i> and press <i>OK</i></li>
+</ul>
+
+</body>
+</html>
