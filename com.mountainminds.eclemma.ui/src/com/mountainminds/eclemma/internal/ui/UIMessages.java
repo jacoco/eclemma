@@ -34,6 +34,7 @@ public class UIMessages extends NLS {
   public static String BrowseAction_label;
   public static String SelectAllAction_label;
   public static String DeselectAllAction_label;
+  public static String CoverageLastAction_label;
 
   public static String SessionsViewRelaunchAction_label;
   public static String SessionsViewRelaunchAction_tooltip;
