@@ -29,6 +29,7 @@ import org.eclipse.jface.text.source.IAnnotationModelExtension;
 import org.eclipse.jface.text.source.IAnnotationModelListener;
 import org.eclipse.jface.text.source.IAnnotationModelListenerExtension;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.mountainminds.eclemma.core.CoverageTools;
@@ -86,11 +87,14 @@ public class CoverageAnnotationModel implements IAnnotationModel {
    * @param editor Editor to attach a annotation model to
    */
   public static void attach(ITextEditor editor) {
-    IAnnotationModel model = editor.getDocumentProvider().getAnnotationModel(editor.getEditorInput());
+    IDocumentProvider provider = editor.getDocumentProvider();
+    // there may be text editors without document providers (SF #1725100)
+    if (provider == null) return;
+    IAnnotationModel model = provider.getAnnotationModel(editor.getEditorInput());
     if (!(model instanceof IAnnotationModelExtension)) return;
     IAnnotationModelExtension modelex = (IAnnotationModelExtension) model;
     
-    IDocument document = editor.getDocumentProvider().getDocument(editor.getEditorInput());
+    IDocument document = provider.getDocument(editor.getEditorInput());
     
     CoverageAnnotationModel coveragemodel = (CoverageAnnotationModel) modelex.getAnnotationModel(KEY);
     if (coveragemodel == null) {
@@ -106,7 +110,10 @@ public class CoverageAnnotationModel implements IAnnotationModel {
    * @param editor Editor to detach the annotation model from
    */
   public static void detach(ITextEditor editor) {
-    IAnnotationModel model = editor.getDocumentProvider().getAnnotationModel(editor.getEditorInput());
+    IDocumentProvider provider = editor.getDocumentProvider();
+    // there may be text editors without document providers (SF #1725100)
+    if (provider == null) return;
+    IAnnotationModel model = provider.getAnnotationModel(editor.getEditorInput());
     if (!(model instanceof IAnnotationModelExtension)) return;
     IAnnotationModelExtension modelex = (IAnnotationModelExtension) model;
     modelex.removeAnnotationModel(KEY);
