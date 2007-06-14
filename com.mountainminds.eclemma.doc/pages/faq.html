@@ -19,13 +19,20 @@
   <li><a href="#usage02">Why can't I select source folders separately for instrumentation?</a></li>
   <li><a href="#usage03">How can I run {whateverapplication} with EclEmma?</a></li>
   <li><a href="#usage04">Does EclEmma support automated Ant builds?</a></li>
+  <li><a href="#usage05">How do I change the source code highlighting?</a></li>
 </ul>
 
 <h3>Troubleshooting</h3>
 <ul>
   <li><a href="#trouble01">I get the error message "No coverage data file has been written". Please help!</a></li>
-  <li><a href="#trouble02">Does EclEmma work with IBM Rational 6.0 products?</a></li>
+  <li><a href="#trouble02">Code with exceptions shows no coverage. Why?</a></li>
 </ul>
+
+<h3>Installation</h3>
+<ul>
+  <li><a href="#install01">Does EclEmma work with IBM Rational 6.0 products?</a></li>
+</ul>
+
 
 
 <h2>Usage</h2>
@@ -66,6 +73,14 @@
   for details.
 </p>
 
+<h3><a name="usage05"></a>How do I change the source code highlighting?</h3>
+<p>
+  The source code highlighting can be changed in the Eclipse <i>Preference</i>
+  dialog at <i>General &rarr; Appearance &rarr; Editors &rarr; Text Editors
+  &rarr; Annotations</i>. You can modify the highlighting style and color or use
+  the vertical rulers instead.
+</p>
+
 
 <h2>Troubleshooting</h2>
 
@@ -89,7 +104,21 @@
   and restart Eclipse.</li>
 </ul>
 
-<h3><a name="trouble02">Does EclEmma work with IBM Rational 6.0 products?</a></h3>
+<h3><a name="trouble02"></a>Code with exceptions shows no coverage. Why?</h3>
+<p>
+  The underlying EMMA library works on so called <i>basic blocks</i>. A basic
+  block is a sequence of instructions without any jumps or jump targets. A
+  basic block is marked as executed when it reaches its last instruction. In
+  case of exceptions a basic block is aborted somewhere in the middle and not
+  marked as executed. See
+  <a href="http://emma.sourceforge.net/faq.html#q.blockcoverage">EMMA's FAQ</a>
+  for details. 
+</p>
+
+
+<h2>Installation</h2>
+
+<h3><a name="install01">Does EclEmma work with IBM Rational 6.0 products?</a></h3>
 <p>
   No, these products are based on Eclipse 3.0, EclEmma requires at least Eclipse
   3.1. IBM Rational 7.0 products are based on Eclipse 3.2 and may work with
