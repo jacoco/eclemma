@@ -50,17 +50,17 @@ public class ViewSettings {
         return 0;
       }
       public String getActionLabel() {
-        return UIMessages.SessionsViewCounterModeInstructionsAction_label;
+        return UIMessages.CoverageViewCounterModeInstructionsAction_label;
       }
       public ICounter getCounter(IJavaElementCoverage coverage) { 
         return coverage.getInstructionCounter(); 
       }
       public String[] getColumnHeaders() {
         return new String[] {
-            UIMessages.SessionsViewColumnElement_label,
-            UIMessages.SessionsViewColumnCoverage_label,
-            UIMessages.SessionsViewColumnCoveredInstructions_label,
-            UIMessages.SessionsViewColumnTotalInstructions_label
+            UIMessages.CoverageViewColumnElement_label,
+            UIMessages.CoverageViewColumnCoverage_label,
+            UIMessages.CoverageViewColumnCoveredInstructions_label,
+            UIMessages.CoverageViewColumnTotalInstructions_label
         };
       }
     },
@@ -69,17 +69,17 @@ public class ViewSettings {
         return 1;
       }
       public String getActionLabel() {
-        return UIMessages.SessionsViewCounterModeBlocksAction_label;
+        return UIMessages.CoverageViewCounterModeBlocksAction_label;
       }
       public ICounter getCounter(IJavaElementCoverage coverage) {
         return coverage.getBlockCounter();
       }
       public String[] getColumnHeaders() {
         return new String[] {
-            UIMessages.SessionsViewColumnElement_label,
-            UIMessages.SessionsViewColumnCoverage_label,
-            UIMessages.SessionsViewColumnCoveredBlocks_label,
-            UIMessages.SessionsViewColumnTotalBlocks_label
+            UIMessages.CoverageViewColumnElement_label,
+            UIMessages.CoverageViewColumnCoverage_label,
+            UIMessages.CoverageViewColumnCoveredBlocks_label,
+            UIMessages.CoverageViewColumnTotalBlocks_label
         };
       }
     },
@@ -88,17 +88,17 @@ public class ViewSettings {
         return 2;
       }
       public String getActionLabel() {
-        return UIMessages.SessionsViewCounterModeLinesAction_label;
+        return UIMessages.CoverageViewCounterModeLinesAction_label;
       }
       public ICounter getCounter(IJavaElementCoverage coverage) {
         return coverage.getLineCounter();
       }
       public String[] getColumnHeaders() {
         return new String[] {
-            UIMessages.SessionsViewColumnElement_label,
-            UIMessages.SessionsViewColumnCoverage_label,
-            UIMessages.SessionsViewColumnCoveredLines_label,
-            UIMessages.SessionsViewColumnTotalLines_label
+            UIMessages.CoverageViewColumnElement_label,
+            UIMessages.CoverageViewColumnCoverage_label,
+            UIMessages.CoverageViewColumnCoveredLines_label,
+            UIMessages.CoverageViewColumnTotalLines_label
         };
       }
     },
@@ -107,17 +107,17 @@ public class ViewSettings {
         return 3;
       }
       public String getActionLabel() {
-        return UIMessages.SessionsViewCounterModeMethodsAction_label;
+        return UIMessages.CoverageViewCounterModeMethodsAction_label;
       }
       public ICounter getCounter(IJavaElementCoverage coverage) {
         return coverage.getMethodCounter();
       }
       public String[] getColumnHeaders() {
         return new String[] {
-            UIMessages.SessionsViewColumnElement_label,
-            UIMessages.SessionsViewColumnCoverage_label,
-            UIMessages.SessionsViewColumnCoveredMethods_label,
-            UIMessages.SessionsViewColumnTotalMethods_label
+            UIMessages.CoverageViewColumnElement_label,
+            UIMessages.CoverageViewColumnCoverage_label,
+            UIMessages.CoverageViewColumnCoveredMethods_label,
+            UIMessages.CoverageViewColumnTotalMethods_label
         };
       }
     },
@@ -126,17 +126,17 @@ public class ViewSettings {
         return 4;
       }
       public String getActionLabel() {
-        return UIMessages.SessionsViewCounterModeTypesAction_label;
+        return UIMessages.CoverageViewCounterModeTypesAction_label;
       }
       public ICounter getCounter(IJavaElementCoverage coverage) {
         return coverage.getTypeCounter();
       }
       public String[] getColumnHeaders() {
         return new String[] {
-            UIMessages.SessionsViewColumnElement_label,
-            UIMessages.SessionsViewColumnCoverage_label,
-            UIMessages.SessionsViewColumnCoveredTypes_label,
-            UIMessages.SessionsViewColumnTotalTypes_label
+            UIMessages.CoverageViewColumnElement_label,
+            UIMessages.CoverageViewColumnCoverage_label,
+            UIMessages.CoverageViewColumnCoveredTypes_label,
+            UIMessages.CoverageViewColumnTotalTypes_label
         };
       }
     }

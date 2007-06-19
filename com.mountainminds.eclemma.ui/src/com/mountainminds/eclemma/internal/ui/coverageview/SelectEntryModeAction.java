@@ -36,23 +36,23 @@ class SelectEntryModeAction extends Action {
     String iconkey = null;
     switch (mode) {
       case ViewSettings.ENTRYMODE_PROJECTS:
-        setText(UIMessages.SessionsViewShowProjectsAction_label);
-        setToolTipText(UIMessages.SessionsViewShowProjectsAction_tooltip);
+        setText(UIMessages.CoverageViewShowProjectsAction_label);
+        setToolTipText(UIMessages.CoverageViewShowProjectsAction_tooltip);
         iconkey = EclEmmaUIPlugin.ELCL_SHOWPROJECTS;
         break;
       case ViewSettings.ENTRYMODE_PACKAGEROOTS:
-        setText(UIMessages.SessionsViewShowPackageRootsAction_label);
-        setToolTipText(UIMessages.SessionsViewShowPackageRootsAction_tooltip);
+        setText(UIMessages.CoverageViewShowPackageRootsAction_label);
+        setToolTipText(UIMessages.CoverageViewShowPackageRootsAction_tooltip);
         iconkey = EclEmmaUIPlugin.ELCL_SHOWPACKAGEROOTS;
         break;
       case ViewSettings.ENTRYMODE_PACKAGES: 
-        setText(UIMessages.SessionsViewShowPackagesAction_label);
-        setToolTipText(UIMessages.SessionsViewShowPackagesAction_tooltip);
+        setText(UIMessages.CoverageViewShowPackagesAction_label);
+        setToolTipText(UIMessages.CoverageViewShowPackagesAction_tooltip);
         iconkey = EclEmmaUIPlugin.ELCL_SHOWPACKAGES;
         break;
       case ViewSettings.ENTRYMODE_TYPES: 
-        setText(UIMessages.SessionsViewShowTypesAction_label);
-        setToolTipText(UIMessages.SessionsViewShowTypesAction_tooltip);
+        setText(UIMessages.CoverageViewShowTypesAction_label);
+        setToolTipText(UIMessages.CoverageViewShowTypesAction_tooltip);
         iconkey = EclEmmaUIPlugin.ELCL_SHOWTYPES;
         break;
     }

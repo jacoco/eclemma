@@ -23,7 +23,7 @@ class HideUnusedTypesAction extends Action {
   private final CoverageView view;
   
   HideUnusedTypesAction(ViewSettings settings, CoverageView view) {
-    super(UIMessages.SessionsViewHideUnusedTypesAction_label, AS_CHECK_BOX);
+    super(UIMessages.CoverageViewHideUnusedTypesAction_label, AS_CHECK_BOX);
     this.settings = settings;
     this.view = view;
     setChecked(settings.getHideUnusedTypes());

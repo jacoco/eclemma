@@ -77,7 +77,7 @@ public class CoverageView extends ViewPart {
    */
   public static final Object LOADING_ELEMENT = new Object();
 
-  private static final DecimalFormat COVERAGE_VALUE = new DecimalFormat(UIMessages.SessionsView_columnCoverageValue);
+  private static final DecimalFormat COVERAGE_VALUE = new DecimalFormat(UIMessages.CoverageView_columnCoverageValue);
   
   private ViewSettings settings = new ViewSettings();
   
@@ -178,7 +178,7 @@ public class CoverageView extends ViewPart {
     
     public String getColumnText(Object element, int columnIndex) {
       if (element == LOADING_ELEMENT) {
-        return columnIndex == COLUMN_ELEMENT ? UIMessages.SessionsView_loadingMessage : ""; //$NON-NLS-1$
+        return columnIndex == COLUMN_ELEMENT ? UIMessages.CoverageView_loadingMessage : ""; //$NON-NLS-1$
       }
       ICounter counter = settings.getCounterMode().getCounter(CoverageTools.getCoverageInfo(element));
       switch (columnIndex) {
