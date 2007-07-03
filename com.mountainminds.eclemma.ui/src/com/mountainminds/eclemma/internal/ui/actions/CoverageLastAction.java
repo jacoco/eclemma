@@ -20,27 +20,40 @@ import com.mountainminds.eclemma.internal.ui.UIMessages;
  */
 public class CoverageLastAction extends RelaunchLastAction  {
 
-    public String getMode() {
-        return CoverageTools.LAUNCH_MODE;
-    }   
+  public String getMode() {
+    return CoverageTools.LAUNCH_MODE;
+  }   
     
-    public String getLaunchGroupId() {
-        return EclEmmaUIPlugin.ID_COVERAGE_LAUNCH_GROUP;
-    }
+  public String getLaunchGroupId() {
+    return EclEmmaUIPlugin.ID_COVERAGE_LAUNCH_GROUP;
+  }
     
-    /*
-     * Implements abstract method defined in superclass since Eclipse 3.3
-     */
-    protected String getText() {
-      return UIMessages.CoverageLastAction_label;
-    }
+  /*
+   * Implements abstract method defined in superclass since Eclipse 3.3
+   */
+  protected String getText() {
+    return UIMessages.CoverageLastAction_label;
+  }
 
-    /*
-     * Implements abstract method defined in superclass since Eclipse 3.3
-     */
-    protected String getTooltipText() {
-      return UIMessages.CoverageLastAction_label;
-    }
-    
+  /*
+   * Implements abstract method defined in superclass since Eclipse 3.3
+   */
+  protected String getTooltipText() {
+    return UIMessages.CoverageLastAction_label;
+  }
+
+  /*
+   * Implements abstract method defined in superclass since Eclipse 3.3
+   */
+  protected String getDescription() {
+    return UIMessages.CoverageLastAction_label;
+  }
+
+  /*
+   * Implements abstract method defined in superclass since Eclipse 3.3
+   */
+  protected String getCommandId() {
+    return "com.mountainminds.eclemma.ui.commands.CoverageLast"; //$NON-NLS-1$
+  }
   
 }
