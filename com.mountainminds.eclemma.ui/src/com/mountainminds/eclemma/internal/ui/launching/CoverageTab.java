@@ -28,6 +28,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.ui.PlatformUI;
 
 import com.mountainminds.eclemma.core.CoverageTools;
 import com.mountainminds.eclemma.core.IClassFiles;
@@ -63,6 +64,7 @@ public class CoverageTab extends AbstractLaunchConfigurationTab {
   
   public void createControl(Composite parent) {
     parent = new Composite(parent, SWT.NONE);
+    PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, EclEmmaUIPlugin.ID + ".coverage_launch_context"); //$NON-NLS-1$
     GridLayout layout = new GridLayout();
     layout.verticalSpacing = 0;
     parent.setLayout(layout);

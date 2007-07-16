@@ -39,6 +39,7 @@ import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IKeyBindingService;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionFactory;
@@ -229,6 +230,8 @@ public class CoverageView extends ViewPart {
   }
 
   public void createPartControl(Composite parent) {
+    IWorkbench workbench = getSite().getWorkbenchWindow().getWorkbench();
+    workbench.getHelpSystem().setHelp(parent, EclEmmaUIPlugin.ID + ".coverage_view_context"); //$NON-NLS-1$
     tree = new Tree(parent, SWT.NONE);
     tree.setHeaderVisible(true);
     tree.setLinesVisible(true);

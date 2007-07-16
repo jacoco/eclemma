@@ -3,7 +3,7 @@
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
- * $Id: $
+ * $Id$
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.ui.dialogs;
 
@@ -23,17 +23,19 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ListSelectionDialog;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 
 import com.mountainminds.eclemma.core.ICoverageSession;
+import com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin;
 import com.mountainminds.eclemma.internal.ui.UIMessages;
 
 /**
  * Dialog to select session to merge and enter a description for the result.
  * 
  * @author Marc R. Hoffmann
- * @version $Revision: $
+ * @version $Revision$
  */
 public class MergeSessionsDialog extends ListSelectionDialog {
 
@@ -68,6 +70,11 @@ public class MergeSessionsDialog extends ListSelectionDialog {
    */
   public String getDescription() {
     return description;
+  }
+
+  protected void configureShell(Shell shell) {
+    super.configureShell(shell);
+    PlatformUI.getWorkbench().getHelpSystem().setHelp(shell, EclEmmaUIPlugin.ID + ".merge_sessions_context"); //$NON-NLS-1$
   }
 
   protected Label createMessageArea(Composite composite) {
