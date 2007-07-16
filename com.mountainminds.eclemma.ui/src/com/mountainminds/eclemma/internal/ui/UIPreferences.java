@@ -19,11 +19,15 @@ import org.eclipse.jface.preference.IPreferenceStore;
  */
 public class UIPreferences extends AbstractPreferenceInitializer {
 
+  public static final String PREF_SHOW_COVERAGE_VIEW = EclEmmaUIPlugin.ID
+     + ".show_coverage_view"; //$NON-NLS-1$ 
+
   public static final String PREF_ALLOW_INPLACE_INSTRUMENTATION = EclEmmaUIPlugin.ID
       + ".allow_inplace_instrumentation"; //$NON-NLS-1$ 
 
   public void initializeDefaultPreferences() {
     IPreferenceStore pref = EclEmmaUIPlugin.getInstance().getPreferenceStore();
+    pref.setDefault(PREF_SHOW_COVERAGE_VIEW, true);
     pref.setDefault(PREF_ALLOW_INPLACE_INSTRUMENTATION, MessageDialogWithToggle.PROMPT);
   }
 

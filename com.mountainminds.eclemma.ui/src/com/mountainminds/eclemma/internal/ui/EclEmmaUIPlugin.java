@@ -106,14 +106,14 @@ public class EclEmmaUIPlugin extends AbstractUIPlugin {
   
   private ISessionListener sessionListener = new ISessionListener() {
     public void sessionAdded(ICoverageSession addedSession) {
-      getWorkbench().getDisplay().asyncExec(new Runnable() {
-        public void run() {
-          showCoverageView();
-        }
-
-      });
+      if (getPreferenceStore().getBoolean(UIPreferences.PREF_SHOW_COVERAGE_VIEW)) {
+        getWorkbench().getDisplay().asyncExec(new Runnable() {
+          public void run() {
+            showCoverageView();
+          }
+        });
+      }
     }
-    
     public void sessionRemoved(ICoverageSession removedSession) {
     }
     public void sessionActivated(ICoverageSession session) {
