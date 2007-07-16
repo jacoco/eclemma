@@ -141,6 +141,9 @@ public class UIMessages extends NLS {
 
   public static String CoverageDecoratorSuffix_label;
   
+  public static String CoveragePreferences_description;
+  public static String CoveragePreferencesShowCoverageView_label;
+  
   static {
     NLS.initializeMessages(BUNDLE_NAME, UIMessages.class);
   }

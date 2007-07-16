@@ -7,9 +7,14 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.ui.preferences;
 
+import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+
+import com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin;
+import com.mountainminds.eclemma.internal.ui.UIMessages;
+import com.mountainminds.eclemma.internal.ui.UIPreferences;
 
 /**
  * Implementation of the "Code Coverage" preferences page.
@@ -21,10 +26,14 @@ public class CoveragePreferencePage extends FieldEditorPreferencePage implements
 
   public CoveragePreferencePage() {
      super(GRID);
+     setDescription(UIMessages.CoveragePreferences_description);
+     setPreferenceStore(EclEmmaUIPlugin.getInstance().getPreferenceStore());
   }
   
   protected void createFieldEditors() {
-    // TODO Auto-generated method stub
+    addField(new BooleanFieldEditor(UIPreferences.PREF_SHOW_COVERAGE_VIEW,
+                                    UIMessages.CoveragePreferencesShowCoverageView_label,
+                                    getFieldEditorParent()));
   }
 
   public void init(IWorkbench workbench) {
