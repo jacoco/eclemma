@@ -434,5 +434,21 @@
             </objectClass>
          </enablement>
       </decorator>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.eclipse.jdt.ui.preferences.JavaBasePreferencePage"
+            class="com.mountainminds.eclemma.internal.ui.preferences.CoveragePreferencePage"
+            id="com.mountainminds.eclemma.ui.coveragePreferences"
+            name="%coveragePreferences.title">
+         <keywordReference id="com.mountainminds.eclemma.ui.coveragePreferences"/>
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.ui.keywords">
+      <keyword
+            id="com.mountainminds.eclemma.ui.coveragePreferences"
+            label="%keywords.coveragePreferences"/>
    </extension>   
 </plugin>
