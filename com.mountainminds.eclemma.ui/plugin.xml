@@ -309,6 +309,7 @@
          point="org.eclipse.debug.ui.launchConfigurationTabGroups">
       <launchConfigurationTabGroup
             class="com.mountainminds.eclemma.internal.ui.launching.CoverageTabGroup"
+            helpContextId="com.mountainminds.eclemma.ui.coverage_launch_context"
             id="com.mountainminds.eclemma.ui.JavaApplicationTabGroup"
             type="org.eclipse.jdt.launching.localJavaApplication">
          <launchMode
@@ -317,6 +318,7 @@
       </launchConfigurationTabGroup>
       <launchConfigurationTabGroup
             class="com.mountainminds.eclemma.internal.ui.launching.CoverageTabGroup"
+            helpContextId="com.mountainminds.eclemma.ui.coverage_launch_context"
             id="com.mountainminds.eclemma.ui.JUnitTabGroup"
             type="org.eclipse.jdt.junit.launchconfig">
          <launchMode
@@ -325,6 +327,7 @@
       </launchConfigurationTabGroup>
       <launchConfigurationTabGroup
             class="com.mountainminds.eclemma.internal.ui.launching.CoverageTabGroup:inplaceonly"
+            helpContextId="com.mountainminds.eclemma.ui.coverage_launch_context"
             id="com.mountainminds.eclemma.ui.WorkbenchTabGroup"
             type="org.eclipse.pde.ui.RuntimeWorkbench">
          <launchMode
@@ -333,6 +336,7 @@
       </launchConfigurationTabGroup>
       <launchConfigurationTabGroup
             class="com.mountainminds.eclemma.internal.ui.launching.CoverageTabGroup:inplaceonly"
+            helpContextId="com.mountainminds.eclemma.ui.coverage_launch_context"
             id="com.mountainminds.eclemma.ui.JUnitPluginTabGroup"
             type="org.eclipse.pde.ui.JunitLaunchConfig">
          <launchMode
@@ -341,6 +345,7 @@
       </launchConfigurationTabGroup>
       <launchConfigurationTabGroup
             class="com.mountainminds.eclemma.internal.ui.launching.CoverageTabGroup:inplaceonly"
+            helpContextId="com.mountainminds.eclemma.ui.coverage_launch_context"
             id="com.mountainminds.eclemma.ui.EquinoxTabGroup"
             type="org.eclipse.pde.ui.EquinoxLauncher">
          <launchMode
@@ -349,6 +354,7 @@
       </launchConfigurationTabGroup>
       <launchConfigurationTabGroup
             class="com.mountainminds.eclemma.internal.ui.launching.CoverageTabGroup"
+            helpContextId="com.mountainminds.eclemma.ui.coverage_launch_context"
             id="com.mountainminds.eclemma.ui.TestNGTabGroup"
             type="org.testng.eclipse.launchconfig">
          <launchMode
