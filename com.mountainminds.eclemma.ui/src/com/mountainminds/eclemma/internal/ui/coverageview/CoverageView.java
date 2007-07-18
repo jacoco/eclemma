@@ -401,9 +401,9 @@ public class CoverageView extends ViewPart {
         removeAllSessionsAction.setEnabled(atLeastOne);
         exportAction.setEnabled(atLeastOne);
         refreshAction.setEnabled(atLeastOne);
+        selectSessionAction.setEnabled(atLeastOne);
         boolean atLeastTwo = sessions.length >= 2;
         mergeSessionsAction.setEnabled(atLeastTwo);
-        selectSessionAction.setEnabled(atLeastTwo);
       }
     });
   }

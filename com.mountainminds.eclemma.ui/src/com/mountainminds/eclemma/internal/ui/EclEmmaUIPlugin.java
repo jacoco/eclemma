@@ -122,6 +122,7 @@ public class EclEmmaUIPlugin extends AbstractUIPlugin {
   
   public void start(BundleContext context) throws Exception {
     super.start(context);
+    CoverageTools.setPreferences(UIPreferences.CORE_PREFERENCES);
     CoverageTools.getSessionManager().addSessionListener(sessionListener);
     editorTracker = new EditorTracker(getWorkbench());
     instance = this;

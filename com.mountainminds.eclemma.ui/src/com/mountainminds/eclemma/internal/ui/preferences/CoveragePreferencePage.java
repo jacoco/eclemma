@@ -34,6 +34,12 @@ public class CoveragePreferencePage extends FieldEditorPreferencePage implements
     addField(new BooleanFieldEditor(UIPreferences.PREF_SHOW_COVERAGE_VIEW,
                                     UIMessages.CoveragePreferencesShowCoverageView_label,
                                     getFieldEditorParent()));
+    addField(new BooleanFieldEditor(UIPreferences.PREF_ACTICATE_NEW_SESSIONS,
+                                    UIMessages.CoveragePreferencesActivateNewSessions_label,
+                                    getFieldEditorParent()));
+    addField(new BooleanFieldEditor(UIPreferences.PREF_AUTO_REMOVE_SESSIONS,
+                                    UIMessages.CoveragePreferencesAutoRemoveSessions_label,
+                                    getFieldEditorParent()));
   }
 
   public void init(IWorkbench workbench) {

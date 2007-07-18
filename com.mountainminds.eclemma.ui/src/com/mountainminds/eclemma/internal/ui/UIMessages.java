@@ -143,6 +143,8 @@ public class UIMessages extends NLS {
   
   public static String CoveragePreferences_description;
   public static String CoveragePreferencesShowCoverageView_label;
+  public static String CoveragePreferencesActivateNewSessions_label;
+  public static String CoveragePreferencesAutoRemoveSessions_label;
   
   static {
     NLS.initializeMessages(BUNDLE_NAME, UIMessages.class);
