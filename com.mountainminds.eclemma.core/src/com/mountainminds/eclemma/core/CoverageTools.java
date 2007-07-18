@@ -221,4 +221,14 @@ public final class CoverageTools {
     return new SessionImporter();
   }
   
+  /**
+   * Sets a {@link ICorePreferences} instance which will be used by the EclEmma
+   * core to query preference settings if required.
+   * 
+   * @param preferences  callback object for preference settings
+   */
+  public static void setPreferences(ICorePreferences preferences) {
+    EclEmmaCorePlugin.getInstance().setPreferences(preferences);
+  }
+  
 }

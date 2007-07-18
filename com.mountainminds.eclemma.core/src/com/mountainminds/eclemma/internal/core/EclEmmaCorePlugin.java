@@ -40,6 +40,7 @@ import org.osgi.framework.BundleContext;
 import com.mountainminds.eclemma.core.CoverageTools;
 import com.mountainminds.eclemma.core.EclEmmaStatus;
 import com.mountainminds.eclemma.core.IClassFiles;
+import com.mountainminds.eclemma.core.ICorePreferences;
 import com.mountainminds.eclemma.core.ICoverageSession;
 import com.mountainminds.eclemma.core.ISessionManager;
 import com.mountainminds.eclemma.core.launching.ICoverageLaunchInfo;
@@ -62,6 +63,8 @@ public class EclEmmaCorePlugin extends Plugin {
   public static final IPath EMMA_JAR = new Path("/emma.jar"); //$NON-NLS-1$
 
   private static EclEmmaCorePlugin instance;
+  
+  private ICorePreferences preferences = ICorePreferences.DEFAULT;
 
   private ISessionManager sessionManager;
 
@@ -74,19 +77,12 @@ public class EclEmmaCorePlugin extends Plugin {
 
   private ILaunchListener launchListener = new ILaunchListener() {
     public void launchRemoved(ILaunch launch) {
-      // TODO this behaviour will be optional
-      /*
-      ICoverageSession session = sessionManager.getSession(launch);
-      if (session != null) {
-        session.dispose();
-        sessionManager.removeSession(session);
+      if (preferences.getAutoRemoveSessions()) {
+        sessionManager.removeSession(launch);
       }
-      */
     }
-
     public void launchAdded(ILaunch launch) {
     }
-
     public void launchChanged(ILaunch launch) {
     }
   };
@@ -110,8 +106,7 @@ public class EclEmmaCorePlugin extends Plugin {
               ICoverageSession session = new CoverageSession(description, info
                   .getInstrumentations(), new IPath[] { coveragedatafile },
                   launch.getLaunchConfiguration());
-              // TODO it will be optional, whether the new session is activated
-              sessionManager.addSession(session, true, launch);
+              sessionManager.addSession(session, preferences.getActivateNewSessions(), launch);
             }
             info.dispose();
           }
@@ -168,6 +163,10 @@ public class EclEmmaCorePlugin extends Plugin {
 
   public static EclEmmaCorePlugin getInstance() {
     return instance;
+  }
+  
+  public void setPreferences(ICorePreferences preferences) {
+    this.preferences = preferences;
   }
 
   public ISessionManager getSessionManager() {
