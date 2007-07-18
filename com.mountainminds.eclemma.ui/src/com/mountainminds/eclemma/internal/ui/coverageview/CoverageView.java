@@ -39,7 +39,6 @@ import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IKeyBindingService;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
-import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionFactory;
@@ -54,6 +53,7 @@ import com.mountainminds.eclemma.core.ISessionListener;
 import com.mountainminds.eclemma.core.analysis.ICounter;
 import com.mountainminds.eclemma.core.analysis.IJavaCoverageListener;
 import com.mountainminds.eclemma.core.analysis.IJavaElementCoverage;
+import com.mountainminds.eclemma.internal.ui.ContextHelp;
 import com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin;
 import com.mountainminds.eclemma.internal.ui.UIMessages;
 import com.mountainminds.eclemma.internal.ui.actions.ExportSessionAction;
@@ -230,8 +230,7 @@ public class CoverageView extends ViewPart {
   }
 
   public void createPartControl(Composite parent) {
-    IWorkbench workbench = getSite().getWorkbenchWindow().getWorkbench();
-    workbench.getHelpSystem().setHelp(parent, EclEmmaUIPlugin.ID + ".coverage_view_context"); //$NON-NLS-1$
+    ContextHelp.setHelp(parent, ContextHelp.COVERAGE_VIEW);
     tree = new Tree(parent, SWT.NONE);
     tree.setHeaderVisible(true);
     tree.setLinesVisible(true);

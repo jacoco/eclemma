@@ -23,12 +23,11 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ListSelectionDialog;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 
 import com.mountainminds.eclemma.core.ICoverageSession;
-import com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin;
+import com.mountainminds.eclemma.internal.ui.ContextHelp;
 import com.mountainminds.eclemma.internal.ui.UIMessages;
 
 /**
@@ -74,7 +73,7 @@ public class MergeSessionsDialog extends ListSelectionDialog {
 
   protected void configureShell(Shell shell) {
     super.configureShell(shell);
-    PlatformUI.getWorkbench().getHelpSystem().setHelp(shell, EclEmmaUIPlugin.ID + ".merge_sessions_context"); //$NON-NLS-1$
+    ContextHelp.setHelp(shell, ContextHelp.MERGE_SESSIONS);
   }
 
   protected Label createMessageArea(Composite composite) {

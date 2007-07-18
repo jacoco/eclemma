@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.Group;
 import com.mountainminds.eclemma.core.CoverageTools;
 import com.mountainminds.eclemma.core.IClassFiles;
 import com.mountainminds.eclemma.core.launching.ICoverageLaunchConfigurationConstants;
+import com.mountainminds.eclemma.internal.ui.ContextHelp;
 import com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin;
 import com.mountainminds.eclemma.internal.ui.UIMessages;
 import com.mountainminds.eclemma.internal.ui.viewers.ClassesViewer;
@@ -63,6 +64,7 @@ public class CoverageTab extends AbstractLaunchConfigurationTab {
   
   public void createControl(Composite parent) {
     parent = new Composite(parent, SWT.NONE);
+    ContextHelp.setHelp(parent, ContextHelp.COVERAGE_LAUNCH_TAB);
     GridLayout layout = new GridLayout();
     layout.verticalSpacing = 0;
     parent.setLayout(layout);

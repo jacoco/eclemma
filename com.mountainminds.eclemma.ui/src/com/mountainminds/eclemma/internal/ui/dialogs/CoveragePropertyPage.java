@@ -25,13 +25,13 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PropertyPage;
 
 import com.mountainminds.eclemma.core.CoverageTools;
 import com.mountainminds.eclemma.core.ICoverageSession;
 import com.mountainminds.eclemma.core.analysis.ICounter;
 import com.mountainminds.eclemma.core.analysis.IJavaElementCoverage;
+import com.mountainminds.eclemma.internal.ui.ContextHelp;
 import com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin;
 import com.mountainminds.eclemma.internal.ui.UIMessages;
 
@@ -51,7 +51,7 @@ public class CoveragePropertyPage extends PropertyPage {
   private static final DecimalFormat COVERAGE_VALUE = new DecimalFormat(UIMessages.CoveragePropertyPageColumnCoverage_value);
 
   protected Control createContents(Composite parent) {
-    PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, EclEmmaUIPlugin.ID + ".coverage_properties_context"); //$NON-NLS-1$
+    ContextHelp.setHelp(parent, ContextHelp.COVERAGE_PROPERTIES);
     noDefaultAndApplyButton();
     parent = new Composite(parent, SWT.NONE);
     GridLayout layout = new GridLayout();
