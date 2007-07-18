@@ -8,8 +8,8 @@
 package com.mountainminds.eclemma.internal.core;
 
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.PluginVersionIdentifier;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.Version;
 
 /**
  * Some constants to behave version specific in some situations. Unfortunately
@@ -19,16 +19,20 @@ import org.osgi.framework.Bundle;
  * @author Marc R. Hoffmann
  * @version $Revision$
  */
-public class PlatformVersion {
+public class EclipseVersion {
 
-  public static final PluginVersionIdentifier CURRENT;
+  public static final Version CURRENT;
   
-  public static final PluginVersionIdentifier V320 = new PluginVersionIdentifier("3.2.0"); //$NON-NLS-1$
+  public static final Version V320 = new Version("3.2.0"); //$NON-NLS-1$
+  
+  public static boolean isGreaterOrEqualTo(Version version) {
+    return version.compareTo(CURRENT) >= 0;
+  }
   
   static {
     Bundle rt = Platform.getBundle(Platform.PI_RUNTIME);
     String version = (String) rt.getHeaders().get(org.osgi.framework.Constants.BUNDLE_VERSION);
-    CURRENT = new PluginVersionIdentifier(version); 
+    CURRENT = new Version(version); 
   }
   
 }

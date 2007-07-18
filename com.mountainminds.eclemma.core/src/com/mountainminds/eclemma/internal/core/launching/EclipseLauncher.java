@@ -24,7 +24,7 @@ import com.mountainminds.eclemma.core.CoverageTools;
 import com.mountainminds.eclemma.core.IClassFiles;
 import com.mountainminds.eclemma.core.launching.ICoverageLaunchInfo;
 import com.mountainminds.eclemma.internal.core.EclEmmaCorePlugin;
-import com.mountainminds.eclemma.internal.core.PlatformVersion;
+import com.mountainminds.eclemma.internal.core.EclipseVersion;
 
 /**
  * Laucher for the Eclipse runtime workbench.
@@ -48,7 +48,7 @@ public class EclipseLauncher extends CoverageLauncher {
    * @return  launch configuration key for VM arguments
    */
   protected String getVMArgsKey() {
-    boolean is320 = PlatformVersion.CURRENT.isGreaterOrEqualTo(PlatformVersion.V320);
+    boolean is320 = EclipseVersion.isGreaterOrEqualTo(EclipseVersion.V320);
     return is320 ? VMARGS : PRE320VMARGS;
   }
   
