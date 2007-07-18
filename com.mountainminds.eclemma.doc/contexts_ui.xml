@@ -3,20 +3,24 @@
 
 <contexts>
 	<context id="coverage_view_context">
-		<description>Analyze coverage results.</description>
+		<description>This view allows drilling-down coverage data along the Java element hierarchy.</description>
  		<topic label="Using the Coverage View" href="pages/coverageview.html"/>
  		<topic label="Managing Coverage Sessions" href="pages/sessions.html"/>
 	</context>
 	<context id="coverage_properties_context">
-		<description>See coverage details for the selected Java element.</description>
+		<description>Shows all coverage counters for the selected Java element.</description>
  		<topic label="Coverage Properties" href="pages/coverageproperties.html"/>
 	</context>
 	<context id="coverage_launch_context">
-		<description>Lauch an application in coverage mode.</description>
+		<description>Launches this application type in coverage mode.</description>
+ 		<topic label="Launching in Coverage Mode" href="pages/launching.html"/>
+	</context>
+	<context id="coverage_launch_tab_context">
+		<description>This tab specifies the scope of the coverage analysis.</description>
  		<topic label="Launching in Coverage Mode" href="pages/launching.html"/>
 	</context>
 	<context id="merge_sessions_context">
-		<description>Merge coverage sessions into a single session.</description>
+		<description>Merge selected coverage sessions into a single session.</description>
     <topic label="Managing Coverage Sessions" href="pages/sessions.html"/>
 	</context>
 </contexts>
