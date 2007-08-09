@@ -5,7 +5,7 @@
  *
  * $Id: $
  ******************************************************************************/
-package com.mountainminds.eclemma.internal.ui.preferences;
+package com.mountainminds.eclemma.internal.ui.dialogs;
 
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
