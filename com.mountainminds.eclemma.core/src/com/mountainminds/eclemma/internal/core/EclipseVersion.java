@@ -25,8 +25,15 @@ public class EclipseVersion {
   
   public static final Version V320 = new Version("3.2.0"); //$NON-NLS-1$
   
+  /**
+   * Checks whether the current platform version is greater or equal than the
+   * given version.
+   * 
+   * @param version  version to compare to
+   * @return  true, if the current version is greater or equal than the given one
+   */
   public static boolean isGreaterOrEqualTo(Version version) {
-    return version.compareTo(CURRENT) >= 0;
+    return CURRENT.compareTo(version) >= 0;
   }
   
   static {
