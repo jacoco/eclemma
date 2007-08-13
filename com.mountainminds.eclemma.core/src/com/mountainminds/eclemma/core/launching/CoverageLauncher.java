@@ -5,7 +5,7 @@
  *
  * $Id$
  ******************************************************************************/
-package com.mountainminds.eclemma.internal.core.launching;
+package com.mountainminds.eclemma.core.launching;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -41,13 +41,12 @@ import org.eclipse.osgi.util.NLS;
 import com.mountainminds.eclemma.core.CoverageTools;
 import com.mountainminds.eclemma.core.EclEmmaStatus;
 import com.mountainminds.eclemma.core.IClassFiles;
-import com.mountainminds.eclemma.core.launching.ICoverageLaunchConfigurationConstants;
-import com.mountainminds.eclemma.core.launching.ICoverageLaunchInfo;
-import com.mountainminds.eclemma.core.launching.ICoverageLauncher;
 import com.mountainminds.eclemma.internal.core.CoreMessages;
 import com.mountainminds.eclemma.internal.core.DebugOptions;
 import com.mountainminds.eclemma.internal.core.EclEmmaCorePlugin;
 import com.mountainminds.eclemma.internal.core.instr.InstrMarker;
+import com.mountainminds.eclemma.internal.core.launching.CoverageLaunchInfo;
+import com.mountainminds.eclemma.internal.core.launching.InstrumentedClasspathProvider;
 import com.vladium.emma.AppLoggers;
 import com.vladium.emma.EMMAProperties;
 
@@ -112,8 +111,8 @@ public abstract class CoverageLauncher implements ICoverageLauncher, IExecutable
   }
 
   /**
-   * Creates the a JAR file includung the emma.properties file that will be
-   * injected in the class path.
+   * Creates the a JAR file including the <code>emma.properties</code> file that
+   * will be injected in the class path.
    * 
    * @param configuration
    *          Configuration object for this launch

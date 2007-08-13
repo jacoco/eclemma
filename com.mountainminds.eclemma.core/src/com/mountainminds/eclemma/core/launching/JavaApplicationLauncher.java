@@ -5,13 +5,13 @@
  *
  * $Id$
  ******************************************************************************/
-package com.mountainminds.eclemma.internal.core.launching;
+package com.mountainminds.eclemma.core.launching;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 
-import com.mountainminds.eclemma.core.launching.ICoverageLaunchInfo;
+import com.mountainminds.eclemma.internal.core.launching.InstrumentedClasspathProvider;
 
 /**
  * Launcher for local Java applications.

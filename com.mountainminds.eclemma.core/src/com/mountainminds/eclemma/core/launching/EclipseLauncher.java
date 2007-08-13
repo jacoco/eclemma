@@ -5,7 +5,7 @@
  *
  * $Id: $
  ******************************************************************************/
-package com.mountainminds.eclemma.internal.core.launching;
+package com.mountainminds.eclemma.core.launching;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -22,7 +22,6 @@ import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 
 import com.mountainminds.eclemma.core.CoverageTools;
 import com.mountainminds.eclemma.core.IClassFiles;
-import com.mountainminds.eclemma.core.launching.ICoverageLaunchInfo;
 import com.mountainminds.eclemma.internal.core.EclEmmaCorePlugin;
 import com.mountainminds.eclemma.internal.core.EclipseVersion;
 
