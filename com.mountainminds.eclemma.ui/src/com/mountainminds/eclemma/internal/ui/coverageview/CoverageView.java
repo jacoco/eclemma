@@ -20,13 +20,13 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.jface.viewers.IOpenListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.OpenEvent;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -283,15 +283,15 @@ public class CoverageView extends ViewPart {
     updateActions();
     configureToolbar();
     
-    viewer.addDoubleClickListener(new IDoubleClickListener() {
-      public void doubleClick(DoubleClickEvent event) {
+    viewer.addOpenListener(new IOpenListener() {
+      public void open(OpenEvent event) {
         openAction.run((IStructuredSelection) event.getSelection());
       }
     });
     
-    MenuManager menuMgr= new MenuManager("#PopupMenu"); //$NON-NLS-1$
+    MenuManager menuMgr = new MenuManager("#PopupMenu"); //$NON-NLS-1$
     menuMgr.setRemoveAllWhenShown(true);
-    viewer.getTree().setMenu(menuMgr.createContextMenu(viewer.getTree()));
+    tree.setMenu(menuMgr.createContextMenu(tree));
     menuMgr.addMenuListener(new IMenuListener() {
       public void menuAboutToShow(IMenuManager menuMgr) {
         configureContextMenu(menuMgr);
