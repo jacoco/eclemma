@@ -34,7 +34,7 @@
             label="%JavaApplicationShortcut.label"
             icon="$nl$/icons/full/etool16/java_launch.gif"
             modes="coverage"
-            class="com.mountainminds.eclemma.internal.ui.launching.CoverageLaunchShortcut:org.eclipse.jdt.debug.ui.localJavaShortcut"
+            class="com.mountainminds.eclemma.ui.launching.CoverageLaunchShortcut:org.eclipse.jdt.debug.ui.localJavaShortcut"
             id="com.mountainminds.eclemma.ui.localJavaShortcut">
          <contextualLaunch>
            <enablement>
@@ -47,7 +47,7 @@
       <shortcut
             label="%JUnitTestShortcut.label"
             icon="$nl$/icons/full/etool16/junit_launch.gif"
-            class="com.mountainminds.eclemma.internal.ui.launching.CoverageLaunchShortcut:org.eclipse.jdt.junit.junitShortcut"
+            class="com.mountainminds.eclemma.ui.launching.CoverageLaunchShortcut:org.eclipse.jdt.junit.junitShortcut"
             modes="coverage"
             id="com.mountainminds.eclemma.ui.junitShortcut">
          <contextualLaunch>
@@ -62,7 +62,7 @@
             label="%EclipseApplicationShortcut.label"
             icon="$nl$/icons/full/etool16/eclipse_launch.gif"
             modes="coverage"
-            class="com.mountainminds.eclemma.internal.ui.launching.CoverageLaunchShortcut:org.eclipse.pde.ui.runtimeWorkbenchShortcut"
+            class="com.mountainminds.eclemma.ui.launching.CoverageLaunchShortcut:org.eclipse.pde.ui.runtimeWorkbenchShortcut"
             id="com.mountainminds.eclemma.ui.workbenchShortcut">
          <contextualLaunch>
            <enablement>
@@ -76,7 +76,7 @@
             label="%JUnitPluginTestShortcut.label"
             icon="$nl$/icons/full/etool16/junitplugin_launch.gif"
             modes="coverage"
-            class="com.mountainminds.eclemma.internal.ui.launching.CoverageLaunchShortcut:org.eclipse.pde.ui.junitWorkbenchShortcut"
+            class="com.mountainminds.eclemma.ui.launching.CoverageLaunchShortcut:org.eclipse.pde.ui.junitWorkbenchShortcut"
             id="com.mountainminds.eclemma.ui.junitPluginShortcut">
          <contextualLaunch>
            <enablement>
@@ -308,7 +308,7 @@
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTabGroups">
       <launchConfigurationTabGroup
-            class="com.mountainminds.eclemma.internal.ui.launching.CoverageTabGroup"
+            class="com.mountainminds.eclemma.ui.launching.CoverageTabGroup"
             helpContextId="com.mountainminds.eclemma.ui.coverage_launch_context"
             id="com.mountainminds.eclemma.ui.JavaApplicationTabGroup"
             type="org.eclipse.jdt.launching.localJavaApplication">
@@ -317,7 +317,7 @@
                mode="coverage"/>
       </launchConfigurationTabGroup>
       <launchConfigurationTabGroup
-            class="com.mountainminds.eclemma.internal.ui.launching.CoverageTabGroup"
+            class="com.mountainminds.eclemma.ui.launching.CoverageTabGroup"
             helpContextId="com.mountainminds.eclemma.ui.coverage_launch_context"
             id="com.mountainminds.eclemma.ui.JUnitTabGroup"
             type="org.eclipse.jdt.junit.launchconfig">
@@ -326,7 +326,7 @@
                mode="coverage"/>
       </launchConfigurationTabGroup>
       <launchConfigurationTabGroup
-            class="com.mountainminds.eclemma.internal.ui.launching.CoverageTabGroup:inplaceonly"
+            class="com.mountainminds.eclemma.ui.launching.CoverageTabGroup:inplaceonly"
             helpContextId="com.mountainminds.eclemma.ui.coverage_launch_context"
             id="com.mountainminds.eclemma.ui.WorkbenchTabGroup"
             type="org.eclipse.pde.ui.RuntimeWorkbench">
@@ -335,7 +335,7 @@
                mode="coverage"/>
       </launchConfigurationTabGroup>
       <launchConfigurationTabGroup
-            class="com.mountainminds.eclemma.internal.ui.launching.CoverageTabGroup:inplaceonly"
+            class="com.mountainminds.eclemma.ui.launching.CoverageTabGroup:inplaceonly"
             helpContextId="com.mountainminds.eclemma.ui.coverage_launch_context"
             id="com.mountainminds.eclemma.ui.JUnitPluginTabGroup"
             type="org.eclipse.pde.ui.JunitLaunchConfig">
@@ -344,7 +344,7 @@
                mode="coverage"/>
       </launchConfigurationTabGroup>
       <launchConfigurationTabGroup
-            class="com.mountainminds.eclemma.internal.ui.launching.CoverageTabGroup:inplaceonly"
+            class="com.mountainminds.eclemma.ui.launching.CoverageTabGroup:inplaceonly"
             helpContextId="com.mountainminds.eclemma.ui.coverage_launch_context"
             id="com.mountainminds.eclemma.ui.EquinoxTabGroup"
             type="org.eclipse.pde.ui.EquinoxLauncher">
@@ -353,7 +353,7 @@
                mode="coverage"/>
       </launchConfigurationTabGroup>
       <launchConfigurationTabGroup
-            class="com.mountainminds.eclemma.internal.ui.launching.CoverageTabGroup"
+            class="com.mountainminds.eclemma.ui.launching.CoverageTabGroup"
             helpContextId="com.mountainminds.eclemma.ui.coverage_launch_context"
             id="com.mountainminds.eclemma.ui.TestNGTabGroup"
             type="org.testng.eclipse.launchconfig">

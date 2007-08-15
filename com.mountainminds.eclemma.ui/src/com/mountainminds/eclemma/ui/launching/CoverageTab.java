@@ -5,13 +5,10 @@
  *
  * $Id$
  ******************************************************************************/
-package com.mountainminds.eclemma.internal.ui.launching;
+package com.mountainminds.eclemma.ui.launching;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -46,22 +43,13 @@ import com.mountainminds.eclemma.internal.ui.viewers.ClassesViewer;
 public class CoverageTab extends AbstractLaunchConfigurationTab {
 
   private final boolean inplaceonly;
+  private ClassesViewer classesviewer;
+  private Button buttonInplaceInstrumentation;
 
   public CoverageTab(boolean inplaceonly) {
     this.inplaceonly = inplaceonly;
   }
 
-  private ClassesViewer classesviewer;
-  private Button buttonInplaceInstrumentation;
-  
-  public List getPackageFragmentRoots(IClassFiles[] classfiles) {
-    Set elements = new HashSet();
-    for (int i = 0; i < classfiles.length; i++) {
-      elements.addAll(Arrays.asList(classfiles[i].getPackageFragmentRoots()));
-    }
-    return new ArrayList(elements);
-  }
-  
   public void createControl(Composite parent) {
     parent = new Composite(parent, SWT.NONE);
     ContextHelp.setHelp(parent, ContextHelp.COVERAGE_LAUNCH_TAB);

@@ -5,7 +5,7 @@
  *
  * $Id$
  ******************************************************************************/
-package com.mountainminds.eclemma.internal.ui.launching;
+package com.mountainminds.eclemma.ui.launching;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;

@@ -3,9 +3,9 @@
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
- * $Id: $
+ * $Id$
  ******************************************************************************/
-package com.mountainminds.eclemma.internal.ui.launching;
+package com.mountainminds.eclemma.ui.launching;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -30,7 +30,7 @@ import com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin;
  * </pre>
  * 
  * @author Marc R. Hoffmann
- * @version $Revision: $
+ * @version $Revision$
  */
 public class CoverageLaunchShortcut implements ILaunchShortcut, IExecutableExtension {
 

@@ -3,7 +3,7 @@
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
- * $Id: AlreadyInstrumentedHandler.java 70 2006-09-12 19:03:22Z mho $
+ * $Id$
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.ui.actions;
 
@@ -15,6 +15,7 @@ import com.mountainminds.eclemma.core.CoverageTools;
  * An action delegate for the "Coverage As" context menu entry.
  * 
  * @author Brock Janiczak
+ * @version $Revision$
  */
 public class CoverageContextualLaunchAction extends ContextualLaunchAction {
   
