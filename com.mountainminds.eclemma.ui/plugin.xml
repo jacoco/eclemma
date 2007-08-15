@@ -456,5 +456,23 @@
       <keyword
             id="com.mountainminds.eclemma.ui.coveragePreferences"
             label="%keywords.coveragePreferences"/>
-   </extension>   
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+       <objectContribution
+            objectClass="java.lang.Object"
+            id="com.mountainminds.eclemma.ui.contextualLaunch.coverage">
+         <action
+               label="%CoverageContextMenu.label"
+               style="pulldown"
+               class="com.mountainminds.eclemma.internal.ui.actions.CoverageContextualLaunchAction"
+               menubarPath="additions"
+               enablesFor="+"
+               id="com.mountainminds.eclemma.ui.contextualLaunch.coverage.submenu">
+         </action>                  
+         <enablement>
+            <test property="org.eclipse.debug.ui.launchable" value="coverage"/>
+         </enablement>
+      </objectContribution>
+   </extension>
 </plugin>
