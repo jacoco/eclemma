@@ -446,7 +446,7 @@
       <page
             category="org.eclipse.jdt.ui.preferences.JavaBasePreferencePage"
             class="com.mountainminds.eclemma.internal.ui.dialogs.CoveragePreferencePage"
-            id="com.mountainminds.eclemma.ui.coveragePreferences"
+            id="com.mountainminds.eclemma.ui.preferencePages.CoverageGeneral"
             name="%coveragePreferences.title">
          <keywordReference id="com.mountainminds.eclemma.ui.coveragePreferences"/>
       </page>
