@@ -11,6 +11,10 @@
 		<description>Shows all coverage counters for the selected Java element.</description>
  		<topic label="Coverage Properties" href="pages/coverageproperties.html"/>
 	</context>
+	<context id="coverage_preferences_context">
+		<description>Adjust the behaviour of the code coverage functionality.</description>
+ 		<topic label="Code Coverage Preferences" href="pages/preferences.html"/>
+	</context>
 	<context id="coverage_launch_context">
 		<description>Launches this application type in coverage mode.</description>
  		<topic label="Launching in Coverage Mode" href="pages/launching.html"/>

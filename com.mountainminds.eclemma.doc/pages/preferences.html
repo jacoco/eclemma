@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+  <meta name="LastChangedDate" content="$LastChangedDate$" />
+  <meta name="Revision" content="$Revision$" />
+  <meta name="HeadURL" content="$HeadURL$" />
+  <link rel="stylesheet" href="../book.css" charset="ISO-8859-1" type="text/css" />
+  <title>Preferences</title>
+</head>
+
+<body>
+
+<h2>Code Coverage Preferences</h2>
+
+<p>
+  The behaviour of the EclEmma plug-in can be adjusted in the Eclipse
+  <i>Preferences</i> dialog. Open the dialog from the
+  <i>Window</i> &rarr; <i>Preferences</i> menu. EclEmma's settings are located
+  on the page <i>Java</i> &rarr; <i>Code Coverage</i>. Or simply type
+  <i>coverage</i> in the filter field.
+</p>
+
+<p>
+  The <i>Code Coverage</i> preferences page offers the following options.
+</p>
+
+<h3>Open coverage view automatically</h3>
+
+<p>
+  Whenever a new coverage session becomes active the
+  <a href="coverageview.html"><i>Coverage</i> view</a> can be automatically shown 
+  in the current workbench window. (Default: on)
+</p>
+
+<h3>Activate new coverage sessions</h3>
+
+<p>
+  A new session is created when a <a href="launching.html">coverage launch</a>
+  terminates or a session is <a href="importexport.html">imported</a>. This
+  option determines whether the new session should become automatically active,
+  i.e. its result data is shown in the coverage view and in the Java editors.
+  (Default: on)
+</p>
+
+<h3>Remove coverage sessions for removed launches</h3>
+
+<p>
+  Coverage session will be available until they are manually deleted in the
+  <a href="coverageview.html"><i>Coverage</i> view</a>. For frequent test runs
+  it might be more convenient to remove them automatically with the associated
+  launches. (Default: off)
+</p>
+
+<h3>Show in-place instrumentation warning</h3>
+
+<p>
+  Launching a coverage test with so called <i>in-place instrumentation</i> will
+  modify your original class files and requires a clean build before the next
+  normal launch. Therefore a optional warning dialog can be shown. (Default: on)
+</p>
+
+
+<h2>Other Relevant Preference Pages</h2>
+
+<p>
+  Java elements in the various Eclipse views like the <i>Package Explorer</i>
+  might be directly <a href="decorators.html">decorated</a> with coverage data
+  from the current session. This can be enabled on the page <i>General</i> &rarr;
+  <i>Appearance</i> &rarr; <i>Label Decorators</i>. The corresponding entry is
+  <i>Java Code Coverage</i>. (Default: off)
+</p>
+
+<p>
+  The <a href="annotations.html">annotation</a> style for code coverage in
+  editors can be adjusted on the page <i>General</i> &rarr; <i>Editors</i> &rarr;
+  <i>Text Editors</i> &rarr; <i>Annotations</i>. The corresponding entries are:
+</p>
+
+<ul>
+  <li>Full Coverage</li>
+  <li>Partial Coverage</li>
+  <li>No Coverage</li>
+</ul>
+
+</body>
+</html>
