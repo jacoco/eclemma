@@ -7,6 +7,7 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.ui.dialogs;
 
+import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.swt.SWT;
@@ -61,6 +62,10 @@ public class CoveragePreferencePage extends FieldEditorPreferencePage implements
     addField(new BooleanFieldEditor(UIPreferences.PREF_AUTO_REMOVE_SESSIONS,
                                     UIMessages.CoveragePreferencesAutoRemoveSessions_label,
                                     getFieldEditorParent()));
+    addField(new ToggleValueFieldEditor(UIPreferences.PREF_ALLOW_INPLACE_INSTRUMENTATION,
+                                    UIMessages.CoveragePreferencesShowInplaceWarning_label,
+                                    getFieldEditorParent(),
+                                    MessageDialogWithToggle.PROMPT, MessageDialogWithToggle.ALWAYS));
   }
 
   public void init(IWorkbench workbench) {
