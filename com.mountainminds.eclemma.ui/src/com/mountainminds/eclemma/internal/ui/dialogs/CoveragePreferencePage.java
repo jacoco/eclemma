@@ -19,6 +19,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferenceLinkArea;
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
 
+import com.mountainminds.eclemma.internal.ui.ContextHelp;
 import com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin;
 import com.mountainminds.eclemma.internal.ui.UIMessages;
 import com.mountainminds.eclemma.internal.ui.UIPreferences;
@@ -40,6 +41,11 @@ public class CoveragePreferencePage extends FieldEditorPreferencePage implements
      setPreferenceStore(EclEmmaUIPlugin.getInstance().getPreferenceStore());
   }
   
+  public void createControl(Composite parent) {
+    super.createControl(parent);
+    ContextHelp.setHelp(getControl(), ContextHelp.COVERAGE_PREFERENCES);
+  }
+
   protected Control createContents(Composite parent) {
     parent = (Composite) super.createContents(parent);
     new Label(parent, SWT.NONE);

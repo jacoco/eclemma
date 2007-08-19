@@ -23,6 +23,8 @@ public class ContextHelp {
   public static final String COVERAGE_VIEW = PREFIX + "coverage_view_context"; //$NON-NLS-1$
   
   public static final String COVERAGE_PROPERTIES = PREFIX + "coverage_properties_context"; //$NON-NLS-1$
+
+  public static final String COVERAGE_PREFERENCES = PREFIX + "coverage_preferences_context"; //$NON-NLS-1$
   
   public static final String COVERAGE_LAUNCH = PREFIX + "coverage_launch_context"; //$NON-NLS-1$
   
