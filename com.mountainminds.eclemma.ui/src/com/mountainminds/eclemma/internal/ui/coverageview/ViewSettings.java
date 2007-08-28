@@ -4,6 +4,9 @@
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
  * $Id$
+ * 
+ * Contributors:
+ *   Brock Janiczak - link with selection option (SF #1774547)
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.ui.coverageview;
 
@@ -36,6 +39,8 @@ public class ViewSettings {
   private static final String KEY_COLUMN1         = "column1"; //$NON-NLS-1$
   private static final String KEY_COLUMN2         = "column2"; //$NON-NLS-1$
   private static final String KEY_COLUMN3         = "column3"; //$NON-NLS-1$
+  private static final String KEY_LINKED          = "linked"; //$NON-NLS-1$
+
   
   public interface ICounterMode {
     public int getIdx();
@@ -152,7 +157,8 @@ public class ViewSettings {
   private int entrymode;
   private boolean hideunusedtypes;
   private int[] columnwidths = new int[4];
-  
+  private boolean linked;
+
   public int getSortColumn() {
     return sortcolumn;
   }
@@ -198,16 +204,25 @@ public class ViewSettings {
     return columnwidths;
   }
   
+  public boolean getLinked() {
+    return linked;
+  }
+  
+  public void setLinked(boolean linked) {
+    this.linked = linked;
+  }
+  
   public void init(IMemento memento) {
     sortcolumn = getInt(memento, KEY_SORTCOLUMN, 0);
-    reversesort = getInt(memento, KEY_REVERSESORT, 0) != 0;
+    reversesort = getBoolean(memento, KEY_REVERSESORT, false);
     countermode = getInt(memento, KEY_COUNTERMODE, 0);
     entrymode = getInt(memento, KEY_ENTRYMODE, ENTRYMODE_PROJECTS);
-    hideunusedtypes = getInt(memento, KEY_HIDEUNUSEDTYPES, 0) != 0;
+    hideunusedtypes = getBoolean(memento, KEY_HIDEUNUSEDTYPES, false);
     columnwidths[0] = getInt(memento, KEY_COLUMN0, DEFAULT_COLUMNWIDTH[0]);
     columnwidths[1] = getInt(memento, KEY_COLUMN1, DEFAULT_COLUMNWIDTH[1]);
     columnwidths[2] = getInt(memento, KEY_COLUMN2, DEFAULT_COLUMNWIDTH[2]);
     columnwidths[3] = getInt(memento, KEY_COLUMN3, DEFAULT_COLUMNWIDTH[3]);
+    linked = getBoolean(memento, KEY_LINKED, false);
   }
   
   public void save(IMemento memento) {
@@ -220,6 +235,7 @@ public class ViewSettings {
     memento.putInteger(KEY_COLUMN1, columnwidths[1]);
     memento.putInteger(KEY_COLUMN2, columnwidths[2]);
     memento.putInteger(KEY_COLUMN3, columnwidths[3]);
+    memento.putInteger(KEY_LINKED, linked ? 1 : 0);
   }
   
   private int getInt(IMemento memento, String key, int preset) {
@@ -231,4 +247,8 @@ public class ViewSettings {
     }
   }
 
+  private boolean getBoolean(IMemento memento, String key, boolean preset) {
+    return getInt(memento, key, preset ? 1 : 0) == 1;
+  }
+  
 }

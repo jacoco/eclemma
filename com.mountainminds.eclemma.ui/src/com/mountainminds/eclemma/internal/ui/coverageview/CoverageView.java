@@ -4,6 +4,9 @@
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
  * $Id$
+ * 
+ * Contributors:
+ *   Brock Janiczak - link with selection option (SF #1774547)
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.ui.coverageview;
 
@@ -107,6 +110,7 @@ public class CoverageView extends ViewPart {
   private IAction refreshAction;
   private PropertyDialogAction propertiesAction;
   
+  private SelectionTracker selectiontracker;
   private CoverageViewSorter sorter = new CoverageViewSorter(settings, this);
   
   private ISessionListener listener = new ISessionListener() {
@@ -279,6 +283,8 @@ public class CoverageView extends ViewPart {
     });
     getSite().setSelectionProvider(viewer);
     
+    selectiontracker = new SelectionTracker(this, viewer);
+    
     createActions();
     updateActions();
     configureToolbar();
@@ -346,6 +352,8 @@ public class CoverageView extends ViewPart {
     tbm.add(new SelectEntryModeAction(ViewSettings.ENTRYMODE_PACKAGEROOTS, settings, this));
     tbm.add(new SelectEntryModeAction(ViewSettings.ENTRYMODE_PACKAGES, settings, this));
     tbm.add(new SelectEntryModeAction(ViewSettings.ENTRYMODE_TYPES, settings, this));
+    tbm.add(new Separator());
+    tbm.add(new LinkWithSelectionAction(settings, selectiontracker));
     
     IMenuManager mm = getViewSite().getActionBars().getMenuManager();
     mm.add(new SelectCounterModeAction(0, settings, this));
@@ -377,6 +385,7 @@ public class CoverageView extends ViewPart {
   public void dispose() {
     CoverageTools.removeJavaCoverageListener(coverageListener);
     CoverageTools.getSessionManager().removeSessionListener(listener);
+    selectiontracker.dispose();
     super.dispose();
   }
   

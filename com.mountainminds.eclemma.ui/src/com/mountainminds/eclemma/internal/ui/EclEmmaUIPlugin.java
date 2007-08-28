@@ -64,6 +64,7 @@ public class EclEmmaUIPlugin extends AbstractUIPlugin {
   public static final String ELCL_SHOWPACKAGEROOTS = "icons/full/elcl16/showpackageroots.gif"; //$NON-NLS-1$
   public static final String ELCL_SHOWPACKAGES  = "icons/full/elcl16/showpackages.gif"; //$NON-NLS-1$
   public static final String ELCL_SHOWTYPES     = "icons/full/elcl16/showtypes.gif"; //$NON-NLS-1$
+  public static final String ELCL_LINKED        = "icons/full/elcl16/linked.gif"; //$NON-NLS-1$
 
   public static final String EVIEW_COVERAGE     = "icons/full/eview16/coverage.gif"; //$NON-NLS-1$
 

@@ -46,7 +46,6 @@ public class UIMessages extends NLS {
   public static String CoverageViewCounterModeLinesAction_label;
   public static String CoverageViewCounterModeMethodsAction_label;
   public static String CoverageViewCounterModeTypesAction_label;
-  public static String CoverageViewHideUnusedTypesAction_label;
   public static String CoverageViewShowProjectsAction_label;
   public static String CoverageViewShowProjectsAction_tooltip;
   public static String CoverageViewShowPackageRootsAction_label;
@@ -55,6 +54,9 @@ public class UIMessages extends NLS {
   public static String CoverageViewShowPackagesAction_tooltip;
   public static String CoverageViewShowTypesAction_label;
   public static String CoverageViewShowTypesAction_tooltip;
+  public static String CoverageViewHideUnusedTypesAction_label;
+  public static String CoverageViewLinkWithSelectionAction_label;
+  public static String CoverageViewLinkWithSelectionAction_tooltip;
   public static String CoverageViewColumnElement_label;
   public static String CoverageViewColumnCoverage_label;
   public static String CoverageViewColumnCoveredInstructions_label;

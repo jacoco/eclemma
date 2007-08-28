@@ -3,7 +3,7 @@
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
- * $Id: $
+ * $Id$
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.ui.coverageview;
 
@@ -15,7 +15,7 @@ import com.mountainminds.eclemma.internal.ui.UIMessages;
  * Action to hide types not loaded at all. Internally used by the coverage view.
  *  
  * @author  Marc R. Hoffmann
- * @version $Revision: $
+ * @version $Revision$
  */
 class HideUnusedTypesAction extends Action {
 
