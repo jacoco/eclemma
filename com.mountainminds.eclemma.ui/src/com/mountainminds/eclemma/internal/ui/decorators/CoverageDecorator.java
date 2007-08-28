@@ -4,6 +4,9 @@
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
  * $Id$
+ * 
+ * Contributors:
+ *   Benjamin Muskalla - coverage decorators (SF #1659429)
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.ui.decorators;
 
