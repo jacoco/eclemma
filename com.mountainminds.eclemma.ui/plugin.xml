@@ -131,9 +131,9 @@
          <action
                class="com.mountainminds.eclemma.internal.ui.actions.CoverageLastAction"
                definitionId="com.mountainminds.eclemma.ui.commands.CoverageLast"
-               disabledIcon="$nl$/icons/full/dlcl16/runcoverage.gif"
-               hoverIcon="$nl$/icons/full/elcl16/runcoverage.gif"
-               icon="$nl$/icons/full/elcl16/runcoverage.gif"
+               disabledIcon="$nl$/icons/full/dlcl16/relaunch.gif"
+               hoverIcon="$nl$/icons/full/elcl16/relaunch.gif"
+               icon="$nl$/icons/full/elcl16/relaunch.gif"
                id="com.mountainminds.eclemma.ui.actions.CoverageLast"
                label="%CoverageLastAction.label"
                menubarPath="org.eclipse.ui.run/relaunchGroup"/>
