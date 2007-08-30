@@ -353,6 +353,7 @@ public class CoverageView extends ViewPart {
     tbm.add(new SelectEntryModeAction(ViewSettings.ENTRYMODE_PACKAGES, settings, this));
     tbm.add(new SelectEntryModeAction(ViewSettings.ENTRYMODE_TYPES, settings, this));
     tbm.add(new Separator());
+    tbm.add(new CollapseAllAction(viewer));
     tbm.add(new LinkWithSelectionAction(settings, selectiontracker));
     
     IMenuManager mm = getViewSite().getActionBars().getMenuManager();

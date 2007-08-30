@@ -55,6 +55,8 @@ public class UIMessages extends NLS {
   public static String CoverageViewShowTypesAction_label;
   public static String CoverageViewShowTypesAction_tooltip;
   public static String CoverageViewHideUnusedTypesAction_label;
+  public static String CoverageViewCollapseAllAction_label;
+  public static String CoverageViewCollapseAllAction_tooltip;
   public static String CoverageViewLinkWithSelectionAction_label;
   public static String CoverageViewLinkWithSelectionAction_tooltip;
   public static String CoverageViewColumnElement_label;
