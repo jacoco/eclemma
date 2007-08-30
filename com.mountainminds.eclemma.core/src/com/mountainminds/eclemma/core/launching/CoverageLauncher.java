@@ -290,8 +290,16 @@ public abstract class CoverageLauncher implements ICoverageLauncher, IExecutable
     return (IClassFiles[]) l.toArray(arr);
   }
 
-  protected IClassFiles findClassFiles(
-      String location) throws CoreException {
+
+  /**
+   * Internal utility to find the {@link IClassFiles} descriptor for the given
+   * class path location.
+   * 
+   * @param location  class path location
+   * @return descriptor or <code>null</code>
+   * @throws CoreException  in case of internal inconsistencies
+   */
+  protected IClassFiles findClassFiles(String location) throws CoreException {
     Map map = EclEmmaCorePlugin.getInstance().getClassFiles();
     return (IClassFiles) map.get(location);
   }

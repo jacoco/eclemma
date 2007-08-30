@@ -3,7 +3,7 @@
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
- * $Id: $
+ * $Id$
  ******************************************************************************/
 package com.mountainminds.eclemma.core.launching;
 
@@ -29,7 +29,7 @@ import com.mountainminds.eclemma.internal.core.EclipseVersion;
  * Laucher for the Eclipse runtime workbench.
  * 
  * @author Marc R. Hoffmann
- * @version $Revision: 32 $
+ * @version $Revision$
  */
 public class EclipseLauncher extends CoverageLauncher {
 

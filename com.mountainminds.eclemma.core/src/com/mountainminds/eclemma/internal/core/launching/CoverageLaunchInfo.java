@@ -44,7 +44,6 @@ public class CoverageLaunchInfo implements ICoverageLaunchInfo {
   private final ILaunchConfiguration configuration;
   private IPath coveragefile;
   private IPath propertiesjarfile;
-  private boolean importonexit;
   private final List instrumentations;
   private final Map instrumentationpaths;
 
@@ -58,7 +57,6 @@ public class CoverageLaunchInfo implements ICoverageLaunchInfo {
       statefiles.registerForCleanup(coveragefile);
       propertiesjarfile = base.addFileExtension("jar"); //$NON-NLS-1$
       statefiles.registerForCleanup(propertiesjarfile);
-      importonexit = true;
       instrumentations = new ArrayList();
       instrumentationpaths = new HashMap();
       instances.put(launch, this);
@@ -85,10 +83,6 @@ public class CoverageLaunchInfo implements ICoverageLaunchInfo {
 
   public IPath getPropertiesJARFile() {
     return propertiesjarfile;
-  }
-
-  public boolean getImportOnExit() {
-    return importonexit;
   }
 
   public void instrument(IProgressMonitor monitor, boolean inplace) throws CoreException {
