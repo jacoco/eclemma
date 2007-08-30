@@ -22,7 +22,7 @@
 </p>
 
 <p>
-  <img src="images/coverageview.png" alt="Coverage View" width="569" height="257" />
+  <img src="images/coverageview.png" alt="Coverage View" width="572" height="266" />
 </p>
 
 <p>  
@@ -39,10 +39,10 @@
   <a href="annotations.html">highlighted</a> source code.
 </p>
 
-<h3>Toolbar</h3>
+<h3>Toolbar and Drop-Down Menu</h3>
 
 <p>
-  <img src="images/coverageviewtools.gif" alt="Coverage View Tools" width="245" height="24" />
+  <img src="images/coverageviewtools.png" alt="Coverage View Tools" width="201" height="24" />
 </p>
 
 <p>
@@ -58,18 +58,31 @@
   <li><b>Merge Sessions</b>: Merges multiple sessions into a single one.</li>
   <li><b>Select Session</b>: Select session from the drop down-menu and make
   it the active session.</li>
+  <li><b>Collapse All</b>: Collapse all expanded tree nodes.</li>
+  <li><b>Link with Current Selection</b>: If this toggle is checked the coverage
+  view automatically reveals the Java element currently selected in other views
+  or editors.</li>
+</ul>
+
+<p>
+  Some of the actions are deactivated if there is no session or only a single
+  session. More settings are available form the coverage view's drop-down menu:
+</p>
+
+<p>
+  <img src="images/coverageviewmenu.png" alt="Coverage View Drop-Down Menu" width="164" height="206" />
+</p>
+  
+<ul>  
   <li><b>Show Elements</b>: Select Java elements shown as root entries
   in the coverage tree: Projects, package fragment roots (source folders or
   libraries), package fragments or types.</li>
   <li><b>Counter Mode</b>: Different counter modes can be selected from the
   view's drop-down menu: bytecode instructions, basic blocks, lines, methods
   and types. See next sections for details.</li>  
+  <li><b>Hide Unused Types</b>: Filter all Java types from the coverage view
+  that has not been loaded during the coverage session.</li>  
 </ul>
-
-<p>
-  Some of the actions are deactivated if there is no session or only a single
-  session.
-</p>
 
 <h3>Counters</h3>
 
