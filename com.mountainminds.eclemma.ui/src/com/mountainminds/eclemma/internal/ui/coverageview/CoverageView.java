@@ -348,15 +348,15 @@ public class CoverageView extends ViewPart {
     tbm.add(mergeSessionsAction);
     tbm.add(selectSessionAction);
     tbm.add(new Separator());
-    tbm.add(new SelectEntryModeAction(ViewSettings.ENTRYMODE_PROJECTS, settings, this));
-    tbm.add(new SelectEntryModeAction(ViewSettings.ENTRYMODE_PACKAGEROOTS, settings, this));
-    tbm.add(new SelectEntryModeAction(ViewSettings.ENTRYMODE_PACKAGES, settings, this));
-    tbm.add(new SelectEntryModeAction(ViewSettings.ENTRYMODE_TYPES, settings, this));
-    tbm.add(new Separator());
     tbm.add(new CollapseAllAction(viewer));
     tbm.add(new LinkWithSelectionAction(settings, selectiontracker));
     
     IMenuManager mm = getViewSite().getActionBars().getMenuManager();
+    mm.add(new SelectEntryModeAction(ViewSettings.ENTRYMODE_PROJECTS, settings, this));
+    mm.add(new SelectEntryModeAction(ViewSettings.ENTRYMODE_PACKAGEROOTS, settings, this));
+    mm.add(new SelectEntryModeAction(ViewSettings.ENTRYMODE_PACKAGES, settings, this));
+    mm.add(new SelectEntryModeAction(ViewSettings.ENTRYMODE_TYPES, settings, this));
+    mm.add(new Separator());
     mm.add(new SelectCounterModeAction(0, settings, this));
     mm.add(new SelectCounterModeAction(1, settings, this));
     mm.add(new SelectCounterModeAction(2, settings, this));
