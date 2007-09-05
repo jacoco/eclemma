@@ -20,12 +20,14 @@
   <li><a href="#usage03">How can I run {whateverapplication} with EclEmma?</a></li>
   <li><a href="#usage04">Does EclEmma support automated Ant builds?</a></li>
   <li><a href="#usage05">How do I change the source code highlighting?</a></li>
+  <li><a href="#usage06">Why can't I uncheck in-place instrumentation in the launch dialog?</a></li>
 </ul>
 
 <h3>Troubleshooting</h3>
 <ul>
   <li><a href="#trouble01">I get the error message "No coverage data file has been written". Please help!</a></li>
   <li><a href="#trouble02">Code with exceptions shows no coverage. Why?</a></li>
+  <li><a href="#trouble03">My application does not run with EclEmma!</a></li>
 </ul>
 
 <h3>Installation</h3>
@@ -81,6 +83,13 @@
   the vertical rulers instead.
 </p>
 
+<h3><a name="usage06"></a>Why can't I uncheck in-place instrumentation in the launch dialog?</h3>
+<p>
+  Some launch types require in-place instrumentation as there is no other way
+  to get the instrumented classes into the classpath. In this case the checkbox
+  is disabled and can not be unchecked.
+</p> 
+
 
 <h2>Troubleshooting</h2>
 
@@ -100,8 +109,8 @@
   contain any EMMA specific resources or settings.</li>
   <li>Your launch configuration defines EMMA specific system properties. Make
   sure no such definitions are made.</li>
-  <li>There is a emma.jar file in your JDK's lib/ext/ folder. Please remove this
-  and restart Eclipse.</li>
+  <li>There is a <code>emma.jar</code> file in your JDK's <code>lib/ext/</code>
+  folder. Please remove this and restart Eclipse.</li>
 </ul>
 
 <h3><a name="trouble02"></a>Code with exceptions shows no coverage. Why?</h3>
@@ -115,6 +124,13 @@
   for details. 
 </p>
 
+<h3><a name="trouble03"></a>My application does not run with EclEmma!</h3>
+<p>
+  Does your application properly execute within Eclipse in normal <i>run</i>
+  mode? Please verify! If not, your app will most likely not execute in
+  <i>coverage</i> mode either. In this case first create a proper launch
+  configuration in Eclipse; then execute in <i>coverage</i> mode.
+</p>
 
 <h2>Installation</h2>
 
