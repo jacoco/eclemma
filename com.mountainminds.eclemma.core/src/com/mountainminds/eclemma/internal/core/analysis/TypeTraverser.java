@@ -7,16 +7,21 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.core.analysis;
 
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jdt.core.IClassFile;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IMember;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
+
+import com.mountainminds.eclemma.internal.core.DebugOptions;
+import com.mountainminds.eclemma.internal.core.DebugOptions.ITracer;
 
 /**
  * Internal utility class for traversal of all types within a list of package
@@ -27,6 +32,8 @@ import org.eclipse.jdt.core.JavaModelException;
  */
 public class TypeTraverser {
 
+  private static final ITracer TRACER = DebugOptions.ANALYSISTRACER;
+	
   private final IPackageFragmentRoot[] roots;
 
   /**
@@ -64,14 +71,35 @@ public class TypeTraverser {
   private void processPackageFragmentRoot(ITypeVisitor visitor,
       IPackageFragmentRoot root, IProgressMonitor monitor)
       throws JavaModelException {
-    IJavaElement[] fragments = root.getChildren();
-    monitor.beginTask("", fragments.length); //$NON-NLS-1$
-    for (int i = 0; i < fragments.length && !monitor.isCanceled(); i++) {
-      IPackageFragment fragment = (IPackageFragment) fragments[i];
-      IProgressMonitor submonitor = new SubProgressMonitor(monitor, 1);
-      processPackageFragment(visitor, fragment, submonitor);
-    }
+	if (isOnClasspath(root)) {
+      IJavaElement[] fragments = root.getChildren();
+      monitor.beginTask("", fragments.length); //$NON-NLS-1$
+      for (int i = 0; i < fragments.length && !monitor.isCanceled(); i++) {
+        IPackageFragment fragment = (IPackageFragment) fragments[i];
+        IProgressMonitor submonitor = new SubProgressMonitor(monitor, 1);
+        processPackageFragment(visitor, fragment, submonitor);
+      }
+	} else {
+      TRACER.trace("Package fragment root {0} not on classpath.", //$NON-NLS-1$
+    		       root.getPath());
+	}
     monitor.done();
+  }
+  
+  /**
+   * This methods checks whether the given package fragment root is still on the
+   * classpath. This check is required as the user might change the classpath
+   * and old coverage sessions afterwards (SF #1836551).
+   * 
+   * @param root  package fragment root
+   * @return  true, if the classpath entry still exists
+   * @throws JavaModelException
+   */
+  private boolean isOnClasspath(IPackageFragmentRoot root)
+      throws JavaModelException {
+    IPath path = root.getPath();
+    IJavaProject project = root.getJavaProject();
+    return project.findPackageFragmentRoot(path) != null;
   }
 
   private void processPackageFragment(ITypeVisitor visitor,

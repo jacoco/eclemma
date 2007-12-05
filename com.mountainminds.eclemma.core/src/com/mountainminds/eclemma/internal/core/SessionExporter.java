@@ -44,7 +44,7 @@ public class SessionExporter implements ISessionExporter {
   private static final String PROP_OUT_FILE = IReportProperties.PREFIX + IReportProperties.OUT_FILE;
   private static final String PROP_OUT_ENCODING = IReportProperties.PREFIX + IReportProperties.OUT_ENCODING;
   
-  private static final String OUTPUT_ENCODING = "UTF-8";
+  private static final String OUTPUT_ENCODING = "UTF-8"; //$NON-NLS-1$
   
   private final ICoverageSession session;
   private int format;
