@@ -153,6 +153,8 @@ public class UIMessages extends NLS {
   public static String CoveragePreferencesDecoratorsLink_label;
   public static String CoveragePreferencesAnnotationsLink_label;
   
+  public static String ClassesViewerEntry_label;
+  
   static {
     NLS.initializeMessages(BUNDLE_NAME, UIMessages.class);
   }

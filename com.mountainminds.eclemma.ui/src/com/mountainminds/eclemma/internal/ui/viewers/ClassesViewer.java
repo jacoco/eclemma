@@ -14,8 +14,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
-import org.eclipse.jdt.ui.JavaElementSorter;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
@@ -28,6 +28,9 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
@@ -35,6 +38,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 
 import com.mountainminds.eclemma.core.IClassFiles;
+import com.mountainminds.eclemma.internal.ui.UIMessages;
 
 /**
  * Viewer for selecting <code>IClassFiles</code> objects from a given list.
@@ -57,7 +61,9 @@ public class ClassesViewer implements ISelectionProvider {
 
     public String getText(Object element) {
       IPackageFragmentRoot root = (IPackageFragmentRoot) element;
-      return root.getPath().toString();
+      String projectname = root.getJavaProject().getElementName();
+      String fmt = UIMessages.ClassesViewerEntry_label;
+      return NLS.bind(fmt, projectname, getPathLabel(root));
     }
 
     public void dispose() {
@@ -66,6 +72,41 @@ public class ClassesViewer implements ISelectionProvider {
 
   }
 
+  /**
+   * The entries will be sorted by project name, type and path name. 
+   */
+  private static class PackageFragmentRootSorter extends ViewerSorter {
+
+    public int compare(Viewer viewer, Object e1, Object e2) {
+      IPackageFragmentRoot root1 = (IPackageFragmentRoot) e1;
+      IPackageFragmentRoot root2 = (IPackageFragmentRoot) e2;
+      int result = getCollator().compare(root1.getJavaProject().getElementName(), 
+    	                                 root2.getJavaProject().getElementName());
+      if (result != 0) return result;
+      if (root1.isExternal() != root2.isExternal()) {
+        return root1.isExternal() ? 1 : -1;
+      }
+      return getCollator().compare(getPathLabel(root1), getPathLabel(root2));
+    }
+	  
+  };
+  
+  /**
+   * Calculates a label for the class path of the given package fragment root.
+   * For external entries this is the full path, otherwise it is the project
+   * relative path.
+   * 
+   * @param root  package fragement root
+   * @return  label for the class path entry
+   */
+  private static String getPathLabel(IPackageFragmentRoot root) {
+    IPath path = root.getPath();
+    if (!root.isExternal()) {
+      path = path.removeFirstSegments(1);
+    }
+    return path.toString();
+  }
+  
   private final Table table;
   private final CheckboxTableViewer viewer;
   private final List listeners = new ArrayList();
@@ -97,7 +138,7 @@ public class ClassesViewer implements ISelectionProvider {
     viewer = new CheckboxTableViewer(table);
     viewer.setContentProvider(new ArrayContentProvider());
     viewer.setLabelProvider(new PackageFragmentRootLabelProvider());
-    viewer.setSorter(new JavaElementSorter());
+    viewer.setSorter(new PackageFragmentRootSorter());
     viewer.addCheckStateListener(new ICheckStateListener() {
       public void checkStateChanged(CheckStateChangedEvent event) {
         updateCheckedStatus(event.getElement(), event.getChecked());
