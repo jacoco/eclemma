@@ -62,8 +62,13 @@ public class ClassesViewer implements ISelectionProvider {
     public String getText(Object element) {
       IPackageFragmentRoot root = (IPackageFragmentRoot) element;
       String projectname = root.getJavaProject().getElementName();
-      String fmt = UIMessages.ClassesViewerEntry_label;
-      return NLS.bind(fmt, projectname, getPathLabel(root));
+      String path = getPathLabel(root);
+      if (path.length() > 0) {
+        String fmt = UIMessages.ClassesViewerEntry_label;
+        return NLS.bind(fmt, projectname, getPathLabel(root));
+      } else {
+        return projectname;
+      }
     }
 
     public void dispose() {
