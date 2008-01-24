@@ -21,6 +21,8 @@
   <li><a href="#usage04">Does EclEmma support automated Ant builds?</a></li>
   <li><a href="#usage05">How do I change the source code highlighting?</a></li>
   <li><a href="#usage06">Why can't I uncheck in-place instrumentation in the launch dialog?</a></li>
+  <li><a href="#usage07">Do I need source code to use EclEmma?</a></li>
+  <li><a href="#usage08">Why is this line yellow?</a></li>
 </ul>
 
 <h3>Troubleshooting</h3>
@@ -28,6 +30,7 @@
   <li><a href="#trouble01">I get the error message "No coverage data file has been written". Please help!</a></li>
   <li><a href="#trouble02">Code with exceptions shows no coverage. Why?</a></li>
   <li><a href="#trouble03">My application does not run with EclEmma!</a></li>
+  <li><a href="#trouble04">My Eclipse workbench window has no toolbar button for coverage launches!</a></li>
 </ul>
 
 <h3>Installation</h3>
@@ -90,6 +93,26 @@
   is disabled and can not be unchecked.
 </p> 
 
+<h3><a name="usage07"></a>Do I need source code to use EclEmma?</h3>
+<p>
+  No, you can also get coverage information for e.g. third-party JARs. Just
+  make them part of your class path settings in Eclipse and select them on the
+  <i>Coverage</i> tab in the coverage launch dialog. If the library was compiled
+  with debug information, line coverage will be shown in the
+  <i>Coverage</i> view. In case the source is properly attached to the library
+  syntax highlighting will happen in the editors the same way as with you source
+  code.
+</p> 
+
+<h3><a name="usage08"></a>Why is this line yellow?</h3>
+<p>
+  EclEmma annotates all lines which are partly covered in yellow. Partly covered
+  means that not all of the basic blocks associated with this line have been
+  executed during the coverage session. In some cases it is not obvious why the
+  Java compiler creates multiple blocks for a particular line of source code.
+  Please see <a href="http://emma.sourceforge.net/faq.html#q.fractional.examples">EMMA's
+  FAQ entry about partially covered lines</a> for details. 
+</p>
 
 <h2>Troubleshooting</h2>
 
@@ -132,13 +155,22 @@
   configuration in Eclipse; then execute in <i>coverage</i> mode.
 </p>
 
+<h3><a name="trouble04">My Eclipse workbench window has no toolbar button for coverage launches!</a></h3>
+<p>
+  Even if EclEmma is installed properly, it will show its action sets only in
+  some predefined perspectives related to Java tasks. If you want to use the
+  coverage toolbar in other perspectives like <i>Resource</i> select
+  <i>Customize Perspective...</i> from the toolbar's context menu and check the
+  <i>Coverage</i> option on the <i>Commands</i> tab.
+</p>
+
 <h2>Installation</h2>
 
 <h3><a name="install01">Does EclEmma work with IBM Rational products?</a></h3>
 <p>
   Yes, it has been confirmed that EclEmma works with RAD 7.0. The IBM Rational
-  6.0 products will <b>not</b> with EclEmma, as they are based on Eclipse 3.0, 
-  EclEmma requires at least Eclipse 3.1.
+  6.0 products will <b>not</b> work with EclEmma, as they are based on Eclipse
+  3.0, EclEmma requires at least Eclipse 3.1.
 </p>
 
 </body>
