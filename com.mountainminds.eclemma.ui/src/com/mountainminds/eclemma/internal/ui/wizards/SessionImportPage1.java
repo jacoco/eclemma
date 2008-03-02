@@ -33,6 +33,7 @@ import org.eclipse.swt.widgets.Text;
 
 import com.mountainminds.eclemma.core.CoverageTools;
 import com.mountainminds.eclemma.core.IClassFiles;
+import com.mountainminds.eclemma.internal.ui.ContextHelp;
 import com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin;
 import com.mountainminds.eclemma.internal.ui.UIMessages;
 import com.mountainminds.eclemma.internal.ui.viewers.ClassesViewer;
@@ -152,6 +153,7 @@ public class SessionImportPage1 extends WizardPage {
     importmetadataradio.setText(UIMessages.ImportSessionPage1ImportMetaData_label);
     
     setControl(parent);
+    ContextHelp.setHelp(parent, ContextHelp.SESSION_IMPORT);
     restoreWidgetValues();
     update();
   }

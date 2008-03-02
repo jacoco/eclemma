@@ -36,6 +36,7 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
 import com.mountainminds.eclemma.core.CoverageTools;
 import com.mountainminds.eclemma.core.ICoverageSession;
 import com.mountainminds.eclemma.core.ISessionExporter;
+import com.mountainminds.eclemma.internal.ui.ContextHelp;
 import com.mountainminds.eclemma.internal.ui.UIMessages;
 
 /**
@@ -64,7 +65,7 @@ public class SessionExportPage1 extends WizardPage {
     setTitle(UIMessages.ExportReportPage1_title);
     setDescription(UIMessages.ExportReportPage1_description);
   }
-
+  
   public void createControl(Composite parent) {
     initializeDialogUnits(parent);
     parent = new Composite(parent, SWT.NONE);
@@ -88,6 +89,7 @@ public class SessionExportPage1 extends WizardPage {
     opencheckbox = new Button(parent, SWT.CHECK);
     opencheckbox.setText(UIMessages.ExportReportOpenReport_label);
     setControl(parent);
+    ContextHelp.setHelp(parent, ContextHelp.SESSION_EXPORT);
     restoreWidgetValues();
   }
   
