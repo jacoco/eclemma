@@ -129,6 +129,9 @@ public class UIMessages extends NLS {
   public static String ImportSessionPage1ModeGroup_label;
   public static String ImportSessionPage1Reference_label;
   public static String ImportSessionPage1Copy_label;
+  public static String ImportSessionPage1MetadataGroup_label;
+  public static String ImportSessionPage1IDEClasses_label;
+  public static String ImportSessionPage1ImportMetaData_label;
   
   public static String CoveragePropertyPageSession_label;
   public static String CoveragePropertyPageNoSession_value;

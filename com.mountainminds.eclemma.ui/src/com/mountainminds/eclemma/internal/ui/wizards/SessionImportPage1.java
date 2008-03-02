@@ -56,6 +56,7 @@ public class SessionImportPage1 extends WizardPage {
   private static final String STORE_CLASSES = STORE_PREFIX + "classes"; //$NON-NLS-1$
   private static final String STORE_BINARIES = STORE_PREFIX + "binaries"; //$NON-NLS-1$
   private static final String STORE_COPY = STORE_PREFIX + "copy"; //$NON-NLS-1$
+  private static final String STORE_IMPORTMETADATA = STORE_PREFIX + "importmetadata"; //$NON-NLS-1$
   
   private Text descriptiontext;
   private Combo filecombo;
@@ -63,6 +64,8 @@ public class SessionImportPage1 extends WizardPage {
   private Button binariescheck;
   private Button referenceradio;
   private Button copyradio;
+  private Button ideclassesradio;
+  private Button importmetadataradio;
 
   protected SessionImportPage1() {
     super(ID);
@@ -73,7 +76,7 @@ public class SessionImportPage1 extends WizardPage {
   public void createControl(Composite parent) {
     initializeDialogUnits(parent);
     parent = new Composite(parent, SWT.NONE);
-    parent.setLayout(new GridLayout(3, false));
+    parent.setLayout(new GridLayout(4, false));
     new Label(parent, SWT.NONE).setText(UIMessages.ImportSessionPage1Description_label);
     descriptiontext = new Text(parent, SWT.BORDER);
     descriptiontext.addModifyListener(new ModifyListener() {
@@ -82,7 +85,7 @@ public class SessionImportPage1 extends WizardPage {
       }
     });
     GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-    gd.horizontalSpan = 2;
+    gd.horizontalSpan = 3;
     descriptiontext.setLayoutData(gd);
     new Label(parent, SWT.NONE).setText(UIMessages.ImportSessionPage1CoverageFile_label);
     filecombo = new Combo(parent, SWT.BORDER);
@@ -92,6 +95,7 @@ public class SessionImportPage1 extends WizardPage {
       }
     });
     gd = new GridData(GridData.FILL_HORIZONTAL);
+    gd.horizontalSpan = 2;
     gd.widthHint = TEXT_FIELD_WIDTH;
     filecombo.setLayoutData(gd);
     Button browsebutton = new Button(parent, SWT.NONE);
@@ -114,7 +118,8 @@ public class SessionImportPage1 extends WizardPage {
       }
     });
     gd = new GridData(GridData.FILL_BOTH);
-    gd.horizontalSpan = 3;
+    gd.horizontalSpan = 4;
+    gd.widthHint = TEXT_FIELD_WIDTH;
     gd.heightHint = LIST_HEIGHT;
     classesviewer.getTable().setLayoutData(gd);
     binariescheck = new Button(parent, SWT.CHECK);
@@ -126,18 +131,29 @@ public class SessionImportPage1 extends WizardPage {
       }
     });
     gd = new GridData();
-    gd.horizontalSpan = 3;
+    gd.horizontalSpan = 4;
     binariescheck.setLayoutData(gd);    
     Group group = new Group(parent, SWT.NONE);
     group.setText(UIMessages.ImportSessionPage1ModeGroup_label);
-    gd = new GridData(GridData.FILL_HORIZONTAL);
-    gd.horizontalSpan = 3;
+    gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_FILL);
+    gd.horizontalSpan = 2;
     group.setLayoutData(gd);
     group.setLayout(new GridLayout());
     referenceradio = new Button(group, SWT.RADIO);
     referenceradio.setText(UIMessages.ImportSessionPage1Reference_label);
     copyradio = new Button(group, SWT.RADIO);
     copyradio.setText(UIMessages.ImportSessionPage1Copy_label);
+    group = new Group(parent, SWT.NONE);
+    group.setText(UIMessages.ImportSessionPage1MetadataGroup_label);
+    gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_FILL);
+    gd.horizontalSpan = 2;
+    group.setLayoutData(gd);
+    group.setLayout(new GridLayout());
+    ideclassesradio = new Button(group, SWT.RADIO);
+    ideclassesradio.setText(UIMessages.ImportSessionPage1IDEClasses_label);
+    importmetadataradio = new Button(group, SWT.RADIO);
+    importmetadataradio.setText(UIMessages.ImportSessionPage1ImportMetaData_label);
+    
     setControl(parent);
     restoreWidgetValues();
     update();
@@ -192,6 +208,9 @@ public class SessionImportPage1 extends WizardPage {
     boolean copy = settings.getBoolean(STORE_COPY);
     referenceradio.setSelection(!copy);
     copyradio.setSelection(copy);
+    boolean importmetadata = settings.getBoolean(STORE_IMPORTMETADATA);
+    ideclassesradio.setSelection(!importmetadata);
+    importmetadataradio.setSelection(importmetadata);
   }
   
   public void saveWidgetValues() {
@@ -200,6 +219,7 @@ public class SessionImportPage1 extends WizardPage {
     settings.put(STORE_CLASSES, classesviewer.getSelectedClassesLocations());
     settings.put(STORE_BINARIES, binariescheck.getSelection());
     settings.put(STORE_COPY, copyradio.getSelection());
+    settings.put(STORE_IMPORTMETADATA, importmetadataradio.getSelection());
   }
   
   public String getSessionDescription() {
@@ -216,6 +236,10 @@ public class SessionImportPage1 extends WizardPage {
   
   public boolean getCreateCopy() {
     return copyradio.getSelection();
+  }
+  
+  public boolean getUseImportedMetaData() {
+    return importmetadataradio.getSelection();
   }
   
 }

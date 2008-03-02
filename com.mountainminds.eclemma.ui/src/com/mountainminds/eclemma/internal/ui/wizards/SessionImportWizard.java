@@ -71,6 +71,7 @@ public class SessionImportWizard extends Wizard implements IExportWizard {
     importer.setCoverageFile(page1.getCoverageFile());
     importer.setClassFiles(page1.getClassFiles());
     importer.setCopy(page1.getCreateCopy());
+    importer.setUseImportedMetaData(page1.getUseImportedMetaData());
     IRunnableWithProgress op = new IRunnableWithProgress() {
       public void run(IProgressMonitor monitor)
           throws InvocationTargetException, InterruptedException {
