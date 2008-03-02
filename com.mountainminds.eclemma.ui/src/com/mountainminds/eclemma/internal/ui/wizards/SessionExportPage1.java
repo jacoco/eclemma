@@ -49,9 +49,6 @@ public class SessionExportPage1 extends WizardPage {
   
   private static final String ID = "SessionExportPage1"; //$NON-NLS-1$
   
-  private static final int LIST_HEIGHT = 120;
-  private static final int TEXT_FIELD_WIDTH = 250;
-  
   private static final String STORE_PREFIX = ID + "."; //$NON-NLS-1$
   private static final String STORE_FORMAT = STORE_PREFIX + "format"; //$NON-NLS-1$
   private static final String STORE_DESTINATIONS = STORE_PREFIX + "destinations"; //$NON-NLS-1$
@@ -82,7 +79,7 @@ public class SessionExportPage1 extends WizardPage {
       sessionstable.setSelection(new StructuredSelection(active));
     }
     GridData gd = new GridData(GridData.FILL_BOTH);
-    gd.heightHint = LIST_HEIGHT;
+    gd.heightHint = convertHeightInCharsToPixels(8);
     sessionstable.getControl().setLayoutData(gd);
     Group group = new Group(parent, SWT.NONE);
     group.setText(UIMessages.ExportReportPage1DestinationGroup_label);
@@ -123,7 +120,7 @@ public class SessionExportPage1 extends WizardPage {
       }
     });
     gd = new GridData(GridData.FILL_HORIZONTAL);
-    gd.widthHint = TEXT_FIELD_WIDTH;
+    gd.widthHint = convertHorizontalDLUsToPixels(120);
     destinationcombo.setLayoutData(gd);
     Button browsebutton = new Button(parent, SWT.NONE);
     browsebutton.setText(UIMessages.BrowseAction_label);

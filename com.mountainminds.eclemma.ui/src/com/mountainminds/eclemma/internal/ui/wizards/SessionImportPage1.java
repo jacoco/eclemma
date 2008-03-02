@@ -47,9 +47,6 @@ import com.mountainminds.eclemma.internal.ui.viewers.ClassesViewer;
 public class SessionImportPage1 extends WizardPage {
   
   private static final String ID = "SessionImportPage1"; //$NON-NLS-1$
-
-  private static final int LIST_HEIGHT = 120;
-  private static final int TEXT_FIELD_WIDTH = 250;
   
   private static final String STORE_PREFIX = ID + "."; //$NON-NLS-1$
   private static final String STORE_FILES = STORE_PREFIX + "files"; //$NON-NLS-1$
@@ -96,7 +93,7 @@ public class SessionImportPage1 extends WizardPage {
     });
     gd = new GridData(GridData.FILL_HORIZONTAL);
     gd.horizontalSpan = 2;
-    gd.widthHint = TEXT_FIELD_WIDTH;
+    gd.widthHint = convertHorizontalDLUsToPixels(100);
     filecombo.setLayoutData(gd);
     Button browsebutton = new Button(parent, SWT.NONE);
     browsebutton.setText(UIMessages.BrowseAction_label);
@@ -119,8 +116,8 @@ public class SessionImportPage1 extends WizardPage {
     });
     gd = new GridData(GridData.FILL_BOTH);
     gd.horizontalSpan = 4;
-    gd.widthHint = TEXT_FIELD_WIDTH;
-    gd.heightHint = LIST_HEIGHT;
+    gd.widthHint = convertHorizontalDLUsToPixels(120);
+    gd.heightHint = convertHeightInCharsToPixels(8);
     classesviewer.getTable().setLayoutData(gd);
     binariescheck = new Button(parent, SWT.CHECK);
     binariescheck.setText(UIMessages.ImportSessionPage1Binaries_label);
