@@ -39,6 +39,7 @@ public class SessionImporter implements ISessionImporter {
   private String coveragefile;
   private IClassFiles[] classfiles;
   private boolean copy;
+  private boolean useImportedMetaData;
 
   public void setDescription(String description) {
     this.description = description;
@@ -55,6 +56,10 @@ public class SessionImporter implements ISessionImporter {
   public void setCopy(boolean copy) {
     this.copy = copy;
   }
+  
+  public void setUseImportedMetaData(boolean flag) {
+    this.useImportedMetaData = flag;
+  }
 
   public void importSession(IProgressMonitor monitor) throws CoreException {
     monitor.beginTask(CoreMessages.ImportingSession_task, 2);
@@ -70,15 +75,19 @@ public class SessionImporter implements ISessionImporter {
     monitor.beginTask("", classfiles.length); //$NON-NLS-1$
     IInstrumentation[] instr = new IInstrumentation[classfiles.length]; 
     for (int i = 0; i < classfiles.length; i++) {
-      instr[i] = classfiles[i].instrument(false, new SubProgressMonitor(monitor, 1));
-      monitor.worked(1);
+      if (useImportedMetaData) {
+        instr[i] = new ExternalInstrumentation(classfiles[i], coveragefile);
+        monitor.worked(1);
+      } else {
+        instr[i] = classfiles[i].instrument(false, new SubProgressMonitor(monitor, 1));
+      }
     }
     monitor.done();
     return instr;
   }
   
   private IPath createCopy(IProgressMonitor monitor) throws CoreException {
-    IPath file = new Path(coveragefile);
+    IPath file = Path.fromOSString(coveragefile);
     if (copy) {
       file = EclEmmaCorePlugin.getInstance().getStateFiles().getImportSessionFile(file);
       File source = new File(coveragefile);
@@ -102,4 +111,32 @@ public class SessionImporter implements ISessionImporter {
     return file;
   }
 
+  private static class ExternalInstrumentation implements IInstrumentation {
+    
+    private final IClassFiles classfiles;
+    private final IPath metaDataFile;
+    
+    ExternalInstrumentation(IClassFiles classfiles, String metaDataFile) {
+      this.classfiles = classfiles;
+      this.metaDataFile = Path.fromOSString(metaDataFile);
+    }
+
+    public IClassFiles getClassFiles() {
+      return classfiles;
+    }
+
+    public IPath getMetaDataFile() {
+      return metaDataFile;
+    }
+
+    public IPath getOutputLocation() {
+      throw new UnsupportedOperationException("Unsupported for imported sessions."); //$NON-NLS-1$
+    }
+
+    public boolean isInplace() {
+      throw new UnsupportedOperationException("Unsupported for imported sessions."); //$NON-NLS-1$
+    }
+    
+  }
+  
 }

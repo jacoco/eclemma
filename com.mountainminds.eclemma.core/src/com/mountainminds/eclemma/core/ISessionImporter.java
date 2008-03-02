@@ -54,6 +54,16 @@ public interface ISessionImporter {
   public void setCopy(boolean copy);
 
   /**
+   * Imported session files might come with their own meta data. Here we can set
+   * whether this data should be used. Otherwise Meta data is extracted from the
+   * local class files.
+   * 
+   * @param flag
+   *          true, if external Meta data should be used
+   */
+  public void setUseImportedMetaData(boolean flag);
+  
+  /**
    * A call to this method triggers the actual import process.
    * 
    * @param monitor
