@@ -31,7 +31,7 @@
 </p>
 
 <p>
-  <img src="images/importdialog.png" alt="Import Dialog" width="430" height="436" />
+  <img src="images/importdialog.png" alt="Import Dialog" width="432" height="410" />
 </p>
 
 <p>
@@ -45,10 +45,19 @@
 </ul>
 
 <p>
-  <b>Tip:</b> If you keep a reference to the original coverage file (check the
-  corresponding import option) you can simply reload the coverage data after a
-  new program run. For this use the <i>Refresh</i> option from the context menu
-  of the <i>Coverage</i> view or simply hit the F5 key.
+  If you keep a reference to the original coverage file (check the corresponding
+  import option) you can simply reload the coverage data after a new program
+  run. For this use the <i>Refresh</i> option from the context menu of the
+  <i>Coverage</i> view or simply hit the <code>F5</code> key.
+</p>
+
+<p>
+  <b>Warning:</b> Coverage analysis is based on runtime coverage data plus so
+  called <i>Meta data</i> derived from the corresponding class files. For the
+  import you can select whether the Meta data should be taken from the imported
+  EMMA session file or from the classes compiled locally within your workbench.
+  If the Meta data and runtime coverage data are not based on the same class
+  files, no or improper coverage information will be visualized.  
 </p>
 
 <h3>Session Export</h3>
