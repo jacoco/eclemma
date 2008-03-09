@@ -10,6 +10,7 @@ package com.mountainminds.eclemma.internal.ui.coverageview;
 import org.eclipse.jdt.ui.JavaElementSorter;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -35,10 +36,11 @@ class CoverageViewSorter extends ViewerSorter {
     this.view = view;
   }
   
-  void addColumn(TreeColumn column, final int columnidx) {
+  void addColumn(final TreeColumn column, final int columnidx) {
     column.addSelectionListener(new SelectionListener() {
       public void widgetSelected(SelectionEvent e) {
         settings.toggleSortColumn(columnidx);
+        TreeSortCompatibility.setTreeSortColumnAndDirection(column, settings.isReverseSort() ? SWT.DOWN : SWT.UP);
         view.refreshViewer();
       }
       public void widgetDefaultSelected(SelectionEvent e) { }

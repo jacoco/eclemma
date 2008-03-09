@@ -253,6 +253,24 @@ public class CoverageView extends ViewPart {
     sorter.addColumn(column3, COLUMN_TOTAL);
     updateColumnHeaders();
     
+    TreeColumn sortColumn = null;
+    switch (settings.getSortColumn()) {
+    case COLUMN_ELEMENT:
+      sortColumn = column0;
+      break;
+    case COLUMN_RATIO:
+      sortColumn = column1;
+      break;
+    case COLUMN_COVERED:
+      sortColumn = column2;
+      break;
+    case COLUMN_TOTAL:
+      sortColumn = column3;
+      break;
+    }
+    
+    TreeSortCompatibility.setTreeSortColumnAndDirection(sortColumn, settings.isReverseSort() ? SWT.DOWN: SWT.UP);
+    
     viewer = new TreeViewer(tree);
     viewer.addFilter(new ViewerFilter() {
       public boolean select(Viewer viewer, Object parentElement, Object element) {
