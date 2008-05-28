@@ -105,6 +105,10 @@ public class SessionAnalyzer {
         throw new CoreException(EclEmmaStatus.METADATA_FILE_READ_ERROR.getStatus(
             metadatafile, e));
       }
+      if (metadata == null) {
+        throw new CoreException(EclEmmaStatus.FILE_CONTAINS_NO_METADATA.getStatus(
+            metadatafile));
+      }
       IPackageFragmentRoot[] roots = instrumentation.getClassFiles().getPackageFragmentRoots();
       TypeTraverser jep = new TypeTraverser(roots);
       jep.process(new TypeVisitor(metadata, coveragedata), monitor);

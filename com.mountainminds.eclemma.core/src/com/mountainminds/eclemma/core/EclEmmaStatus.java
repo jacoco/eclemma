@@ -49,6 +49,11 @@ public final class EclEmmaStatus {
     return new Status(severity, EclEmmaCorePlugin.ID, code, m, t);
   }
 
+  public IStatus getStatus(Object param1) {
+    String m = NLS.bind(message, new Integer(code), param1);
+    return new Status(severity, EclEmmaCorePlugin.ID, code, m, null);
+  }
+  
   /**
    * Info before inplace instrumentation happens.
    */
@@ -121,6 +126,12 @@ public final class EclEmmaStatus {
    */
   public static final EclEmmaStatus IMPORT_ERROR = new EclEmmaStatus(
       5009, IStatus.ERROR, CoreMessages.StatusIMPORT_ERROR_message);
+
+  /**
+   * Error while importing external coverage session.
+   */
+  public static final EclEmmaStatus FILE_CONTAINS_NO_METADATA = new EclEmmaStatus(
+      5010, IStatus.ERROR, CoreMessages.StatusFILE_CONTAINS_NO_METADATA_message);
   
   /**
    * Trying to instrument instrumented class files. This status is used to issue

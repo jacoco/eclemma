@@ -160,7 +160,7 @@ public abstract class CoverageLauncher implements ICoverageLauncher, IExecutable
         .getLaunchConfigurationType(launchtype);
     if (type == null) {
       throw new CoreException(EclEmmaStatus.UNKOWN_LAUNCH_TYPE_ERROR.getStatus(
-          launchtype, null));
+          launchtype));
     }
     return type.getDelegate(DELEGATELAUNCHMODE);
   }
