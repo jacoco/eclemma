@@ -3,7 +3,7 @@
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
- * $Id: $
+ * $Id$
  ******************************************************************************/
 package com.mountainminds.eclemma.core;
 
@@ -15,7 +15,7 @@ import junit.framework.TestCase;
  * Tests for EclEmmaStatus.
  * 
  * @author  Marc R. Hoffmann
- * @version $Revision: $
+ * @version $Revision$
  */
 public class EclEmmaStatusTest extends TestCase {
   
@@ -45,7 +45,7 @@ public class EclEmmaStatusTest extends TestCase {
 
   public void testMessage2() {
     EclEmmaStatus estatus = EclEmmaStatus.UNKOWN_LAUNCH_TYPE_ERROR;
-    IStatus status = estatus.getStatus("abcdef", null);
+    IStatus status = estatus.getStatus("abcdef");
     assertEquals("Unknown launch type abcdef (code 5002).", status.getMessage());
   }
   
