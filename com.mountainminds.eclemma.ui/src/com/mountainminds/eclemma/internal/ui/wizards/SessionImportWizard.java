@@ -17,7 +17,7 @@ import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.ui.IExportWizard;
+import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 
 import com.mountainminds.eclemma.core.CoverageTools;
@@ -31,7 +31,7 @@ import com.mountainminds.eclemma.internal.ui.UIMessages;
  * @author Marc R. Hoffmann
  * @version $Revision$
  */
-public class SessionImportWizard extends Wizard implements IExportWizard {
+public class SessionImportWizard extends Wizard implements IImportWizard {
 
   private static final String SETTINGSID = "SessionImportWizard"; //$NON-NLS-1$
 
