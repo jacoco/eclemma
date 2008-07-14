@@ -74,7 +74,25 @@ public class SessionImportPage1 extends WizardPage {
   public void createControl(Composite parent) {
     initializeDialogUnits(parent);
     parent = new Composite(parent, SWT.NONE);
-    parent.setLayout(new GridLayout(4, false));
+    GridLayout layout = new GridLayout(1, false);
+    parent.setLayout(layout);
+    createNameAndFileBlock(parent);
+    createClassPathsBlock(parent);
+    createButtonsBlock(parent);
+    createOptionsBlock(parent);
+    setControl(parent);
+    ContextHelp.setHelp(parent, ContextHelp.SESSION_IMPORT);
+    restoreWidgetValues();
+    update();
+  }
+
+  private void createNameAndFileBlock(Composite parent) {
+    parent = new Composite(parent, SWT.NONE);
+    GridLayout layout = new GridLayout(3, false);
+    layout.marginWidth = 0;
+    layout.marginHeight = 0;
+    parent.setLayout(layout);
+    parent.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
     new Label(parent, SWT.NONE).setText(UIMessages.ImportSessionPage1Description_label);
     descriptiontext = new Text(parent, SWT.BORDER);
     descriptiontext.addModifyListener(new ModifyListener() {
@@ -83,7 +101,7 @@ public class SessionImportPage1 extends WizardPage {
       }
     });
     GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-    gd.horizontalSpan = 3;
+    gd.horizontalSpan = 2;
     descriptiontext.setLayoutData(gd);
     new Label(parent, SWT.NONE).setText(UIMessages.ImportSessionPage1CoverageFile_label);
     filecombo = new Combo(parent, SWT.BORDER);
@@ -93,7 +111,6 @@ public class SessionImportPage1 extends WizardPage {
       }
     });
     gd = new GridData(GridData.FILL_HORIZONTAL);
-    gd.horizontalSpan = 2;
     gd.widthHint = convertHorizontalDLUsToPixels(100);
     filecombo.setLayoutData(gd);
     Button browsebutton = new Button(parent, SWT.NONE);
@@ -104,6 +121,9 @@ public class SessionImportPage1 extends WizardPage {
         openBrowseDialog();
       }
     });
+  }
+  
+  private void createClassPathsBlock(Composite parent) {
     classesviewer = new ClassesViewer(parent, SWT.BORDER);
     try {
       classesviewer.setInput(CoverageTools.getClassFiles());
@@ -115,11 +135,19 @@ public class SessionImportPage1 extends WizardPage {
         update();
       }
     });
-    gd = new GridData(GridData.FILL_BOTH);
-    gd.horizontalSpan = 4;
+    GridData gd = new GridData(GridData.FILL_BOTH);
     gd.widthHint = convertHorizontalDLUsToPixels(120);
     gd.heightHint = convertHeightInCharsToPixels(8);
     classesviewer.getTable().setLayoutData(gd);
+  }
+  
+  private void createButtonsBlock(Composite parent) {
+    parent = new Composite(parent, SWT.NONE);
+    GridLayout layout = new GridLayout(3, false);
+    layout.marginWidth = 0;
+    layout.marginHeight = 0;
+    parent.setLayout(layout);
+    parent.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
     binariescheck = new Button(parent, SWT.CHECK);
     binariescheck.setText(UIMessages.ImportSessionPage1Binaries_label);
     binariescheck.addSelectionListener(new SelectionAdapter() {
@@ -128,14 +156,37 @@ public class SessionImportPage1 extends WizardPage {
         update();
       }
     });
-    gd = new GridData();
-    gd.horizontalSpan = 4;
-    binariescheck.setLayoutData(gd);    
+    binariescheck.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL));
+    Button buttonSelectAll = new Button(parent, SWT.PUSH);
+    buttonSelectAll.setText(UIMessages.SelectAllAction_label);
+    buttonSelectAll.addSelectionListener(new SelectionAdapter() {
+      public void widgetSelected(SelectionEvent e) {
+        classesviewer.selectAll();
+        update();
+      }
+    });
+    setButtonLayoutData(buttonSelectAll);
+    Button buttonDeselectAll = new Button(parent, SWT.PUSH);
+    buttonDeselectAll.setText(UIMessages.DeselectAllAction_label);
+    buttonDeselectAll.addSelectionListener(new SelectionAdapter() {
+      public void widgetSelected(SelectionEvent e) {
+        classesviewer.deselectAll();
+        update();
+      }
+    });
+    setButtonLayoutData(buttonDeselectAll);
+  }
+
+  private void createOptionsBlock(Composite parent) {
+    parent = new Composite(parent, SWT.NONE);
+    GridLayout layout = new GridLayout(2, true);
+    layout.marginWidth = 0;
+    layout.marginHeight = 0;
+    parent.setLayout(layout);
+    parent.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
     Group group = new Group(parent, SWT.NONE);
     group.setText(UIMessages.ImportSessionPage1ModeGroup_label);
-    gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_FILL);
-    gd.horizontalSpan = 2;
-    group.setLayoutData(gd);
+    group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
     group.setLayout(new GridLayout());
     referenceradio = new Button(group, SWT.RADIO);
     referenceradio.setText(UIMessages.ImportSessionPage1Reference_label);
@@ -143,21 +194,14 @@ public class SessionImportPage1 extends WizardPage {
     copyradio.setText(UIMessages.ImportSessionPage1Copy_label);
     group = new Group(parent, SWT.NONE);
     group.setText(UIMessages.ImportSessionPage1MetadataGroup_label);
-    gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_FILL);
-    gd.horizontalSpan = 2;
-    group.setLayoutData(gd);
+    group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
     group.setLayout(new GridLayout());
     ideclassesradio = new Button(group, SWT.RADIO);
     ideclassesradio.setText(UIMessages.ImportSessionPage1IDEClasses_label);
     importmetadataradio = new Button(group, SWT.RADIO);
     importmetadataradio.setText(UIMessages.ImportSessionPage1ImportMetaData_label);
-    
-    setControl(parent);
-    ContextHelp.setHelp(parent, ContextHelp.SESSION_IMPORT);
-    restoreWidgetValues();
-    update();
   }
-
+  
   private void openBrowseDialog() {
     FileDialog fd = new FileDialog(getShell(), SWT.OPEN);
     fd.setText(UIMessages.ImportSessionPage1BrowseDialog_title);
