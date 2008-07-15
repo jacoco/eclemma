@@ -28,10 +28,10 @@ public final class TreeSortCompatibility {
   public static void setTreeSortColumnAndDirection(TreeColumn sortColumn, int direction) {
     if (sortingAvailable) {
       try {
-        Method setSortColumn = Tree.class.getMethod("setSortColumn", new Class[] {TreeColumn.class});
+        Method setSortColumn = Tree.class.getMethod("setSortColumn", new Class[] {TreeColumn.class}); //$NON-NLS-1$
         setSortColumn.invoke(sortColumn.getParent(), new Object[] {sortColumn});
         
-        Method setSortDirection = Tree.class.getMethod("setSortDirection", new Class[] {int.class});
+        Method setSortDirection = Tree.class.getMethod("setSortDirection", new Class[] {int.class}); //$NON-NLS-1$
         setSortDirection.invoke(sortColumn.getParent(), new Object[] {new Integer(direction)});
         
       } catch (Exception e) {
