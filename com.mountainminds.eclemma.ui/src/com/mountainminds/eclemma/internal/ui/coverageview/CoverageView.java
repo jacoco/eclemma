@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2007 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2006, 2009 Mountainminds GmbH & Co. KG
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
@@ -26,6 +26,7 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IOpenListener;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -47,6 +48,8 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.dialogs.PropertyDialogAction;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
+import org.eclipse.ui.part.IShowInTarget;
+import org.eclipse.ui.part.ShowInContext;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.texteditor.IWorkbenchActionDefinitionIds;
 
@@ -72,7 +75,7 @@ import com.mountainminds.eclemma.internal.ui.actions.RemoveAllSessionsAction;
  * @author  Marc R. Hoffmann
  * @version $Revision$
  */
-public class CoverageView extends ViewPart {
+public class CoverageView extends ViewPart implements IShowInTarget {
   
   public static final String ID = "com.mountainminds.eclemma.ui.CoverageView"; //$NON-NLS-1$
   
@@ -437,6 +440,15 @@ public class CoverageView extends ViewPart {
 
   protected void refreshViewer() {
     viewer.refresh();
+  }
+
+  public boolean show(ShowInContext context) {
+    final ISelection selection = context.getSelection();
+    if (selection instanceof IStructuredSelection) {
+      viewer.setSelection(selection);
+      return true;
+    }
+    return false;
   }
   
 }

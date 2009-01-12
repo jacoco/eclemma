@@ -206,15 +206,19 @@
          point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension targetID="org.eclipse.jdt.ui.JavaPerspective">
          <actionSet id="com.mountainminds.eclemma.ui.CoverageActionSet"/>
+         <showInPart id="com.mountainminds.eclemma.ui.CoverageView"/>
       </perspectiveExtension>
       <perspectiveExtension targetID="org.eclipse.debug.ui.DebugPerspective">
          <actionSet id="com.mountainminds.eclemma.ui.CoverageActionSet"/>
+         <showInPart id="com.mountainminds.eclemma.ui.CoverageView"/>
       </perspectiveExtension>
       <perspectiveExtension targetID="org.eclipse.pde.ui.PDEPerspective">
          <actionSet id="com.mountainminds.eclemma.ui.CoverageActionSet"/>
+         <showInPart id="com.mountainminds.eclemma.ui.CoverageView"/>
       </perspectiveExtension>
       <perspectiveExtension targetID="org.eclipse.jst.j2ee.J2EEPerspective">
          <actionSet id="com.mountainminds.eclemma.ui.CoverageActionSet"/>
+         <showInPart id="com.mountainminds.eclemma.ui.CoverageView"/>
       </perspectiveExtension>
    </extension>
    <extension
