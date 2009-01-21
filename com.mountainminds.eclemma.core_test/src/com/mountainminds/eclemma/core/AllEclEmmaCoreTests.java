@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2006, 2009 Mountainminds GmbH & Co. KG
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
@@ -15,6 +15,7 @@ import com.mountainminds.eclemma.internal.core.analysis.CounterTest;
 import com.mountainminds.eclemma.internal.core.analysis.JavaElementCoverageTest;
 import com.mountainminds.eclemma.internal.core.analysis.LinesTest;
 import com.mountainminds.eclemma.internal.core.analysis.TypeTraverserTest;
+import com.mountainminds.eclemma.internal.core.instr.ClassFilesTest;
 
 /**
  * Suite of all EclEmma core tests.
@@ -38,7 +39,10 @@ public class AllEclEmmaCoreTests {
     suite.addTestSuite(JavaElementCoverageTest.class);
     suite.addTestSuite(TypeTraverserTest.class);
     suite.addTestSuite(LinesTest.class);
-   
+
+    // com.mountainminds.eclemma.internal.core.instr.*
+    suite.addTestSuite(ClassFilesTest.class);
+    
     return suite;
   }
 

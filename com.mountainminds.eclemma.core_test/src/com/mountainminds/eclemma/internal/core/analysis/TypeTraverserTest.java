@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2006, 2009 Mountainminds GmbH & Co. KG
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
@@ -24,13 +24,14 @@ import com.mountainminds.eclemma.internal.core.testutils.JavaProjectTestBase;
  */
 public class TypeTraverserTest extends JavaProjectTestBase {
 
-  public static final IProgressMonitor MONITOR = new NullProgressMonitor();  
-  IPackageFragmentRoot root;
+  public static final IProgressMonitor MONITOR = new NullProgressMonitor();
+  
+  private IPackageFragmentRoot root;
   
   protected void setUp() throws Exception {
     super.setUp();
     root = createSourceFolder("src");
-    createCompilationUnit(root, "src-test", "methodresolver/p1/TypeForTraverser.java");
+    createCompilationUnit(root, "testdata/src", "methodresolver/p1/TypeForTraverser.java");
   }
   
   private static final String[] EXPECTEDTYPES = new String[] {

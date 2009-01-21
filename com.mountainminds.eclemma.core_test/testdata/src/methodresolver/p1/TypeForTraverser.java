@@ -3,7 +3,7 @@
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
- * $Id$
+ * $Id: TypeForTraverser.java 194 2006-12-14 23:11:46Z mtnminds $
  ******************************************************************************/
 package methodresolver.p1;
 
@@ -11,7 +11,7 @@ package methodresolver.p1;
  * Test type for TypeTraverser.
  * 
  * @author Marc R. Hoffmann
- * @version $Revision$
+ * @version $Revision: 194 $
  */
 public class TypeForTraverser {
 
