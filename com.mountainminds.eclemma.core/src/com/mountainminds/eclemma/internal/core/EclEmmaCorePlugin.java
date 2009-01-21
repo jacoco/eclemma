@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2006, 2009 Mountainminds GmbH & Co. KG
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
@@ -59,11 +59,11 @@ public class EclEmmaCorePlugin extends Plugin {
   /** Status used to trigger user prompts */
   private static final IStatus PROMPT_STATUS = new Status(IStatus.INFO,
       "org.eclipse.debug.ui", 200, "", null); //$NON-NLS-1$//$NON-NLS-2$
-  
+
   public static final IPath EMMA_JAR = new Path("/emma.jar"); //$NON-NLS-1$
 
   private static EclEmmaCorePlugin instance;
-  
+
   private ICorePreferences preferences = ICorePreferences.DEFAULT;
 
   private ISessionManager sessionManager;
@@ -81,8 +81,10 @@ public class EclEmmaCorePlugin extends Plugin {
         sessionManager.removeSession(launch);
       }
     }
+
     public void launchAdded(ILaunch launch) {
     }
+
     public void launchChanged(ILaunch launch) {
     }
   };
@@ -106,13 +108,15 @@ public class EclEmmaCorePlugin extends Plugin {
               ICoverageSession session = new CoverageSession(description, info
                   .getInstrumentations(), new IPath[] { coveragedatafile },
                   launch.getLaunchConfiguration());
-              sessionManager.addSession(session, preferences.getActivateNewSessions(), launch);
+              sessionManager.addSession(session, preferences
+                  .getActivateNewSessions(), launch);
             }
             info.dispose();
           }
         }
       }
     }
+
     private boolean checkCoverageDataFile(IPath path) {
       boolean ok = path.toFile().exists();
       if (!ok) {
@@ -164,7 +168,7 @@ public class EclEmmaCorePlugin extends Plugin {
   public static EclEmmaCorePlugin getInstance() {
     return instance;
   }
-  
+
   public void setPreferences(ICorePreferences preferences) {
     this.preferences = preferences;
   }
@@ -187,11 +191,11 @@ public class EclEmmaCorePlugin extends Plugin {
    * 
    * @param status
    *          IStatus object to find prompter for
-   * @param info  
-   *          addional information passed to the handler 
+   * @param info
+   *          addional information passed to the handler
    * @return boolean result returned by the status handler
    * @throws CoreException
-   *           if the status has severity error and no handler is available 
+   *           if the status has severity error and no handler is available
    */
   public boolean showPrompt(IStatus status, Object info) throws CoreException {
     IStatusHandler prompter = DebugPlugin.getDefault().getStatusHandler(
@@ -206,7 +210,7 @@ public class EclEmmaCorePlugin extends Plugin {
       return ((Boolean) prompter.handleStatus(status, info)).booleanValue();
     }
   }
-  
+
   /**
    * Tries to find the absolute path for the given workspace relative path.
    * 
@@ -227,29 +231,29 @@ public class EclEmmaCorePlugin extends Plugin {
   /**
    * Calculates the list of IClassFiles for the given Java project. Basically
    * for every separate output location a entry will be returned.
-   *
-   * @param project  Java project to calculate IClassFiles for 
-   * @return
-   *   Array of IClassFiles objects
+   * 
+   * @param project
+   *          Java project to calculate IClassFiles for
+   * @return aArray of IClassFiles objects
    * @throws JavaModelException
-   *   Thrown when a problem with the underlying Java model occures.
+   *           thrown when a problem with the underlying Java model occures
    */
-  public synchronized IClassFiles[] getClassFiles(IJavaProject project) throws JavaModelException {
+  public static IClassFiles[] getClassFiles(IJavaProject project)
+      throws JavaModelException {
     Map binpaths = new HashMap();
     IPackageFragmentRoot[] roots = project.getPackageFragmentRoots();
     for (int j = 0; j < roots.length; j++) {
       IPath binpath = getClassFileLocation(roots[j]);
       ClassFiles classfiles = (ClassFiles) binpaths.get(binpath);
       if (classfiles == null) {
-        IPackageFragmentRoot[] element = new IPackageFragmentRoot[] { roots[j] };
-        binpaths.put(binpath, new ClassFiles(element, binpath));
+        binpaths.put(binpath, new ClassFiles(roots[j], binpath));
       } else {
         binpaths.put(binpath, classfiles.addRoot(roots[j]));
       }
     }
     return (IClassFiles[]) binpaths.values().toArray(new IClassFiles[0]);
   }
-  
+
   public synchronized Map getClassFiles() throws CoreException {
     // TODO use getClassFiles(IJavaProject)
     if (instrumentedClasses == null) {
@@ -266,8 +270,8 @@ public class EclEmmaCorePlugin extends Plugin {
             ClassFiles classfiles = (ClassFiles) instrumentedClasses
                 .get(ospath);
             if (classfiles == null) {
-              instrumentedClasses.put(ospath, new ClassFiles(
-                  new IPackageFragmentRoot[] { roots[j] }, location));
+              instrumentedClasses.put(ospath,
+                  new ClassFiles(roots[j], location));
             } else {
               instrumentedClasses.put(ospath, classfiles.addRoot(roots[j]));
             }

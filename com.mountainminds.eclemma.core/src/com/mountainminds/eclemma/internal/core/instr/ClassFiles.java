@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2006, 2009 Mountainminds GmbH & Co. KG
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
@@ -30,7 +30,7 @@ import com.vladium.emma.instr.InstrProcessor;
 import com.vladium.emma.instr.InstrProcessor.OutMode;
 
 /**
- * Implementation if IClassFiles.
+ * Implementation of IClassFiles.
  * 
  * @author Marc R. Hoffmann
  * @version $Revision$
@@ -42,31 +42,57 @@ public class ClassFiles implements IClassFiles {
   private static final String METADATAFILE_EXT = "em"; //$NON-NLS-1$
 
   private final IPackageFragmentRoot[] roots;
+
   private final IPath location;
+
   private final boolean binary;
 
-  public ClassFiles(IPackageFragmentRoot[] roots, IPath location) throws JavaModelException {
-    this.roots = roots;
-    this.location = location;
-    boolean b = true; 
-    for (int i = 0; i < roots.length; i++) {
-      if (roots[i].getKind() == IPackageFragmentRoot.K_SOURCE) {
-        b = false;
-        break;
-      }
-    }
-    binary = b;
+  /**
+   * Create a new instance containing a single package fragment root with the
+   * given class file location.
+   * 
+   * @param root
+   *          package fragment root
+   * @param location
+   *          location of the class files
+   * @throws JavaModelException
+   *           thrown when a problem with the underlying Java model occures
+   */
+  public ClassFiles(IPackageFragmentRoot root, IPath location)
+      throws JavaModelException {
+    this(new IPackageFragmentRoot[] { root }, location,
+        root.getKind() == IPackageFragmentRoot.K_BINARY);
   }
 
-  public ClassFiles addRoot(IPackageFragmentRoot root) throws JavaModelException {
+  private ClassFiles(IPackageFragmentRoot[] roots, IPath location,
+      boolean binary) {
+    this.roots = roots;
+    this.location = location;
+    this.binary = binary;
+  }
+
+  /**
+   * Creates a new ClassFiles instance with the given package fragment root
+   * added. Mixing source and binary package fragment roots will result in an
+   * exception.
+   * 
+   * @param root
+   *          the package fragment root to add
+   * @return new instance
+   * @throws JavaModelException
+   *           thrown when a problem with the underlying Java model occures
+   */
+  public ClassFiles addRoot(IPackageFragmentRoot root)
+      throws JavaModelException {
     IPackageFragmentRoot[] newroots = new IPackageFragmentRoot[roots.length + 1];
     System.arraycopy(roots, 0, newroots, 0, roots.length);
     newroots[roots.length] = root;
-    return new ClassFiles(newroots, location);
+    return new ClassFiles(newroots, location, binary
+        && root.getKind() == IPackageFragmentRoot.K_BINARY);
   }
 
   // IClassFiles implementation
-  
+
   public boolean isBinary() {
     return binary;
   }

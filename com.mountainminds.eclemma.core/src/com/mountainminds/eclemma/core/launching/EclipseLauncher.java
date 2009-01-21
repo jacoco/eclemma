@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2006, 2009 Mountainminds GmbH & Co. KG
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
@@ -96,7 +96,7 @@ public class EclipseLauncher extends CoverageLauncher {
     List l = new ArrayList();
     for (int i = 0; i < projects.length; i++) {
       if (projects[i].getProject().hasNature(PLUGIN_NATURE)) {
-        IClassFiles[] cf = EclEmmaCorePlugin.getInstance().getClassFiles(projects[i]);
+        IClassFiles[] cf = EclEmmaCorePlugin.getClassFiles(projects[i]);
         for (int j = 0; j < cf.length; j++) {
           if (!cf[j].isBinary()) l.add(cf[j]);
         }
