@@ -17,4 +17,6 @@ Bundle-ClassPath: .,
  emma.jar
 Bundle-Activator: com.mountainminds.eclemma.internal.core.EclEmmaCorePlugin
 Eclipse-AutoStart: true
+Bundle-RequiredExecutionEnvironment: J2SE-1.4
+
 

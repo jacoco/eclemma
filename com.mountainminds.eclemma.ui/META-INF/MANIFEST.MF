@@ -22,4 +22,5 @@ Require-Bundle: com.mountainminds.eclemma.core,
 Bundle-Activator: com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin
 Eclipse-AutoStart: true
 Export-Package: com.mountainminds.eclemma.ui.launching
+Bundle-RequiredExecutionEnvironment: J2SE-1.4
 
