@@ -7,19 +7,23 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.core.instr;
 
+import junit.framework.TestCase;
+
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaModelException;
 
 import com.mountainminds.eclemma.core.ISourceLocation;
-import com.mountainminds.eclemma.internal.core.testutils.JavaProjectTestBase;
+import com.mountainminds.eclemma.core.JavaProjectKit;
 
 /**
  * @author Marc R. Hoffmann
  * @version $Revision: $
  */
-public class ClassFilesTest extends JavaProjectTestBase {
+public class ClassFilesTest extends TestCase {
+
+  private JavaProjectKit javaProject;
 
   private IPackageFragmentRoot rootSrc1;
 
@@ -28,11 +32,15 @@ public class ClassFilesTest extends JavaProjectTestBase {
   private IPackageFragmentRoot rootBin;
 
   protected void setUp() throws Exception {
-    super.setUp();
-    rootSrc1 = createSourceFolder("src1");
-    rootSrc2 = createSourceFolder("src2");
-    rootBin = createJAR("testdata/bin/sample.jar", "/sample.jar", new Path(
-        "/UnitTestProject/sample.jar"), null);
+    javaProject = new JavaProjectKit();
+    rootSrc1 = javaProject.createSourceFolder("src1");
+    rootSrc2 = javaProject.createSourceFolder("src2");
+    rootBin = javaProject.createJAR("testdata/bin/sample.jar", "/sample.jar",
+        new Path("/UnitTestProject/sample.jar"), null);
+  }
+
+  protected void tearDown() throws Exception {
+    javaProject.destroy();
   }
 
   public void testInitSrc() throws JavaModelException {
@@ -66,7 +74,7 @@ public class ClassFilesTest extends JavaProjectTestBase {
     assertEquals(rootSrc1, roots[0]);
     assertEquals(rootSrc2, roots[1]);
   }
-  
+
   public void testAddRoot2() throws JavaModelException {
     IPath location = new Path("bin");
     ClassFiles classFiles = new ClassFiles(rootSrc1, location);
@@ -90,17 +98,17 @@ public class ClassFilesTest extends JavaProjectTestBase {
     assertEquals(rootBin, roots[0]);
     assertEquals(rootBin, roots[1]);
   }
-  
+
   public void testGetSourceLocations_source() throws JavaModelException {
     ClassFiles classFiles = new ClassFiles(rootSrc1, new Path("bin"))
         .addRoot(rootSrc2);
     ISourceLocation[] sourceLocations = classFiles.getSourceLocations();
     assertEquals(2, sourceLocations.length);
-    
+
     String expected = "/UnitTestProject/src1";
     String actual = sourceLocations[0].getPath().toString();
     assertTrue(actual, actual.endsWith(expected));
-    
+
     expected = "/UnitTestProject/src2";
     actual = sourceLocations[1].getPath().toString();
     assertTrue(actual, actual.endsWith(expected));

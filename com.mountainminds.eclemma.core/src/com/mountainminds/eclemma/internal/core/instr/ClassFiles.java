@@ -91,6 +91,12 @@ public class ClassFiles implements IClassFiles {
         && root.getKind() == IPackageFragmentRoot.K_BINARY);
   }
 
+  public String toString() {
+    final StringBuffer sb = new StringBuffer(getClass().getName());
+    sb.append("[").append(location).append("]");
+    return sb.toString();
+  }
+
   // IClassFiles implementation
 
   public boolean isBinary() {

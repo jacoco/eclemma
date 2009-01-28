@@ -5,14 +5,12 @@
  *
  * $Id$
  ******************************************************************************/
-package com.mountainminds.eclemma.internal.core.testutils;
+package com.mountainminds.eclemma.core;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-
-import junit.framework.TestCase;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -37,34 +35,29 @@ import org.eclipse.jdt.launching.JavaRuntime;
 import com.mountainminds.eclemma.internal.core.EclEmmaCorePlugin;
 
 /**
- * Base class for test cases working on Java projects providing infrastructure
- * to setup Java projects.
+ * Utility class to setup Java projects programatically.
  * 
  * @author Marc R. Hoffmann
  * @version $Revision$
  */
-public abstract class JavaProjectTestBase extends TestCase {
+public class JavaProjectKit {
 
-  public static final String PROJECT_NAME = "UnitTestProject";
+  private static final String DEFAULT_PROJECT_NAME = "UnitTestProject";
 
-  protected IWorkspace workspace;
+  public final IWorkspace workspace;
 
-  protected IProject project;
+  public final IProject project;
 
-  protected IJavaProject javaProject;
+  public final IJavaProject javaProject;
 
-  public JavaProjectTestBase() {
-    super();
+  public JavaProjectKit() throws CoreException {
+    this(DEFAULT_PROJECT_NAME);
   }
 
-  public JavaProjectTestBase(String name) {
-    super(name);
-  }
-
-  protected void setUp() throws Exception {
+  public JavaProjectKit(String name) throws CoreException {
     workspace = ResourcesPlugin.getWorkspace();
     IWorkspaceRoot root = workspace.getRoot();
-    project = root.getProject(PROJECT_NAME);
+    project = root.getProject(name);
     project.create(null);
     project.open(null);
     IProjectDescription description = project.getDescription();
@@ -75,7 +68,7 @@ public abstract class JavaProjectTestBase extends TestCase {
     addClassPathEntry(JavaRuntime.getDefaultJREContainerEntry());
   }
 
-  protected IFolder setDefaultOutputLocation(String foldername)
+  public IFolder setDefaultOutputLocation(String foldername)
       throws CoreException {
     IFolder folder = project.getFolder(foldername);
     folder.create(false, true, null);
@@ -83,7 +76,7 @@ public abstract class JavaProjectTestBase extends TestCase {
     return folder;
   }
 
-  protected IPackageFragmentRoot createSourceFolder(String foldername)
+  public IPackageFragmentRoot createSourceFolder(String foldername)
       throws CoreException {
     IFolder folder = project.getFolder(foldername);
     folder.create(false, true, null);
@@ -93,7 +86,7 @@ public abstract class JavaProjectTestBase extends TestCase {
     return packageRoot;
   }
 
-  protected IPackageFragmentRoot createJAR(String jarsrc, String jarpath,
+  public IPackageFragmentRoot createJAR(String jarsrc, String jarpath,
       IPath sourceAttachmentPath, IPath sourceAttachmentRootPath)
       throws CoreException, IOException {
     IFile jarfile = project.getFile(jarpath);
@@ -134,7 +127,7 @@ public abstract class JavaProjectTestBase extends TestCase {
         .toString());
   }
 
-  protected void addClassPathEntry(IClasspathEntry entry) throws CoreException {
+  public void addClassPathEntry(IClasspathEntry entry) throws CoreException {
     IClasspathEntry[] oldEntries = javaProject.getRawClasspath();
     IClasspathEntry[] newEntries = new IClasspathEntry[oldEntries.length + 1];
     System.arraycopy(oldEntries, 0, newEntries, 0, oldEntries.length);
@@ -142,11 +135,11 @@ public abstract class JavaProjectTestBase extends TestCase {
     javaProject.setRawClasspath(newEntries, null);
   }
 
-  protected void tearDown() throws Exception {
+  public void destroy() throws CoreException {
     project.delete(true, true, null);
   }
 
-  protected InputStream openTestResource(IPath path) throws IOException {
+  public InputStream openTestResource(IPath path) throws IOException {
     return Platform.find(Platform.getBundle(EclEmmaCorePlugin.ID), path)
         .openStream();
   }

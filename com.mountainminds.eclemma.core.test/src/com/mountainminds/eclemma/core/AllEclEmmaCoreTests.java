@@ -16,24 +16,25 @@ import com.mountainminds.eclemma.internal.core.analysis.JavaElementCoverageTest;
 import com.mountainminds.eclemma.internal.core.analysis.LinesTest;
 import com.mountainminds.eclemma.internal.core.analysis.TypeTraverserTest;
 import com.mountainminds.eclemma.internal.core.instr.ClassFilesTest;
+import com.mountainminds.eclemma.internal.core.instr.DefaultInstrumentationFilterTest;
 
 /**
  * Suite of all EclEmma core tests.
  * 
- * @author  Marc R. Hoffmann
+ * @author Marc R. Hoffmann
  * @version $Revision$
  */
 public class AllEclEmmaCoreTests {
-  
+
   public static Test suite() {
     TestSuite suite = new TestSuite();
 
     // com.mountainminds.eclemma.core.*
     suite.addTestSuite(EclEmmaStatusTest.class);
-    
+
     // com.mountainminds.eclemma.internal.core.*
     suite.addTestSuite(SessionManagerTest.class);
-    
+
     // com.mountainminds.eclemma.internal.core.analysis.*
     suite.addTestSuite(CounterTest.class);
     suite.addTestSuite(JavaElementCoverageTest.class);
@@ -42,7 +43,8 @@ public class AllEclEmmaCoreTests {
 
     // com.mountainminds.eclemma.internal.core.instr.*
     suite.addTestSuite(ClassFilesTest.class);
-    
+    suite.addTestSuite(DefaultInstrumentationFilterTest.class);
+
     return suite;
   }
 
