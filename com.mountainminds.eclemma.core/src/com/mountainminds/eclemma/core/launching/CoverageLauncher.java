@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2006, 2009 Mountainminds GmbH & Co. KG
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
@@ -11,7 +11,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
@@ -58,7 +57,8 @@ import com.vladium.emma.EMMAProperties;
  * @author Marc R. Hoffmann
  * @version $Revision$
  */
-public abstract class CoverageLauncher implements ICoverageLauncher, IExecutableExtension {
+public abstract class CoverageLauncher implements ICoverageLauncher,
+    IExecutableExtension {
 
   /**
    * Name of the file that will EMMA pick from the classpath to reads its
@@ -159,8 +159,8 @@ public abstract class CoverageLauncher implements ICoverageLauncher, IExecutable
     ILaunchConfigurationType type = DebugPlugin.getDefault().getLaunchManager()
         .getLaunchConfigurationType(launchtype);
     if (type == null) {
-      throw new CoreException(EclEmmaStatus.UNKOWN_LAUNCH_TYPE_ERROR.getStatus(
-          launchtype));
+      throw new CoreException(EclEmmaStatus.UNKOWN_LAUNCH_TYPE_ERROR
+          .getStatus(launchtype));
     }
     return type.getDelegate(DELEGATELAUNCHMODE);
   }
@@ -268,19 +268,22 @@ public abstract class CoverageLauncher implements ICoverageLauncher, IExecutable
           DELEGATELAUNCHMODE, monitor);
     }
   }
-  
+
   // ICoverageLauncher interface:
 
-  /* 
+  /*
    * The default implemenation delegates to the classpath provider.
    */
-  public IClassFiles[] getClassFiles(ILaunchConfiguration configuration, boolean includebinaries) throws CoreException {
+  public IClassFiles[] getClassFiles(ILaunchConfiguration configuration,
+      boolean includebinaries) throws CoreException {
     List l = new ArrayList();
-    IRuntimeClasspathEntry[] entries = JavaRuntime.computeUnresolvedRuntimeClasspath(configuration);
+    IRuntimeClasspathEntry[] entries = JavaRuntime
+        .computeUnresolvedRuntimeClasspath(configuration);
     entries = JavaRuntime.resolveRuntimeClasspath(entries, configuration);
     for (int i = 0; i < entries.length; i++) {
       if (entries[i].getClasspathProperty() == IRuntimeClasspathEntry.USER_CLASSES) {
-        IClassFiles ic = findClassFiles(entries[i].getLocation());
+        IClassFiles ic = CoverageTools
+            .getClassFilesAtAbsoluteLocation(entries[i].getLocation());
         if (ic != null && (includebinaries || !ic.isBinary())) {
           l.add(ic);
         }
@@ -290,18 +293,21 @@ public abstract class CoverageLauncher implements ICoverageLauncher, IExecutable
     return (IClassFiles[]) l.toArray(arr);
   }
 
-
   /**
    * Internal utility to find the {@link IClassFiles} descriptor for the given
    * class path location.
    * 
-   * @param location  class path location
+   * @param location
+   *          class path location
    * @return descriptor or <code>null</code>
-   * @throws CoreException  in case of internal inconsistencies
+   * @throws CoreException
+   *           in case of internal inconsistencies
+   * @deprecated please user
+   *             {@link CoverageTools#getClassFilesAtAbsoluteLocation(String)}
+   *             instead
    */
   protected IClassFiles findClassFiles(String location) throws CoreException {
-    Map map = EclEmmaCorePlugin.getInstance().getClassFiles();
-    return (IClassFiles) map.get(location);
+    return CoverageTools.getClassFilesAtAbsoluteLocation(location);
   }
-  
+
 }

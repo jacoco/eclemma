@@ -102,7 +102,7 @@ public class ClassFilesStore {
    * @return {@link IClassFiles} object or <code>null</code>
    * 
    */
-  public IClassFiles forAbsoluteLocation(String location) {
+  public IClassFiles getAtAbsoluteLocation(String location) {
     return (IClassFiles) locationIndex.get(location);
   }
 

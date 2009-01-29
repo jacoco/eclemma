@@ -9,8 +9,6 @@ package com.mountainminds.eclemma.internal.core;
 
 import java.text.MessageFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -28,11 +26,8 @@ import org.eclipse.debug.core.ILaunchListener;
 import org.eclipse.debug.core.IStatusHandler;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.jdt.core.ElementChangedEvent;
-import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IElementChangedListener;
-import org.eclipse.jdt.core.IJavaModel;
 import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.osgi.framework.BundleContext;
@@ -44,7 +39,7 @@ import com.mountainminds.eclemma.core.ICorePreferences;
 import com.mountainminds.eclemma.core.ICoverageSession;
 import com.mountainminds.eclemma.core.ISessionManager;
 import com.mountainminds.eclemma.core.launching.ICoverageLaunchInfo;
-import com.mountainminds.eclemma.internal.core.instr.ClassFiles;
+import com.mountainminds.eclemma.internal.core.instr.ClassFilesStore;
 
 /**
  * Bundle activator for the EclEmma core.
@@ -72,8 +67,7 @@ public class EclEmmaCorePlugin extends Plugin {
 
   private StateFiles stateFiles;
 
-  // TODO synchronize access!
-  private Map instrumentedClasses = null;
+  private ClassFilesStore allClassFiles = null;
 
   private ILaunchListener launchListener = new ILaunchListener() {
     public void launchRemoved(ILaunch launch) {
@@ -133,7 +127,7 @@ public class EclEmmaCorePlugin extends Plugin {
   private IElementChangedListener elementListener = new IElementChangedListener() {
     public void elementChanged(ElementChangedEvent event) {
       synchronized (EclEmmaCorePlugin.this) {
-        instrumentedClasses = null;
+        allClassFiles = null;
       }
     }
   };
@@ -240,61 +234,19 @@ public class EclEmmaCorePlugin extends Plugin {
    */
   public static IClassFiles[] getClassFiles(IJavaProject project)
       throws JavaModelException {
-    Map binpaths = new HashMap();
-    IPackageFragmentRoot[] roots = project.getPackageFragmentRoots();
-    for (int j = 0; j < roots.length; j++) {
-      IPath binpath = getClassFileLocation(roots[j]);
-      ClassFiles classfiles = (ClassFiles) binpaths.get(binpath);
-      if (classfiles == null) {
-        binpaths.put(binpath, new ClassFiles(roots[j], binpath));
-      } else {
-        binpaths.put(binpath, classfiles.addRoot(roots[j]));
-      }
-    }
-    return (IClassFiles[]) binpaths.values().toArray(new IClassFiles[0]);
+    final ClassFilesStore store = new ClassFilesStore();
+    store.add(project);
+    return store.getClassFiles();
   }
 
-  public synchronized Map getClassFiles() throws CoreException {
-    // TODO use getClassFiles(IJavaProject)
-    if (instrumentedClasses == null) {
-      instrumentedClasses = new HashMap();
-      IJavaModel model = JavaCore.create(ResourcesPlugin.getWorkspace()
-          .getRoot());
-      IJavaProject[] projects = model.getJavaProjects();
-      for (int i = 0; i < projects.length; i++) {
-        {
-          IPackageFragmentRoot[] roots = projects[i].getPackageFragmentRoots();
-          for (int j = 0; j < roots.length; j++) {
-            IPath location = getClassFileLocation(roots[j]);
-            String ospath = getAbsolutePath(location).toOSString();
-            ClassFiles classfiles = (ClassFiles) instrumentedClasses
-                .get(ospath);
-            if (classfiles == null) {
-              instrumentedClasses.put(ospath,
-                  new ClassFiles(roots[j], location));
-            } else {
-              instrumentedClasses.put(ospath, classfiles.addRoot(roots[j]));
-            }
-          }
-        }
-      }
+  public ClassFilesStore getAllClassFiles() throws CoreException {
+    ClassFilesStore store = allClassFiles;
+    if (store == null) {
+      store = new ClassFilesStore();
+      store.add(JavaCore.create(ResourcesPlugin.getWorkspace().getRoot()));
+      allClassFiles = store;
     }
-    return instrumentedClasses;
-  }
-
-  private static IPath getClassFileLocation(IPackageFragmentRoot root)
-      throws JavaModelException {
-    IPath path;
-    if (root.getKind() == IPackageFragmentRoot.K_SOURCE) {
-      IClasspathEntry entry = root.getRawClasspathEntry();
-      path = entry.getOutputLocation();
-      if (path == null) {
-        path = root.getJavaProject().getOutputLocation();
-      }
-    } else {
-      path = root.getPath();
-    }
-    return path;
+    return store;
   }
 
 }

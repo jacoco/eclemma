@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2006, 2009 Mountainminds GmbH & Co. KG
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
@@ -37,20 +37,20 @@ import com.mountainminds.eclemma.internal.core.launching.CoverageLaunchInfo;
  * For central access to the tools provided by the coverage core plugin this
  * class offers several static methods.
  * 
- * @author  Marc R. Hoffmann
+ * @author Marc R. Hoffmann
  * @version $Revision$
  */
 public final class CoverageTools {
-  
+
   /**
    * The launch mode used for coverage sessions.
    */
   public static final String LAUNCH_MODE = "coverage"; //$NON-NLS-1$
-  
+
   public static final int EXPORT_HTML = 0;
-  public static final int EXPORT_XML  = 1;
+  public static final int EXPORT_XML = 1;
   public static final int EXPORT_TEXT = 2;
-  public static final int EXPORT_ES   = 3;
+  public static final int EXPORT_ES = 3;
 
   /**
    * Returns the global session manager.
@@ -98,8 +98,8 @@ public final class CoverageTools {
 
   /**
    * Returns the coverage launch info that is assoziated with the given launch.
-   * If no info object is assoziated with the given launch <code>null</code>
-   * is returned, i.e. the launch was probably not in coverage mode.
+   * If no info object is assoziated with the given launch <code>null</code> is
+   * returned, i.e. the launch was probably not in coverage mode.
    * 
    * @param launch
    *          the launch object we need coverage data for
@@ -130,32 +130,42 @@ public final class CoverageTools {
    * Returns descriptors for all class files in the workspace.
    * 
    * @return descriptors for all class files in the workspace
-   *   
    * @throws CoreException
    */
-  public static IClassFiles[] getClassFiles()
+  public static IClassFiles[] getClassFiles() throws CoreException {
+    return EclEmmaCorePlugin.getInstance().getAllClassFiles().getClassFiles();
+  }
+
+  /**
+   * Returns descriptors the location at the given absolute location on the
+   * local system.
+   * 
+   * @return {@link IClassFiles} at the given location or <code>null</code> if
+   *         not found
+   * @throws CoreException
+   */
+  public static IClassFiles getClassFilesAtAbsoluteLocation(String location)
       throws CoreException {
-    List l = new ArrayList(EclEmmaCorePlugin.getInstance()
-        .getClassFiles().values());
-    IClassFiles[] arr = new IClassFiles[l.size()];
-    return (IClassFiles[]) l.toArray(arr);
+    return EclEmmaCorePlugin.getInstance().getAllClassFiles()
+        .getAtAbsoluteLocation(location);
   }
 
   /**
    * Returns descriptors for class files for the given launch configuration.
    * 
    * @param configuration
-   *          launch configuration to look for class files 
-   * @param includebinaries 
+   *          launch configuration to look for class files
+   * @param includebinaries
    *          flag whether binary classpath entries should be included
    * 
    * @return descriptors for all class files
-   *   
+   * 
    * @throws CoreException
    */
-  public static IClassFiles[] getClassFiles(ILaunchConfiguration configuration, boolean includebinaries) throws CoreException {
-    ICoverageLauncher launcher = (ICoverageLauncher)
-        configuration.getType().getDelegate(LAUNCH_MODE);
+  public static IClassFiles[] getClassFiles(ILaunchConfiguration configuration,
+      boolean includebinaries) throws CoreException {
+    ICoverageLauncher launcher = (ICoverageLauncher) configuration.getType()
+        .getDelegate(LAUNCH_MODE);
     return launcher.getClassFiles(configuration, includebinaries);
   }
 
@@ -164,20 +174,22 @@ public final class CoverageTools {
    * the given launch configuration.
    * 
    * @param configuration
-   *          launch configuration to look for class files 
-   * @param inplace 
+   *          launch configuration to look for class files
+   * @param inplace
    *          flag whether instrumentation will happen inplace. In this case
    *          binary libraries will be excluded
    * 
    * @return descriptors for all class for instrumentation
-   *   
+   * 
    * @throws CoreException
    */
-  public static IClassFiles[] getClassFilesForInstrumentation(ILaunchConfiguration configuration, boolean inplace) throws CoreException {
+  public static IClassFiles[] getClassFilesForInstrumentation(
+      ILaunchConfiguration configuration, boolean inplace) throws CoreException {
     IClassFiles[] all = getClassFiles(configuration, !inplace);
     List filtered = new ArrayList();
-    List selection = 
-      configuration.getAttribute(ICoverageLaunchConfigurationConstants.ATTR_INSTRUMENTATION_PATHS, (List) null);
+    List selection = configuration.getAttribute(
+        ICoverageLaunchConfigurationConstants.ATTR_INSTRUMENTATION_PATHS,
+        (List) null);
     for (int i = 0; i < all.length; i++) {
       if (selection == null) {
         // by default we select all source based class files
@@ -192,43 +204,46 @@ public final class CoverageTools {
     }
     return (IClassFiles[]) filtered.toArray(new IClassFiles[filtered.size()]);
   }
-  
+
   public static ICoverageSession createCoverageSession(String description,
       IInstrumentation[] instrumentations, IPath[] coveragedatafiles,
       ILaunchConfiguration launchconfiguration) {
-    return new CoverageSession(description, instrumentations, coveragedatafiles,
-        launchconfiguration);
+    return new CoverageSession(description, instrumentations,
+        coveragedatafiles, launchconfiguration);
   }
 
   public static IJavaModelCoverage getJavaModelCoverage() {
     return EclEmmaCorePlugin.getInstance().getJavaCoverageLoader()
         .getJavaModelCoverage();
   }
-  
+
   public static void addJavaCoverageListener(IJavaCoverageListener l) {
-    EclEmmaCorePlugin.getInstance().getJavaCoverageLoader().addJavaCoverageListener(l);
+    EclEmmaCorePlugin.getInstance().getJavaCoverageLoader()
+        .addJavaCoverageListener(l);
   }
 
   public static void removeJavaCoverageListener(IJavaCoverageListener l) {
-    EclEmmaCorePlugin.getInstance().getJavaCoverageLoader().removeJavaCoverageListener(l);
+    EclEmmaCorePlugin.getInstance().getJavaCoverageLoader()
+        .removeJavaCoverageListener(l);
   }
-  
+
   public static ISessionExporter getExporter(ICoverageSession session) {
     return new SessionExporter(session);
   }
-  
+
   public static ISessionImporter getImporter() {
     return new SessionImporter();
   }
-  
+
   /**
    * Sets a {@link ICorePreferences} instance which will be used by the EclEmma
    * core to query preference settings if required.
    * 
-   * @param preferences  callback object for preference settings
+   * @param preferences
+   *          callback object for preference settings
    */
   public static void setPreferences(ICorePreferences preferences) {
     EclEmmaCorePlugin.getInstance().setPreferences(preferences);
   }
-  
+
 }

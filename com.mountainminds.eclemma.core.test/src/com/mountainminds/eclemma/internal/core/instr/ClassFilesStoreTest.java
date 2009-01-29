@@ -65,11 +65,11 @@ public class ClassFilesStoreTest extends TestCase {
     assertEquals(rootBin, classfiles[0].getPackageFragmentRoots()[0]);
   }
 
-  public void testForAbsoluteLocation() throws Exception {
+  public void testGetAtAbsoluteLocation() throws Exception {
     store.add(rootSrc1);
     final String loc = javaProject1.project.getFolder("bin").getLocation()
         .toOSString();
-    final IClassFiles classfiles = store.forAbsoluteLocation(loc);
+    final IClassFiles classfiles = store.getAtAbsoluteLocation(loc);
     assertNotNull(classfiles);
     assertEquals(new Path("/projectA/bin"), classfiles.getLocation());
     assertEquals(1, classfiles.getPackageFragmentRoots().length);
@@ -82,8 +82,8 @@ public class ClassFilesStoreTest extends TestCase {
         .toOSString();
     final String loc2 = javaProject1.project.getFile("sample.jar")
         .getLocation().toOSString();
-    assertNotNull(store.forAbsoluteLocation(loc1));
-    assertNotNull(store.forAbsoluteLocation(loc2));
+    assertNotNull(store.getAtAbsoluteLocation(loc1));
+    assertNotNull(store.getAtAbsoluteLocation(loc2));
   }
 
   public void testAddModel() throws JavaModelException {
@@ -94,9 +94,9 @@ public class ClassFilesStoreTest extends TestCase {
         .getLocation().toOSString();
     final String loc3 = javaProject2.project.getFolder("bin").getLocation()
         .toOSString();
-    assertNotNull(store.forAbsoluteLocation(loc1));
-    assertNotNull(store.forAbsoluteLocation(loc2));
-    assertNotNull(store.forAbsoluteLocation(loc3));
+    assertNotNull(store.getAtAbsoluteLocation(loc1));
+    assertNotNull(store.getAtAbsoluteLocation(loc2));
+    assertNotNull(store.getAtAbsoluteLocation(loc3));
   }
 
 }
