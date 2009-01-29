@@ -102,7 +102,7 @@ public class DefaultInstrumentationFilter {
   }
 
   private void matchingPathsOnly(final List list, final String filter) {
-    final String[] matchStrings = filter.split(",");
+    final String[] matchStrings = filter.split(","); //$NON-NLS-1$
     for (final Iterator i = list.iterator(); i.hasNext();) {
       if (!isPathMatch((IClassFiles) i.next(), matchStrings)) {
         i.remove();

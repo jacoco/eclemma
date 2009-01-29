@@ -93,7 +93,7 @@ public class ClassFiles implements IClassFiles {
 
   public String toString() {
     final StringBuffer sb = new StringBuffer(getClass().getName());
-    sb.append("[").append(location).append("]");
+    sb.append("[").append(location).append("]"); //$NON-NLS-1$//$NON-NLS-2$
     return sb.toString();
   }
 
