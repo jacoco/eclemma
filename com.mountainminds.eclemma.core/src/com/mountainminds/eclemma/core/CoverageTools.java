@@ -31,6 +31,7 @@ import com.mountainminds.eclemma.internal.core.CoverageSession;
 import com.mountainminds.eclemma.internal.core.EclEmmaCorePlugin;
 import com.mountainminds.eclemma.internal.core.SessionExporter;
 import com.mountainminds.eclemma.internal.core.SessionImporter;
+import com.mountainminds.eclemma.internal.core.instr.DefaultInstrumentationFilter;
 import com.mountainminds.eclemma.internal.core.launching.CoverageLaunchInfo;
 
 /**
@@ -184,25 +185,26 @@ public final class CoverageTools {
    * @throws CoreException
    */
   public static IClassFiles[] getClassFilesForInstrumentation(
-      ILaunchConfiguration configuration, boolean inplace) throws CoreException {
-    IClassFiles[] all = getClassFiles(configuration, !inplace);
-    List filtered = new ArrayList();
-    List selection = configuration.getAttribute(
+      final ILaunchConfiguration configuration, final boolean inplace)
+      throws CoreException {
+    final IClassFiles[] all = getClassFiles(configuration, !inplace);
+    final List selection = configuration.getAttribute(
         ICoverageLaunchConfigurationConstants.ATTR_INSTRUMENTATION_PATHS,
         (List) null);
-    for (int i = 0; i < all.length; i++) {
-      if (selection == null) {
-        // by default we select all source based class files
-        if (!all[i].isBinary()) {
-          filtered.add(all[i]);
-        }
-      } else {
+    if (selection != null && selection.size() > 0) {
+      // Classes for instrumentation are already configured:
+      final List filtered = new ArrayList();
+      for (int i = 0; i < all.length; i++) {
         if (selection.contains(all[i].getLocation().toString())) {
           filtered.add(all[i]);
         }
       }
+      return (IClassFiles[]) filtered.toArray(new IClassFiles[filtered.size()]);
     }
-    return (IClassFiles[]) filtered.toArray(new IClassFiles[filtered.size()]);
+    // Otherwise we use a default selection:
+    final DefaultInstrumentationFilter filter = EclEmmaCorePlugin.getInstance()
+        .createDefaultIntrumentationFilter();
+    return filter.filter(all, configuration);
   }
 
   public static ICoverageSession createCoverageSession(String description,

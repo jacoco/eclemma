@@ -40,6 +40,7 @@ import com.mountainminds.eclemma.core.ICoverageSession;
 import com.mountainminds.eclemma.core.ISessionManager;
 import com.mountainminds.eclemma.core.launching.ICoverageLaunchInfo;
 import com.mountainminds.eclemma.internal.core.instr.ClassFilesStore;
+import com.mountainminds.eclemma.internal.core.instr.DefaultInstrumentationFilter;
 
 /**
  * Bundle activator for the EclEmma core.
@@ -165,6 +166,16 @@ public class EclEmmaCorePlugin extends Plugin {
 
   public void setPreferences(ICorePreferences preferences) {
     this.preferences = preferences;
+  }
+
+  /**
+   * Returns a new filter instance for default selection of instrumemted
+   * classes.
+   * 
+   * @return new filter
+   */
+  public DefaultInstrumentationFilter createDefaultIntrumentationFilter() {
+    return new DefaultInstrumentationFilter(this.preferences);
   }
 
   public ISessionManager getSessionManager() {

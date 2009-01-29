@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2007 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2006, 2009 Mountainminds GmbH & Co. KG
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
@@ -78,7 +78,7 @@ public class UIMessages extends NLS {
   public static String MergeSessionsDialogDescription_label;
   public static String MergeSessionsDialogDescriptionDefault_value;
   public static String MergeSessionsDialogSelection_label;
-  
+
   public static String CoverageTab_title;
   public static String CoverageTabInstrumentedClassesGroup_label;
   public static String CoverageTabInplaceInstrumentation_label;
@@ -112,7 +112,7 @@ public class UIMessages extends NLS {
   public static String ExportReportPage1TextFormat_value;
   public static String ExportReportPage1EMMAFormat_value;
   public static String ExportReportOpenReport_label;
-  
+
   public static String ImportSession_title;
   public static String ImportSessionPage1_title;
   public static String ImportReportErrorDialog_title;
@@ -132,7 +132,7 @@ public class UIMessages extends NLS {
   public static String ImportSessionPage1MetadataGroup_label;
   public static String ImportSessionPage1IDEClasses_label;
   public static String ImportSessionPage1ImportMetaData_label;
-  
+
   public static String CoveragePropertyPageSession_label;
   public static String CoveragePropertyPageNoSession_value;
   public static String CoveragePropertyPageColumnCounter_label;
@@ -147,19 +147,23 @@ public class UIMessages extends NLS {
   public static String CoveragePropertyPageTypes_label;
 
   public static String CoverageDecoratorSuffix_label;
-  
+
   public static String CoveragePreferences_description;
   public static String CoveragePreferencesShowCoverageView_label;
   public static String CoveragePreferencesActivateNewSessions_label;
   public static String CoveragePreferencesAutoRemoveSessions_label;
   public static String CoveragePreferencesShowInplaceWarning_label;
+  public static String CoveragePreferencesDefaultInstrumentation_title;
+  public static String CoveragePreferencesSourceFoldersOnly_label;
+  public static String CoveragePreferencesSameProjectOnly_label;
+  public static String CoveragePreferencesClasspathFilter_label;
   public static String CoveragePreferencesDecoratorsLink_label;
   public static String CoveragePreferencesAnnotationsLink_label;
-  
+
   public static String ClassesViewerEntry_label;
-  
+
   static {
     NLS.initializeMessages(BUNDLE_NAME, UIMessages.class);
   }
-  
+
 }
