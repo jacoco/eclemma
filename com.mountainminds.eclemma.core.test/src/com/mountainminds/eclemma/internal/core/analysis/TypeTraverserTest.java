@@ -37,6 +37,7 @@ public class TypeTraverserTest extends TestCase {
     root = javaProject.createSourceFolder("src");
     javaProject.createCompilationUnit(root, "testdata/src",
         "methodresolver/p1/TypeForTraverser.java");
+    JavaProjectKit.waitForBuild();
   }
 
   protected void tearDown() throws Exception {

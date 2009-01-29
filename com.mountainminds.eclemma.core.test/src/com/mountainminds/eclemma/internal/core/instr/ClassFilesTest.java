@@ -37,6 +37,7 @@ public class ClassFilesTest extends TestCase {
     rootSrc2 = javaProject.createSourceFolder("src2");
     rootBin = javaProject.createJAR("testdata/bin/sample.jar", "/sample.jar",
         new Path("/UnitTestProject/sample.jar"), null);
+    JavaProjectKit.waitForBuild();
   }
 
   protected void tearDown() throws Exception {

@@ -15,6 +15,7 @@ import com.mountainminds.eclemma.internal.core.analysis.CounterTest;
 import com.mountainminds.eclemma.internal.core.analysis.JavaElementCoverageTest;
 import com.mountainminds.eclemma.internal.core.analysis.LinesTest;
 import com.mountainminds.eclemma.internal.core.analysis.TypeTraverserTest;
+import com.mountainminds.eclemma.internal.core.instr.ClassFilesStoreTest;
 import com.mountainminds.eclemma.internal.core.instr.ClassFilesTest;
 import com.mountainminds.eclemma.internal.core.instr.DefaultInstrumentationFilterTest;
 
@@ -43,6 +44,7 @@ public class AllEclEmmaCoreTests {
 
     // com.mountainminds.eclemma.internal.core.instr.*
     suite.addTestSuite(ClassFilesTest.class);
+    suite.addTestSuite(ClassFilesStoreTest.class);
     suite.addTestSuite(DefaultInstrumentationFilterTest.class);
 
     return suite;

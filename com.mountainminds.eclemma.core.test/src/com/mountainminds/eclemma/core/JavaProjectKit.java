@@ -21,6 +21,7 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IClasspathEntry;
@@ -93,7 +94,7 @@ public class JavaProjectKit {
     InputStream source = openTestResource(new Path(jarsrc));
     jarfile.create(source, true, null);
     IPackageFragmentRoot packageRoot = javaProject
-        .getPackageFragmentRoot(jarpath);
+        .getPackageFragmentRoot(jarfile);
     addClassPathEntry(JavaCore.newLibraryEntry(packageRoot.getPath(),
         sourceAttachmentPath, sourceAttachmentRootPath));
     return packageRoot;
@@ -144,4 +145,8 @@ public class JavaProjectKit {
         .openStream();
   }
 
+  public static void waitForBuild() throws OperationCanceledException,
+      InterruptedException {
+    Platform.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_BUILD, null);
+  }
 }

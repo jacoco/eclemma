@@ -71,6 +71,7 @@ public class DefaultInstrumentationFilterTest extends TestCase {
             "/UnitTestProject/sample.jar"), null);
     final IPath location3 = new Path("/sample.jar");
     classFilesBin1 = new ClassFiles(rootBin, location3);
+    JavaProjectKit.waitForBuild();
   }
 
   protected void tearDown() throws Exception {
