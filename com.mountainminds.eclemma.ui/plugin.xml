@@ -85,6 +85,20 @@
              </with>
            </enablement>
          </contextualLaunch>
+      </shortcut>
+      <shortcut
+            label="%JUnitRAPTestShortcut.label "
+            icon="$nl$/icons/full/etool16/junitplugin_launch.gif"
+            modes="coverage"
+            class="com.mountainminds.eclemma.ui.launching.CoverageLaunchShortcut:org.eclipse.rap.ui.launch.RAPJUnitLaunchShortcut"
+            id="com.mountainminds.eclemma.ui.RAPJUnitLaunchShortcut">
+         <contextualLaunch>
+            <enablement>
+               <with variable="selection">
+                  <test property="com.mountainminds.eclemma.ui.launchable" args="org.eclipse.rap.ui.launch.RAPJUnitLaunchShortcut"/>
+               </with>
+            </enablement>
+         </contextualLaunch>
       </shortcut>      
    </extension>
    
@@ -171,6 +185,12 @@
             description="%CoverageJUnitPluginTestCommand.description"
             id="com.mountainminds.eclemma.ui.junitPluginShortcut.coverage"
             name="%CoverageJUnitPluginTestCommand.name"/>
+      <command
+            categoryId="org.eclipse.debug.ui.category.run"
+            description="%CoverageJUnitRAPTestCommand.description"
+            id="com.mountainminds.eclemma.ui.junitRAPShortcut.coverage"
+            name="%CoverageJUnitRAPTestCommand.name">
+      </command>
    </extension>
    
    <extension
@@ -195,6 +215,11 @@
             contextId="org.eclipse.ui.globalScope"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M3+M2+E P"/>
+      <key
+            commandId="com.mountainminds.eclemma.ui.junitRAPShortcut.coverage"
+            contextId="org.eclipse.ui.globalScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M3+M2+E R"/>
       <key
             commandId="com.mountainminds.eclemma.ui.commands.CoverageLast"
             contextId="org.eclipse.ui.contexts.window"
@@ -361,6 +386,15 @@
             helpContextId="com.mountainminds.eclemma.ui.coverage_launch_context"
             id="com.mountainminds.eclemma.ui.TestNGTabGroup"
             type="org.testng.eclipse.launchconfig">
+         <launchMode
+               description="%testNGTabGroupDescription.coverage"
+               mode="coverage"/>
+      </launchConfigurationTabGroup>
+      <launchConfigurationTabGroup
+            class="com.mountainminds.eclemma.ui.launching.CoverageTabGroup:inplaceonly"
+            helpContextId="com.mountainminds.eclemma.ui.coverage_launch_context"
+            id="com.mountainminds.eclemma.ui.JUnitRAPTabGroup"
+            type="org.eclipse.rap.ui.launch.RAPJUnitTestLauncher">
          <launchMode
                description="%testNGTabGroupDescription.coverage"
                mode="coverage"/>

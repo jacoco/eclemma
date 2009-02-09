@@ -60,6 +60,13 @@
             modes="coverage"
             name="%testNgDelegateName"
             type="org.testng.eclipse.launchconfig"/>
+      <launchDelegate
+            delegate="com.mountainminds.eclemma.core.launching.EclipseLauncher"
+            id="com.mountainminds.eclemma.ui.RAPJUnitLauncher"
+            modes="coverage"
+            name="%junitRAPDelegateName"
+            type="org.eclipse.rap.ui.launch.RAPJUnitTestLauncher">
+      </launchDelegate>
    </extension>
    <extension
          point="org.eclipse.jdt.launching.classpathProviders">
