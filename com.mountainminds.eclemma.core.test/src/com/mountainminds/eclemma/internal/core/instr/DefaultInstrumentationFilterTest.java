@@ -67,7 +67,7 @@ public class DefaultInstrumentationFilterTest extends TestCase {
     classFilesSrc2 = new ClassFiles(rootSrc2, location2);
 
     final IPackageFragmentRoot rootBin = javaProject1.createJAR(
-        "testdata/bin/sample.jar", "/sample.jar", new Path(
+        "testdata/bin/signatureresolver.jar", "/sample.jar", new Path(
             "/UnitTestProject/sample.jar"), null);
     final IPath location3 = new Path("/sample.jar");
     classFilesBin1 = new ClassFiles(rootBin, location3);

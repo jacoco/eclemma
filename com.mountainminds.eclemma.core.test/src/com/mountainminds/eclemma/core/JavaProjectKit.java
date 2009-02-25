@@ -12,10 +12,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
+import junit.framework.Assert;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -67,6 +71,11 @@ public class JavaProjectKit {
     javaProject = JavaCore.create(project);
     javaProject.setRawClasspath(new IClasspathEntry[0], null);
     addClassPathEntry(JavaRuntime.getDefaultJREContainerEntry());
+  }
+
+  public void enableJava5() {
+    javaProject.setOption(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_1_5);
+    javaProject.setOption(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_5);
   }
 
   public IFolder setDefaultOutputLocation(String foldername)
@@ -145,8 +154,24 @@ public class JavaProjectKit {
         .openStream();
   }
 
+  public void assertNoErrors() throws CoreException {
+    final IMarker[] markers = project.findMarkers(IMarker.PROBLEM, true,
+        IResource.DEPTH_INFINITE);
+    if (markers.length > 0) {
+      for (int i = 0; i < markers.length; i++) {
+        Integer severity = (Integer) markers[i].getAttribute(IMarker.SEVERITY);
+        if (severity != null) {
+          Assert.assertTrue(String.valueOf(markers[i]
+              .getAttribute(IMarker.MESSAGE)),
+              severity.intValue() < IMarker.SEVERITY_ERROR);
+        }
+      }
+    }
+  }
+
   public static void waitForBuild() throws OperationCanceledException,
       InterruptedException {
     Platform.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_BUILD, null);
   }
+
 }

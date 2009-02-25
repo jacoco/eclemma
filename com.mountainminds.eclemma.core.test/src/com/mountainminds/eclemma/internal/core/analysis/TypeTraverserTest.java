@@ -26,7 +26,7 @@ import com.mountainminds.eclemma.core.JavaProjectKit;
  */
 public class TypeTraverserTest extends TestCase {
 
-  public static final IProgressMonitor MONITOR = new NullProgressMonitor();
+  private static final IProgressMonitor MONITOR = new NullProgressMonitor();
 
   private JavaProjectKit javaProject;
 
@@ -36,8 +36,9 @@ public class TypeTraverserTest extends TestCase {
     javaProject = new JavaProjectKit();
     root = javaProject.createSourceFolder("src");
     javaProject.createCompilationUnit(root, "testdata/src",
-        "methodresolver/p1/TypeForTraverser.java");
+        "typetraverser/Samples.java");
     JavaProjectKit.waitForBuild();
+    javaProject.assertNoErrors();
   }
 
   protected void tearDown() throws Exception {
@@ -45,15 +46,11 @@ public class TypeTraverserTest extends TestCase {
   }
 
   private static final String[] EXPECTEDTYPES = new String[] {
-      "methodresolver/p1/TypeForTraverser",
-      "methodresolver/p1/TypeForTraverser$1",
-      "methodresolver/p1/TypeForTraverser$1$InnerB",
-      "methodresolver/p1/TypeForTraverser$2",
-      "methodresolver/p1/TypeForTraverser$2$InnerC",
-      "methodresolver/p1/TypeForTraverser$3",
-      "methodresolver/p1/TypeForTraverser$4",
-      "methodresolver/p1/TypeForTraverser$5",
-      "methodresolver/p1/TypeForTraverser$InnerA" };
+      "typetraverser/Samples", "typetraverser/Samples$1",
+      "typetraverser/Samples$1$InnerB", "typetraverser/Samples$2",
+      "typetraverser/Samples$2$InnerC", "typetraverser/Samples$3",
+      "typetraverser/Samples$4", "typetraverser/Samples$5",
+      "typetraverser/Samples$InnerA" };
 
   public void testTraverse1() throws Exception {
     final Set expected = new HashSet(Arrays.asList(EXPECTEDTYPES));

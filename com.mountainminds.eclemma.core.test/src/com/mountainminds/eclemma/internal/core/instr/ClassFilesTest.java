@@ -35,8 +35,8 @@ public class ClassFilesTest extends TestCase {
     javaProject = new JavaProjectKit();
     rootSrc1 = javaProject.createSourceFolder("src1");
     rootSrc2 = javaProject.createSourceFolder("src2");
-    rootBin = javaProject.createJAR("testdata/bin/sample.jar", "/sample.jar",
-        new Path("/UnitTestProject/sample.jar"), null);
+    rootBin = javaProject.createJAR("testdata/bin/signatureresolver.jar",
+        "/sample.jar", new Path("/UnitTestProject/sample.jar"), null);
     JavaProjectKit.waitForBuild();
   }
 

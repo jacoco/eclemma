@@ -1,19 +1,19 @@
 /*******************************************************************************
- * Copyright (c) 2006 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2006, 2009 Mountainminds GmbH & Co. KG
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
- * $Id: TypeForTraverser.java 194 2006-12-14 23:11:46Z mtnminds $
+ * $Id: $
  ******************************************************************************/
-package methodresolver.p1;
+package typetraverser;
 
 /**
  * Test type for TypeTraverser.
  * 
  * @author Marc R. Hoffmann
- * @version $Revision: 194 $
+ * @version $Revision: $
  */
-public class TypeForTraverser {
+public class Samples {
 
   public static void doit() {
   }

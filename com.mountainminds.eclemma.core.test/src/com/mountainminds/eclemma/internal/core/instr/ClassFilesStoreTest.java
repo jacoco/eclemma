@@ -34,8 +34,8 @@ public class ClassFilesStoreTest extends TestCase {
     store = new ClassFilesStore();
     javaProject1 = new JavaProjectKit("projectA");
     rootSrc1 = javaProject1.createSourceFolder("src1");
-    rootBin = javaProject1.createJAR("testdata/bin/sample.jar", "sample.jar",
-        new Path("/UnitTestProject/sample.jar"), null);
+    rootBin = javaProject1.createJAR("testdata/bin/signatureresolver.jar",
+        "sample.jar", new Path("/UnitTestProject/sample.jar"), null);
 
     javaProject2 = new JavaProjectKit("projectB");
     javaProject2.createSourceFolder("src2");

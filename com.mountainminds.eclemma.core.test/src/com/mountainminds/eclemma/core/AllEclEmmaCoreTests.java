@@ -11,9 +11,12 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import com.mountainminds.eclemma.internal.core.SessionManagerTest;
+import com.mountainminds.eclemma.internal.core.analysis.BinarySignatureResolverTest;
 import com.mountainminds.eclemma.internal.core.analysis.CounterTest;
 import com.mountainminds.eclemma.internal.core.analysis.JavaElementCoverageTest;
 import com.mountainminds.eclemma.internal.core.analysis.LinesTest;
+import com.mountainminds.eclemma.internal.core.analysis.MethodLocatorTest;
+import com.mountainminds.eclemma.internal.core.analysis.SourceSignatureResolverTest;
 import com.mountainminds.eclemma.internal.core.analysis.TypeTraverserTest;
 import com.mountainminds.eclemma.internal.core.instr.ClassFilesStoreTest;
 import com.mountainminds.eclemma.internal.core.instr.ClassFilesTest;
@@ -39,13 +42,16 @@ public class AllEclEmmaCoreTests {
     // com.mountainminds.eclemma.internal.core.analysis.*
     suite.addTestSuite(CounterTest.class);
     suite.addTestSuite(JavaElementCoverageTest.class);
-    suite.addTestSuite(TypeTraverserTest.class);
     suite.addTestSuite(LinesTest.class);
+    suite.addTestSuite(MethodLocatorTest.class);
+    suite.addTestSuite(SourceSignatureResolverTest.class);
+    suite.addTestSuite(BinarySignatureResolverTest.class);
+    suite.addTestSuite(TypeTraverserTest.class);
 
     // com.mountainminds.eclemma.internal.core.instr.*
-    suite.addTestSuite(ClassFilesTest.class);
-    suite.addTestSuite(ClassFilesStoreTest.class);
     suite.addTestSuite(DefaultInstrumentationFilterTest.class);
+    suite.addTestSuite(ClassFilesStoreTest.class);
+    suite.addTestSuite(ClassFilesTest.class);
 
     return suite;
   }
