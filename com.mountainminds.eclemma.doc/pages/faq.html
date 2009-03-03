@@ -31,6 +31,7 @@
   <li><a href="#trouble02">Code with exceptions shows no coverage. Why?</a></li>
   <li><a href="#trouble03">My application does not run with EclEmma!</a></li>
   <li><a href="#trouble04">My Eclipse workbench window has no toolbar button for coverage launches!</a></li>
+  <li><a href="#trouble05">Why are JUnit4 test cases with expected exceptions shown as not covered?</a></li>
 </ul>
 
 <h3>Installation</h3>
@@ -162,6 +163,15 @@
   coverage toolbar in other perspectives like <i>Resource</i> select
   <i>Customize Perspective...</i> from the toolbar's context menu and check the
   <i>Coverage</i> option on the <i>Commands</i> tab.
+</p>
+
+<h3><a name="trouble05">Why are JUnit4 test cases with expected exceptions shown as not covered?</a></h3>
+<p>
+  JUnit4 test cases with expected exceptions are shown as not covered even though
+  they were executed. The reason for this is that underlying coverage library EMMA
+  only considers block as executed when they reach their last instruction. For
+  successful test cases marked with <code>@Test{expected=...}</code> this is not
+  the case. See also <a href="#trouble02">"Code with exceptions shows no coverage. Why?"</a>.
 </p>
 
 <h2>Installation</h2>
