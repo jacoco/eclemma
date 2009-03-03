@@ -40,6 +40,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
+import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IKeyBindingService;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
@@ -72,37 +73,38 @@ import com.mountainminds.eclemma.internal.ui.actions.RemoveAllSessionsAction;
 /**
  * Implementation of the coverage view.
  * 
- * @author  Marc R. Hoffmann
+ * @author Marc R. Hoffmann
  * @version $Revision$
  */
 public class CoverageView extends ViewPart implements IShowInTarget {
-  
+
   public static final String ID = "com.mountainminds.eclemma.ui.CoverageView"; //$NON-NLS-1$
-  
+
   /**
-   * Placeholder element for displaying "Loading..." in the coverage view. 
+   * Placeholder element for displaying "Loading..." in the coverage view.
    */
   public static final Object LOADING_ELEMENT = new Object();
 
-  private static final DecimalFormat COVERAGE_VALUE = new DecimalFormat(UIMessages.CoverageView_columnCoverageValue);
-  
+  private static final DecimalFormat COVERAGE_VALUE = new DecimalFormat(
+      UIMessages.CoverageView_columnCoverageValue);
+
   private ViewSettings settings = new ViewSettings();
-  
+
   protected static final int COLUMN_ELEMENT = 0;
-  protected static final int COLUMN_RATIO   = 1;
+  protected static final int COLUMN_RATIO = 1;
   protected static final int COLUMN_COVERED = 2;
-  protected static final int COLUMN_TOTAL   = 3;
-  
+  protected static final int COLUMN_TOTAL = 3;
+
   private Tree tree;
   private TreeColumn column0;
   private TreeColumn column1;
   private TreeColumn column2;
   private TreeColumn column3;
   private TreeViewer viewer;
-  
-  
+
   // Actions
   private OpenAction openAction;
+  private IAction copyAction;
   private IAction relaunchSessionAction;
   private IAction removeActiveSessionAction;
   private IAction removeAllSessionsAction;
@@ -112,22 +114,24 @@ public class CoverageView extends ViewPart implements IShowInTarget {
   private IAction exportAction;
   private IAction refreshAction;
   private PropertyDialogAction propertiesAction;
-  
+
   private SelectionTracker selectiontracker;
   private CoverageViewSorter sorter = new CoverageViewSorter(settings, this);
-  
+
   private ISessionListener listener = new ISessionListener() {
-    public void sessionAdded(ICoverageSession newSession) { 
+    public void sessionAdded(ICoverageSession newSession) {
       updateActions();
     }
+
     public void sessionRemoved(ICoverageSession oldSession) {
       updateActions();
     }
+
     public void sessionActivated(ICoverageSession session) {
       updateActions();
     }
   };
-  
+
   private IJavaCoverageListener coverageListener = new IJavaCoverageListener() {
     public void coverageChanged() {
       tree.getDisplay().asyncExec(new Runnable() {
@@ -137,29 +141,30 @@ public class CoverageView extends ViewPart implements IShowInTarget {
       });
     }
   };
-  
+
   private ITableLabelProvider labelprovider = new ITableLabelProvider() {
-    
-    private ILabelProvider delegate = new WorkbenchLabelProvider(); 
+
+    private ILabelProvider delegate = new WorkbenchLabelProvider();
 
     public Image getColumnImage(Object element, int columnIndex) {
       if (element == LOADING_ELEMENT) {
         return null;
       }
       switch (columnIndex) {
-        case COLUMN_ELEMENT:
-          return delegate.getImage(element);
-        case COLUMN_RATIO:
-          ICounter counter = settings.getCounterMode().getCounter(CoverageTools.getCoverageInfo(element));
-          if (counter.getTotalCount() == 0) {
-            return null;
-          } else {
-            return EclEmmaUIPlugin.getCoverageImage(counter.getRatio());
-          }
+      case COLUMN_ELEMENT:
+        return delegate.getImage(element);
+      case COLUMN_RATIO:
+        ICounter counter = settings.getCounterMode().getCounter(
+            CoverageTools.getCoverageInfo(element));
+        if (counter.getTotalCount() == 0) {
+          return null;
+        } else {
+          return EclEmmaUIPlugin.getCoverageImage(counter.getRatio());
+        }
       }
       return null;
     }
-    
+
     private String getSimpleTextForJavaElement(Object element) {
       if (element instanceof IPackageFragmentRoot) {
         // tweak label if the package fragment root is the project itself:
@@ -174,56 +179,59 @@ public class CoverageView extends ViewPart implements IShowInTarget {
     private String getTextForJavaElement(Object element) {
       String text = getSimpleTextForJavaElement(element);
       switch (settings.getEntryMode()) {
-        case ViewSettings.ENTRYMODE_PACKAGEROOTS:
-          if (element instanceof IPackageFragmentRoot) {
-            text += " - " + getTextForJavaElement(((IPackageFragmentRoot) element).getJavaProject()); //$NON-NLS-1$
-          }
-          break;
+      case ViewSettings.ENTRYMODE_PACKAGEROOTS:
+        if (element instanceof IPackageFragmentRoot) {
+          text += " - " + getTextForJavaElement(((IPackageFragmentRoot) element).getJavaProject()); //$NON-NLS-1$
+        }
+        break;
       }
       return text;
     }
 
-    
     public String getColumnText(Object element, int columnIndex) {
       if (element == LOADING_ELEMENT) {
-        return columnIndex == COLUMN_ELEMENT ? UIMessages.CoverageView_loadingMessage : ""; //$NON-NLS-1$
+        return columnIndex == COLUMN_ELEMENT ? UIMessages.CoverageView_loadingMessage
+            : ""; //$NON-NLS-1$
       }
-      ICounter counter = settings.getCounterMode().getCounter(CoverageTools.getCoverageInfo(element));
+      ICounter counter = settings.getCounterMode().getCounter(
+          CoverageTools.getCoverageInfo(element));
       switch (columnIndex) {
-        case COLUMN_ELEMENT:
-          return getTextForJavaElement(element);
-        case COLUMN_RATIO:
-          if (counter.getTotalCount() == 0) {
-            return ""; //$NON-NLS-1$
-          } else {
-            return COVERAGE_VALUE.format(new Double(counter.getRatio()));
-          }
-        case COLUMN_COVERED:
-          return String.valueOf(counter.getCoveredCount());
-        case COLUMN_TOTAL:
-          return String.valueOf(counter.getTotalCount());
+      case COLUMN_ELEMENT:
+        return getTextForJavaElement(element);
+      case COLUMN_RATIO:
+        if (counter.getTotalCount() == 0) {
+          return ""; //$NON-NLS-1$
+        } else {
+          return COVERAGE_VALUE.format(new Double(counter.getRatio()));
+        }
+      case COLUMN_COVERED:
+        return String.valueOf(counter.getCoveredCount());
+      case COLUMN_TOTAL:
+        return String.valueOf(counter.getTotalCount());
       }
       return ""; //$NON-NLS-1$
     }
-    
+
     public boolean isLabelProperty(Object element, String property) {
       return delegate.isLabelProperty(element, property);
     }
+
     public void addListener(ILabelProviderListener listener) {
       delegate.addListener(listener);
     }
+
     public void removeListener(ILabelProviderListener listener) {
       delegate.removeListener(listener);
     }
+
     public void dispose() {
       delegate.dispose();
     }
   };
-  
+
   public void init(IViewSite site, IMemento memento) throws PartInitException {
     super.init(site, memento);
     settings.init(memento);
-
   }
 
   public void saveState(IMemento memento) {
@@ -238,7 +246,7 @@ public class CoverageView extends ViewPart implements IShowInTarget {
 
   public void createPartControl(Composite parent) {
     ContextHelp.setHelp(parent, ContextHelp.COVERAGE_VIEW);
-    tree = new Tree(parent, SWT.NONE);
+    tree = new Tree(parent, SWT.MULTI);
     tree.setHeaderVisible(true);
     tree.setLinesVisible(true);
     int[] widths = settings.getColumnWidths();
@@ -255,7 +263,7 @@ public class CoverageView extends ViewPart implements IShowInTarget {
     column3.setWidth(widths[3]);
     sorter.addColumn(column3, COLUMN_TOTAL);
     updateColumnHeaders();
-    
+
     TreeColumn sortColumn = null;
     switch (settings.getSortColumn()) {
     case COLUMN_ELEMENT:
@@ -271,9 +279,10 @@ public class CoverageView extends ViewPart implements IShowInTarget {
       sortColumn = column3;
       break;
     }
-    
-    TreeSortCompatibility.setTreeSortColumnAndDirection(sortColumn, settings.isReverseSort() ? SWT.DOWN: SWT.UP);
-    
+
+    TreeSortCompatibility.setTreeSortColumnAndDirection(sortColumn, settings
+        .isReverseSort() ? SWT.DOWN : SWT.UP);
+
     viewer = new TreeViewer(tree);
     viewer.addFilter(new ViewerFilter() {
       public boolean select(Viewer viewer, Object parentElement, Object element) {
@@ -286,7 +295,7 @@ public class CoverageView extends ViewPart implements IShowInTarget {
           }
           if (settings.getHideUnusedTypes()) {
             ICounter cnt = c.getTypeCounter();
-            return cnt.getTotalCount() == 0 || cnt.getCoveredCount() != 0; 
+            return cnt.getTotalCount() == 0 || cnt.getCoveredCount() != 0;
           }
           return true;
         }
@@ -298,24 +307,25 @@ public class CoverageView extends ViewPart implements IShowInTarget {
     viewer.setInput(CoverageTools.getJavaModelCoverage());
     viewer.addSelectionChangedListener(new ISelectionChangedListener() {
       public void selectionChanged(SelectionChangedEvent event) {
-        openAction.selectionChanged((IStructuredSelection) event.getSelection());
+        openAction
+            .selectionChanged((IStructuredSelection) event.getSelection());
         propertiesAction.selectionChanged(event);
       }
     });
     getSite().setSelectionProvider(viewer);
-    
+
     selectiontracker = new SelectionTracker(this, viewer);
-    
+
     createActions();
     updateActions();
     configureToolbar();
-    
+
     viewer.addOpenListener(new IOpenListener() {
       public void open(OpenEvent event) {
         openAction.run((IStructuredSelection) event.getSelection());
       }
     });
-    
+
     MenuManager menuMgr = new MenuManager("#PopupMenu"); //$NON-NLS-1$
     menuMgr.setRemoveAllWhenShown(true);
     tree.setMenu(menuMgr.createContextMenu(tree));
@@ -324,40 +334,58 @@ public class CoverageView extends ViewPart implements IShowInTarget {
         configureContextMenu(menuMgr);
       }
     });
-    
+
     CoverageTools.getSessionManager().addSessionListener(listener);
     CoverageTools.addJavaCoverageListener(coverageListener);
   }
-  
+
   protected void createActions() {
-    IKeyBindingService kb = getSite().getKeyBindingService();
+    final IKeyBindingService kb = getSite().getKeyBindingService();
+    final IActionBars ab = getViewSite().getActionBars();
+
     openAction = new OpenAction(getSite());
-    openAction.setActionDefinitionId(IJavaEditorActionDefinitionIds.OPEN_EDITOR);
-    getViewSite().getActionBars().setGlobalActionHandler(JdtActionConstants.OPEN, openAction);
+    openAction
+        .setActionDefinitionId(IJavaEditorActionDefinitionIds.OPEN_EDITOR);
+    ab.setGlobalActionHandler(JdtActionConstants.OPEN, openAction);
     openAction.setEnabled(false);
-    kb.registerAction(openAction);
+
+    copyAction = new CopyAction(tree.getDisplay(), settings, labelprovider,
+        viewer);
+    ab.setGlobalActionHandler(ActionFactory.COPY.getId(), copyAction);
+
     relaunchSessionAction = new RelaunchSessionAction();
     kb.registerAction(relaunchSessionAction);
+
     removeActiveSessionAction = new RemoveActiveSessionAction();
-    kb.registerAction(removeActiveSessionAction);
+    ab.setGlobalActionHandler(ActionFactory.DELETE.getId(),
+        removeActiveSessionAction);
+
     removeAllSessionsAction = new RemoveAllSessionsAction();
     kb.registerAction(removeAllSessionsAction);
-    mergeSessionsAction = new MergeSessionsAction(getSite().getWorkbenchWindow());
+
+    mergeSessionsAction = new MergeSessionsAction(getSite()
+        .getWorkbenchWindow());
     kb.registerAction(mergeSessionsAction);
+
     selectSessionAction = new SelectSessionAction();
     kb.registerAction(selectSessionAction);
+
     importAction = new ImportSessionAction(getSite().getWorkbenchWindow());
     kb.registerAction(importAction);
+
     exportAction = new ExportSessionAction(getSite().getWorkbenchWindow());
     kb.registerAction(exportAction);
+
     refreshAction = new RefreshSessionAction();
-    kb.registerAction(refreshAction);
-    getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.REFRESH.getId(), refreshAction);
+    ab.setGlobalActionHandler(ActionFactory.REFRESH.getId(), refreshAction);
+
     propertiesAction = new PropertyDialogAction(getSite(), viewer);
-    propertiesAction.setActionDefinitionId(IWorkbenchActionDefinitionIds.PROPERTIES);
-    getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.PROPERTIES.getId(), propertiesAction);
+    propertiesAction
+        .setActionDefinitionId(IWorkbenchActionDefinitionIds.PROPERTIES);
+    ab.setGlobalActionHandler(ActionFactory.PROPERTIES.getId(),
+        propertiesAction);
   }
-  
+
   protected void configureToolbar() {
     IToolBarManager tbm = getViewSite().getActionBars().getToolBarManager();
     tbm.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
@@ -371,12 +399,16 @@ public class CoverageView extends ViewPart implements IShowInTarget {
     tbm.add(new Separator());
     tbm.add(new CollapseAllAction(viewer));
     tbm.add(new LinkWithSelectionAction(settings, selectiontracker));
-    
+
     IMenuManager mm = getViewSite().getActionBars().getMenuManager();
-    mm.add(new SelectEntryModeAction(ViewSettings.ENTRYMODE_PROJECTS, settings, this));
-    mm.add(new SelectEntryModeAction(ViewSettings.ENTRYMODE_PACKAGEROOTS, settings, this));
-    mm.add(new SelectEntryModeAction(ViewSettings.ENTRYMODE_PACKAGES, settings, this));
-    mm.add(new SelectEntryModeAction(ViewSettings.ENTRYMODE_TYPES, settings, this));
+    mm.add(new SelectEntryModeAction(ViewSettings.ENTRYMODE_PROJECTS, settings,
+        this));
+    mm.add(new SelectEntryModeAction(ViewSettings.ENTRYMODE_PACKAGEROOTS,
+        settings, this));
+    mm.add(new SelectEntryModeAction(ViewSettings.ENTRYMODE_PACKAGES, settings,
+        this));
+    mm.add(new SelectEntryModeAction(ViewSettings.ENTRYMODE_TYPES, settings,
+        this));
     mm.add(new Separator());
     mm.add(new SelectCounterModeAction(0, settings, this));
     mm.add(new SelectCounterModeAction(1, settings, this));
@@ -388,9 +420,11 @@ public class CoverageView extends ViewPart implements IShowInTarget {
     mm.add(new Separator());
     mm.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
   }
-  
+
   public void configureContextMenu(IMenuManager mm) {
     mm.add(openAction);
+    mm.add(new Separator());
+    mm.add(copyAction);
     mm.add(new Separator());
     mm.add(importAction);
     mm.add(exportAction);
@@ -410,7 +444,7 @@ public class CoverageView extends ViewPart implements IShowInTarget {
     selectiontracker.dispose();
     super.dispose();
   }
-  
+
   protected void updateColumnHeaders() {
     String[] columns = settings.getCounterMode().getColumnHeaders();
     column0.setText(columns[0]);
@@ -418,14 +452,17 @@ public class CoverageView extends ViewPart implements IShowInTarget {
     column2.setText(columns[2]);
     column3.setText(columns[3]);
   }
-  
+
   protected void updateActions() {
     tree.getDisplay().asyncExec(new Runnable() {
       public void run() {
-        ICoverageSession active = CoverageTools.getSessionManager().getActiveSession();
+        ICoverageSession active = CoverageTools.getSessionManager()
+            .getActiveSession();
         setContentDescription(active == null ? "" : active.getDescription()); //$NON-NLS-1$
-        relaunchSessionAction.setEnabled(active != null && active.getLaunchConfiguration() != null);
-        ICoverageSession[] sessions = CoverageTools.getSessionManager().getSessions();
+        relaunchSessionAction.setEnabled(active != null
+            && active.getLaunchConfiguration() != null);
+        ICoverageSession[] sessions = CoverageTools.getSessionManager()
+            .getSessions();
         boolean atLeastOne = sessions.length >= 1;
         removeActiveSessionAction.setEnabled(atLeastOne);
         removeAllSessionsAction.setEnabled(atLeastOne);
@@ -450,5 +487,5 @@ public class CoverageView extends ViewPart implements IShowInTarget {
     }
     return false;
   }
-  
+
 }
