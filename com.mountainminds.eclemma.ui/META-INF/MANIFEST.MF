@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: com.mountainminds.eclemma.ui; singleton:=true
-Bundle-Version: 1.3.2
+Bundle-Version: 1.4.0
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Require-Bundle: com.mountainminds.eclemma.core,
@@ -22,5 +22,4 @@ Require-Bundle: com.mountainminds.eclemma.core,
 Bundle-Activator: com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin
 Eclipse-AutoStart: true
 Export-Package: com.mountainminds.eclemma.ui.launching
-Bundle-RequiredExecutionEnvironment: J2SE-1.4
 
