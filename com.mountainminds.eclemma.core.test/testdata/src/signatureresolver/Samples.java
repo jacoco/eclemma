@@ -25,7 +25,7 @@ public class Samples<R, S extends Comparable, T extends Thread & Iterator> {
     
   }
   
-  class Generic<V> {
+  public static class Generic<V> {
   }
  
   /* ()V */
@@ -71,7 +71,11 @@ public class Samples<R, S extends Comparable, T extends Thread & Iterator> {
   /* (Lsignatureresolver/Samples$Generic;)V */
   void method_parameterizedType(Generic<Integer> i) {
   }
-
+  
+  /* (Lsignatureresolver/Samples$Generic;)V */
+  void method_parameterizedParameterizedType(Generic<Generic<?>> param) {
+  }
+  
   /* (Lsignatureresolver/Samples$Generic;)V */
   void method_parameterizedTypeWildcard(Generic<?> i) {
   }

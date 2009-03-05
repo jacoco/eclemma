@@ -91,6 +91,11 @@ public abstract class AbstractSignatureResolverTest extends TestCase {
         "Lsignatureresolver/Samples$Generic;");
   }
 
+  public void test_parameterizedParameterizedType() throws Exception {
+    assertSignature("method_parameterizedParameterizedType",
+        "Lsignatureresolver/Samples$Generic;");
+  }
+
   public void test_parameterizedTypeWildcard() throws Exception {
     assertSignature("method_parameterizedTypeWildcard",
         "Lsignatureresolver/Samples$Generic;");
