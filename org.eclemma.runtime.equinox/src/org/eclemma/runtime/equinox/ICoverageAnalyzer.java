@@ -6,12 +6,14 @@
  * $Id: $
  ******************************************************************************/
 
-package com.mountainminds.eclemma.osgihook;
+package org.eclemma.runtime.equinox;
+
+import java.util.List;
 
 /**
  * Abstraction of a code coverage system based on class file instrumentation.
  * 
- * @author Marc R. Hoffmann
+ * @author Marc R. Hoffmann, Mikkel T Andersen
  */
 public interface ICoverageAnalyzer {
 
@@ -41,6 +43,12 @@ public interface ICoverageAnalyzer {
 	 * @return instrumented class file bytes or null
 	 */
 	public byte[] instrument(String bundleid, String classname, byte[] bytes);
+
+	/**
+	 * @return the bundles expected to be instrumented, instrumenting a bundle
+	 *         includes instrumenting its fragments.
+	 */
+	public List getIncludedBundles();
 
 	/**
 	 * Class file instrumentation might introduce dependencies on a vendor

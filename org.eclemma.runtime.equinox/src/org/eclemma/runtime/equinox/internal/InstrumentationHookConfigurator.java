@@ -6,8 +6,9 @@
  * $Id: $
  ******************************************************************************/
 
-package com.mountainminds.eclemma.osgihook;
+package org.eclemma.runtime.equinox.internal;
 
+import org.eclemma.runtime.equinox.ICoverageAnalyzer;
 import org.eclipse.osgi.baseadaptor.HookConfigurator;
 import org.eclipse.osgi.baseadaptor.HookRegistry;
 

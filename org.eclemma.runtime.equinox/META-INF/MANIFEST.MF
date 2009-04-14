@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: OSGi Instrumentation Hook
-Bundle-SymbolicName: com.mountainminds.eclemma.osgihook
+Bundle-Name: Emma Runtime Instrumentation for Equinox
+Bundle-SymbolicName: org.eclemma.runtime.equinox
 Bundle-Version: 2.0.0.qualifier
 Bundle-Vendor: Mountainminds GmbH & Co. KG
 Fragment-Host: org.eclipse.osgi

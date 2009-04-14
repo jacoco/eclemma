@@ -6,14 +6,18 @@
  * $Id: $
  ******************************************************************************/
 
-package com.mountainminds.eclemma.osgihook;
+package org.eclemma.runtime.equinox.internal;
 
 import java.io.IOException;
+import java.net.URL;
 import java.net.URLConnection;
 import java.security.ProtectionDomain;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
 import java.util.Properties;
 
+import org.eclemma.runtime.equinox.ICoverageAnalyzer;
 import org.eclipse.osgi.baseadaptor.BaseAdaptor;
 import org.eclipse.osgi.baseadaptor.BaseData;
 import org.eclipse.osgi.baseadaptor.bundlefile.BundleEntry;
@@ -27,6 +31,7 @@ import org.eclipse.osgi.framework.adaptor.ClassLoaderDelegate;
 import org.eclipse.osgi.framework.internal.core.BundleLoader;
 import org.eclipse.osgi.framework.log.FrameworkLog;
 import org.eclipse.osgi.util.ManifestElement;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
@@ -34,21 +39,25 @@ import org.osgi.framework.Constants;
 /**
  * Implementation of the required hooks delegating to {@link ICoverageAnalyzer}.
  * 
- * @author Marc R. Hoffmann
+ * @author Marc R. Hoffmann, Mikkel T Andersen
  */
 public class InstrumentationHook implements AdaptorHook, ClassLoadingHook {
-
+	private final String FILE_SEPARATOR = "/";
+	private static final String BIN_FOLDERS = "binFolders";
 	private final ICoverageAnalyzer analyzer;
+	private BundleContext bundleContext;
 
 	public InstrumentationHook(ICoverageAnalyzer analyzer) {
 		this.analyzer = analyzer;
 	}
 
 	public void frameworkStart(BundleContext context) throws BundleException {
+		this.bundleContext = context;
 		analyzer.start();
 	}
 
 	public void frameworkStop(BundleContext context) throws BundleException {
+		instrumentAllClassesInBundles();
 		analyzer.stop();
 	}
 
@@ -62,15 +71,87 @@ public class InstrumentationHook implements AdaptorHook, ClassLoadingHook {
 	public BaseClassLoader createClassLoader(ClassLoader parent,
 			ClassLoaderDelegate delegate, BundleProtectionDomain domain,
 			BaseData data, String[] bundleclasspath) {
-		BundleLoader loader = (BundleLoader) delegate;
-		try {
-			loader.addDynamicImportPackage(ManifestElement.parseHeader(
-					Constants.DYNAMICIMPORT_PACKAGE, analyzer
-							.getRuntimePackages()));
-		} catch (BundleException be) {
-			throw new RuntimeException(be);
+		if (shouldInstrumentClassesInBundle(data.getSymbolicName())) {
+			BundleLoader loader = (BundleLoader) delegate;
+			try {
+				loader.addDynamicImportPackage(ManifestElement.parseHeader(
+						Constants.DYNAMICIMPORT_PACKAGE, analyzer
+								.getRuntimePackages()));
+			} catch (BundleException be) {
+				throw new RuntimeException(be);
+			}
 		}
 		return null;
+	}
+
+	/**
+	 * Instruments all classes in bundles to make sure they are all in the
+	 * report.
+	 */
+	private void instrumentAllClassesInBundles() {
+		List includedBundles = analyzer.getIncludedBundles();
+		while (!includedBundles.isEmpty()) {
+			String symbolicName = (String) includedBundles.remove(0);
+			Bundle bundle = getBundle(symbolicName);
+			if (shouldInstrumentClassesInBundle(symbolicName)) {
+				Enumeration entryPaths = bundle.findEntries("/", "*.class",
+						true);
+				loadClassFiles(bundle, entryPaths);
+			}
+		}
+	}
+
+	private Bundle getBundle(String symbolicName) {
+		Bundle[] bundles = bundleContext.getBundles();
+		for (int i = 0; i < bundles.length; i++) {
+			if (bundles[i].getSymbolicName().equals(symbolicName)) {
+				return bundles[i];
+			}
+		}
+		throw new RuntimeException("Bundle with symbolicname: " + symbolicName
+				+ " was not found in the bundle context.");
+	}
+
+	private boolean shouldInstrumentClassesInBundle(String symbolicName) {
+		return analyzer.getIncludedBundles().contains(symbolicName)
+				|| analyzer.getIncludedBundles().isEmpty();
+	}
+
+	private void loadClassFiles(Bundle bundle, Enumeration entryPaths) {
+		while (entryPaths.hasMoreElements()) {
+			URL nextElement = (URL) entryPaths.nextElement();
+			String element = nextElement.getPath();
+			try {
+				// an element looks like :
+				// /org/eclemma/runtime/equinox/ICoverageAnalyzer.class
+				// and we need to convert that to:
+				// org.eclemma.runtime.equinox.ICoverageAnalyzer
+				element = element.replaceAll(".class", "").replace(
+						FILE_SEPARATOR, ".").substring(1);
+				element = removeBinFolders(element);
+				bundle.loadClass(element);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private String removeBinFolders(String element) {
+		List list = PropertyUtils.toList(System.getProperty(BIN_FOLDERS));
+		for (int i = 0; i < list.size(); i++) {
+			String binFolder = (String) list.get(i);
+			element = removeIfStartsWith(element, binFolder);
+		}
+		element = removeIfStartsWith(element, "bin.");
+		element = removeIfStartsWith(element, "output.");
+		return element;
+	}
+
+	private String removeIfStartsWith(String element, String string) {
+		if (element.startsWith(string)) {
+			element = element.substring(string.length());
+		}
+		return element;
 	}
 
 	// Methods stubs for hooks we do not require:
@@ -117,5 +198,4 @@ public class InstrumentationHook implements AdaptorHook, ClassLoadingHook {
 	public boolean matchDNChain(String pattern, String[] dnChain) {
 		return false;
 	}
-
 }
