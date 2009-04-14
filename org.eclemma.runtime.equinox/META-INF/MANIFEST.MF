@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OSGi Instrumentation Hook
+Bundle-SymbolicName: com.mountainminds.eclemma.osgihook
+Bundle-Version: 2.0.0.qualifier
+Bundle-Vendor: Mountainminds GmbH & Co. KG
+Fragment-Host: org.eclipse.osgi
+Bundle-ClassPath: .,
+ emma.jar
+Export-Package: com.vladium.emma.rt
+Bundle-RequiredExecutionEnvironment: J2SE-1.4,
+ OSGi/Minimum-1.1
