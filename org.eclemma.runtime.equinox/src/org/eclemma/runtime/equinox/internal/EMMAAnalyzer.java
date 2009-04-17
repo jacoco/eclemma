@@ -11,10 +11,14 @@ package org.eclemma.runtime.equinox.internal;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 
 import org.eclemma.runtime.equinox.ICoverageAnalyzer;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 
 import com.vladium.emma.EMMAProperties;
 import com.vladium.emma.data.CoverageOptions;
@@ -43,8 +47,10 @@ import com.vladium.util.Property;
  * @author Marc R. Hoffmann, Mikkel T Andersen
  */
 public class EMMAAnalyzer implements ICoverageAnalyzer {
+
 	private final String FILE_SEPARATOR = Property
 			.getSystemProperty("file.separator");
+
 	private static final String SRC_PATHS = "srcPaths";
 
 	private static final String SRC_FOLDERS = "srcFolders";
@@ -55,6 +61,8 @@ public class EMMAAnalyzer implements ICoverageAnalyzer {
 
 	private static final String INCLUDED_BUNDLES = "includedBundles";
 
+	private BundleContext bundleContext;
+
 	private CoverageOptions options;
 
 	private IMetaData metadata;
@@ -63,7 +71,8 @@ public class EMMAAnalyzer implements ICoverageAnalyzer {
 
 	private List includedBundles;
 
-	public void start() {
+	public void start(BundleContext bundleContext) {
+		this.bundleContext = bundleContext;
 		System.out
 				.println("Running Equinox with code coverage. (Add -DemmaHelp for help)");
 		printOptions();
@@ -79,6 +88,7 @@ public class EMMAAnalyzer implements ICoverageAnalyzer {
 	}
 
 	public void stop() {
+		collectMetaData();
 		started = false;
 		File folder = createOutputFolder();
 		System.out.println("Saving coverage data to " + folder);
@@ -91,17 +101,15 @@ public class EMMAAnalyzer implements ICoverageAnalyzer {
 		}
 	}
 
-	public byte[] instrument(String bundleid, String classname, byte[] bytes) {
+	public byte[] instrument(final String bundleid, final String classname,
+			final byte[] bytes) {
 		if (started
 				&& (getIncludedBundles().contains(bundleid) || getIncludedBundles()
 						.isEmpty())) {
 			try {
-				ClassDef classdef = ClassDefParser.parseClass(bytes);
-				InstrVisitor.InstrResult result = new InstrVisitor.InstrResult();
-				new InstrVisitor(options).process(classdef, false, true, true,
-						result);
+				final ClassDef classdef = ClassDefParser.parseClass(bytes);
+				final InstrVisitor.InstrResult result = process(classdef, true);
 				if (result.m_instrumented) {
-					metadata.add(result.m_descriptor, true);
 					ByteArrayOutputStream out = new ByteArrayOutputStream(
 							bytes.length * 2);
 					ClassWriter.writeClassTable(classdef, out);
@@ -118,6 +126,73 @@ public class EMMAAnalyzer implements ICoverageAnalyzer {
 
 	public String getRuntimePackages() {
 		return "com.vladium.emma.rt";
+	}
+
+	/**
+	 * Collect Meta data of all classes that have not yet been loaded.
+	 */
+	private void collectMetaData() {
+		final Bundle[] allBundles = bundleContext.getBundles();
+		final List includedIds = getIncludedBundles();
+		for (int i = 0; i < allBundles.length; i++) {
+			final Bundle bundle = allBundles[i];
+			if (includedIds.isEmpty()
+					|| includedIds.contains(bundle.getSymbolicName())) {
+				collectMetaData(bundle);
+			}
+		}
+	}
+
+	/**
+	 * Processes all Java *.class files contained in the given bundle and
+	 * extracts coverage Meta data information. For accurate statistics this is
+	 * required to obtain information about classes that have not been loaded at
+	 * all.
+	 * 
+	 * TODO: Respect bundle class path and also process included JARs
+	 * 
+	 * @param bundle
+	 *            bundle to collect coverage Meta data for
+	 */
+	private void collectMetaData(final Bundle bundle) {
+		System.out.println("Collecting coverage Meta data for bundle "
+				+ bundle.getSymbolicName());
+		final Enumeration entries = bundle.findEntries("/", "*.class", true);
+		while (entries != null && entries.hasMoreElements()) {
+			final URL url = (URL) entries.nextElement();
+			try {
+				final ClassDef classdef = ClassDefParser.parseClass(url
+						.openStream());
+				if (!metadata.hasDescriptor(classdef.getName())) {
+					process(classdef, false);
+				}
+			} catch (final IOException e) {
+				System.out.println("Error while opening resource " + url
+						+ " in bundle " + bundle.getSymbolicName());
+				e.printStackTrace();
+			}
+		}
+	}
+
+	/**
+	 * Applies EMMA's instrumentation process to the given class definition.
+	 * 
+	 * @param classdef
+	 *            class definition
+	 * @param instrument
+	 *            flag whether the class should actually become instrumented,
+	 *            otherwise only Meta data is collected
+	 * @return instrumentation result
+	 */
+	private InstrVisitor.InstrResult process(final ClassDef classdef,
+			final boolean instrument) {
+		final InstrVisitor.InstrResult result = new InstrVisitor.InstrResult();
+		final InstrVisitor visitor = new InstrVisitor(options);
+		visitor.process(classdef, false, instrument, true, result);
+		if (result.m_descriptor != null) {
+			metadata.add(result.m_descriptor, true);
+		}
+		return result;
 	}
 
 	private File createOutputFolder() {

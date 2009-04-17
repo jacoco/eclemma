@@ -10,6 +10,8 @@ package org.eclemma.runtime.equinox;
 
 import java.util.List;
 
+import org.osgi.framework.BundleContext;
+
 /**
  * Abstraction of a code coverage system based on class file instrumentation.
  * 
@@ -20,8 +22,11 @@ public interface ICoverageAnalyzer {
 	/**
 	 * Called when the OSGi framework is started. Can be used for initialization
 	 * tasks.
+	 * 
+	 * @param context
+	 *            context of the framework bundle
 	 */
-	public void start();
+	public void start(BundleContext context);
 
 	/**
 	 * Called when the OSGi framework shuts down. Here we can e.g. write a
