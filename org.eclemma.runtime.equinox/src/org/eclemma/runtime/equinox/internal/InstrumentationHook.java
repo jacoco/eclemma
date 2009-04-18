@@ -56,14 +56,18 @@ public class InstrumentationHook implements AdaptorHook, ClassLoadingHook {
 	public byte[] processClass(String name, byte[] classbytes,
 			ClasspathEntry classpathEntry, BundleEntry entry,
 			ClasspathManager manager) {
-		return analyzer.instrument(manager.getBaseData().getSymbolicName(),
-				name, classbytes);
+		if (analyzer.shouldInstrumentClassesInBundle(manager.getBaseData()
+				.getSymbolicName())) {
+			return analyzer.instrument(manager.getBaseData().getSymbolicName(),
+					name, classbytes);
+		}
+		return null;
 	}
 
 	public BaseClassLoader createClassLoader(ClassLoader parent,
 			ClassLoaderDelegate delegate, BundleProtectionDomain domain,
 			BaseData data, String[] bundleclasspath) {
-		if (shouldInstrumentClassesInBundle(data.getSymbolicName())) {
+		if (analyzer.shouldInstrumentClassesInBundle(data.getSymbolicName())) {
 			BundleLoader loader = (BundleLoader) delegate;
 			try {
 				loader.addDynamicImportPackage(ManifestElement.parseHeader(
@@ -74,11 +78,6 @@ public class InstrumentationHook implements AdaptorHook, ClassLoadingHook {
 			}
 		}
 		return null;
-	}
-
-	private boolean shouldInstrumentClassesInBundle(String symbolicName) {
-		return analyzer.getIncludedBundles().contains(symbolicName)
-				|| analyzer.getIncludedBundles().isEmpty();
 	}
 
 	// Methods stubs for hooks we do not require:

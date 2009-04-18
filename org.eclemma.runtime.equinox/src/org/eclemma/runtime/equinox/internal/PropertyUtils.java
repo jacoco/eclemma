@@ -39,4 +39,20 @@ public class PropertyUtils {
 		}
 		return strings;
 	}
+
+	/**
+	 * converts a list to a string taking every element and separating them with
+	 * a , comma.
+	 * 
+	 * @param list
+	 *            list to convert
+	 * @return string with all elements separated with , comma
+	 */
+	public static String listToString(List list) {
+		StringBuffer result = new StringBuffer();
+		for (int i = 0; i < list.size(); i++) {
+			result.append(", " + list.get(i));
+		}
+		return result.substring(2);
+	}
 }

@@ -29,5 +29,4 @@ public class InstrumentationHookConfigurator implements HookConfigurator {
 		hookRegistry.addAdaptorHook(hook);
 		hookRegistry.addClassLoadingHook(hook);
 	}
-
 }

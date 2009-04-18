@@ -8,8 +8,6 @@
 
 package org.eclemma.runtime.equinox;
 
-import java.util.List;
-
 import org.osgi.framework.BundleContext;
 
 /**
@@ -29,15 +27,15 @@ public interface ICoverageAnalyzer {
 	public void start(BundleContext context);
 
 	/**
-	 * Called when the OSGi framework shuts down. Here we can e.g. write a
-	 * coverage report.
+	 * Called when the OSGi framework shuts down.
 	 */
 	public void stop();
 
 	/**
-	 * For each class definition loaded from a bundle this method is called. The
-	 * method may return a instrumented version of the class or null, if the
-	 * class should not be modified.
+	 * For each class definition loaded from a bundle this method is called, if
+	 * shouldInstrumentClassesInBundle(bundleid) returns true. The method may
+	 * return an instrumented version of the class or null, if the class should
+	 * not be modified.
 	 * 
 	 * @param bundleid
 	 *            symbolic name of the bundle
@@ -45,15 +43,18 @@ public interface ICoverageAnalyzer {
 	 *            full qualified VM class name
 	 * @param bytes
 	 *            original class file bytes
-	 * @return instrumented class file bytes or null
+	 * @return instrumented bytes or null if the original bytes should be used.
 	 */
 	public byte[] instrument(String bundleid, String classname, byte[] bytes);
 
 	/**
-	 * @return the bundles expected to be instrumented, instrumenting a bundle
-	 *         includes instrumenting its fragments.
+	 * Check to see if the bundle id should allow instrumentation of classes.
+	 * 
+	 * @param bundleid
+	 *            symbolic name of the bundle
+	 * @return if instrumentation is allowed for given bundle id
 	 */
-	public List getIncludedBundles();
+	public boolean shouldInstrumentClassesInBundle(String bundleid);
 
 	/**
 	 * Class file instrumentation might introduce dependencies on a vendor

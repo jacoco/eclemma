@@ -12,15 +12,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.Properties;
 
 import org.eclemma.runtime.equinox.ICoverageAnalyzer;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
-import com.vladium.emma.EMMAProperties;
 import com.vladium.emma.data.CoverageOptions;
 import com.vladium.emma.data.CoverageOptionsFactory;
 import com.vladium.emma.data.DataFactory;
@@ -28,38 +27,26 @@ import com.vladium.emma.data.ICoverageData;
 import com.vladium.emma.data.IMetaData;
 import com.vladium.emma.data.SessionData;
 import com.vladium.emma.instr.InstrVisitor;
-import com.vladium.emma.report.AbstractReportGenerator;
-import com.vladium.emma.report.IReportGenerator;
-import com.vladium.emma.report.IReportProperties;
-import com.vladium.emma.report.SourcePathCache;
 import com.vladium.emma.rt.RT;
 import com.vladium.emma.rt.RTSettings;
 import com.vladium.jcd.cls.ClassDef;
 import com.vladium.jcd.compiler.ClassWriter;
 import com.vladium.jcd.parser.ClassDefParser;
-import com.vladium.util.IProperties;
-import com.vladium.util.Property;
 
 /**
- * This EMMA based coverage analyzer dumps a *.es file and a HTML report when
- * the OSGI framework exits.
+ * This EMMA based coverage analyzer dumps a *.es file to file in system
+ * property emma.session.out.file or if that is not defined it will create a
+ * coverage-'timestamp' folder with coverage.es in.
  * 
  * @author Marc R. Hoffmann, Mikkel T Andersen
  */
 public class EMMAAnalyzer implements ICoverageAnalyzer {
 
-	private final String FILE_SEPARATOR = Property
-			.getSystemProperty("file.separator");
+	private static final String SESSION_OUT_FILE = "emma.session.out.file";
 
-	private static final String SRC_PATHS = "srcPaths";
+	private static final String SESSION_OUT_MERGE = "emma.session.out.merge";
 
-	private static final String SRC_FOLDERS = "srcFolders";
-
-	private static final String OUTPUT = "output";
-
-	private static final String BUNDLE_ROOT_PATHS = "bundleRootPaths";
-
-	private static final String INCLUDED_BUNDLES = "includedBundles";
+	private static final String INSTRUMENT_BUNDLES = "eclemma.instrument.bundles";
 
 	private BundleContext bundleContext;
 
@@ -69,43 +56,45 @@ public class EMMAAnalyzer implements ICoverageAnalyzer {
 
 	private boolean started;
 
-	private List includedBundles;
+	private List bundlesToInstrument;
 
 	public void start(BundleContext bundleContext) {
 		this.bundleContext = bundleContext;
 		System.out
-				.println("Running Equinox with code coverage. (Add -DemmaHelp for help)");
-		printOptions();
+				.println("Running Equinox with emma code coverage. (Add -Declemma.help for help)");
+		printHelpOptions();
 
 		RTSettings.setStandaloneMode(false);
 		RT.reset(true, false);
 
 		options = CoverageOptionsFactory.create(System.getProperties());
 		metadata = DataFactory.newMetaData(options);
-		System.out.println("Covering the bundles with symbolic name(s): "
-				+ System.getProperty(INCLUDED_BUNDLES));
+
+		final String instrumentBundles = System.getProperty(INSTRUMENT_BUNDLES);
+		bundlesToInstrument = PropertyUtils.toList(instrumentBundles);
+		System.out
+				.println("Covering the bundles with symbolic name(s): "
+						+ (instrumentBundles != null ? instrumentBundles
+								: " no bundles specified (-Declemma.instrument.bundles=org.eclipse.swt), instrumenting all then"));
 		started = true;
 	}
 
 	public void stop() {
 		collectMetaData();
 		started = false;
-		File folder = createOutputFolder();
-		System.out.println("Saving coverage data to " + folder);
-		ICoverageData coveragedata = RT.getCoverageData();
+
+		final ICoverageData coveragedata = RT.getCoverageData();
 		try {
-			writeSessionData(metadata, coveragedata, folder);
-			writeHTMLReport(metadata, coveragedata, folder);
+			writeSessionData(metadata, coveragedata);
 		} catch (IOException e) {
+			System.out.println("Error while writing the session file");
 			e.printStackTrace();
 		}
 	}
 
 	public byte[] instrument(final String bundleid, final String classname,
 			final byte[] bytes) {
-		if (started
-				&& (getIncludedBundles().contains(bundleid) || getIncludedBundles()
-						.isEmpty())) {
+		if (started) {
 			try {
 				final ClassDef classdef = ClassDefParser.parseClass(bytes);
 				final InstrVisitor.InstrResult result = process(classdef, true);
@@ -121,11 +110,16 @@ public class EMMAAnalyzer implements ICoverageAnalyzer {
 				ex.printStackTrace();
 			}
 		}
-		return bytes;
+		return null;
 	}
 
 	public String getRuntimePackages() {
 		return "com.vladium.emma.rt";
+	}
+
+	public boolean shouldInstrumentClassesInBundle(String symbolicName) {
+		return getBundlesToInstrument().contains(symbolicName)
+				|| getBundlesToInstrument().isEmpty();
 	}
 
 	/**
@@ -133,13 +127,19 @@ public class EMMAAnalyzer implements ICoverageAnalyzer {
 	 */
 	private void collectMetaData() {
 		final Bundle[] allBundles = bundleContext.getBundles();
-		final List includedIds = getIncludedBundles();
+		List instrumentBundles = new ArrayList(getBundlesToInstrument());
+
 		for (int i = 0; i < allBundles.length; i++) {
 			final Bundle bundle = allBundles[i];
-			if (includedIds.isEmpty()
-					|| includedIds.contains(bundle.getSymbolicName())) {
+			if (shouldInstrumentClassesInBundle(bundle.getSymbolicName())) {
+				instrumentBundles.remove(bundle.getSymbolicName());
 				collectMetaData(bundle);
 			}
+		}
+		if (!instrumentBundles.isEmpty()) {
+			throw new RuntimeException(
+					"Could not instrument all bundles as they were not in the bundle context: "
+							+ PropertyUtils.listToString(instrumentBundles));
 		}
 	}
 
@@ -149,7 +149,7 @@ public class EMMAAnalyzer implements ICoverageAnalyzer {
 	 * required to obtain information about classes that have not been loaded at
 	 * all.
 	 * 
-	 * TODO: Respect bundle class path and also process included JARs
+	 * TODO: Respect bundle class path and also process included JARs.
 	 * 
 	 * @param bundle
 	 *            bundle to collect coverage Meta data for
@@ -195,102 +195,79 @@ public class EMMAAnalyzer implements ICoverageAnalyzer {
 		return result;
 	}
 
-	private File createOutputFolder() {
-		String folderName = System.getProperty(OUTPUT);
-		File folder = null;
-		if (folderName != null) {
-			folder = new File(folderName);
-		} else {
-			folder = new File("coverage-" + System.currentTimeMillis());
-		}
-		folder.mkdirs();
-		return folder;
+	/**
+	 * Writing the combined metadata and coveragedata into a session file.
+	 * 
+	 * @param metadata
+	 *            metadata for the session
+	 * @param coveragedata
+	 *            coveragedata for the session
+	 * @throws IOException
+	 *             if it could not persist it will throw an IOException.
+	 */
+	private void writeSessionData(IMetaData metadata, ICoverageData coveragedata)
+			throws IOException {
+		String fileName = System.getProperty(SESSION_OUT_FILE,
+				getDefaultSessionFileName());
+		System.out.println("Saving session data to: " + fileName);
+
+		File file = new File(fileName);
+		new File(file.getParent()).mkdirs();
+		DataFactory.persist(new SessionData(metadata, coveragedata), file,
+				shouldMerge());
 	}
 
-	private void writeSessionData(IMetaData metadata,
-			ICoverageData coveragedata, File folder) throws IOException {
-		File f = new File(folder, "coverage.es");
-		DataFactory.persist(new SessionData(metadata, coveragedata), f, false);
+	/**
+	 * Checks to see if it should merge. Reads the System property
+	 * emma.session.out.merge. If it is not set the default value is true, like
+	 * in the emma documentation.
+	 * 
+	 * @see {@link http://emma.sourceforge.net/reference/ch03.html}
+	 * 
+	 * @return
+	 */
+	private boolean shouldMerge() {
+		return new Boolean(System.getProperty(SESSION_OUT_MERGE, "true"))
+				.booleanValue();
 	}
 
-	private void writeHTMLReport(IMetaData metadata,
-			ICoverageData coveragedata, File folder) throws IOException {
-		File f = new File(folder, "coverage.html");
-		Properties props = new Properties();
-		props.setProperty(
-				IReportProperties.PREFIX + IReportProperties.OUT_FILE, f
-						.getAbsolutePath());
-		props.setProperty(IReportProperties.PREFIX
-				+ IReportProperties.OUT_ENCODING, "UTF-8");
-		IReportGenerator generator = AbstractReportGenerator.create("html");
-
-		List list = getSourcePaths();
-		SourcePathCache cache = list.isEmpty() ? null : new SourcePathCache(
-				(String[]) list.toArray(new String[list.size()]), true);
-
-		final IProperties appProperties = EMMAProperties.getAppProperties();
-
-		generator.process(metadata, coveragedata, cache, IProperties.Factory
-				.combine(EMMAProperties.wrap(props), appProperties));
+	/**
+	 * Gets the default session name according to the documentation.
+	 * 
+	 * @see {@link http://emma.sourceforge.net/reference/ch03.html}
+	 * 
+	 * @return the default name.
+	 */
+	private String getDefaultSessionFileName() {
+		return System.getProperty("user.dir")
+				+ System.getProperty("file.separator") + "coverage.es";
 	}
 
-	private List getSourcePaths() {
-		List list = PropertyUtils.toList(System.getProperty(SRC_PATHS));
-
-		List rootList = PropertyUtils.toList(System
-				.getProperty(BUNDLE_ROOT_PATHS));
-		for (int i = 0; i < rootList.size(); i++) {
-			String rootDir = (String) rootList.get(i);
-			List bundleNames = getIncludedBundles();
-			for (int j = 0; j < bundleNames.size(); j++) {
-				String bundleName = (String) bundleNames.get(j);
-				list.add(rootDir + FILE_SEPARATOR + bundleName + FILE_SEPARATOR
-						+ "src");
-				list.add(rootDir + FILE_SEPARATOR + bundleName + FILE_SEPARATOR
-						+ "test");
-
-				List srcFolderlist = PropertyUtils.toList(System
-						.getProperty(SRC_FOLDERS));
-				for (int k = 0; k < srcFolderlist.size(); k++) {
-					list.add(rootDir + FILE_SEPARATOR + bundleName
-							+ FILE_SEPARATOR + srcFolderlist.get(k));
-				}
-			}
-		}
-
-		return list;
+	/**
+	 * @return a list of symbolic names for bundles it needs to instrument.
+	 */
+	private List getBundlesToInstrument() {
+		return bundlesToInstrument;
 	}
 
-	public List getIncludedBundles() {
-		if (includedBundles == null) {
-			includedBundles = PropertyUtils.toList(System
-					.getProperty(INCLUDED_BUNDLES));
-		}
-		return includedBundles;
-	}
-
-	private void printOptions() {
-		if (System.getProperty("emmaHelp") != null) {
+	private void printHelpOptions() {
+		if (System.getProperty("eclemma.help") != null) {
 			System.out
-					.println("Options: includedBundles, (bundleRootPaths and/or srcPaths), output, (srcFolders)");
+					.println("---------------------------------------------------------------------------------------------------------------------------------------");
 			System.out
-					.println("    - includedBundles: list all bundle symbolic names separated with , (comma)");
+					.println("Options: eclemma.instrument.bundles, emma.session.out.file");
 			System.out
-					.println("    - bundleRootPaths: if you dont want to list all srcPaths just list the root of your code, project name is expected to be the bundle symbolic name/'srcFolders'. Paths are separated with , (comma)");
+					.println("    - eclemma.instrument.bundles: list all bundle symbolic names separated with , (comma)");
 			System.out
-					.println("    - srcPaths: list all bundle src folders (full path) separated with , (comma)");
+					.println("    - emma.session.out.file: the file to put the output of the session in (c:/myCoverage/coverage.es)");
 			System.out
-					.println("    - output: the folder to put the output in (coverage.es and coverage.html)");
+					.println("    - emma.session.out.merge: true if it should merge and false if it should not merge with existing session.out.file (default is true)");
 			System.out
-					.println("    - (optional)srcFolders: list the folders to look for under your project, if not 'src' or 'test' separated with , (comma)");
+					.println("    Example 1: -Declemma.instrument.bundles=org.eclipse.swt -Demma.session.out.merge=false");
 			System.out
-					.println("    Example 1: -DincludedBundles=org.eclipse.swt -DsrcPaths=C:/code/org.eclipse.swt/src");
+					.println("    Example 2: -Declemma.instrument.bundles=org.eclipse.swt,org.eclipse.jface -Doutput=c:/swt-jface-coverage.es");
 			System.out
-					.println("    Example 2: -DincludedBundles=org.eclipse.swt,org.eclipse.jface -DbundleRootPaths=C:/code -Doutput=c:/emmaOutput");
-			System.out
-					.println("    Example 3: -DincludedBundles=org.eclipse.swt,org.eclipse.jface -DbundleRootPaths=C:/code -DsrcFolders=src2,source");
-			System.out
-					.println("----------------------------------------------------------------------------------------------------------------");
+					.println("---------------------------------------------------------------------------------------------------------------------------------------");
 		}
 	}
 }
