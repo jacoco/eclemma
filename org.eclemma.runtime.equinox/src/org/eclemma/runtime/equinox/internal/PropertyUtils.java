@@ -40,6 +40,11 @@ public class PropertyUtils {
 		return strings;
 	}
 
+	public static String[] toArray(String property) {
+		List list = toList(property);
+		return (String[]) list.toArray(new String[list.size()]);
+	}
+
 	/**
 	 * converts a list to a string taking every element and separating them with
 	 * a , comma.

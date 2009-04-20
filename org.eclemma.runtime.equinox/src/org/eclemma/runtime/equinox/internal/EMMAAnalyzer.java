@@ -26,6 +26,7 @@ import com.vladium.emma.data.DataFactory;
 import com.vladium.emma.data.ICoverageData;
 import com.vladium.emma.data.IMetaData;
 import com.vladium.emma.data.SessionData;
+import com.vladium.emma.filter.IInclExclFilter;
 import com.vladium.emma.instr.InstrVisitor;
 import com.vladium.emma.rt.RT;
 import com.vladium.emma.rt.RTSettings;
@@ -46,6 +47,10 @@ public class EMMAAnalyzer implements ICoverageAnalyzer {
 
 	private static final String SESSION_OUT_MERGE = "emma.session.out.merge";
 
+	private static final String INCL_EXCL_FILTER = "emma.filter";
+
+	private static final String SHOW_HELP = "eclemma.help";
+
 	private static final String INSTRUMENT_BUNDLES = "eclemma.instrument.bundles";
 
 	private BundleContext bundleContext;
@@ -58,16 +63,20 @@ public class EMMAAnalyzer implements ICoverageAnalyzer {
 
 	private List bundlesToInstrument;
 
+	private IInclExclFilter filter;
+
 	public void start(BundleContext bundleContext) {
 		this.bundleContext = bundleContext;
-		System.out
-				.println("Running Equinox with emma code coverage. (Add -Declemma.help for help)");
+		System.out.println("Running Equinox with emma code coverage. (Add -D"
+				+ SHOW_HELP + " for help)");
 		printHelpOptions();
 
 		RTSettings.setStandaloneMode(false);
 		RT.reset(true, false);
 
 		options = CoverageOptionsFactory.create(System.getProperties());
+		filter = IInclExclFilter.Factory.create(PropertyUtils.toArray(System
+				.getProperty(INCL_EXCL_FILTER)));
 		metadata = DataFactory.newMetaData(options);
 
 		final String instrumentBundles = System.getProperty(INSTRUMENT_BUNDLES);
@@ -187,10 +196,13 @@ public class EMMAAnalyzer implements ICoverageAnalyzer {
 	private InstrVisitor.InstrResult process(final ClassDef classdef,
 			final boolean instrument) {
 		final InstrVisitor.InstrResult result = new InstrVisitor.InstrResult();
-		final InstrVisitor visitor = new InstrVisitor(options);
-		visitor.process(classdef, false, instrument, true, result);
-		if (result.m_descriptor != null) {
-			metadata.add(result.m_descriptor, true);
+		if ((filter == null)
+				|| filter.included(classdef.getName().replace('/', '.'))) {
+			final InstrVisitor visitor = new InstrVisitor(options);
+			visitor.process(classdef, false, instrument, true, result);
+			if (result.m_descriptor != null) {
+				metadata.add(result.m_descriptor, true);
+			}
 		}
 		return result;
 	}
@@ -251,23 +263,41 @@ public class EMMAAnalyzer implements ICoverageAnalyzer {
 	}
 
 	private void printHelpOptions() {
-		if (System.getProperty("eclemma.help") != null) {
+		if (System.getProperty(SHOW_HELP) != null) {
 			System.out
 					.println("---------------------------------------------------------------------------------------------------------------------------------------");
-			System.out
-					.println("Options: eclemma.instrument.bundles, emma.session.out.file");
-			System.out
-					.println("    - eclemma.instrument.bundles: list all bundle symbolic names separated with , (comma)");
-			System.out
-					.println("    - emma.session.out.file: the file to put the output of the session in (c:/myCoverage/coverage.es)");
-			System.out
-					.println("    - emma.session.out.merge: true if it should merge and false if it should not merge with existing session.out.file (default is true)");
-			System.out
-					.println("    Example 1: -Declemma.instrument.bundles=org.eclipse.swt -Demma.session.out.merge=false");
-			System.out
-					.println("    Example 2: -Declemma.instrument.bundles=org.eclipse.swt,org.eclipse.jface -Doutput=c:/swt-jface-coverage.es");
+			System.out.println("Options: " + INSTRUMENT_BUNDLES + ", "
+					+ SESSION_OUT_FILE + ", " + SESSION_OUT_MERGE + ", "
+					+ INCL_EXCL_FILTER);
+			printOption(
+					INSTRUMENT_BUNDLES,
+					"list all symbolic names of bundles you want coverered, separated with , (comma) (if "
+							+ INSTRUMENT_BUNDLES
+							+ " is not specified all bundles will be instrumented)");
+			printOption(SESSION_OUT_FILE,
+					"the file to put the output of the session in (c:\\myCoverage\\coverage.es)");
+			printOption(
+					SESSION_OUT_MERGE,
+					"true if it should merge and false if it should not merge with existing session.out.file (default is true)");
+			printOption(
+					INCL_EXCL_FILTER,
+					"filter when covering files, see emma documentation for details. (remember - for exclude and + for include)");
+
+			System.out.println("    Example 1: -D" + INSTRUMENT_BUNDLES
+					+ "=org.eclipse.swt -D" + SESSION_OUT_MERGE + "=false");
+			System.out.println("    Example 2: -D" + INSTRUMENT_BUNDLES
+					+ "=org.eclipse.swt,org.eclipse.jface -D"
+					+ SESSION_OUT_FILE + "=c:/swt-jface-coverage.es");
+			System.out.println("    Example 2: -D" + INSTRUMENT_BUNDLES
+					+ "=org.eclipse.swt,org.eclipse.jface -D"
+					+ SESSION_OUT_FILE + "=c:/swt-jface-coverage.es -D+"
+					+ INCL_EXCL_FILTER + "=-*Test*");
 			System.out
 					.println("---------------------------------------------------------------------------------------------------------------------------------------");
 		}
+	}
+
+	private void printOption(String property, String description) {
+		System.out.println("  - " + property + ": " + description);
 	}
 }
