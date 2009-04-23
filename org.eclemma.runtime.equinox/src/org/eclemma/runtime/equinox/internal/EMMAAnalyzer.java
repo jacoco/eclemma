@@ -20,6 +20,7 @@ import org.eclemma.runtime.equinox.ICoverageAnalyzer;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
+import com.vladium.emma.EMMAProperties;
 import com.vladium.emma.data.CoverageOptions;
 import com.vladium.emma.data.CoverageOptionsFactory;
 import com.vladium.emma.data.DataFactory;
@@ -35,19 +36,23 @@ import com.vladium.jcd.compiler.ClassWriter;
 import com.vladium.jcd.parser.ClassDefParser;
 
 /**
- * This EMMA based coverage analyzer dumps a *.es file to file in system
- * property emma.session.out.file or if that is not defined it will create a
- * coverage-'timestamp' folder with coverage.es in.
+ * This EMMA based coverage analyzer dumps a file in system property
+ * emma.session.out.file or if that is not defined it will create a coverage.es
+ * file in user.dir.
  * 
  * @author Marc R. Hoffmann, Mikkel T Andersen
  */
 public class EMMAAnalyzer implements ICoverageAnalyzer {
 
-	private static final String SESSION_OUT_FILE = "emma.session.out.file";
+	private static final String PREFIX = "emma.";
 
-	private static final String SESSION_OUT_MERGE = "emma.session.out.merge";
+	private static final String SESSION_OUT_FILE = PREFIX
+			+ EMMAProperties.PROPERTY_SESSION_DATA_OUT_FILE;
 
-	private static final String INCL_EXCL_FILTER = "emma.filter";
+	private static final String SESSION_OUT_MERGE = PREFIX
+			+ EMMAProperties.PROPERTY_SESSION_DATA_OUT_MERGE;
+
+	private static final String INCL_EXCL_FILTER = PREFIX + "filter";
 
 	private static final String SHOW_HELP = "eclemma.help";
 
@@ -68,7 +73,7 @@ public class EMMAAnalyzer implements ICoverageAnalyzer {
 	public void start(BundleContext bundleContext) {
 		this.bundleContext = bundleContext;
 		System.out.println("Running Equinox with emma code coverage. (Add -D"
-				+ SHOW_HELP + " for help)");
+				+ SHOW_HELP + " for more information)");
 		printHelpOptions();
 
 		RTSettings.setStandaloneMode(false);
@@ -84,7 +89,9 @@ public class EMMAAnalyzer implements ICoverageAnalyzer {
 		System.out
 				.println("Covering the bundles with symbolic name(s): "
 						+ (instrumentBundles != null ? instrumentBundles
-								: " no bundles specified (-Declemma.instrument.bundles=org.eclipse.swt), instrumenting all then"));
+								: " no bundles specified (for example: -D"
+										+ INSTRUMENT_BUNDLES
+										+ "=org.eclipse.swt). So instrumenting all then"));
 		started = true;
 	}
 
@@ -96,7 +103,7 @@ public class EMMAAnalyzer implements ICoverageAnalyzer {
 		try {
 			writeSessionData(metadata, coveragedata);
 		} catch (IOException e) {
-			System.out.println("Error while writing the session file");
+			System.err.println("Error while writing the session file");
 			e.printStackTrace();
 		}
 	}
@@ -114,7 +121,7 @@ public class EMMAAnalyzer implements ICoverageAnalyzer {
 					return out.toByteArray();
 				}
 			} catch (Exception ex) {
-				System.out.println("Error while instrumenting " + classname
+				System.err.println("Error while instrumenting " + classname
 						+ " in bundle " + bundleid);
 				ex.printStackTrace();
 			}
@@ -146,6 +153,9 @@ public class EMMAAnalyzer implements ICoverageAnalyzer {
 			}
 		}
 		if (!instrumentBundles.isEmpty()) {
+			System.err
+					.println("Could not instrument all bundles as they were not in the bundle context: "
+							+ PropertyUtils.listToString(instrumentBundles));
 			throw new RuntimeException(
 					"Could not instrument all bundles as they were not in the bundle context: "
 							+ PropertyUtils.listToString(instrumentBundles));
@@ -176,7 +186,7 @@ public class EMMAAnalyzer implements ICoverageAnalyzer {
 					process(classdef, false);
 				}
 			} catch (final IOException e) {
-				System.out.println("Error while opening resource " + url
+				System.err.println("Error while opening resource " + url
 						+ " in bundle " + bundle.getSymbolicName());
 				e.printStackTrace();
 			}
@@ -220,7 +230,7 @@ public class EMMAAnalyzer implements ICoverageAnalyzer {
 	private void writeSessionData(IMetaData metadata, ICoverageData coveragedata)
 			throws IOException {
 		String fileName = System.getProperty(SESSION_OUT_FILE,
-				getDefaultSessionFileName());
+				EMMAProperties.DEFAULT_SESSION_DATA_OUT_FILE);
 		System.out.println("Saving session data to: " + fileName);
 
 		File file = new File(fileName);
@@ -241,18 +251,6 @@ public class EMMAAnalyzer implements ICoverageAnalyzer {
 	private boolean shouldMerge() {
 		return new Boolean(System.getProperty(SESSION_OUT_MERGE, "true"))
 				.booleanValue();
-	}
-
-	/**
-	 * Gets the default session name according to the documentation.
-	 * 
-	 * @see {@link http://emma.sourceforge.net/reference/ch03.html}
-	 * 
-	 * @return the default name.
-	 */
-	private String getDefaultSessionFileName() {
-		return System.getProperty("user.dir")
-				+ System.getProperty("file.separator") + "coverage.es";
 	}
 
 	/**
