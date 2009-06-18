@@ -225,6 +225,29 @@
             contextId="org.eclipse.ui.contexts.window"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+M2+F11"/>
+      <!-- override key binding on Mac OS X -->
+      <key
+            contextId="org.eclipse.ui.contexts.window"
+            platform="carbon"
+            sequence="M1+M2+F11"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+      <key
+            contextId="org.eclipse.ui.contexts.window"
+            platform="cocoa"
+            sequence="M1+M2+F11"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+      <key
+            commandId="com.mountainminds.eclemma.ui.commands.CoverageLast"
+            platform="carbon"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M2+M4+F11"/>
+      <key
+            commandId="com.mountainminds.eclemma.ui.commands.CoverageLast"
+            platform="cocoa"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M2+M4+F11"/>
    </extension>
    
    <extension
