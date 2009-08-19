@@ -3,7 +3,7 @@
    <description url="http://update.eclemma.org/">
       EclEmma Updates
    </description>
-   <feature url="http://download.eclipselab.org/eclemma/release/1.4.2/com.mountainminds.eclemma.feature_1.4.1.jar" id="com.mountainminds.eclemma.feature" version="1.4.2">
+   <feature url="http://download.eclipselab.org/eclemma/release/1.4.2/com.mountainminds.eclemma.feature_1.4.2.jar" id="com.mountainminds.eclemma.feature" version="1.4.2">
       <category name="EclEmma"/>
    </feature>
    <feature url="http://download.eclipselab.org/eclemma/release/1.4.1/com.mountainminds.eclemma.feature_1.4.1.jar" id="com.mountainminds.eclemma.feature" version="1.4.1">
