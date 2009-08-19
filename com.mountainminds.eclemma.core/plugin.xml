@@ -65,8 +65,13 @@
             id="com.mountainminds.eclemma.ui.RAPJUnitLauncher"
             modes="coverage"
             name="%junitRAPDelegateName"
-            type="org.eclipse.rap.ui.launch.RAPJUnitTestLauncher">
-      </launchDelegate>
+            type="org.eclipse.rap.ui.launch.RAPJUnitTestLauncher"/>
+      <launchDelegate
+            delegate="com.mountainminds.eclemma.core.launching.EclipseLauncher"
+            id="com.mountainminds.eclemma.ui.SWTBotJUnitLauncher"
+            modes="coverage"
+            name="%swtBotJunitDelegateName"
+            type="org.eclipse.swtbot.eclipse.ui.launcher.JunitLaunchConfig"/>
    </extension>
    <extension
          point="org.eclipse.jdt.launching.classpathProviders">

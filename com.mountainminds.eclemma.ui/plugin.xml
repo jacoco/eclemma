@@ -99,6 +99,24 @@
                </with>
             </enablement>
          </contextualLaunch>
+      </shortcut>
+      <shortcut
+            class="com.mountainminds.eclemma.ui.launching.CoverageLaunchShortcut:org.eclipse.swtbot.eclipse.ui.junitShortcut"
+            icon="$nl$/icons/full/etool16/swtbot_launch.gif"
+            id="com.mountainminds.eclemma.ui.RAPJUnitLaunchShortcut"
+            label="%SWTBotJUnitShortcut.label"
+            modes="coverage">
+         <contextualLaunch>
+            <enablement>
+               <with
+                     variable="selection">
+                  <test
+                        args="org.eclipse.swtbot.eclipse.ui.junitShortcut"
+                        property="com.mountainminds.eclemma.ui.launchable">
+                  </test>
+               </with>
+            </enablement>
+         </contextualLaunch>
       </shortcut>      
    </extension>
    
@@ -191,6 +209,12 @@
             id="com.mountainminds.eclemma.ui.junitRAPShortcut.coverage"
             name="%CoverageJUnitRAPTestCommand.name">
       </command>
+      <command
+            categoryId="org.eclipse.debug.ui.category.run"
+            description="%CoverageSWTBotJUnitCommand.description"
+            id="com.mountainminds.eclemma.ui.swtBotJunitShortcut.coverage"
+            name="%CoverageSWTBotJUnitCommand.name">
+      </command>
    </extension>
    
    <extension
@@ -220,6 +244,12 @@
             contextId="org.eclipse.ui.globalScope"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M3+M2+E R"/>
+      <key
+            commandId="com.mountainminds.eclemma.ui.swtBotJunitShortcut.coverage"
+            contextId="org.eclipse.ui.globalScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M3+M2+E S">
+      </key>
       <key
             commandId="com.mountainminds.eclemma.ui.commands.CoverageLast"
             contextId="org.eclipse.ui.contexts.window"
@@ -421,6 +451,16 @@
          <launchMode
                description="%testNGTabGroupDescription.coverage"
                mode="coverage"/>
+      </launchConfigurationTabGroup>
+      <launchConfigurationTabGroup
+            class="com.mountainminds.eclemma.ui.launching.CoverageTabGroup:inplaceonly"
+            helpContextId="com.mountainminds.eclemma.ui.coverage_launch_context"
+            id="com.mountainminds.eclemma.ui.SWTBotJUnitTabGroup"
+            type="org.eclipse.swtbot.eclipse.ui.launcher.JunitLaunchConfig">
+         <launchMode
+               description="%swtBotJUnitTabGroupDescription.coverage"
+               mode="coverage">
+         </launchMode>
       </launchConfigurationTabGroup>
    </extension>
    <extension
