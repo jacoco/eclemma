@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Emma Runtime Instrumentation for Equinox
 Bundle-SymbolicName: org.eclemma.runtime.equinox
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.1.0.qualifier
 Bundle-Vendor: Mountainminds GmbH & Co. KG
-Fragment-Host: org.eclipse.osgi
+Fragment-Host: org.eclipse.osgi;bundle-version="[3.5.0,4.0.0)"
 Bundle-ClassPath: .,
  emma.jar
 Export-Package: com.vladium.emma.rt
