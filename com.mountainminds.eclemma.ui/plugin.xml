@@ -103,7 +103,7 @@
       <shortcut
             class="com.mountainminds.eclemma.ui.launching.CoverageLaunchShortcut:org.eclipse.swtbot.eclipse.ui.junitShortcut"
             icon="$nl$/icons/full/etool16/swtbot_launch.gif"
-            id="com.mountainminds.eclemma.ui.RAPJUnitLaunchShortcut"
+            id="com.mountainminds.eclemma.ui.SWTBotJUnitShortcut"
             label="%SWTBotJUnitShortcut.label"
             modes="coverage">
          <contextualLaunch>
