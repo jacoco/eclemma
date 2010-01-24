@@ -11,22 +11,23 @@ import com.mountainminds.eclemma.core.analysis.ICounter;
 
 /**
  * ICounter implementations. Implementing a factory pattern allows to share
- * counter instances. 
+ * counter instances.
  * 
- * @author  Marc R. Hoffmann
+ * @author Marc R. Hoffmann
  * @version $Revision$
  */
 public abstract class Counter implements ICounter {
 
   /** Max counter value for which singletons are created */
-  private static final int SINGLETON_LIMIT = 10;  
-  
+  private static final int SINGLETON_LIMIT = 10;
+
   private static final Counter[][] SINGLETONS = new Counter[SINGLETON_LIMIT + 1][];
-  
+
   static {
     for (int i = 0; i <= SINGLETON_LIMIT; i++) {
       SINGLETONS[i] = new Counter[i + 1];
-      for (int j = 0; j <= i; j++) SINGLETONS[i][j] = new Fix(i, j);
+      for (int j = 0; j <= i; j++)
+        SINGLETONS[i][j] = new Fix(i, j);
     }
   }
 
@@ -34,12 +35,13 @@ public abstract class Counter implements ICounter {
   public static final Counter COUNTER_0_0 = SINGLETONS[0][0];
 
   /**
-   * Mutable version of the counter. 
+   * Mutable version of the counter.
    */
   private static class Var extends Counter {
     public Var(long total, long covered) {
       super(total, covered);
     }
+
     public Counter increment(int total, int covered) {
       this.total += total;
       this.covered += covered;
@@ -54,17 +56,20 @@ public abstract class Counter implements ICounter {
     public Fix(long total, long covered) {
       super(total, covered);
     }
+
     public Counter increment(int total, int covered) {
       return getInstance(this.total + total, this.covered + covered);
     }
   }
-  
+
   /**
-   * Factory method to retrieve a counter with the given number of items.  
-   *
-   * @param total  total number of items
-   * @param covered  covered number of items
-   * @return  counter instance
+   * Factory method to retrieve a counter with the given number of items.
+   * 
+   * @param total
+   *          total number of items
+   * @param covered
+   *          covered number of items
+   * @return counter instance
    */
   public static Counter getInstance(long total, long covered) {
     if (total <= SINGLETON_LIMIT && covered <= total) {
@@ -73,7 +78,7 @@ public abstract class Counter implements ICounter {
       return new Var(total, covered);
     }
   }
-  
+
   protected long total;
   protected long covered;
 
@@ -84,11 +89,13 @@ public abstract class Counter implements ICounter {
 
   /**
    * Returns a counter with incremented values. It is up to the implementation
-   * whether this conter instance is modified or a new instance is returned. 
-   *
-   * @param total  number of additional total items 
-   * @param covered  number of additional covered items
-   * @return  counter instance with incremented values
+   * whether this conter instance is modified or a new instance is returned.
+   * 
+   * @param total
+   *          number of additional total items
+   * @param covered
+   *          number of additional covered items
+   * @return counter instance with incremented values
    */
   public abstract Counter increment(int total, int covered);
 
@@ -100,6 +107,10 @@ public abstract class Counter implements ICounter {
 
   public long getCoveredCount() {
     return covered;
+  }
+
+  public long getMissedCount() {
+    return total - covered;
   }
 
   public double getRatio() {

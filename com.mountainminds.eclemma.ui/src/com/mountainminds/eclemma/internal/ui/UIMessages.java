@@ -67,6 +67,11 @@ public class UIMessages extends NLS {
   public static String CoverageViewColumnCoveredLines_label;
   public static String CoverageViewColumnCoveredMethods_label;
   public static String CoverageViewColumnCoveredTypes_label;
+  public static String CoverageViewColumnMissedInstructions_label;
+  public static String CoverageViewColumnMissedBlocks_label;
+  public static String CoverageViewColumnMissedLines_label;
+  public static String CoverageViewColumnMissedMethods_label;
+  public static String CoverageViewColumnMissedTypes_label;
   public static String CoverageViewColumnTotalInstructions_label;
   public static String CoverageViewColumnTotalBlocks_label;
   public static String CoverageViewColumnTotalLines_label;
@@ -140,6 +145,7 @@ public class UIMessages extends NLS {
   public static String CoveragePropertyPageColumnCoverage_label;
   public static String CoveragePropertyPageColumnCoverage_value;
   public static String CoveragePropertyPageColumnCovered_label;
+  public static String CoveragePropertyPageColumnMissed_label;
   public static String CoveragePropertyPageColumnTotal_label;
   public static String CoveragePropertyPageInstructions_label;
   public static String CoveragePropertyPageBlocks_label;

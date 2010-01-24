@@ -68,6 +68,7 @@ class CopyAction extends SelectionProviderAction {
     sb.append(headers[CoverageView.COLUMN_ELEMENT]).append(SWT.TAB);
     sb.append(headers[CoverageView.COLUMN_RATIO]).append(SWT.TAB);
     sb.append(headers[CoverageView.COLUMN_COVERED]).append(SWT.TAB);
+    sb.append(headers[CoverageView.COLUMN_MISSED]).append(SWT.TAB);
     sb.append(headers[CoverageView.COLUMN_TOTAL]).append(Text.DELIMITER);
 
     // Rows:
@@ -78,6 +79,7 @@ class CopyAction extends SelectionProviderAction {
       appendColumn(sb, element, CoverageView.COLUMN_ELEMENT).append(SWT.TAB);
       appendColumn(sb, element, CoverageView.COLUMN_RATIO).append(SWT.TAB);
       appendColumn(sb, element, CoverageView.COLUMN_COVERED).append(SWT.TAB);
+      appendColumn(sb, element, CoverageView.COLUMN_MISSED).append(SWT.TAB);
       appendColumn(sb, element, CoverageView.COLUMN_TOTAL).append(
           Text.DELIMITER);
     }

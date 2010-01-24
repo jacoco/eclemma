@@ -17,7 +17,7 @@ package com.mountainminds.eclemma.core.analysis;
  * @see IJavaElementCoverage#getBlockCounter()
  * @see IJavaElementCoverage#getInstructionCounter()
  * 
- * @author  Marc R. Hoffmann
+ * @author Marc R. Hoffmann
  * @version $Revision$
  */
 public interface ICounter extends Comparable {
@@ -35,6 +35,13 @@ public interface ICounter extends Comparable {
    * @return total count of covered items
    */
   public long getCoveredCount();
+
+  /**
+   * Returns the total count number of missed items.
+   * 
+   * @return total count of missed items
+   */
+  public long getMissedCount();
 
   /**
    * Calculates the ratio of covered to total count items. If total count items

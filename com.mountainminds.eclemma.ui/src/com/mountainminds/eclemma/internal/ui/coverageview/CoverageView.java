@@ -93,13 +93,15 @@ public class CoverageView extends ViewPart implements IShowInTarget {
   protected static final int COLUMN_ELEMENT = 0;
   protected static final int COLUMN_RATIO = 1;
   protected static final int COLUMN_COVERED = 2;
-  protected static final int COLUMN_TOTAL = 3;
+  protected static final int COLUMN_MISSED = 3;
+  protected static final int COLUMN_TOTAL = 4;
 
   private Tree tree;
   private TreeColumn column0;
   private TreeColumn column1;
   private TreeColumn column2;
   private TreeColumn column3;
+  private TreeColumn column4;
   private TreeViewer viewer;
 
   // Actions
@@ -206,6 +208,8 @@ public class CoverageView extends ViewPart implements IShowInTarget {
         }
       case COLUMN_COVERED:
         return String.valueOf(counter.getCoveredCount());
+      case COLUMN_MISSED:
+        return String.valueOf(counter.getMissedCount());
       case COLUMN_TOTAL:
         return String.valueOf(counter.getTotalCount());
       }
@@ -240,6 +244,7 @@ public class CoverageView extends ViewPart implements IShowInTarget {
     widths[1] = column1.getWidth();
     widths[2] = column2.getWidth();
     widths[3] = column3.getWidth();
+    widths[4] = column4.getWidth();
     settings.save(memento);
     super.saveState(memento);
   }
@@ -261,7 +266,10 @@ public class CoverageView extends ViewPart implements IShowInTarget {
     sorter.addColumn(column2, COLUMN_COVERED);
     column3 = new TreeColumn(tree, SWT.RIGHT);
     column3.setWidth(widths[3]);
-    sorter.addColumn(column3, COLUMN_TOTAL);
+    sorter.addColumn(column3, COLUMN_MISSED);
+    column4 = new TreeColumn(tree, SWT.RIGHT);
+    column4.setWidth(widths[4]);
+    sorter.addColumn(column4, COLUMN_TOTAL);
     updateColumnHeaders();
 
     TreeColumn sortColumn = null;
@@ -275,8 +283,11 @@ public class CoverageView extends ViewPart implements IShowInTarget {
     case COLUMN_COVERED:
       sortColumn = column2;
       break;
-    case COLUMN_TOTAL:
+    case COLUMN_MISSED:
       sortColumn = column3;
+      break;
+    case COLUMN_TOTAL:
+      sortColumn = column4;
       break;
     }
 
@@ -451,6 +462,7 @@ public class CoverageView extends ViewPart implements IShowInTarget {
     column1.setText(columns[1]);
     column2.setText(columns[2]);
     column3.setText(columns[3]);
+    column4.setText(columns[4]);
   }
 
   protected void updateActions() {
