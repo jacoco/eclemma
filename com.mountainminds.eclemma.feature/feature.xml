@@ -2,7 +2,7 @@
 <feature
       id="com.mountainminds.eclemma.feature"
       label="%featureName"
-      version="1.4.3"
+      version="1.5.0"
       provider-name="%providerName"
       plugin="com.mountainminds.eclemma.ui">
 
@@ -11,7 +11,7 @@
    </description>
 
    <copyright url="http://www.eclemma.org/">
-      (c) Copyright Mountainminds GmbH &amp; Co. KG 2006, 2009
+      (c) Copyright Mountainminds GmbH &amp; Co. KG 2006, 2010
    </copyright>
 
    <license url="http://www.eclipse.org/legal/epl-v10.html">
