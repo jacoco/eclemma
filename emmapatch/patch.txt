@@ -1,9 +1,35 @@
+### Eclipse Workspace Patch 1.0
+#P emma
 Index: core/java12/com/vladium/logging/Logger.java
 ===================================================================
 RCS file: /cvsroot/emma/emma/core/java12/com/vladium/logging/Logger.java,v
 retrieving revision 1.1.1.1.2.2
-diff -r1.1.1.1.2.2 Logger.java
-73c73
-<         if ((out == null) || out.checkError ())
----
->         if (out == null)
+diff -u -r1.1.1.1.2.2 Logger.java
+--- core/java12/com/vladium/logging/Logger.java	16 Jul 2004 23:32:29 -0000	1.1.1.1.2.2
++++ core/java12/com/vladium/logging/Logger.java	30 Jul 2010 21:27:43 -0000
+@@ -70,7 +70,7 @@
+         if ((level < NONE) || (level > ALL))
+             throw new IllegalArgumentException ("invalid log level: " + level);
+         
+-        if ((out == null) || out.checkError ())
++        if (out == null)
+             throw new IllegalArgumentException ("null or corrupt input: out");
+         
+         return new Logger (level, out, prefix, classMask);
+Index: build.xml
+===================================================================
+RCS file: /cvsroot/emma/emma/build.xml,v
+retrieving revision 1.2.2.3
+diff -u -r1.2.2.3 build.xml
+--- build.xml	13 Jun 2005 00:20:55 -0000	1.2.2.3
++++ build.xml	30 Jul 2010 21:27:43 -0000
+@@ -385,9 +385,6 @@
+       <!-- classloader resources: -->
+       <fileset dir="${core.res.dir}" excludes="**/*.exclude" />
+       <fileset dir="${core.res.out.dir}" excludes="**/*.exclude" />
+-      <manifest>
+-        <attribute name="Main-Class" value="${app.short.name}run" />
+-      </manifest>
+     </jar>
+   </target>
+ 
