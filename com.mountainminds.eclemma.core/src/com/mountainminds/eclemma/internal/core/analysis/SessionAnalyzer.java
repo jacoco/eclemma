@@ -136,7 +136,7 @@ public class SessionAnalyzer {
         if (data != null && data.m_stamp != descriptor.getStamp()) {
           TRACER.trace("Invalid meta data signature for {0}.", descriptor.getClassVMName()); //$NON-NLS-1$
         } else {
-          TypeCoverage typecoverage = (TypeCoverage) getCoverage(type, descriptor.hasCompleteLineNumberInfo());
+          TypeCoverage typecoverage = (TypeCoverage) getCoverage(type, true);
           IResource resource = type.getResource();
           typecoverage.addType(data != null);
           MethodDescriptor[] methods = descriptor.getMethods();
