@@ -125,18 +125,22 @@ public class CoverageTab extends AbstractLaunchConfigurationTab {
       EclEmmaUIPlugin.log(e);
     }
     updateErrorStatus();
+    setDirty(false);
   }
   
   public void performApply(ILaunchConfigurationWorkingCopy configuration) {
-    configuration.setAttribute(
-        ICoverageLaunchConfigurationConstants.ATTR_INPLACE_INSTRUMENTATION,
-        buttonInplaceInstrumentation.getSelection());
-    IClassFiles[] classes = classesviewer.getSelectedClasses();
-    List l = new ArrayList();
-    for (int i = 0; i < classes.length; i++) {
-      l.add(classes[i].getLocation().toString());
+    if (isDirty()) {
+      configuration.setAttribute(
+          ICoverageLaunchConfigurationConstants.ATTR_INPLACE_INSTRUMENTATION,
+          buttonInplaceInstrumentation.getSelection());
+      IClassFiles[] classes = classesviewer.getSelectedClasses();
+      List l = new ArrayList();
+      for (int i = 0; i < classes.length; i++) {
+        l.add(classes[i].getLocation().toString());
+      }
+      configuration.setAttribute(
+          ICoverageLaunchConfigurationConstants.ATTR_INSTRUMENTATION_PATHS, l);
     }
-    configuration.setAttribute(ICoverageLaunchConfigurationConstants.ATTR_INSTRUMENTATION_PATHS, l);
   }
   
   public boolean isValid(ILaunchConfiguration launchConfig) {
