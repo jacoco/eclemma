@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
    <description url="http://update.eclemma.org/">
-      EclEmma Updates
+      EclEmma - Java Code Coverage for Eclipse
    </description>
+   <feature url="http://download.eclipselab.org/eclemma/release/1.5.1/com.mountainminds.eclemma.feature_1.5.1.jar" id="com.mountainminds.eclemma.feature" version="1.5.1">
+      <category name="EclEmma"/>
+   </feature>
    <feature url="http://download.eclipselab.org/eclemma/release/1.5.0/com.mountainminds.eclemma.feature_1.5.0.jar" id="com.mountainminds.eclemma.feature" version="1.5.0">
       <category name="EclEmma"/>
    </feature>
@@ -12,6 +15,9 @@
    <feature url="http://download.eclipselab.org/eclemma/release/1.3.2/com.mountainminds.eclemma.feature_1.3.2.jar" id="com.mountainminds.eclemma.feature" version="1.3.2">
       <category name="EclEmma"/>
    </feature>
+   <archive path="plugins/com.mountainminds.eclemma.core_1.5.1.jar" url="http://download.eclipselab.org/eclemma/release/1.5.1/com.mountainminds.eclemma.core_1.5.1.jar"/>
+   <archive path="plugins/com.mountainminds.eclemma.doc_1.5.1.jar"  url="http://download.eclipselab.org/eclemma/release/1.5.1/com.mountainminds.eclemma.doc_1.5.1.jar"/>
+   <archive path="plugins/com.mountainminds.eclemma.ui_1.5.1.jar"   url="http://download.eclipselab.org/eclemma/release/1.5.1/com.mountainminds.eclemma.ui_1.5.1.jar"/>
    <archive path="plugins/com.mountainminds.eclemma.core_1.5.0.jar" url="http://download.eclipselab.org/eclemma/release/1.5.0/com.mountainminds.eclemma.core_1.5.0.jar"/>
    <archive path="plugins/com.mountainminds.eclemma.doc_1.5.0.jar"  url="http://download.eclipselab.org/eclemma/release/1.5.0/com.mountainminds.eclemma.doc_1.5.0.jar"/>
    <archive path="plugins/com.mountainminds.eclemma.ui_1.5.0.jar"   url="http://download.eclipselab.org/eclemma/release/1.5.0/com.mountainminds.eclemma.ui_1.5.0.jar"/>
