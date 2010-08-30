@@ -145,7 +145,7 @@ public final class EclEmmaStatus {
    * status is used to issue an error prompt.
    */
   public static final EclEmmaStatus NO_COVERAGE_DATA_ERROR = new EclEmmaStatus(
-      5101, IStatus.ERROR, CoreMessages.StatusALREADY_INSTRUMENTED_ERROR_message);
+      5101, IStatus.ERROR, CoreMessages.StatusNO_COVERAGE_DATA_ERROR_message);
 
   /**
    * No classes are selected for instrumentation. This status is used to issue
