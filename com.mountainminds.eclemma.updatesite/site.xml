@@ -18,7 +18,7 @@
    <archive path="plugins/com.mountainminds.eclemma.core_1.5.2.jar" url="http://download.eclipselab.org/eclemma/release/1.5.2/com.mountainminds.eclemma.core_1.5.2.jar"/>
    <archive path="plugins/com.mountainminds.eclemma.doc_1.5.2.jar"  url="http://download.eclipselab.org/eclemma/release/1.5.2/com.mountainminds.eclemma.doc_1.5.2.jar"/>
    <archive path="plugins/com.mountainminds.eclemma.ui_1.5.2.jar"   url="http://download.eclipselab.org/eclemma/release/1.5.2/com.mountainminds.eclemma.ui_1.5.2.jar"/>
-   <archive path="plugins/com.mountainminds.eclemma.core_1.5.1.jar" url="http://download.eclipselab.org/eclemma/release/1.5.1/com.mountainminds.eclemma.core_2.5.1.jar"/>
+   <archive path="plugins/com.mountainminds.eclemma.core_1.5.1.jar" url="http://download.eclipselab.org/eclemma/release/1.5.1/com.mountainminds.eclemma.core_1.5.1.jar"/>
    <archive path="plugins/com.mountainminds.eclemma.doc_1.5.1.jar"  url="http://download.eclipselab.org/eclemma/release/1.5.1/com.mountainminds.eclemma.doc_1.5.1.jar"/>
    <archive path="plugins/com.mountainminds.eclemma.ui_1.5.1.jar"   url="http://download.eclipselab.org/eclemma/release/1.5.1/com.mountainminds.eclemma.ui_1.5.1.jar"/>
    <archive path="plugins/com.mountainminds.eclemma.core_1.4.3.jar" url="http://download.eclipselab.org/eclemma/release/1.4.3/com.mountainminds.eclemma.core_1.4.3.jar"/>
