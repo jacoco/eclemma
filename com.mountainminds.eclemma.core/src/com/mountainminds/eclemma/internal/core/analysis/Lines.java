@@ -12,13 +12,13 @@ import com.mountainminds.eclemma.core.analysis.ILineCoverage;
 /**
  * ILineCoverage implementation.
  * 
- * @author  Marc R. Hoffmann
+ * @author Marc R. Hoffmann
  * @version $Revision$
  */
 public class Lines extends Counter implements ILineCoverage {
 
   /**
-   * We allways increase the size of the coverage array by multiples of this
+   * We always increase the size of the coverage array by multiples of this
    * constant. Larger values will require more memory, a lower value will lead
    * to repeated memory allocation and copy operations.
    */
@@ -32,7 +32,7 @@ public class Lines extends Counter implements ILineCoverage {
   private int lastline = 0;
 
   private int offset = 0;
-  
+
   protected Lines() {
     super(0, 0);
   }
@@ -105,9 +105,9 @@ public class Lines extends Counter implements ILineCoverage {
   public Counter increment(int total, int covered) {
     throw new UnsupportedOperationException();
   }
-  
+
   // ILineCoverage interface:
-  
+
   public byte[] getCoverage() {
     return coverage;
   }
@@ -122,6 +122,13 @@ public class Lines extends Counter implements ILineCoverage {
 
   public int getOffset() {
     return offset;
+  }
+
+  public byte getCoverage(int line) {
+    if (coverage == null || line < firstline || line > lastline) {
+      return NO_CODE;
+    }
+    return coverage[line - offset];
   }
 
 }

@@ -14,7 +14,7 @@ package com.mountainminds.eclemma.core.analysis;
  * 
  * @see IJavaElementCoverage#getLineCoverage()
  * 
- * @author  Marc R. Hoffmann
+ * @author Marc R. Hoffmann
  * @version $Revision$
  */
 public interface ILineCoverage extends ICounter {
@@ -49,6 +49,8 @@ public interface ILineCoverage extends ICounter {
    * Returns the line number of the first entry in the array returned by
    * {@link #getCoverage()}.
    * 
+   * @deprecated use {@link #getCoverage(int)} instead
+   * 
    * @return offset of the coverage data array
    */
   public int getOffset();
@@ -56,16 +58,33 @@ public interface ILineCoverage extends ICounter {
   /**
    * Returns an array of coverage flags defined as constants in this interface.
    * The first item of the returned array corresponds to the line returned by
-   * {@link #getOffset()}. Note that the length of the array may superceed the
-   * actual source file length.
+   * {@link #getOffset()}. Note that the length of the array may supersede the
+   * actual source file length. If the no line information is available the
+   * method returns <code>null</code>.
+   * 
+   * @see #NO_CODE
+   * @see #NOT_COVERED
+   * @see #PARTLY_COVERED
+   * @see #FULLY_COVERED
+   * @deprecated use {@link #getCoverage(int)} instead
+   * 
+   * @return array of coverage flags or <code>null</code>
+   */
+  public byte[] getCoverage();
+
+  /**
+   * Returns the coverage flag defined as constants in this interface for the
+   * given line.
    * 
    * @see #NO_CODE
    * @see #NOT_COVERED
    * @see #PARTLY_COVERED
    * @see #FULLY_COVERED
    * 
-   * @return array of coverage flags
+   * @param line
+   *          line number
+   * @return status flag
    */
-  public byte[] getCoverage();
+  public byte getCoverage(int line);
 
 }

@@ -16,7 +16,7 @@ import com.mountainminds.eclemma.core.analysis.ILineCoverage;
 /**
  * IJavaElementCoverage implementation.
  * 
- * @author  Marc R. Hoffmann
+ * @author Marc R. Hoffmann
  * @version $Revision$
  */
 public class JavaElementCoverage implements IJavaElementCoverage {
@@ -26,12 +26,13 @@ public class JavaElementCoverage implements IJavaElementCoverage {
   private Counter blockCounter;
   private Counter lineCounter;
   private Counter instructionsCounter;
-  
+
   private final JavaElementCoverage parent;
   private final Lines lines;
   private final long modificationStamp;
-  
-  public JavaElementCoverage(JavaElementCoverage parent, boolean haslines, long stamp) {
+
+  public JavaElementCoverage(JavaElementCoverage parent, boolean haslines,
+      long stamp) {
     this.parent = parent;
     typeCounter = Counter.COUNTER_0_0;
     methodCounter = Counter.COUNTER_0_0;
@@ -42,37 +43,42 @@ public class JavaElementCoverage implements IJavaElementCoverage {
     this.lines = haslines ? new Lines() : null;
   }
 
-  public JavaElementCoverage(JavaElementCoverage parent, boolean haslines, IResource resource) {
-    this(parent, haslines, resource == null ? 0 : resource.getModificationStamp());
+  public JavaElementCoverage(JavaElementCoverage parent, boolean haslines,
+      IResource resource) {
+    this(parent, haslines, resource == null ? 0 : resource
+        .getModificationStamp());
   }
 
-  
   public void addBlock(int instructions, int[] lines, boolean covered) {
     addBlock(instructions, lines, covered, 0, 0);
   }
-  
-  private void addBlock(int instructions, int[] lines, boolean covered, int totalLineDelta, int coveredLineDelta) {
+
+  private void addBlock(int instructions, int[] lines, boolean covered,
+      int totalLineDelta, int coveredLineDelta) {
     blockCounter = blockCounter.increment(1, covered ? 1 : 0);
-    instructionsCounter = instructionsCounter.increment(instructions, covered ? instructions : 0);
-    if (this.lines == null) {
-      lineCounter = lineCounter.increment(totalLineDelta, coveredLineDelta);
+    instructionsCounter = instructionsCounter.increment(instructions,
+        covered ? instructions : 0);
+    if (this.lines == null || lines == null) {
+      if (lineCounter != null) {
+        lineCounter = lineCounter.increment(totalLineDelta, coveredLineDelta);
+      }
       if (parent != null) {
-        parent.addBlock(instructions, lines, covered, totalLineDelta, coveredLineDelta);
+        parent.addBlock(instructions, lines, covered, totalLineDelta,
+            coveredLineDelta);
       }
     } else {
-      if (lines != null) {
-        long totalDelta = this.lines.getTotalCount();
-        long coveredDelta = this.lines.getCoveredCount();
-        this.lines.addLines(lines, covered);
-        if (parent != null) {
-          totalDelta = this.lines.getTotalCount() - totalDelta;
-          coveredDelta = this.lines.getCoveredCount() - coveredDelta;
-          parent.addBlock(instructions, lines, covered, (int) totalDelta, (int) coveredDelta);
-        }
+      long totalDelta = this.lines.getTotalCount();
+      long coveredDelta = this.lines.getCoveredCount();
+      this.lines.addLines(lines, covered);
+      if (parent != null) {
+        totalDelta = this.lines.getTotalCount() - totalDelta;
+        coveredDelta = this.lines.getCoveredCount() - coveredDelta;
+        parent.addBlock(instructions, lines, covered, (int) totalDelta,
+            (int) coveredDelta);
       }
     }
   }
-  
+
   public void addMethod(boolean covered) {
     methodCounter = methodCounter.increment(1, covered ? 1 : 0);
     if (parent != null) {
@@ -88,7 +94,7 @@ public class JavaElementCoverage implements IJavaElementCoverage {
   }
 
   // IJavaElementCoverage implementation:
-  
+
   public ICounter getBlockCounter() {
     return blockCounter;
   }
@@ -97,7 +103,7 @@ public class JavaElementCoverage implements IJavaElementCoverage {
     if (lines == null) {
       return lineCounter;
     } else {
-      return lines; 
+      return lines;
     }
   }
 
@@ -108,7 +114,7 @@ public class JavaElementCoverage implements IJavaElementCoverage {
   public ILineCoverage getLineCoverage() {
     return lines;
   }
-    
+
   public ICounter getMethodCounter() {
     return methodCounter;
   }
@@ -120,5 +126,5 @@ public class JavaElementCoverage implements IJavaElementCoverage {
   public long getResourceModificationStamp() {
     return modificationStamp;
   }
-  
+
 }

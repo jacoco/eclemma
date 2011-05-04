@@ -10,11 +10,11 @@ package com.mountainminds.eclemma.internal.core.analysis;
 import junit.framework.TestCase;
 
 /**
- * @author  Marc R. Hoffmann
+ * @author Marc R. Hoffmann
  * @version $Revision$
  */
 public class JavaElementCoverageTest extends TestCase {
-  
+
   public void testResourceModificationStamp() {
     JavaElementCoverage c = new JavaElementCoverage(null, false, 12345678);
     assertEquals(12345678l, c.getResourceModificationStamp());
@@ -37,7 +37,7 @@ public class JavaElementCoverageTest extends TestCase {
     assertEquals(32, c.getInstructionCounter().getTotalCount());
     assertEquals(17, c.getInstructionCounter().getCoveredCount());
   }
-  
+
   public void testNoLines3() {
     JavaElementCoverage c = new JavaElementCoverage(null, true, 0);
     c.addBlock(17, null, true);
@@ -49,7 +49,7 @@ public class JavaElementCoverageTest extends TestCase {
     assertEquals(32, c.getInstructionCounter().getTotalCount());
     assertEquals(17, c.getInstructionCounter().getCoveredCount());
   }
-  
+
   public void testNoLinesWithParent1() {
     JavaElementCoverage p = new JavaElementCoverage(null, false, 0);
     JavaElementCoverage c1 = new JavaElementCoverage(p, false, 0);
@@ -65,7 +65,21 @@ public class JavaElementCoverageTest extends TestCase {
     assertEquals(17, p.getInstructionCounter().getCoveredCount());
   }
 
-  
+  public void testNoLinesWithParent2() {
+    JavaElementCoverage p = new JavaElementCoverage(null, true, 0);
+    JavaElementCoverage c1 = new JavaElementCoverage(p, true, 0);
+    c1.addBlock(17, null, true);
+    JavaElementCoverage c2 = new JavaElementCoverage(p, true, 0);
+    c2.addBlock(15, null, false);
+
+    assertEquals(2, p.getBlockCounter().getTotalCount());
+    assertEquals(1, p.getBlockCounter().getCoveredCount());
+    assertEquals(0, p.getLineCounter().getTotalCount());
+    assertEquals(0, p.getLineCounter().getCoveredCount());
+    assertEquals(32, p.getInstructionCounter().getTotalCount());
+    assertEquals(17, p.getInstructionCounter().getCoveredCount());
+  }
+
   public void testLines1() {
     JavaElementCoverage c = new JavaElementCoverage(null, true, 0);
     c.addBlock(17, new int[] { 1, 2, 3 }, true);
@@ -77,7 +91,7 @@ public class JavaElementCoverageTest extends TestCase {
     assertEquals(32, c.getInstructionCounter().getTotalCount());
     assertEquals(17, c.getInstructionCounter().getCoveredCount());
   }
-  
+
   public void testLinesWithParent1() {
     JavaElementCoverage p = new JavaElementCoverage(null, false, 0);
     JavaElementCoverage c1 = new JavaElementCoverage(p, true, 0);
@@ -92,7 +106,7 @@ public class JavaElementCoverageTest extends TestCase {
     assertEquals(32, p.getInstructionCounter().getTotalCount());
     assertEquals(17, p.getInstructionCounter().getCoveredCount());
   }
-  
+
   public void testLinesWithParent2() {
     JavaElementCoverage p = new JavaElementCoverage(null, true, 0);
     JavaElementCoverage c1 = new JavaElementCoverage(p, true, 0);
@@ -107,7 +121,7 @@ public class JavaElementCoverageTest extends TestCase {
     assertEquals(32, p.getInstructionCounter().getTotalCount());
     assertEquals(17, p.getInstructionCounter().getCoveredCount());
   }
-  
+
   public void testMethods() {
     JavaElementCoverage p = new JavaElementCoverage(null, false, 0);
     JavaElementCoverage c1 = new JavaElementCoverage(p, true, 0);
@@ -118,7 +132,7 @@ public class JavaElementCoverageTest extends TestCase {
     assertEquals(2, p.getMethodCounter().getTotalCount());
     assertEquals(1, p.getMethodCounter().getCoveredCount());
   }
-  
+
   public void testTypes() {
     JavaElementCoverage p = new JavaElementCoverage(null, false, 0);
     JavaElementCoverage c1 = new JavaElementCoverage(p, true, 0);
@@ -129,5 +143,5 @@ public class JavaElementCoverageTest extends TestCase {
     assertEquals(2, p.getTypeCounter().getTotalCount());
     assertEquals(1, p.getTypeCounter().getCoveredCount());
   }
-  
+
 }

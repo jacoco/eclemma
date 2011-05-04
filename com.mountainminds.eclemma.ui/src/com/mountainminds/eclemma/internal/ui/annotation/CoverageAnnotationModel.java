@@ -41,91 +41,103 @@ import com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin;
 /**
  * IAnnotationModel implementation for efficient coverage highlighting.
  * 
- * @author  Marc R. Hoffmann
+ * @author Marc R. Hoffmann
  * @version $Revision$
  */
 public class CoverageAnnotationModel implements IAnnotationModel {
-  
+
   /** Key used to piggyback our model to the editor's model. */
   private static final Object KEY = new Object();
-  
+
   /** List of current CoverageAnnotation objects */
   private List annotations = new ArrayList(32);
 
   /** List of registered IAnnotationModelListener */
   private List annotationModelListeners = new ArrayList(2);
-  
+
   private final ITextEditor editor;
   private final IDocument document;
   private int openConnections = 0;
   private boolean annotated = false;
-  
+
   private IJavaCoverageListener coverageListener = new IJavaCoverageListener() {
     public void coverageChanged() {
       updateAnnotations(true);
     }
   };
-  
+
   private IDocumentListener documentListener = new IDocumentListener() {
     public void documentChanged(DocumentEvent event) {
       updateAnnotations(false);
     }
+
     public void documentAboutToBeChanged(DocumentEvent event) {
     }
   };
-  
+
   private CoverageAnnotationModel(ITextEditor editor, IDocument document) {
     this.editor = editor;
     this.document = document;
     updateAnnotations(true);
   }
-  
+
   /**
-   * Attaches a coverage annotation model for the given editor if the editor
-   * can be annotated. Does nothing if the model is already attached.
+   * Attaches a coverage annotation model for the given editor if the editor can
+   * be annotated. Does nothing if the model is already attached.
    * 
-   * @param editor Editor to attach a annotation model to
+   * @param editor
+   *          Editor to attach a annotation model to
    */
   public static void attach(ITextEditor editor) {
     IDocumentProvider provider = editor.getDocumentProvider();
     // there may be text editors without document providers (SF #1725100)
-    if (provider == null) return;
-    IAnnotationModel model = provider.getAnnotationModel(editor.getEditorInput());
-    if (!(model instanceof IAnnotationModelExtension)) return;
+    if (provider == null)
+      return;
+    IAnnotationModel model = provider.getAnnotationModel(editor
+        .getEditorInput());
+    if (!(model instanceof IAnnotationModelExtension))
+      return;
     IAnnotationModelExtension modelex = (IAnnotationModelExtension) model;
-    
+
     IDocument document = provider.getDocument(editor.getEditorInput());
-    
-    CoverageAnnotationModel coveragemodel = (CoverageAnnotationModel) modelex.getAnnotationModel(KEY);
+
+    CoverageAnnotationModel coveragemodel = (CoverageAnnotationModel) modelex
+        .getAnnotationModel(KEY);
     if (coveragemodel == null) {
       coveragemodel = new CoverageAnnotationModel(editor, document);
       modelex.addAnnotationModel(KEY, coveragemodel);
     }
   }
-  
+
   /**
    * Detaches the coverage annotation model from the given editor. If the editor
    * does not have a model attached, this method does nothing.
-   *
-   * @param editor Editor to detach the annotation model from
+   * 
+   * @param editor
+   *          Editor to detach the annotation model from
    */
   public static void detach(ITextEditor editor) {
     IDocumentProvider provider = editor.getDocumentProvider();
     // there may be text editors without document providers (SF #1725100)
-    if (provider == null) return;
-    IAnnotationModel model = provider.getAnnotationModel(editor.getEditorInput());
-    if (!(model instanceof IAnnotationModelExtension)) return;
+    if (provider == null)
+      return;
+    IAnnotationModel model = provider.getAnnotationModel(editor
+        .getEditorInput());
+    if (!(model instanceof IAnnotationModelExtension))
+      return;
     IAnnotationModelExtension modelex = (IAnnotationModelExtension) model;
     modelex.removeAnnotationModel(KEY);
   }
-  
+
   protected void updateAnnotations(boolean force) {
     ILineCoverage lineCoverage = null;
     boolean annotate = false;
     preconditions: {
-      if (editor.isDirty()) break preconditions;
+      if (editor.isDirty())
+        break preconditions;
       IEditorInput input = editor.getEditorInput();
-      if (input == null) break preconditions;
+      if (input == null)
+        break preconditions;
       Object element = input.getAdapter(IJavaElement.class);
       lineCoverage = findLineCoverage(element);
       if (lineCoverage == null || !hasSource((IJavaElement) element))
@@ -135,16 +147,16 @@ public class CoverageAnnotationModel implements IAnnotationModel {
     if (annotate) {
       if (!annotated || force) {
         createAnnotations(lineCoverage);
-        annotated = true; 
+        annotated = true;
       }
     } else {
       if (annotated) {
         clear();
-        annotated = false; 
+        annotated = false;
       }
     }
   }
-  
+
   protected boolean hasSource(IJavaElement element) {
     if (element instanceof ISourceReference) {
       try {
@@ -155,21 +167,25 @@ public class CoverageAnnotationModel implements IAnnotationModel {
     }
     return false;
   }
-  
+
   protected ILineCoverage findLineCoverage(Object element) {
     // Do we have a coverage info for the editor input?
     IJavaElementCoverage coverage = CoverageTools.getCoverageInfo(element);
-    if (coverage == null) return null;
-    
+    if (coverage == null)
+      return null;
+
     // Does the resource version (if any) corresponds to the coverage data?
-    IResource resource = (IResource) ((IAdaptable) element).getAdapter(IResource.class);
+    IResource resource = (IResource) ((IAdaptable) element)
+        .getAdapter(IResource.class);
     if (resource != null) {
-      if (resource.getModificationStamp() != coverage.getResourceModificationStamp()) return null;
+      if (resource.getModificationStamp() != coverage
+          .getResourceModificationStamp())
+        return null;
     }
-    
+
     return coverage.getLineCoverage();
   }
-  
+
   protected void clear() {
     AnnotationModelEvent event = new AnnotationModelEvent(this);
     clear(event);
@@ -189,22 +205,21 @@ public class CoverageAnnotationModel implements IAnnotationModel {
     clear(event);
     int firstline = linecoverage.getFirstLine();
     int lastline = linecoverage.getLastLine();
-    int offset = linecoverage.getOffset();
-    byte[] coverage = linecoverage.getCoverage();
     try {
-      for (int l = firstline ; l <= lastline; l++) {
-        int status = coverage[l - offset];
+      for (int l = firstline; l <= lastline; l++) {
+        int status = linecoverage.getCoverage(l);
         if (status != ILineCoverage.NO_CODE) {
           IRegion region = document.getLineInformation(l - 1);
           int docoffset = region.getOffset();
           int doclength = region.getLength();
           // Extend annotation for subsequent lines with same status:
-          while (l < lastline && coverage[l + 1 - offset] == status) {
+          while (l < lastline && linecoverage.getCoverage(l + 1) == status) {
             l++;
             region = document.getLineInformation(l - 1);
             doclength = region.getOffset() - docoffset + region.getLength();
           }
-          CoverageAnnotation ca = new CoverageAnnotation(docoffset, doclength, status);
+          CoverageAnnotation ca = new CoverageAnnotation(docoffset, doclength,
+              status);
           annotations.add(ca);
           event.annotationAdded(ca);
         }
@@ -215,7 +230,6 @@ public class CoverageAnnotationModel implements IAnnotationModel {
     fireModelChanged(event);
   }
 
-  
   public void addAnnotationModelListener(IAnnotationModelListener listener) {
     if (!annotationModelListeners.contains(listener)) {
       annotationModelListeners.add(listener);
@@ -226,11 +240,11 @@ public class CoverageAnnotationModel implements IAnnotationModel {
   public void removeAnnotationModelListener(IAnnotationModelListener listener) {
     annotationModelListeners.remove(listener);
   }
-  
+
   protected void fireModelChanged(AnnotationModelEvent event) {
     event.markSealed();
     if (!event.isEmpty()) {
-      for (Iterator i = annotationModelListeners.iterator(); i.hasNext(); ) {
+      for (Iterator i = annotationModelListeners.iterator(); i.hasNext();) {
         IAnnotationModelListener l = (IAnnotationModelListener) i.next();
         if (l instanceof IAnnotationModelListenerExtension) {
           ((IAnnotationModelListenerExtension) l).modelChanged(event);
@@ -242,7 +256,7 @@ public class CoverageAnnotationModel implements IAnnotationModel {
   }
 
   public void connect(IDocument document) {
-    if (this.document != document) 
+    if (this.document != document)
       throw new RuntimeException("Can't connect to different document."); //$NON-NLS-1$
     for (Iterator i = annotations.iterator(); i.hasNext();) {
       CoverageAnnotation ca = (CoverageAnnotation) i.next();
@@ -257,9 +271,9 @@ public class CoverageAnnotationModel implements IAnnotationModel {
       document.addDocumentListener(documentListener);
     }
   }
-  
+
   public void disconnect(IDocument document) {
-    if (this.document != document) 
+    if (this.document != document)
       throw new RuntimeException("Can't disconnect from different document."); //$NON-NLS-1$
     for (Iterator i = annotations.iterator(); i.hasNext();) {
       CoverageAnnotation ca = (CoverageAnnotation) i.next();
@@ -270,7 +284,7 @@ public class CoverageAnnotationModel implements IAnnotationModel {
       document.removeDocumentListener(documentListener);
     }
   }
-  
+
   /**
    * External modification is not supported.
    */
