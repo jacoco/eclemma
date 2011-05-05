@@ -2,7 +2,7 @@
 <feature
       id="com.mountainminds.eclemma.feature"
       label="%featureName"
-      version="1.5.2"
+      version="1.5.3"
       provider-name="%providerName"
       plugin="com.mountainminds.eclemma.ui">
 
