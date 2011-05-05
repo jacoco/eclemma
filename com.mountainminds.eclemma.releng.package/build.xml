@@ -2,7 +2,7 @@
 
 <project name="EclEmma Signing and Packaging" default="repackage">
 	
-	<property name="version" value="1.5.2"/>
+	<property name="version" value="1.5.3"/>
 	
 	<property name="result.dir" location="./result" />
 	<property name="source.dir" location="./source" />
