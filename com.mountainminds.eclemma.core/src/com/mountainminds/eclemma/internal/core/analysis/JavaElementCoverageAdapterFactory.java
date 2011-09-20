@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
@@ -10,11 +10,11 @@ package com.mountainminds.eclemma.internal.core.analysis;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.jdt.core.IJavaElement;
+import org.jacoco.core.analysis.ICoverageNode;
+import org.jacoco.core.analysis.ISourceNode;
 
 import com.mountainminds.eclemma.core.CoverageTools;
-import com.mountainminds.eclemma.core.analysis.IJavaElementCoverage;
 import com.mountainminds.eclemma.core.analysis.IJavaModelCoverage;
-import com.mountainminds.eclemma.core.analysis.ILineCoverage;
 
 /**
  * This factory adapts IResource and IJavaElement objects to the corresponding
@@ -22,7 +22,7 @@ import com.mountainminds.eclemma.core.analysis.ILineCoverage;
  * workbench through the extension point
  * <code>org.eclipse.core.runtime.adapters</code>.
  * 
- * @author  Marc R. Hoffmann
+ * @author Marc R. Hoffmann
  * @version $Revision$
  */
 public class JavaElementCoverageAdapterFactory implements IAdapterFactory {
@@ -36,21 +36,21 @@ public class JavaElementCoverageAdapterFactory implements IAdapterFactory {
       }
     }
     // then find the coverage information from the current session
-    IJavaModelCoverage mc = CoverageTools.getJavaModelCoverage(); 
+    IJavaModelCoverage mc = CoverageTools.getJavaModelCoverage();
     if (mc == null) {
       return null;
     } else {
-      IJavaElementCoverage coverage = mc.getCoverageFor((IJavaElement) object);
-      if (coverage != null && ILineCoverage.class.equals(adapterType)) {
-        return coverage.getLineCoverage();
-      } else {
+      ICoverageNode coverage = mc.getCoverageFor((IJavaElement) object);
+      if (adapterType.isInstance(coverage)) {
         return coverage;
+      } else {
+        return null;
       }
     }
   }
 
-  public Class[] getAdapterList() {
-    return new Class[] { IJavaElementCoverage.class, ILineCoverage.class };
+  public Class<?>[] getAdapterList() {
+    return new Class[] { ICoverageNode.class, ISourceNode.class };
   }
 
 }

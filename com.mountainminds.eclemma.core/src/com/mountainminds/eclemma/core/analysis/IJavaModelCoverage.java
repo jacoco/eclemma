@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
@@ -12,51 +12,64 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
-
-import com.mountainminds.eclemma.internal.core.analysis.Counter;
+import org.jacoco.core.analysis.ICounter;
+import org.jacoco.core.analysis.ICoverageNode;
+import org.jacoco.core.internal.analysis.CounterImpl;
 
 /**
  * The interface for coverage information attached to the Java model. It allows
  * to retrieve coverage information for any Java model element and holds lists
  * of entry points.
  * 
- * @author  Marc R. Hoffmann
+ * @author Marc R. Hoffmann
  * @version $Revision$
  */
-public interface IJavaModelCoverage extends IJavaElementCoverage {
-  
+public interface IJavaModelCoverage extends ICoverageNode {
+
   /**
    * This instance is used to indicate that a coverage session is currently
    * loading.
    */
   public static final IJavaModelCoverage LOADING = new IJavaModelCoverage() {
 
-    public ILineCoverage getLineCoverage() {
-      return null;
+    public ElementType getElementType() {
+      return ElementType.GROUP;
     }
 
-    public ICounter getBlockCounter() {
-      return Counter.COUNTER_0_0;
-    }
-
-    public ICounter getLineCounter() {
-      return Counter.COUNTER_0_0;
+    public String getName() {
+      return "LOADING"; //$NON-NLS-1$
     }
 
     public ICounter getInstructionCounter() {
-      return Counter.COUNTER_0_0;
+      return CounterImpl.COUNTER_0_0;
+    }
+
+    public ICounter getBranchCounter() {
+      return CounterImpl.COUNTER_0_0;
+    }
+
+    public ICounter getLineCounter() {
+      return CounterImpl.COUNTER_0_0;
+    }
+
+    public ICounter getComplexityCounter() {
+      return CounterImpl.COUNTER_0_0;
     }
 
     public ICounter getMethodCounter() {
-      return Counter.COUNTER_0_0;
+      return CounterImpl.COUNTER_0_0;
     }
 
-    public ICounter getTypeCounter() {
-      return Counter.COUNTER_0_0;
+    public ICounter getClassCounter() {
+      return CounterImpl.COUNTER_0_0;
     }
 
-    public long getResourceModificationStamp() {
-      return 0;
+    public ICounter getCounter(CounterEntity entity) {
+      return CounterImpl.COUNTER_0_0;
+    }
+
+    public ICoverageNode getPlainCopy() {
+      return this;
     }
 
     public IJavaProject[] getInstrumentedProjects() {
@@ -75,16 +88,16 @@ public interface IJavaModelCoverage extends IJavaElementCoverage {
       return new IType[0];
     }
 
-    public IJavaElementCoverage getCoverageFor(IJavaElement element) {
+    public ICoverageNode getCoverageFor(IJavaElement element) {
       return null;
     }
-    
+
   };
-  
+
   /**
    * Returns all Java projects where coverage information is available for.
    * 
-   * @return  list of Java projects
+   * @return list of Java projects
    */
   public IJavaProject[] getInstrumentedProjects();
 
@@ -92,31 +105,32 @@ public interface IJavaModelCoverage extends IJavaElementCoverage {
    * Returns all package fragment roots where coverage information is available
    * for.
    * 
-   * @return  list of package fragment roots.
+   * @return list of package fragment roots.
    */
   public IPackageFragmentRoot[] getInstrumentedPackageFragmentRoots();
 
   /**
    * Returns all package fragments where coverage information is available for.
    * 
-   * @return  list of package fragments
+   * @return list of package fragments
    */
   public IPackageFragment[] getInstrumentedPackageFragments();
 
   /**
    * Returns all Java types where coverage information is available for.
    * 
-   * @return  list of Java types
+   * @return list of Java types
    */
   public IType[] getInstrumentedTypes();
-  
+
   /**
    * Returns the coverage information associated with the given Java element. If
    * no information is available <code>null</code> is returned.
    * 
-   * @param element  Java element to look for coverage information
-   * @return  associated coverage information of null
+   * @param element
+   *          Java element to look for coverage information
+   * @return associated coverage information of null
    */
-  public IJavaElementCoverage getCoverageFor(IJavaElement element);
-  
+  public ICoverageNode getCoverageFor(IJavaElement element);
+
 }

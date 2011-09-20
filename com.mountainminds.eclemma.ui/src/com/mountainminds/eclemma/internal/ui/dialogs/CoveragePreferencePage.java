@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2009 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
@@ -7,7 +7,6 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.ui.dialogs;
 
-import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.StringFieldEditor;
@@ -53,10 +52,6 @@ public class CoveragePreferencePage extends FieldEditorPreferencePage implements
         UIMessages.CoveragePreferencesActivateNewSessions_label, parent));
     addField(new BooleanFieldEditor(UIPreferences.PREF_AUTO_REMOVE_SESSIONS,
         UIMessages.CoveragePreferencesAutoRemoveSessions_label, parent));
-    addField(new ToggleValueFieldEditor(
-        UIPreferences.PREF_ALLOW_INPLACE_INSTRUMENTATION,
-        UIMessages.CoveragePreferencesShowInplaceWarning_label, parent,
-        MessageDialogWithToggle.PROMPT, MessageDialogWithToggle.ALWAYS));
 
     // Default instrumentation:
     createSpacer(parent);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2009 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
@@ -43,10 +43,11 @@ public class UIMessages extends NLS {
   public static String CoverageViewSelectSessionAction_looltip;
   public static String CoverageViewSelectSessionActionEntry_label;
   public static String CoverageViewCounterModeInstructionsAction_label;
-  public static String CoverageViewCounterModeBlocksAction_label;
+  public static String CoverageViewCounterModeBranchesAction_label;
   public static String CoverageViewCounterModeLinesAction_label;
   public static String CoverageViewCounterModeMethodsAction_label;
   public static String CoverageViewCounterModeTypesAction_label;
+  public static String CoverageViewCounterModeComplexityAction_label;
   public static String CoverageViewShowProjectsAction_label;
   public static String CoverageViewShowProjectsAction_tooltip;
   public static String CoverageViewShowPackageRootsAction_label;
@@ -63,22 +64,29 @@ public class UIMessages extends NLS {
   public static String CoverageViewColumnElement_label;
   public static String CoverageViewColumnCoverage_label;
   public static String CoverageViewColumnCoveredInstructions_label;
-  public static String CoverageViewColumnCoveredBlocks_label;
+  public static String CoverageViewColumnCoveredBranches_label;
   public static String CoverageViewColumnCoveredLines_label;
   public static String CoverageViewColumnCoveredMethods_label;
   public static String CoverageViewColumnCoveredTypes_label;
+  public static String CoverageViewColumnCoveredComplexity_label;
   public static String CoverageViewColumnMissedInstructions_label;
-  public static String CoverageViewColumnMissedBlocks_label;
+  public static String CoverageViewColumnMissedBranches_label;
   public static String CoverageViewColumnMissedLines_label;
   public static String CoverageViewColumnMissedMethods_label;
   public static String CoverageViewColumnMissedTypes_label;
+  public static String CoverageViewColumnMissedComplexity_label;
   public static String CoverageViewColumnTotalInstructions_label;
-  public static String CoverageViewColumnTotalBlocks_label;
+  public static String CoverageViewColumnTotalBranches_label;
   public static String CoverageViewColumnTotalLines_label;
   public static String CoverageViewColumnTotalMethods_label;
   public static String CoverageViewColumnTotalTypes_label;
+  public static String CoverageViewColumnTotalComplexity_label;
   public static String CoverageView_columnCoverageValue;
   public static String CoverageView_loadingMessage;
+
+  public static String AnnotationTextAllBranchesMissed_message;
+  public static String AnnotationTextAllBranchesCovered_message;
+  public static String AnnotationTextSomeBranchesMissed_message;
 
   public static String MergeSessionsDialog_title;
   public static String MergeSessionsDialogDescription_label;
@@ -87,13 +95,8 @@ public class UIMessages extends NLS {
 
   public static String CoverageTab_title;
   public static String CoverageTabInstrumentedClassesGroup_label;
-  public static String CoverageTabInplaceInstrumentation_label;
   public static String CoverageTabNoClassesSelected_message;
 
-  public static String InstrumentationWarning_title;
-  public static String InstrumentationWarning_message;
-  public static String AlreadyInstrumentedError_title;
-  public static String AlreadyInstrumentedError_message;
   public static String NoCoverageDataError_title;
   public static String NoCoverageDataError_message;
   public static String NoInstrumentedClassesError_title;
@@ -148,10 +151,11 @@ public class UIMessages extends NLS {
   public static String CoveragePropertyPageColumnMissed_label;
   public static String CoveragePropertyPageColumnTotal_label;
   public static String CoveragePropertyPageInstructions_label;
-  public static String CoveragePropertyPageBlocks_label;
+  public static String CoveragePropertyPageBranches_label;
   public static String CoveragePropertyPageLines_label;
   public static String CoveragePropertyPageMethods_label;
   public static String CoveragePropertyPageTypes_label;
+  public static String CoveragePropertyPageComplexity_label;
 
   public static String CoverageDecoratorSuffix_label;
 
@@ -159,7 +163,6 @@ public class UIMessages extends NLS {
   public static String CoveragePreferencesShowCoverageView_label;
   public static String CoveragePreferencesActivateNewSessions_label;
   public static String CoveragePreferencesAutoRemoveSessions_label;
-  public static String CoveragePreferencesShowInplaceWarning_label;
   public static String CoveragePreferencesDefaultInstrumentation_title;
   public static String CoveragePreferencesSourceFoldersOnly_label;
   public static String CoveragePreferencesSameProjectOnly_label;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
@@ -11,8 +11,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.ISourceReference;
 import org.eclipse.jdt.core.JavaModelException;
@@ -31,11 +29,13 @@ import org.eclipse.jface.text.source.IAnnotationModelListenerExtension;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
+import org.jacoco.core.analysis.ICounter;
+import org.jacoco.core.analysis.ICoverageNode;
+import org.jacoco.core.analysis.ILine;
+import org.jacoco.core.analysis.ISourceNode;
 
 import com.mountainminds.eclemma.core.CoverageTools;
 import com.mountainminds.eclemma.core.analysis.IJavaCoverageListener;
-import com.mountainminds.eclemma.core.analysis.IJavaElementCoverage;
-import com.mountainminds.eclemma.core.analysis.ILineCoverage;
 import com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin;
 
 /**
@@ -130,7 +130,7 @@ public class CoverageAnnotationModel implements IAnnotationModel {
   }
 
   protected void updateAnnotations(boolean force) {
-    ILineCoverage lineCoverage = null;
+    ISourceNode lineCoverage = null;
     boolean annotate = false;
     preconditions: {
       if (editor.isDirty())
@@ -168,22 +168,26 @@ public class CoverageAnnotationModel implements IAnnotationModel {
     return false;
   }
 
-  protected ILineCoverage findLineCoverage(Object element) {
+  protected ISourceNode findLineCoverage(Object element) {
     // Do we have a coverage info for the editor input?
-    IJavaElementCoverage coverage = CoverageTools.getCoverageInfo(element);
+    ICoverageNode coverage = CoverageTools.getCoverageInfo(element);
     if (coverage == null)
       return null;
 
+    // TODO check resource timestamp
     // Does the resource version (if any) corresponds to the coverage data?
-    IResource resource = (IResource) ((IAdaptable) element)
-        .getAdapter(IResource.class);
-    if (resource != null) {
-      if (resource.getModificationStamp() != coverage
-          .getResourceModificationStamp())
-        return null;
-    }
+    // IResource resource = (IResource) ((IAdaptable) element)
+    // .getAdapter(IResource.class);
+    // if (resource != null) {
+    // if (resource.getModificationStamp() != coverage
+    // .getResourceModificationStamp())
+    // return null;
+    // }
 
-    return coverage.getLineCoverage();
+    if (coverage instanceof ISourceNode) {
+      return (ISourceNode) coverage;
+    }
+    return null;
   }
 
   protected void clear() {
@@ -200,26 +204,21 @@ public class CoverageAnnotationModel implements IAnnotationModel {
     annotations.clear();
   }
 
-  protected void createAnnotations(ILineCoverage linecoverage) {
+  protected void createAnnotations(ISourceNode linecoverage) {
     AnnotationModelEvent event = new AnnotationModelEvent(this);
     clear(event);
     int firstline = linecoverage.getFirstLine();
     int lastline = linecoverage.getLastLine();
     try {
       for (int l = firstline; l <= lastline; l++) {
-        int status = linecoverage.getCoverage(l);
-        if (status != ILineCoverage.NO_CODE) {
+        final ILine line = linecoverage.getLine(l);
+        int status = line.getStatus();
+        if (status != ICounter.EMPTY) {
           IRegion region = document.getLineInformation(l - 1);
           int docoffset = region.getOffset();
           int doclength = region.getLength();
-          // Extend annotation for subsequent lines with same status:
-          while (l < lastline && linecoverage.getCoverage(l + 1) == status) {
-            l++;
-            region = document.getLineInformation(l - 1);
-            doclength = region.getOffset() - docoffset + region.getLength();
-          }
           CoverageAnnotation ca = new CoverageAnnotation(docoffset, doclength,
-              status);
+              line);
           annotations.add(ca);
           event.annotationAdded(ca);
         }

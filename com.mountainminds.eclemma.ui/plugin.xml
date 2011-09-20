@@ -312,13 +312,13 @@
    <extension
          point="org.eclipse.ui.editors.markerAnnotationSpecification">
       <specification
+            annotationImageProvider="com.mountainminds.eclemma.internal.ui.annotation.CoverageAnnotationImageProvider"
             annotationType="com.mountainminds.eclemma.ui.fullCoverageAnnotation"
             colorPreferenceKey="fullcoverage_color"
             colorPreferenceValue="192,255,192"
             contributesToHeader="false"
             highlightPreferenceKey="fullcoverage_highlight"
             highlightPreferenceValue="true"
-            icon="$nl$/icons/full/obj16/markerfull.gif"
             includeOnPreferencePage="true"
             isGoToNextNavigationTarget="false"
             isGoToNextNavigationTargetKey="fullcoverage_isGoToNextNavigationTargetKey"
@@ -335,15 +335,15 @@
             textStylePreferenceKey="fullcoverage_stylePreferences"
             textStylePreferenceValue="BOX"
             verticalRulerPreferenceKey="fullcoverage_verticalRuler"
-            verticalRulerPreferenceValue="false"/>
+            verticalRulerPreferenceValue="true"/>
       <specification
+            annotationImageProvider="com.mountainminds.eclemma.internal.ui.annotation.CoverageAnnotationImageProvider"
             annotationType="com.mountainminds.eclemma.ui.partialCoverageAnnotation"
             colorPreferenceKey="partialcoverage_color"
             colorPreferenceValue="255,255,128"
             contributesToHeader="false"
             highlightPreferenceKey="partialcoverage_highlight"
             highlightPreferenceValue="true"
-            icon="$nl$/icons/full/obj16/markerpartial.gif"
             includeOnPreferencePage="true"
             isGoToNextNavigationTarget="false"
             isGoToNextNavigationTargetKey="fullcoverage_isGoToNextNavigationTargetKey"
@@ -360,15 +360,15 @@
             textStylePreferenceKey="partialcoverage_stylePreferences"
             textStylePreferenceValue="BOX"
             verticalRulerPreferenceKey="partialcoverage_verticalRuler"
-            verticalRulerPreferenceValue="false"/>
+            verticalRulerPreferenceValue="true"/>
       <specification
+            annotationImageProvider="com.mountainminds.eclemma.internal.ui.annotation.CoverageAnnotationImageProvider"
             annotationType="com.mountainminds.eclemma.ui.noCoverageAnnotation"
             colorPreferenceKey="nocoverage_color"
             colorPreferenceValue="255,160,160"
             contributesToHeader="false"
             highlightPreferenceKey="nocoverage_highlight"
             highlightPreferenceValue="true"
-            icon="$nl$/icons/full/obj16/markerno.gif"
             includeOnPreferencePage="true"
             isGoToNextNavigationTarget="false"
             isGoToNextNavigationTargetKey="nocoverage_isGoToNextNavigationTargetKey"
@@ -385,7 +385,7 @@
             textStylePreferenceKey="nocoverage_stylePreferences"
             textStylePreferenceValue="BOX"
             verticalRulerPreferenceKey="nocoverage_verticalRuler"
-            verticalRulerPreferenceValue="false"/>
+            verticalRulerPreferenceValue="true"/>
    </extension>
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTabGroups">
@@ -408,7 +408,7 @@
                mode="coverage"/>
       </launchConfigurationTabGroup>
       <launchConfigurationTabGroup
-            class="com.mountainminds.eclemma.ui.launching.CoverageTabGroup:inplaceonly"
+            class="com.mountainminds.eclemma.ui.launching.CoverageTabGroup"
             helpContextId="com.mountainminds.eclemma.ui.coverage_launch_context"
             id="com.mountainminds.eclemma.ui.WorkbenchTabGroup"
             type="org.eclipse.pde.ui.RuntimeWorkbench">
@@ -417,7 +417,7 @@
                mode="coverage"/>
       </launchConfigurationTabGroup>
       <launchConfigurationTabGroup
-            class="com.mountainminds.eclemma.ui.launching.CoverageTabGroup:inplaceonly"
+            class="com.mountainminds.eclemma.ui.launching.CoverageTabGroup"
             helpContextId="com.mountainminds.eclemma.ui.coverage_launch_context"
             id="com.mountainminds.eclemma.ui.JUnitPluginTabGroup"
             type="org.eclipse.pde.ui.JunitLaunchConfig">
@@ -426,7 +426,7 @@
                mode="coverage"/>
       </launchConfigurationTabGroup>
       <launchConfigurationTabGroup
-            class="com.mountainminds.eclemma.ui.launching.CoverageTabGroup:inplaceonly"
+            class="com.mountainminds.eclemma.ui.launching.CoverageTabGroup"
             helpContextId="com.mountainminds.eclemma.ui.coverage_launch_context"
             id="com.mountainminds.eclemma.ui.EquinoxTabGroup"
             type="org.eclipse.pde.ui.EquinoxLauncher">
@@ -444,7 +444,7 @@
                mode="coverage"/>
       </launchConfigurationTabGroup>
       <launchConfigurationTabGroup
-            class="com.mountainminds.eclemma.ui.launching.CoverageTabGroup:inplaceonly"
+            class="com.mountainminds.eclemma.ui.launching.CoverageTabGroup"
             helpContextId="com.mountainminds.eclemma.ui.coverage_launch_context"
             id="com.mountainminds.eclemma.ui.JUnitRAPTabGroup"
             type="org.eclipse.rap.ui.launch.RAPJUnitTestLauncher">
@@ -453,7 +453,7 @@
                mode="coverage"/>
       </launchConfigurationTabGroup>
       <launchConfigurationTabGroup
-            class="com.mountainminds.eclemma.ui.launching.CoverageTabGroup:inplaceonly"
+            class="com.mountainminds.eclemma.ui.launching.CoverageTabGroup"
             helpContextId="com.mountainminds.eclemma.ui.coverage_launch_context"
             id="com.mountainminds.eclemma.ui.SWTBotJUnitTabGroup"
             type="org.eclipse.swtbot.eclipse.ui.launcher.JunitLaunchConfig">
@@ -465,16 +465,6 @@
    </extension>
    <extension
          point="org.eclipse.debug.core.statusHandlers">
-      <statusHandler
-            class="com.mountainminds.eclemma.internal.ui.launching.InplaceInstrumentationHandler"
-            code="2000"
-            id="com.mountainminds.eclemma.ui.inplaceInstrumentationHandler"
-            plugin="com.mountainminds.eclemma.core"/>
-      <statusHandler
-            class="com.mountainminds.eclemma.internal.ui.launching.AlreadyInstrumentedHandler"
-            code="5100"
-            id="com.mountainminds.eclemma.ui.alreadyInstrumentedHandler"
-            plugin="com.mountainminds.eclemma.core"/>
       <statusHandler
             class="com.mountainminds.eclemma.internal.ui.launching.NoCoverageDataHandler"
             code="5101"

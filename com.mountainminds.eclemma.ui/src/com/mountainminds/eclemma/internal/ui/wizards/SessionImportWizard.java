@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
@@ -64,14 +64,13 @@ public class SessionImportWizard extends Wizard implements IImportWizard {
     page1.saveWidgetValues();
     return importSession();
   }
-  
+
   private boolean importSession() {
     final ISessionImporter importer = CoverageTools.getImporter();
     importer.setDescription(page1.getSessionDescription());
     importer.setCoverageFile(page1.getCoverageFile());
     importer.setClassFiles(page1.getClassFiles());
     importer.setCopy(page1.getCreateCopy());
-    importer.setUseImportedMetaData(page1.getUseImportedMetaData());
     IRunnableWithProgress op = new IRunnableWithProgress() {
       public void run(IProgressMonitor monitor)
           throws InvocationTargetException, InterruptedException {
@@ -95,12 +94,13 @@ public class SessionImportWizard extends Wizard implements IImportWizard {
       if (ex instanceof CoreException) {
         status = ((CoreException) ex).getStatus();
       } else {
-        status = EclEmmaUIPlugin.errorStatus(String.valueOf(ex.getMessage()), ex);
+        status = EclEmmaUIPlugin.errorStatus(String.valueOf(ex.getMessage()),
+            ex);
       }
       ErrorDialog.openError(getShell(), title, msg, status);
       return false;
     }
     return true;
-  }  
+  }
 
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2007 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
@@ -26,11 +26,11 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PropertyPage;
+import org.jacoco.core.analysis.ICounter;
+import org.jacoco.core.analysis.ICoverageNode;
 
 import com.mountainminds.eclemma.core.CoverageTools;
 import com.mountainminds.eclemma.core.ICoverageSession;
-import com.mountainminds.eclemma.core.analysis.ICounter;
-import com.mountainminds.eclemma.core.analysis.IJavaElementCoverage;
 import com.mountainminds.eclemma.internal.ui.ContextHelp;
 import com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin;
 import com.mountainminds.eclemma.internal.ui.UIMessages;
@@ -119,21 +119,23 @@ public class CoveragePropertyPage extends PropertyPage {
   }
 
   private Line[] getLines() {
-    IJavaElementCoverage c = CoverageTools.getCoverageInfo(getElement());
+    ICoverageNode c = CoverageTools.getCoverageInfo(getElement());
     if (c == null) {
       return new Line[0];
     } else {
       return new Line[] {
-          new Line(UIMessages.CoveragePropertyPageInstructions_label, c
-              .getInstructionCounter()),
-          new Line(UIMessages.CoveragePropertyPageBlocks_label, c
-              .getBlockCounter()),
-          new Line(UIMessages.CoveragePropertyPageLines_label, c
-              .getLineCounter()),
-          new Line(UIMessages.CoveragePropertyPageMethods_label, c
-              .getMethodCounter()),
-          new Line(UIMessages.CoveragePropertyPageTypes_label, c
-              .getTypeCounter()) };
+          new Line(UIMessages.CoveragePropertyPageInstructions_label,
+              c.getInstructionCounter()),
+          new Line(UIMessages.CoveragePropertyPageBranches_label,
+              c.getBranchCounter()),
+          new Line(UIMessages.CoveragePropertyPageLines_label,
+              c.getLineCounter()),
+          new Line(UIMessages.CoveragePropertyPageMethods_label,
+              c.getMethodCounter()),
+          new Line(UIMessages.CoveragePropertyPageTypes_label,
+              c.getClassCounter()),
+          new Line(UIMessages.CoveragePropertyPageComplexity_label,
+              c.getComplexityCounter()) };
     }
   }
 
@@ -153,7 +155,7 @@ public class CoveragePropertyPage extends PropertyPage {
     public Image getColumnImage(Object element, int columnIndex) {
       if (columnIndex == COLUMN_COUNTER) {
         Line l = (Line) element;
-        return EclEmmaUIPlugin.getCoverageImage(l.counter.getRatio());
+        return EclEmmaUIPlugin.getCoverageImage(l.counter.getCoveredRatio());
       } else {
         return null;
       }
@@ -165,7 +167,7 @@ public class CoveragePropertyPage extends PropertyPage {
       case COLUMN_COUNTER:
         return l.label;
       case COLUMN_COVERAGE:
-        return COVERAGE_VALUE.format(l.counter.getRatio());
+        return COVERAGE_VALUE.format(l.counter.getCoveredRatio());
       case COLUMN_COVERED:
         return String.valueOf(l.counter.getCoveredCount());
       case COLUMN_MISSED:

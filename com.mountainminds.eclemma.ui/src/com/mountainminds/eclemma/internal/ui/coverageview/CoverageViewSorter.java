@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
@@ -7,16 +7,16 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.ui.coverageview;
 
-import org.eclipse.jdt.ui.JavaElementSorter;
+import org.eclipse.jdt.ui.JavaElementComparator;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.TreeColumn;
+import org.jacoco.core.analysis.ICounter;
 
 import com.mountainminds.eclemma.core.CoverageTools;
-import com.mountainminds.eclemma.core.analysis.ICounter;
 import com.mountainminds.eclemma.internal.ui.coverageview.ViewSettings.ICounterMode;
 
 /**
@@ -25,11 +25,11 @@ import com.mountainminds.eclemma.internal.ui.coverageview.ViewSettings.ICounterM
  * @author Marc R. Hoffmann
  * @version $Revision$
  */
-class CoverageViewSorter extends ViewerSorter {
+class CoverageViewSorter extends ViewerComparator {
 
   private final ViewSettings settings;
   private final CoverageView view;
-  private final ViewerSorter elementsorter = new JavaElementSorter();
+  private final ViewerComparator elementsorter = new JavaElementComparator();
 
   public CoverageViewSorter(ViewSettings settings, CoverageView view) {
     this.settings = settings;
@@ -40,14 +40,19 @@ class CoverageViewSorter extends ViewerSorter {
     column.addSelectionListener(new SelectionListener() {
       public void widgetSelected(SelectionEvent e) {
         settings.toggleSortColumn(columnidx);
-        TreeSortCompatibility.setTreeSortColumnAndDirection(column, settings
-            .isReverseSort() ? SWT.DOWN : SWT.UP);
+        setSortColumnAndDirection(column, settings.isReverseSort() ? SWT.DOWN
+            : SWT.UP);
         view.refreshViewer();
       }
 
       public void widgetDefaultSelected(SelectionEvent e) {
       }
     });
+  }
+
+  void setSortColumnAndDirection(TreeColumn sortColumn, int direction) {
+    sortColumn.getParent().setSortColumn(sortColumn);
+    sortColumn.getParent().setSortDirection(direction);
   }
 
   public int compare(Viewer viewer, Object e1, Object e2) {
@@ -60,7 +65,7 @@ class CoverageViewSorter extends ViewerSorter {
       res = elementsorter.compare(viewer, e1, e2);
       break;
     case CoverageView.COLUMN_RATIO:
-      res = Double.compare(c1.getRatio(), c2.getRatio());
+      res = Double.compare(c1.getCoveredRatio(), c2.getCoveredRatio());
       break;
     case CoverageView.COLUMN_COVERED:
       res = (int) (c1.getCoveredCount() - c2.getCoveredCount());

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2009 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
@@ -53,13 +53,13 @@ import org.eclipse.ui.part.IShowInTarget;
 import org.eclipse.ui.part.ShowInContext;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.texteditor.IWorkbenchActionDefinitionIds;
+import org.jacoco.core.analysis.ICounter;
+import org.jacoco.core.analysis.ICoverageNode;
 
 import com.mountainminds.eclemma.core.CoverageTools;
 import com.mountainminds.eclemma.core.ICoverageSession;
 import com.mountainminds.eclemma.core.ISessionListener;
-import com.mountainminds.eclemma.core.analysis.ICounter;
 import com.mountainminds.eclemma.core.analysis.IJavaCoverageListener;
-import com.mountainminds.eclemma.core.analysis.IJavaElementCoverage;
 import com.mountainminds.eclemma.internal.ui.ContextHelp;
 import com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin;
 import com.mountainminds.eclemma.internal.ui.UIMessages;
@@ -161,7 +161,7 @@ public class CoverageView extends ViewPart implements IShowInTarget {
         if (counter.getTotalCount() == 0) {
           return null;
         } else {
-          return EclEmmaUIPlugin.getCoverageImage(counter.getRatio());
+          return EclEmmaUIPlugin.getCoverageImage(counter.getCoveredRatio());
         }
       }
       return null;
@@ -204,7 +204,7 @@ public class CoverageView extends ViewPart implements IShowInTarget {
         if (counter.getTotalCount() == 0) {
           return ""; //$NON-NLS-1$
         } else {
-          return COVERAGE_VALUE.format(new Double(counter.getRatio()));
+          return COVERAGE_VALUE.format(new Double(counter.getCoveredRatio()));
         }
       case COLUMN_COVERED:
         return String.valueOf(counter.getCoveredCount());
@@ -291,8 +291,8 @@ public class CoverageView extends ViewPart implements IShowInTarget {
       break;
     }
 
-    TreeSortCompatibility.setTreeSortColumnAndDirection(sortColumn, settings
-        .isReverseSort() ? SWT.DOWN : SWT.UP);
+    sorter.setSortColumnAndDirection(sortColumn,
+        settings.isReverseSort() ? SWT.DOWN : SWT.UP);
 
     viewer = new TreeViewer(tree);
     viewer.addFilter(new ViewerFilter() {
@@ -300,26 +300,25 @@ public class CoverageView extends ViewPart implements IShowInTarget {
         if (element == LOADING_ELEMENT) {
           return true;
         } else {
-          IJavaElementCoverage c = CoverageTools.getCoverageInfo(element);
+          ICoverageNode c = CoverageTools.getCoverageInfo(element);
           if (c == null || c.getInstructionCounter().getTotalCount() == 0) {
             return false;
           }
           if (settings.getHideUnusedTypes()) {
-            ICounter cnt = c.getTypeCounter();
+            ICounter cnt = c.getClassCounter();
             return cnt.getTotalCount() == 0 || cnt.getCoveredCount() != 0;
           }
           return true;
         }
       }
     });
-    viewer.setSorter(sorter);
+    viewer.setComparator(sorter);
     viewer.setContentProvider(new CoveredElementsContentProvider(settings));
     viewer.setLabelProvider(labelprovider);
     viewer.setInput(CoverageTools.getJavaModelCoverage());
     viewer.addSelectionChangedListener(new ISelectionChangedListener() {
       public void selectionChanged(SelectionChangedEvent event) {
-        openAction
-            .selectionChanged((IStructuredSelection) event.getSelection());
+        openAction.selectionChanged((IStructuredSelection) event.getSelection());
         propertiesAction.selectionChanged(event);
       }
     });
@@ -426,6 +425,7 @@ public class CoverageView extends ViewPart implements IShowInTarget {
     mm.add(new SelectCounterModeAction(2, settings, this));
     mm.add(new SelectCounterModeAction(3, settings, this));
     mm.add(new SelectCounterModeAction(4, settings, this));
+    mm.add(new SelectCounterModeAction(5, settings, this));
     mm.add(new Separator());
     mm.add(new HideUnusedTypesAction(settings, this));
     mm.add(new Separator());

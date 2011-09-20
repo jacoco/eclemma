@@ -1,9 +1,9 @@
 /*******************************************************************************
- * Copyright (c) 2006 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2011 Mountainminds GmbH & Co. KG
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
- * $Id: $
+ * $Id$
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.core;
 
@@ -15,17 +15,17 @@ import junit.framework.TestCase;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.ILaunchConfiguration;
 
+import com.mountainminds.eclemma.core.IClassFiles;
 import com.mountainminds.eclemma.core.ICoverageSession;
-import com.mountainminds.eclemma.core.IInstrumentation;
 import com.mountainminds.eclemma.core.ISessionListener;
 import com.mountainminds.eclemma.core.ISessionManager;
 
 /**
- * @author  Marc R. Hoffmann
- * @version $Revision: $
+ * @author Marc R. Hoffmann
+ * @version $Revision$
  */
 public class SessionManagerTest extends TestCase {
-  
+
   protected ISessionManager manager;
   protected ISessionListener listener;
   protected ISessionListener reflistener;
@@ -36,7 +36,7 @@ public class SessionManagerTest extends TestCase {
     manager.addSessionListener(listener);
     reflistener = new RecordingListener();
   }
-  
+
   public void testAddSession1() {
     ICoverageSession s0 = new DummySession();
     ICoverageSession s1 = new DummySession();
@@ -66,7 +66,7 @@ public class SessionManagerTest extends TestCase {
     assertSame(s2, sessions[2]);
     assertSame(s1, manager.getActiveSession());
   }
-  
+
   public void testAddSession3() {
     ICoverageSession s0 = new DummySession();
     ICoverageSession s1 = new DummySession();
@@ -85,7 +85,7 @@ public class SessionManagerTest extends TestCase {
     } catch (NullPointerException npe) {
     }
   }
-  
+
   public void testRemoveSession1() {
     ICoverageSession s0 = new DummySession();
     manager.addSession(s0, true, null);
@@ -116,7 +116,7 @@ public class SessionManagerTest extends TestCase {
     reflistener.sessionActivated(s0);
     assertEquals(reflistener, listener);
   }
-  
+
   public void testRemoveSession3() {
     Object key0 = new Object();
     Object key1 = new Object();
@@ -136,7 +136,7 @@ public class SessionManagerTest extends TestCase {
     reflistener.sessionActivated(s0);
     assertEquals(reflistener, listener);
   }
-  
+
   public void testRemoveSession4() {
     Object key0 = new Object();
     Object key1 = new Object();
@@ -148,7 +148,7 @@ public class SessionManagerTest extends TestCase {
     manager.removeSession(key2);
     assertEquals(2, manager.getSessions().length);
   }
-  
+
   public void testRemoveAllSessions1() {
     ICoverageSession s0 = new DummySession();
     ICoverageSession s1 = new DummySession();
@@ -165,7 +165,7 @@ public class SessionManagerTest extends TestCase {
     reflistener.sessionActivated(null);
     assertEquals(reflistener, listener);
   }
-  
+
   public void testGetSessions1() {
     ICoverageSession[] sessions = manager.getSessions();
     assertNotNull(sessions);
@@ -184,30 +184,29 @@ public class SessionManagerTest extends TestCase {
     assertEquals(s1, manager.getSession(key1));
     assertNull(manager.getSession(key2));
   }
-  
-  
+
   private static class DummySession implements ICoverageSession {
 
     public String getDescription() {
       return toString();
     }
-  
-    public IInstrumentation[] getInstrumentations() {
-      return new IInstrumentation[0];
+
+    public IClassFiles[] getClassFiles() {
+      return new IClassFiles[0];
     }
-  
+
     public IPath[] getCoverageDataFiles() {
       return new IPath[0];
     }
-  
+
     public ILaunchConfiguration getLaunchConfiguration() {
       return null;
     }
-  
+
     public ICoverageSession merge(ICoverageSession other, String description) {
       return new DummySession();
     }
-  
+
     public Object getAdapter(Class adapter) {
       return null;
     }
@@ -217,21 +216,24 @@ public class SessionManagerTest extends TestCase {
     }
 
   }
-  
+
   private static class RecordingListener implements ISessionListener {
-    
+
     private List l = new ArrayList();
 
     public void sessionAdded(ICoverageSession addedSession) {
-      l.add("ADDED"); l.add(addedSession);
+      l.add("ADDED");
+      l.add(addedSession);
     }
 
     public void sessionRemoved(ICoverageSession removedSession) {
-      l.add("REMOVED"); l.add(removedSession);
+      l.add("REMOVED");
+      l.add(removedSession);
     }
 
     public void sessionActivated(ICoverageSession session) {
-      l.add("ACTIVATED"); l.add(session);
+      l.add("ACTIVATED");
+      l.add(session);
     }
 
     public boolean equals(Object obj) {
@@ -249,7 +251,7 @@ public class SessionManagerTest extends TestCase {
     public String toString() {
       return l.toString();
     }
-    
+
   }
-  
+
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
@@ -42,12 +42,9 @@ import com.mountainminds.eclemma.internal.ui.viewers.ClassesViewer;
  */
 public class CoverageTab extends AbstractLaunchConfigurationTab {
 
-  private final boolean inplaceonly;
   private ClassesViewer classesviewer;
-  private Button buttonInplaceInstrumentation;
 
-  public CoverageTab(boolean inplaceonly) {
-    this.inplaceonly = inplaceonly;
+  public CoverageTab() {
   }
 
   public void createControl(Composite parent) {
@@ -65,11 +62,11 @@ public class CoverageTab extends AbstractLaunchConfigurationTab {
     group.setLayoutData(new GridData(GridData.FILL_BOTH));
     group.setText(UIMessages.CoverageTabInstrumentedClassesGroup_label);
     GridLayout layout = new GridLayout();
-    layout.numColumns = 3;
+    layout.numColumns = 2;
     group.setLayout(layout);
     classesviewer = new ClassesViewer(group, SWT.BORDER);
     GridData gd = new GridData(GridData.FILL_BOTH);
-    gd.horizontalSpan = 3;
+    gd.horizontalSpan = 2;
     classesviewer.getTable().setLayoutData(gd);
     classesviewer.addSelectionChangedListener(new ISelectionChangedListener() {
       public void selectionChanged(SelectionChangedEvent event) {
@@ -78,19 +75,9 @@ public class CoverageTab extends AbstractLaunchConfigurationTab {
         updateLaunchConfigurationDialog();
       }
     });
-    
-    buttonInplaceInstrumentation = new Button(group, SWT.CHECK);
-    buttonInplaceInstrumentation.setText(UIMessages.CoverageTabInplaceInstrumentation_label);
-    buttonInplaceInstrumentation.setEnabled(!inplaceonly);
-    buttonInplaceInstrumentation.addSelectionListener(new SelectionAdapter() {
-      public void widgetSelected(SelectionEvent e) {
-        classesviewer.setIncludeBinaries(!buttonInplaceInstrumentation.getSelection());
-        setDirty(true);
-        updateLaunchConfigurationDialog();
-      }
-    });
-    buttonInplaceInstrumentation.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL));
-    Button buttonSelectAll = createPushButton(group, UIMessages.SelectAllAction_label, null);
+
+    Button buttonSelectAll = createPushButton(group,
+        UIMessages.SelectAllAction_label, null);
     buttonSelectAll.addSelectionListener(new SelectionAdapter() {
       public void widgetSelected(SelectionEvent e) {
         classesviewer.selectAll();
@@ -98,7 +85,10 @@ public class CoverageTab extends AbstractLaunchConfigurationTab {
         updateLaunchConfigurationDialog();
       }
     });
-    Button buttonDeselectAll = createPushButton(group, UIMessages.DeselectAllAction_label, null);
+    buttonSelectAll.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
+        | GridData.HORIZONTAL_ALIGN_END));
+    Button buttonDeselectAll = createPushButton(group,
+        UIMessages.DeselectAllAction_label, null);
     buttonDeselectAll.addSelectionListener(new SelectionAdapter() {
       public void widgetSelected(SelectionEvent e) {
         classesviewer.deselectAll();
@@ -114,25 +104,18 @@ public class CoverageTab extends AbstractLaunchConfigurationTab {
 
   public void initializeFrom(ILaunchConfiguration configuration) {
     try {
-      boolean inplace = inplaceonly || configuration.getAttribute(
-          ICoverageLaunchConfigurationConstants.ATTR_INPLACE_INSTRUMENTATION, false);
-      buttonInplaceInstrumentation.setSelection(inplace);
-      classesviewer.setIncludeBinaries(!inplace);
       classesviewer.setInput(CoverageTools.getClassFiles(configuration, true));
-      classesviewer.setSelectedClasses(
-          CoverageTools.getClassFilesForInstrumentation(configuration, inplace));
+      classesviewer.setSelectedClasses(CoverageTools
+          .getClassFilesForInstrumentation(configuration));
     } catch (CoreException e) {
       EclEmmaUIPlugin.log(e);
     }
     updateErrorStatus();
     setDirty(false);
   }
-  
+
   public void performApply(ILaunchConfigurationWorkingCopy configuration) {
     if (isDirty()) {
-      configuration.setAttribute(
-          ICoverageLaunchConfigurationConstants.ATTR_INPLACE_INSTRUMENTATION,
-          buttonInplaceInstrumentation.getSelection());
       IClassFiles[] classes = classesviewer.getSelectedClasses();
       List l = new ArrayList();
       for (int i = 0; i < classes.length; i++) {
@@ -142,7 +125,7 @@ public class CoverageTab extends AbstractLaunchConfigurationTab {
           ICoverageLaunchConfigurationConstants.ATTR_INSTRUMENTATION_PATHS, l);
     }
   }
-  
+
   public boolean isValid(ILaunchConfiguration launchConfig) {
     return !classesviewer.getSelection().isEmpty();
   }
@@ -154,7 +137,7 @@ public class CoverageTab extends AbstractLaunchConfigurationTab {
   public Image getImage() {
     return EclEmmaUIPlugin.getImage(EclEmmaUIPlugin.EVIEW_COVERAGE);
   }
-  
+
   private void updateErrorStatus() {
     if (classesviewer.getSelection().isEmpty()) {
       setErrorMessage(UIMessages.CoverageTabNoClassesSelected_message);

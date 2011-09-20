@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
@@ -8,39 +8,46 @@
 package com.mountainminds.eclemma.internal.core.analysis;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
-import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.osgi.util.NLS;
+import org.jacoco.core.analysis.Analyzer;
+import org.jacoco.core.analysis.CoverageBuilder;
+import org.jacoco.core.analysis.IBundleCoverage;
+import org.jacoco.core.analysis.IClassCoverage;
+import org.jacoco.core.analysis.IPackageCoverage;
+import org.jacoco.core.analysis.ISourceFileCoverage;
+import org.jacoco.core.data.ExecutionDataReader;
+import org.jacoco.core.data.ExecutionDataStore;
+import org.jacoco.core.data.SessionInfoStore;
+import org.jacoco.core.internal.analysis.BundleCoverageImpl;
 
 import com.mountainminds.eclemma.core.EclEmmaStatus;
+import com.mountainminds.eclemma.core.IClassFiles;
 import com.mountainminds.eclemma.core.ICoverageSession;
-import com.mountainminds.eclemma.core.IInstrumentation;
 import com.mountainminds.eclemma.core.analysis.IJavaModelCoverage;
 import com.mountainminds.eclemma.internal.core.CoreMessages;
 import com.mountainminds.eclemma.internal.core.DebugOptions;
 import com.mountainminds.eclemma.internal.core.DebugOptions.ITracer;
-import com.mountainminds.eclemma.internal.core.analysis.TypeCoverage.UnboundMethodCoverage;
-import com.vladium.emma.data.ClassDescriptor;
-import com.vladium.emma.data.DataFactory;
-import com.vladium.emma.data.ICoverageData;
-import com.vladium.emma.data.IMergeable;
-import com.vladium.emma.data.IMetaData;
-import com.vladium.emma.data.MethodDescriptor;
-import com.vladium.emma.data.ICoverageData.DataHolder;
+import com.mountainminds.eclemma.internal.core.EclEmmaCorePlugin;
 
 /**
- * @author  Marc R. Hoffmann
+ * @author Marc R. Hoffmann
  * @version $Revision$
  */
 public class SessionAnalyzer {
@@ -50,22 +57,25 @@ public class SessionAnalyzer {
 
   private JavaModelCoverage modelcoverage;
 
-  public IJavaModelCoverage processSession(ICoverageSession session, IProgressMonitor monitor)
-      throws CoreException {
+  public IJavaModelCoverage processSession(ICoverageSession session,
+      IProgressMonitor monitor) throws CoreException {
     PERFORMANCE.startTimer();
     PERFORMANCE.startMemoryUsage();
     modelcoverage = new JavaModelCoverage();
     IPath[] coveragefiles = session.getCoverageDataFiles();
-    IInstrumentation[] instrumentations = session.getInstrumentations();
-    monitor.beginTask(NLS.bind(CoreMessages.AnalyzingCoverageSession_task, session.getDescription()),
-        coveragefiles.length + instrumentations.length);
-    ICoverageData coveragedata = null;
+    IClassFiles[] classfiles = session.getClassFiles();
+    monitor
+        .beginTask(
+            NLS.bind(CoreMessages.AnalyzingCoverageSession_task,
+                session.getDescription()), coveragefiles.length
+                + classfiles.length);
+    ExecutionDataStore executiondata = new ExecutionDataStore();
     for (int i = 0; i < coveragefiles.length && !monitor.isCanceled(); i++) {
-      coveragedata = processCoveragedataFile(coveragedata, coveragefiles[i]);
+      loadExecutionDataFile(executiondata, coveragefiles[i]);
       monitor.worked(1);
     }
-    for (int i = 0; i < instrumentations.length && !monitor.isCanceled(); i++) {
-      processMetadataFile(coveragedata, instrumentations[i],
+    for (int i = 0; i < classfiles.length && !monitor.isCanceled(); i++) {
+      processClasspathEntry(executiondata, classfiles[i],
           new SubProgressMonitor(monitor, 1));
     }
     monitor.done();
@@ -74,137 +84,137 @@ public class SessionAnalyzer {
     return modelcoverage;
   }
 
-  private ICoverageData processCoveragedataFile(ICoverageData coveragedata,
-      IPath path) throws CoreException {
+  private void loadExecutionDataFile(ExecutionDataStore store, IPath path)
+      throws CoreException {
     try {
       File f = path.toFile();
       if (f.exists()) {
-        IMergeable data = DataFactory.load(f)[DataFactory.TYPE_COVERAGEDATA];
-        if (coveragedata == null) {
-          coveragedata = (ICoverageData) data;
-        } else {
-          coveragedata = (ICoverageData) coveragedata.merge(data);
+        final InputStream in = new FileInputStream(f);
+        final ExecutionDataReader reader = new ExecutionDataReader(in);
+        reader.setExecutionDataVisitor(store);
+        reader.setSessionInfoVisitor(new SessionInfoStore());
+        while (reader.read()) {
+          // nothing here
         }
+        in.close();
       }
-      return coveragedata;
     } catch (IOException e) {
-      throw new CoreException(EclEmmaStatus.COVERAGEDATA_FILE_READ_ERROR
-          .getStatus(path, e));
+      throw new CoreException(
+          EclEmmaStatus.COVERAGEDATA_FILE_READ_ERROR.getStatus(path, e));
     }
   }
 
-  private void processMetadataFile(ICoverageData coveragedata, IInstrumentation instrumentation,
-      IProgressMonitor monitor) throws CoreException {
-    IPath metadatafile = instrumentation.getMetaDataFile();
-    File f = metadatafile.toFile();
-    if (f.exists()) {
-      IMetaData metadata;
-      try {
-        metadata = (IMetaData) DataFactory.load(f)[DataFactory.TYPE_METADATA];
-      } catch (IOException e) {
-        throw new CoreException(EclEmmaStatus.METADATA_FILE_READ_ERROR.getStatus(
-            metadatafile, e));
-      }
-      if (metadata == null) {
-        throw new CoreException(EclEmmaStatus.FILE_CONTAINS_NO_METADATA.getStatus(
-            metadatafile));
-      }
-      IPackageFragmentRoot[] roots = instrumentation.getClassFiles().getPackageFragmentRoots();
-      TypeTraverser jep = new TypeTraverser(roots);
-      jep.process(new TypeVisitor(metadata, coveragedata), monitor);
+  private void processClasspathEntry(ExecutionDataStore executiondata,
+      IClassFiles classfiles, IProgressMonitor monitor) throws CoreException {
+
+    // Analyze all class files for this class path entry:
+    CoverageBuilder builder = new CoverageBuilder();
+    Analyzer analyzer = new Analyzer(executiondata, builder);
+    try {
+      analyzer.analyzeAll(EclEmmaCorePlugin.getAbsolutePath(
+          classfiles.getLocation()).toFile());
+    } catch (IOException e) {
+      // TODO wrong status info
+      throw new CoreException(
+          EclEmmaStatus.METADATA_FILE_READ_ERROR.getStatus(e));
+    }
+
+    // Calculate coverage for each fragment root separately:
+    final TypeVisitor visitor = new TypeVisitor(builder.getClasses(),
+        builder.getSourceFiles());
+    final IPackageFragmentRoot[] roots = classfiles.getPackageFragmentRoots();
+    monitor.beginTask("", roots.length); //$NON-NLS-1$
+    for (IPackageFragmentRoot root : roots) {
+      final SubProgressMonitor submonitor = new SubProgressMonitor(monitor, 1);
+      processPackageFragmentRoot(root, visitor, submonitor);
+    }
+    visitor.dumpRemainder();
+    monitor.done();
+  }
+
+  private void processPackageFragmentRoot(IPackageFragmentRoot root,
+      TypeVisitor visitor, IProgressMonitor monitor) throws JavaModelException {
+    final TypeTraverser traverser = new TypeTraverser(root);
+    visitor.reset();
+    traverser.process(visitor, monitor);
+
+    IBundleCoverage bundle = new BundleCoverageImpl(root.getElementName(),
+        visitor.getClasses(), visitor.getSources());
+    modelcoverage.putFragmentRoot(root, bundle);
+    putPackages(bundle.getPackages(), root);
+  }
+
+  private void putPackages(Collection<IPackageCoverage> packages,
+      IPackageFragmentRoot root) {
+    for (IPackageCoverage c : packages) {
+      final String name = c.getName().replace('/', '.');
+      final IPackageFragment fragment = root.getPackageFragment(name);
+      modelcoverage.putFragment(fragment, c);
     }
   }
-  
+
   private class TypeVisitor implements ITypeVisitor {
-    
-    private final ICoverageData coveragedata;
-    private final Map descriptors;
-    
-    TypeVisitor(IMetaData metadata, ICoverageData coveragedata) {
-      this.coveragedata = coveragedata;
-      this.descriptors = new HashMap();
-      for (Iterator i = metadata.iterator(); i.hasNext(); ) {
-        ClassDescriptor cd = (ClassDescriptor) i.next();
-        descriptors.put(cd.getClassVMName(), cd);
+
+    private final Map<String, IClassCoverage> classmap;
+    private final Map<String, ISourceFileCoverage> sourcemap;
+    private final Collection<IClassCoverage> classes;
+
+    private final Collection<ISourceFileCoverage> sources;
+
+    TypeVisitor(Collection<IClassCoverage> classes,
+        Collection<ISourceFileCoverage> sourcefiles) {
+      this.classmap = new HashMap<String, IClassCoverage>();
+      for (final IClassCoverage c : classes) {
+        classmap.put(c.getName(), c);
       }
+      this.sourcemap = new HashMap<String, ISourceFileCoverage>();
+      for (final ISourceFileCoverage s : sourcefiles) {
+        final String key = s.getPackageName() + '/' + s.getName();
+        sourcemap.put(key, s);
+      }
+      this.classes = new ArrayList<IClassCoverage>();
+      this.sources = new ArrayList<ISourceFileCoverage>();
+    }
+
+    Collection<IClassCoverage> getClasses() {
+      return classes;
+    }
+
+    Collection<ISourceFileCoverage> getSources() {
+      return sources;
     }
 
     public void visit(IType type, String vmname) {
-      ClassDescriptor descriptor = (ClassDescriptor) descriptors.remove(vmname);
-      if (descriptor != null) {
-        DataHolder data = coveragedata == null ? null : coveragedata.getCoverage(descriptor);
-        if (data != null && data.m_stamp != descriptor.getStamp()) {
-          TRACER.trace("Invalid meta data signature for {0}.", descriptor.getClassVMName()); //$NON-NLS-1$
-        } else {
-          TypeCoverage typecoverage = (TypeCoverage) getCoverage(type, true);
-          IResource resource = type.getResource();
-          typecoverage.addType(data != null);
-          MethodDescriptor[] methods = descriptor.getMethods();
-          UnboundMethodCoverage[] ubcoverage = new UnboundMethodCoverage[methods.length];
-          boolean[][] covered = data == null ? null : data.m_coverage;
-          for (int i = 0; i < methods.length; i++) {
-            ubcoverage[i] = processMethodCoverage(methods[i], covered == null ? null : covered[i], typecoverage, resource);
-          }
-          typecoverage.setUnboundMethods(ubcoverage);
-        }
+      IClassCoverage coverage = classmap.remove(vmname);
+      if (coverage != null) {
+        classes.add(coverage);
+        modelcoverage.putType(type, coverage);
       }
     }
 
-    public void done() {
+    public void visit(ICompilationUnit unit) throws JavaModelException {
+      final String key = unit.getParent().getElementName().replace('.', '/')
+          + '/' + unit.getElementName();
+      ISourceFileCoverage coverage = sourcemap.remove(key);
+      if (coverage != null) {
+        sources.add(coverage);
+        modelcoverage.putCompilationUnit(unit, coverage);
+      }
+    }
+
+    void reset() {
+    }
+
+    void dumpRemainder() {
       // dump what's left
-      for (Iterator i = descriptors.keySet().iterator(); i.hasNext(); ) {
-        TRACER.trace("Instrumented type {0} has not been processed.", i.next()); //$NON-NLS-1$
+      for (final String name : classmap.keySet()) {
+        TRACER.trace("Instrumented type {0} has not been processed.", name); //$NON-NLS-1$
+      }
+      for (final String name : sourcemap.keySet()) {
+        TRACER.trace("Instrumented source {0} has not been processed.", name); //$NON-NLS-1$
       }
     }
-    
-  }
-  
-  private boolean isMethodCovered(boolean[] blocks) {
-    for (int i = 0; blocks != null && i < blocks.length; i++) {
-      if (blocks[i]) return true;
-    }
-    return false;
-  }
-  
-  private UnboundMethodCoverage processMethodCoverage(MethodDescriptor descriptor, boolean[] covered, JavaElementCoverage parentcoverage, IResource resource) {
-    JavaElementCoverage coverage = new JavaElementCoverage(parentcoverage, descriptor.hasLineNumberInfo(), resource);
-    coverage.addMethod(isMethodCovered(covered));
-    int[] blocksizes = descriptor.getBlockSizes();
-    if (blocksizes != null) {
-      int blockcount = blocksizes.length;
-      int[][] blocklines = descriptor.getBlockMap();
-      for (int i = 0; i < blockcount; i++) {
-        coverage.addBlock(blocksizes[i], blocklines == null ? null : blocklines[i],
-            covered == null ? false : covered[i]);
-      }
-    }
-    return new UnboundMethodCoverage(descriptor.getName(), descriptor.getDescriptor(), coverage);
+
   }
 
-  private JavaElementCoverage getCoverage(IJavaElement element, boolean haslines) {
-    if (element == null)
-      return null;
-    JavaElementCoverage c = (JavaElementCoverage) modelcoverage.getCoverageFor(element);
-    if (c == null) {
-      switch (element.getElementType()) {
-      case IJavaElement.JAVA_MODEL:
-        c = modelcoverage;
-        break;
-      case IJavaElement.JAVA_PROJECT:
-      case IJavaElement.PACKAGE_FRAGMENT_ROOT:
-      case IJavaElement.PACKAGE_FRAGMENT:
-        c = new JavaElementCoverage(getCoverage(element.getParent(), false), false, element.getResource());
-        break;
-      case IJavaElement.TYPE:
-        c = new TypeCoverage(getCoverage(element.getParent(), haslines), haslines, element.getResource());
-        break;
-      default:
-        c = new JavaElementCoverage(getCoverage(element.getParent(), haslines), haslines, element.getResource());
-        break;
-    }
-      modelcoverage.put(element, c);
-    }
-    return c;
-  }
-  
 }

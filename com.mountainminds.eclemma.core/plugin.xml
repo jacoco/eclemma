@@ -6,14 +6,14 @@
       <factory
             adaptableType="org.eclipse.jdt.core.IJavaElement"
             class="com.mountainminds.eclemma.internal.core.analysis.JavaElementCoverageAdapterFactory">
-         <adapter type="com.mountainminds.eclemma.core.analysis.IJavaElementCoverage"/>
-         <adapter type="com.mountainminds.eclemma.core.analysis.ILineCoverage"/>
+         <adapter type="org.jacoco.core.analysis.ICoverageNode"/>
+         <adapter type="org.jacoco.core.analysis.ISourceNode"/>
       </factory>
       <factory
             adaptableType="org.eclipse.core.resources.IResource"
             class="com.mountainminds.eclemma.internal.core.analysis.JavaElementCoverageAdapterFactory">
-         <adapter type="com.mountainminds.eclemma.core.analysis.IJavaElementCoverage"/>
-         <adapter type="com.mountainminds.eclemma.core.analysis.ILineCoverage"/>
+         <adapter type="org.jacoco.core.analysis.ICoverageNode"/>
+         <adapter type="org.jacoco.core.analysis.ISourceNode"/>
       </factory>
    </extension>
    <extension

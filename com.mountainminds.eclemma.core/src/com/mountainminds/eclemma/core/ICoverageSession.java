@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
@@ -24,10 +24,10 @@ import org.eclipse.debug.core.ILaunchConfiguration;
  * 
  * This interface is not intended to be implemented by clients.
  * 
- * @see CoverageTools#createCoverageSession(String, IInstrumentation[],
- *      IPath[], ILaunchConfiguration)
+ * @see CoverageTools#createCoverageSession(String, IInstrumentation[], IPath[],
+ *      ILaunchConfiguration)
  * 
- * @author  Marc R. Hoffmann
+ * @author Marc R. Hoffmann
  * @version $Revision$
  */
 public interface ICoverageSession extends IAdaptable {
@@ -40,11 +40,11 @@ public interface ICoverageSession extends IAdaptable {
   public String getDescription();
 
   /**
-   * Returns the array of instrumentation information objects for this session.
+   * Returns the array of class files objects for this session.
    * 
-   * @return array of {@link IInstrumentation} used for this session
+   * @return array of {@link IClassFiles} used for this session
    */
-  public IInstrumentation[] getInstrumentations();
+  public IClassFiles[] getClassFiles();
 
   /**
    * Returns a list of absolute paths to the Emma coverage data files that
@@ -61,18 +61,17 @@ public interface ICoverageSession extends IAdaptable {
    * @return launch configutation or <code>null</code>
    */
   public ILaunchConfiguration getLaunchConfiguration();
-  
+
   /**
    * Merges this session with the given session creating a new session with the
    * given description.
    * 
    * @param other
-   *   Session to merge with
+   *          Session to merge with
    * @param description
-   *   Name of the new session
-   * @return
-   *   New session object merged from this and the given session
+   *          Name of the new session
+   * @return New session object merged from this and the given session
    */
   public ICoverageSession merge(ICoverageSession other, String description);
-  
+
 }

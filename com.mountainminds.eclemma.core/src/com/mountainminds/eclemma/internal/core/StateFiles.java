@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
@@ -31,16 +31,13 @@ public class StateFiles {
 
   private static final String LAUNCHDATA_FOLDER = ".launch/"; //$NON-NLS-1$
 
-  private static final String INSTRDATA_FOLDER = ".instr/"; //$NON-NLS-1$
-
   private static final String IMPORTDATA_FOLDER = ".import/"; //$NON-NLS-1$
-  
+
   private static final String SOURCE_FOLDER = ".src/"; //$NON-NLS-1$
-  
+
   private static final ReferenceQueue CLEANUPQUEUE = new ReferenceQueue();
-  
+
   private static final Set CLEANUPFILES = new HashSet();
-  
 
   private final IPath stateLocation;
 
@@ -48,18 +45,16 @@ public class StateFiles {
     this.stateLocation = stateLocation;
     this.stateLocation.toFile().mkdirs();
     getLaunchDataFolder().toFile().mkdirs();
-    getInstrDataFolder().toFile().mkdirs();
     getSourceDataFolder().toFile().mkdirs();
     getImportDataFolder().toFile().mkdirs();
   }
 
   public void deleteTemporaryFiles() {
     deleteFiles(getLaunchDataFolder().toFile(), false);
-    deleteFiles(getInstrDataFolder().toFile(), false);
     deleteFiles(getSourceDataFolder().toFile(), false);
     deleteFiles(getImportDataFolder().toFile(), false);
   }
-  
+
   private static void deleteFiles(File file, boolean deleteparent) {
     if (file.isDirectory()) {
       File[] files = file.listFiles();
@@ -67,19 +62,12 @@ public class StateFiles {
         deleteFiles(files[i], true);
       }
     }
-    if (deleteparent) file.delete();
+    if (deleteparent)
+      file.delete();
   }
 
   public IPath getLaunchDataFolder() {
     return stateLocation.append(LAUNCHDATA_FOLDER);
-  }
-
-  private IPath getInstrDataFolder() {
-    return stateLocation.append(INSTRDATA_FOLDER);
-  }
-  
-  public IPath getInstrDataFolder(IPath location) throws CoreException {
-    return getInstrDataFolder().append(getInternalId(location, false));
   }
 
   private IPath getSourceDataFolder() {
@@ -99,8 +87,9 @@ public class StateFiles {
     registerForCleanup(p);
     return p;
   }
-  
-  private static String getInternalId(IPath location, boolean withtimestamp) throws CoreException {
+
+  private static String getInternalId(IPath location, boolean withtimestamp)
+      throws CoreException {
     long timestamp = 0;
     if (withtimestamp) {
       File f = location.toFile();
@@ -125,20 +114,21 @@ public class StateFiles {
     }
     return sb.toString();
   }
-  
+
   /**
    * Registers the file the given path points to for deletion as soon as the
    * reference to the path objects gets garbage collected. The caller must
-   * ensure to hold a reference to the given path object as long as the file
-   * is required. The file is not required to (jet) actually exist.
+   * ensure to hold a reference to the given path object as long as the file is
+   * required. The file is not required to (jet) actually exist.
    * 
-   * @param file  path object that points to the file
+   * @param file
+   *          path object that points to the file
    */
   public void registerForCleanup(IPath file) {
     cleanupObsoleteFiles();
     CLEANUPFILES.add(new CleanupFile(file));
   }
-  
+
   private void cleanupObsoleteFiles() {
     while (true) {
       CleanupFile f = (CleanupFile) CLEANUPQUEUE.poll();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2009 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
@@ -15,8 +15,10 @@ import junit.framework.TestCase;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.JavaModelException;
 
 import com.mountainminds.eclemma.core.JavaProjectKit;
 
@@ -54,13 +56,13 @@ public class TypeTraverserTest extends TestCase {
 
   public void testTraverse1() throws Exception {
     final Set expected = new HashSet(Arrays.asList(EXPECTEDTYPES));
-    TypeTraverser t = new TypeTraverser(new IPackageFragmentRoot[] { root });
+    TypeTraverser t = new TypeTraverser(root);
     t.process(new ITypeVisitor() {
       public void visit(IType type, String vmname) {
         assertTrue("Unexpected type: " + vmname, expected.remove(vmname));
       }
 
-      public void done() {
+      public void visit(ICompilationUnit unit) throws JavaModelException {
       }
     }, MONITOR);
     assertTrue("Not all types processed: " + expected, expected.isEmpty());

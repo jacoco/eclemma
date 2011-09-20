@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
@@ -9,7 +9,6 @@ package com.mountainminds.eclemma.internal.core;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -20,18 +19,19 @@ import com.mountainminds.eclemma.core.ISessionManager;
 /**
  * ISessionManager implementation.
  * 
- * @author  Marc R. Hoffmann
+ * @author Marc R. Hoffmann
  * @version $Revision$
  */
 public class SessionManager implements ISessionManager {
 
-  private List sessions = new ArrayList();
-  private Map keymap = new HashMap();
+  private List<ICoverageSession> sessions = new ArrayList<ICoverageSession>();
+  private Map<Object, ICoverageSession> keymap = new HashMap<Object, ICoverageSession>();
   private ICoverageSession activeSession = null;
-  private List listeners = new ArrayList();
+  private List<ISessionListener> listeners = new ArrayList<ISessionListener>();
 
   public void addSession(ICoverageSession session, boolean activate, Object key) {
-    if (session == null) throw new NullPointerException();
+    if (session == null)
+      throw new NullPointerException();
     if (!sessions.contains(session)) {
       sessions.add(session);
       if (key != null) {
@@ -52,7 +52,7 @@ public class SessionManager implements ISessionManager {
         activeSession = null;
         for (int i = sessions.size(); --i >= 0;) {
           if (!session.equals(sessions.get(i))) {
-            activeSession = (ICoverageSession) sessions.get(i);
+            activeSession = sessions.get(i);
             break;
           }
         }
@@ -73,7 +73,7 @@ public class SessionManager implements ISessionManager {
 
   public void removeAllSessions() {
     while (!sessions.isEmpty()) {
-      ICoverageSession session = (ICoverageSession) sessions.remove(0);
+      ICoverageSession session = sessions.remove(0);
       keymap.values().remove(session);
       fireSessionRemoved(session);
     }
@@ -84,11 +84,11 @@ public class SessionManager implements ISessionManager {
   }
 
   public ICoverageSession[] getSessions() {
-    return (ICoverageSession[]) sessions.toArray(new ICoverageSession[sessions.size()]);
+    return sessions.toArray(new ICoverageSession[sessions.size()]);
   }
 
   public ICoverageSession getSession(Object key) {
-    return (ICoverageSession) keymap.get(key);
+    return keymap.get(key);
   }
 
   public void activateSession(ICoverageSession session) {
@@ -111,9 +111,10 @@ public class SessionManager implements ISessionManager {
       fireSessionActivated(activeSession);
     }
   }
-  
+
   public void addSessionListener(ISessionListener listener) {
-    if (listener == null) throw new NullPointerException();
+    if (listener == null)
+      throw new NullPointerException();
     if (!listeners.contains(listener)) {
       listeners.add(listener);
     }
@@ -122,28 +123,25 @@ public class SessionManager implements ISessionManager {
   public void removeSessionListener(ISessionListener listener) {
     listeners.remove(listener);
   }
-  
+
   protected void fireSessionAdded(ICoverageSession session) {
     // avoid concurrent modification issues
-    Iterator i = new ArrayList(listeners).iterator();
-    while (i.hasNext()) {
-      ((ISessionListener) i.next()).sessionAdded(session);
+    for (ISessionListener l : new ArrayList<ISessionListener>(listeners)) {
+      l.sessionAdded(session);
     }
   }
 
   protected void fireSessionRemoved(ICoverageSession session) {
     // avoid concurrent modification issues
-    Iterator i = new ArrayList(listeners).iterator();
-    while (i.hasNext()) {
-      ((ISessionListener) i.next()).sessionRemoved(session);
+    for (ISessionListener l : new ArrayList<ISessionListener>(listeners)) {
+      l.sessionRemoved(session);
     }
   }
 
   private void fireSessionActivated(ICoverageSession session) {
     // avoid concurrent modification issues
-    Iterator i = new ArrayList(listeners).iterator();
-    while (i.hasNext()) {
-      ((ISessionListener) i.next()).sessionActivated(session);
+    for (ISessionListener l : new ArrayList<ISessionListener>(listeners)) {
+      l.sessionActivated(session);
     }
   }
 

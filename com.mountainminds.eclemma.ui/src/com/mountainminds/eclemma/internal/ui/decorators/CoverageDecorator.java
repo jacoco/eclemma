@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
@@ -22,48 +22,51 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ILightweightLabelDecorator;
 import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 import org.eclipse.ui.IWorkbench;
+import org.jacoco.core.analysis.ICounter;
+import org.jacoco.core.analysis.ICoverageNode;
 
 import com.mountainminds.eclemma.core.CoverageTools;
-import com.mountainminds.eclemma.core.analysis.ICounter;
 import com.mountainminds.eclemma.core.analysis.IJavaCoverageListener;
-import com.mountainminds.eclemma.core.analysis.IJavaElementCoverage;
 import com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin;
 import com.mountainminds.eclemma.internal.ui.UIMessages;
 
 /**
  * Decorator to show code coverage for Java elements.
  * 
- * @author  Benjamin Muskalla, Marc R. Hoffmann
+ * @author Benjamin Muskalla, Marc R. Hoffmann
  * @version $Revision$
  */
 public class CoverageDecorator implements ILightweightLabelDecorator {
 
-  private static final Format SUFFIX_FORMAT =
-    new DecimalFormat(UIMessages.CoverageDecoratorSuffix_label);
-  
+  private static final Format SUFFIX_FORMAT = new DecimalFormat(
+      UIMessages.CoverageDecoratorSuffix_label);
+
   private List listeners = new ArrayList();
   private IJavaCoverageListener coverageListener = null;
-  
+
   public CoverageDecorator() {
     super();
   }
 
   public void decorate(Object element, IDecoration decoration) {
-    IJavaElementCoverage coverage = CoverageTools.getCoverageInfo(element);
+    final ICoverageNode coverage = CoverageTools.getCoverageInfo(element);
     if (coverage == null) {
       // no coverage data
       return;
     }
     // TODO obtain counter from preferences
     ICounter counter = coverage.getInstructionCounter();
-    ImageDescriptor overlay = EclEmmaUIPlugin.getCoverageOverlay(counter.getRatio());
+    ImageDescriptor overlay = EclEmmaUIPlugin.getCoverageOverlay(counter
+        .getCoveredRatio());
     decoration.addOverlay(overlay, IDecoration.TOP_LEFT);
-    decoration.addSuffix(SUFFIX_FORMAT.format(new Double(counter.getRatio())));
+    decoration.addSuffix(SUFFIX_FORMAT.format(new Double(counter
+        .getCoveredRatio())));
   }
 
   protected void fireEvent() {
     final IWorkbench workbench = EclEmmaUIPlugin.getInstance().getWorkbench();
-    if(workbench == null) return;
+    if (workbench == null)
+      return;
     final LabelProviderChangedEvent event = new LabelProviderChangedEvent(this);
     workbench.getDisplay().asyncExec(new Runnable() {
       public void run() {
@@ -74,7 +77,7 @@ public class CoverageDecorator implements ILightweightLabelDecorator {
       }
     });
   }
-  
+
   public void addListener(ILabelProviderListener listener) {
     if (!listeners.contains(listener)) {
       listeners.add(listener);
@@ -88,7 +91,7 @@ public class CoverageDecorator implements ILightweightLabelDecorator {
       CoverageTools.addJavaCoverageListener(coverageListener);
     }
   }
-  
+
   public void removeListener(ILabelProviderListener listener) {
     listeners.remove(listener);
   }
@@ -97,12 +100,12 @@ public class CoverageDecorator implements ILightweightLabelDecorator {
     // coverage does not depend on IJavaElement properties
     return false;
   }
-  
+
   public void dispose() {
     if (coverageListener != null) {
       CoverageTools.removeJavaCoverageListener(coverageListener);
-      coverageListener = null; 
+      coverageListener = null;
     }
   }
-  
+
 }

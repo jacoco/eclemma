@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2009 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
@@ -30,7 +30,7 @@ import com.mountainminds.eclemma.internal.core.EclEmmaCorePlugin;
  */
 public class ClassFilesStore {
 
-  private final Map locationIndex = new HashMap();
+  private final Map<String, ClassFiles> locationIndex = new HashMap<String, ClassFiles>();
 
   /**
    * Adds the given package fragment root.
@@ -44,7 +44,7 @@ public class ClassFilesStore {
     final IPath location = getClassFileLocation(root);
     final String absolute = EclEmmaCorePlugin.getAbsolutePath(location)
         .toOSString();
-    ClassFiles classfiles = (ClassFiles) locationIndex.get(absolute);
+    ClassFiles classfiles = locationIndex.get(absolute);
     if (classfiles == null) {
       classfiles = new ClassFiles(root, location);
     } else {
@@ -89,8 +89,9 @@ public class ClassFilesStore {
    * @return
    */
   public IClassFiles[] getClassFiles() {
-    final List l = new ArrayList(locationIndex.values());
-    return (IClassFiles[]) l.toArray(new IClassFiles[l.size()]);
+    final List<IClassFiles> l = new ArrayList<IClassFiles>(
+        locationIndex.values());
+    return l.toArray(new IClassFiles[l.size()]);
   }
 
   /**
@@ -103,7 +104,7 @@ public class ClassFilesStore {
    * 
    */
   public IClassFiles getAtAbsoluteLocation(String location) {
-    return (IClassFiles) locationIndex.get(location);
+    return locationIndex.get(location);
   }
 
   private static IPath getClassFileLocation(IPackageFragmentRoot root)

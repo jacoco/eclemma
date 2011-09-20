@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2009 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
@@ -7,19 +7,14 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.core.launching;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Properties;
-import java.util.jar.JarOutputStream;
-import java.util.jar.Manifest;
-import java.util.zip.ZipEntry;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExecutableExtension;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.SubProgressMonitor;
@@ -32,22 +27,18 @@ import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.Launch;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate2;
+import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jdt.launching.IRuntimeClasspathEntry;
-import org.eclipse.jdt.launching.IRuntimeClasspathProvider;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.osgi.util.NLS;
+import org.jacoco.core.runtime.AgentOptions;
 
 import com.mountainminds.eclemma.core.CoverageTools;
 import com.mountainminds.eclemma.core.EclEmmaStatus;
 import com.mountainminds.eclemma.core.IClassFiles;
 import com.mountainminds.eclemma.internal.core.CoreMessages;
-import com.mountainminds.eclemma.internal.core.DebugOptions;
 import com.mountainminds.eclemma.internal.core.EclEmmaCorePlugin;
-import com.mountainminds.eclemma.internal.core.instr.InstrMarker;
 import com.mountainminds.eclemma.internal.core.launching.CoverageLaunchInfo;
-import com.mountainminds.eclemma.internal.core.launching.InstrumentedClasspathProvider;
-import com.vladium.emma.AppLoggers;
-import com.vladium.emma.EMMAProperties;
 
 /**
  * Abstract base class for coverage mode launchers. Coverage launchers perform
@@ -60,12 +51,6 @@ import com.vladium.emma.EMMAProperties;
 public abstract class CoverageLauncher implements ICoverageLauncher,
     IExecutableExtension {
 
-  /**
-   * Name of the file that will EMMA pick from the classpath to reads its
-   * properties.
-   */
-  protected static final String EMMA_PROPERTIES_FILE = "emma.properties"; //$NON-NLS-1$
-
   /** Launch mode for the launch delegates used internally. */
   public static final String DELEGATELAUNCHMODE = ILaunchManager.RUN_MODE;
 
@@ -76,8 +61,8 @@ public abstract class CoverageLauncher implements ICoverageLauncher,
   protected ILaunchConfigurationDelegate2 launchdelegate2;
 
   /**
-   * Hook method to modify the launch configuration before it is passed on to
-   * the delegate launcher.
+   * Adds the coverage agent to the launch configuration before it is passed on
+   * to the delegate launcher.
    * 
    * @param workingcopy
    *          Configuration to modify
@@ -86,61 +71,40 @@ public abstract class CoverageLauncher implements ICoverageLauncher,
    * @throws CoreException
    *           may be thrown by implementations
    */
-  protected void modifyConfiguration(
-      ILaunchConfigurationWorkingCopy workingcopy, ICoverageLaunchInfo info)
-      throws CoreException {
-    // Does nothing by default
-  }
-
-  /**
-   * Returns whether in-place instrumentation should be performed. The default
-   * implementation looks-up the corresponding entry in the passed launch
-   * configuration. Specific launchers may modify this behavior.
-   * 
-   * @param configuration
-   *          launch configuration for coverage run
-   * @return true, if instrumentation should be performed in-place
-   * @throws CoreException
-   *           May be thrown when accessing the launch configuration
-   */
-  protected boolean hasInplaceInstrumentation(ILaunchConfiguration configuration)
-      throws CoreException {
-    return configuration.getAttribute(
-        ICoverageLaunchConfigurationConstants.ATTR_INPLACE_INSTRUMENTATION,
-        false);
-  }
-
-  /**
-   * Creates the a JAR file including the <code>emma.properties</code> file that
-   * will be injected in the class path.
-   * 
-   * @param configuration
-   *          Configuration object for this launch
-   * @param info
-   *          Launch Info object of this launch
-   * @throws CoreException
-   *           Thrown when the JAR file cannot be created
-   */
-  private void createPropertiesJAR(ILaunchConfiguration configuration,
+  private void addCoverageAgent(ILaunchConfigurationWorkingCopy workingcopy,
       ICoverageLaunchInfo info) throws CoreException {
-    Properties properties = new Properties();
-    properties.put(EMMAProperties.PROPERTY_COVERAGE_DATA_OUT_FILE, info
-        .getCoverageFile().toOSString());
-    properties.put(AppLoggers.PROPERTY_VERBOSITY_LEVEL,
-        DebugOptions.EMMAVERBOSITYLEVEL);
-    IPath jarfile = info.getPropertiesJARFile();
-    Manifest mf = new Manifest();
-    try {
-      JarOutputStream jar = new JarOutputStream(new FileOutputStream(jarfile
-          .toFile()), mf);
-      jar.putNextEntry(new ZipEntry(EMMA_PROPERTIES_FILE));
-      properties.store(jar,
-          "Created for launch configuration " + configuration.getName()); //$NON-NLS-1$
-      jar.close();
-    } catch (IOException e) {
-      throw new CoreException(EclEmmaStatus.EMMA_PROPERTIES_CREATION_ERROR
-          .getStatus(jarfile, e));
+    final AgentOptions options = new AgentOptions();
+    options.setDestfile(info.getExecutionDataFile().toOSString());
+    final File agentfile = CoverageTools.getRuntimeAgentJar().toFile();
+    final String arg = options.getVMArgument(agentfile);
+    addVMArgument(workingcopy, arg);
+  }
+
+  /**
+   * Adds the given single argument to the VM arguments. If it contains white
+   * spaces the argument is included in double quotes.
+   * 
+   * @param workingcopy
+   *          configuration to modify
+   * @param arg
+   *          additional VM argument
+   * @throws CoreException
+   *           may be thrown by the launch configuration
+   */
+  private void addVMArgument(ILaunchConfigurationWorkingCopy workingcopy,
+      String arg) throws CoreException {
+    String vmargskey = IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS;
+    StringBuilder sb = new StringBuilder(
+        workingcopy.getAttribute(vmargskey, "")); //$NON-NLS-1$
+    if (sb.length() > 0) {
+      sb.append(' ');
     }
+    if (arg.indexOf(' ') == -1) {
+      sb.append(arg);
+    } else {
+      sb.append('"').append(arg).append('"');
+    }
+    workingcopy.setAttribute(vmargskey, sb.toString());
   }
 
   // IExecutableExtension interface:
@@ -159,41 +123,32 @@ public abstract class CoverageLauncher implements ICoverageLauncher,
     ILaunchConfigurationType type = DebugPlugin.getDefault().getLaunchManager()
         .getLaunchConfigurationType(launchtype);
     if (type == null) {
-      throw new CoreException(EclEmmaStatus.UNKOWN_LAUNCH_TYPE_ERROR
-          .getStatus(launchtype));
+      throw new CoreException(
+          EclEmmaStatus.UNKOWN_LAUNCH_TYPE_ERROR.getStatus(launchtype));
     }
-    return type.getDelegate(DELEGATELAUNCHMODE);
+    return type.getDelegates(Collections.singleton(DELEGATELAUNCHMODE))[0]
+        .getDelegate();
   }
 
   // ILaunchConfigurationDelegate interface:
 
   public void launch(ILaunchConfiguration configuration, String mode,
       ILaunch launch, IProgressMonitor monitor) throws CoreException {
-    monitor.beginTask(NLS.bind(CoreMessages.Launching_task, configuration
-        .getName()), 2);
-    IRuntimeClasspathProvider provider = JavaRuntime
-        .getClasspathProvider(configuration);
+    monitor.beginTask(
+        NLS.bind(CoreMessages.Launching_task, configuration.getName()), 2);
     ICoverageLaunchInfo info = CoverageTools.getLaunchInfo(launch);
     if (info == null) {
       // Must not happen as we should have created the launch
-      throw new CoreException(EclEmmaStatus.MISSING_LAUNCH_INFO_ERROR
-          .getStatus(null));
+      throw new CoreException(
+          EclEmmaStatus.MISSING_LAUNCH_INFO_ERROR.getStatus(null));
     }
-    info.instrument(new SubProgressMonitor(monitor, 1),
-        hasInplaceInstrumentation(configuration));
     if (monitor.isCanceled()) {
       return;
     }
-    createPropertiesJAR(configuration, info);
     ILaunchConfigurationWorkingCopy wc = configuration.getWorkingCopy();
-    modifyConfiguration(wc, info);
-    InstrumentedClasspathProvider.enable(provider, info);
-    try {
-      launchdelegate.launch(wc, DELEGATELAUNCHMODE, launch,
-          new SubProgressMonitor(monitor, 1));
-    } finally {
-      InstrumentedClasspathProvider.disable();
-    }
+    addCoverageAgent(wc, info);
+    launchdelegate.launch(wc, DELEGATELAUNCHMODE, launch,
+        new SubProgressMonitor(monitor, 1));
     monitor.done();
   }
 
@@ -218,25 +173,10 @@ public abstract class CoverageLauncher implements ICoverageLauncher,
 
   public boolean preLaunchCheck(ILaunchConfiguration configuration,
       String mode, IProgressMonitor monitor) throws CoreException {
-    boolean inplace = hasInplaceInstrumentation(configuration);
-    if (CoverageTools.getClassFilesForInstrumentation(configuration, inplace).length == 0) {
+    if (CoverageTools.getClassFilesForInstrumentation(configuration).length == 0) {
       IStatus status = EclEmmaStatus.NO_INSTRUMENTED_CLASSES.getStatus();
       EclEmmaCorePlugin.getInstance().showPrompt(status, configuration);
       return false;
-    }
-    if (inplace) {
-      // Issue an inplace instrumentation warning:
-      IStatus status = EclEmmaStatus.INPLACE_INSTRUMENTATION_INFO.getStatus();
-      if (!EclEmmaCorePlugin.getInstance().showPrompt(status, configuration)) {
-        return false;
-      }
-    } else {
-      // check whether inpace instrumentation has been performed before
-      if (checkForPreviousInplace(configuration)) {
-        IStatus status = EclEmmaStatus.ALREADY_INSTRUMENTED_ERROR.getStatus();
-        EclEmmaCorePlugin.getInstance().showPrompt(status, configuration);
-        return false;
-      }
     }
     // Then allow the delegate's veto:
     if (launchdelegate2 == null) {
@@ -245,18 +185,6 @@ public abstract class CoverageLauncher implements ICoverageLauncher,
       return launchdelegate2.preLaunchCheck(configuration, DELEGATELAUNCHMODE,
           monitor);
     }
-  }
-
-  private boolean checkForPreviousInplace(ILaunchConfiguration config)
-      throws CoreException {
-    IClassFiles[] classfiles = CoverageTools.getClassFilesForInstrumentation(
-        config, false);
-    for (int i = 0; i < classfiles.length; i++) {
-      if (InstrMarker.isMarked(classfiles[i].getLocation())) {
-        return true;
-      }
-    }
-    return false;
   }
 
   public boolean finalLaunchCheck(ILaunchConfiguration configuration,
@@ -276,7 +204,7 @@ public abstract class CoverageLauncher implements ICoverageLauncher,
    */
   public IClassFiles[] getClassFiles(ILaunchConfiguration configuration,
       boolean includebinaries) throws CoreException {
-    List l = new ArrayList();
+    List<IClassFiles> l = new ArrayList<IClassFiles>();
     IRuntimeClasspathEntry[] entries = JavaRuntime
         .computeUnresolvedRuntimeClasspath(configuration);
     entries = JavaRuntime.resolveRuntimeClasspath(entries, configuration);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2009 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
@@ -94,17 +94,17 @@ public class EclEmmaCorePlugin extends Plugin {
           final ILaunch launch = proc.getLaunch();
           ICoverageLaunchInfo info = CoverageTools.getLaunchInfo(launch);
           if (info != null) {
-            IPath coveragedatafile = info.getCoverageFile();
+            IPath coveragedatafile = info.getExecutionDataFile();
             if (checkCoverageDataFile(coveragedatafile)) {
               Object[] args = new Object[] {
                   launch.getLaunchConfiguration().getName(), new Date() };
               String description = MessageFormat.format(
                   CoreMessages.LaunchSessionDescription_value, args);
-              ICoverageSession session = new CoverageSession(description, info
-                  .getInstrumentations(), new IPath[] { coveragedatafile },
+              ICoverageSession session = new CoverageSession(description,
+                  info.getClassFiles(), new IPath[] { coveragedatafile },
                   launch.getLaunchConfiguration());
-              sessionManager.addSession(session, preferences
-                  .getActivateNewSessions(), launch);
+              sessionManager.addSession(session,
+                  preferences.getActivateNewSessions(), launch);
             }
             info.dispose();
           }
@@ -139,8 +139,8 @@ public class EclEmmaCorePlugin extends Plugin {
     coverageLoader = new JavaCoverageLoader(sessionManager);
     stateFiles = new StateFiles(getStateLocation());
     stateFiles.deleteTemporaryFiles();
-    DebugPlugin.getDefault().getLaunchManager().addLaunchListener(
-        launchListener);
+    DebugPlugin.getDefault().getLaunchManager()
+        .addLaunchListener(launchListener);
     DebugPlugin.getDefault().addDebugEventListener(debugListener);
     JavaCore.addElementChangedListener(elementListener);
     instance = this;
@@ -151,8 +151,8 @@ public class EclEmmaCorePlugin extends Plugin {
     stateFiles.deleteTemporaryFiles();
     JavaCore.removeElementChangedListener(elementListener);
     DebugPlugin.getDefault().removeDebugEventListener(debugListener);
-    DebugPlugin.getDefault().getLaunchManager().removeLaunchListener(
-        launchListener);
+    DebugPlugin.getDefault().getLaunchManager()
+        .removeLaunchListener(launchListener);
     stateFiles = null;
     coverageLoader.dispose();
     coverageLoader = null;

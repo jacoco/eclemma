@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
@@ -12,96 +12,150 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.JavaModelException;
+import org.jacoco.core.analysis.CoverageNodeImpl;
+import org.jacoco.core.analysis.IBundleCoverage;
+import org.jacoco.core.analysis.IClassCoverage;
+import org.jacoco.core.analysis.ICoverageNode;
+import org.jacoco.core.analysis.IMethodCoverage;
 
-import com.mountainminds.eclemma.core.analysis.IJavaElementCoverage;
 import com.mountainminds.eclemma.core.analysis.IJavaModelCoverage;
+import com.mountainminds.eclemma.internal.core.DebugOptions;
+import com.mountainminds.eclemma.internal.core.DebugOptions.ITracer;
 
 /**
  * The IJavaModelCoverage implementation maps Java elements to its corresponding
  * coverage data objects.
  * 
- * @author  Marc R. Hoffmann
+ * @author Marc R. Hoffmann
  * @version $Revision$
  */
-public class JavaModelCoverage extends JavaElementCoverage implements
+public class JavaModelCoverage extends CoverageNodeImpl implements
     IJavaModelCoverage {
 
+  private static final ITracer TRACER = DebugOptions.ANALYSISTRACER;
+
   /** Maps Java elements to coverage objects */
-  private final Map coveragemap = new HashMap();
-  
-  /** List of all IJavaProject objects with coverage information attached */  
-  private final List projects = new ArrayList();
+  private final Map<IJavaElement, ICoverageNode> coveragemap = new HashMap<IJavaElement, ICoverageNode>();
 
-  /** List of all IPackageFragmentRoot objects with coverage information attached */  
-  private final List fragmentroots = new ArrayList();
+  /** List of all IJavaProject objects with coverage information attached */
+  private final List<IJavaProject> projects = new ArrayList<IJavaProject>();
 
-  /** List of all IPackageFragment objects with coverage information attached */  
-  private final List fragments = new ArrayList();
+  /**
+   * List of all IPackageFragmentRoot objects with coverage information attached
+   */
+  private final List<IPackageFragmentRoot> fragmentroots = new ArrayList<IPackageFragmentRoot>();
 
-  /** List of all IType objects with coverage information attached */  
-  private final List types = new ArrayList();
+  /** List of all IPackageFragment objects with coverage information attached */
+  private final List<IPackageFragment> fragments = new ArrayList<IPackageFragment>();
+
+  /** List of all IType objects with coverage information attached */
+  private final List<IType> types = new ArrayList<IType>();
 
   public JavaModelCoverage() {
-    super(null, false, 0);
+    super(ElementType.GROUP, "JavaModel"); //$NON-NLS-1$
   }
-  
-  public void put(IJavaElement element, IJavaElementCoverage coverage) {
-    coveragemap.put(element, coverage);
-    switch (element.getElementType()) {
-      case IJavaElement.JAVA_PROJECT:
-        projects.add(element);
-        break;
-      case IJavaElement.PACKAGE_FRAGMENT_ROOT:
-        fragmentroots.add(element);
-        break;
-      case IJavaElement.PACKAGE_FRAGMENT:
-        fragments.add(element);
-        break;
-      case IJavaElement.TYPE:
-        types.add(element);
-        break;
+
+  public void putFragmentRoot(IPackageFragmentRoot fragmentroot,
+      IBundleCoverage coverage) {
+    coveragemap.put(fragmentroot, coverage);
+    fragmentroots.add(fragmentroot);
+    getProjectCoverage(fragmentroot.getJavaProject()).increment(coverage);
+  }
+
+  private CoverageNodeImpl getProjectCoverage(IJavaProject project) {
+    CoverageNodeImpl coverage = (CoverageNodeImpl) coveragemap.get(project);
+    if (coverage == null) {
+      coverage = new CoverageNodeImpl(ElementType.GROUP,
+          project.getElementName());
+      coveragemap.put(project, coverage);
+      projects.add(project);
     }
+    return coverage;
   }
-  
+
+  public void putFragment(IPackageFragment element, ICoverageNode coverage) {
+    coveragemap.put(element, coverage);
+    fragments.add(element);
+  }
+
+  public void putType(IType element, ICoverageNode coverage) {
+    coveragemap.put(element, coverage);
+    types.add(element);
+  }
+
+  public void putCompilationUnit(ICompilationUnit element,
+      ICoverageNode coverage) {
+    coveragemap.put(element, coverage);
+  }
+
+  // TODO
+  // projects.add((IJavaProject) element);
+  // fragmentroots.add((IPackageFragmentRoot) element);
+  // fragments.add((IPackageFragment) element);
+
   // IJavaModelCoverage interface
 
   public IJavaProject[] getInstrumentedProjects() {
     IJavaProject[] arr = new IJavaProject[projects.size()];
-    return (IJavaProject[]) projects.toArray(arr);
+    return projects.toArray(arr);
   }
 
   public IPackageFragmentRoot[] getInstrumentedPackageFragmentRoots() {
     IPackageFragmentRoot[] arr = new IPackageFragmentRoot[fragmentroots.size()];
-    return (IPackageFragmentRoot[]) fragmentroots.toArray(arr);
+    return fragmentroots.toArray(arr);
   }
 
   public IPackageFragment[] getInstrumentedPackageFragments() {
     IPackageFragment[] arr = new IPackageFragment[fragments.size()];
-    return (IPackageFragment[]) fragments.toArray(arr);
+    return fragments.toArray(arr);
   }
 
   public IType[] getInstrumentedTypes() {
     IType[] arr = new IType[types.size()];
-    return (IType[]) types.toArray(arr);
+    return types.toArray(arr);
   }
 
-  public IJavaElementCoverage getCoverageFor(IJavaElement element) {
-    IJavaElementCoverage c = (IJavaElementCoverage) coveragemap.get(element);
-    // Currently lazy binding is for methods only:
-    if (c == null && element.getElementType() == IJavaElement.METHOD) {
-      IJavaElement parent = element.getParent();
-      Object parentcoverage = getCoverageFor(parent);
-      if (parentcoverage instanceof ILazyBinding) {
-        ((ILazyBinding) parentcoverage).resolve(parent, this);
-      }
-      c = (IJavaElementCoverage) coveragemap.get(element);
+  public ICoverageNode getCoverageFor(IJavaElement element) {
+    final ICoverageNode coverage = coveragemap.get(element);
+    if (coverage != null) {
+      return coverage;
     }
-    return c;
+    if (IJavaElement.METHOD == element.getElementType()) {
+      resolveMethods((IType) element.getParent());
+      return coveragemap.get(element);
+    }
+    return null;
   }
 
+  private void resolveMethods(final IType type) {
+    IClassCoverage classCoverage = (IClassCoverage) getCoverageFor(type);
+    if (classCoverage == null) {
+      return;
+    }
+    try {
+      MethodLocator locator = new MethodLocator(type);
+      for (IMethodCoverage methodCoverage : classCoverage.getMethods()) {
+        final IMethod method = locator.findMethod(methodCoverage.getName(),
+            methodCoverage.getDesc());
+        if (method != null) {
+          coveragemap.put(method, methodCoverage);
+        } else {
+          TRACER
+              .trace(
+                  "Method not found in Java model: {0}.{1}{2}", type.getFullyQualifiedName(), methodCoverage.getName(), methodCoverage.getDesc()); //$NON-NLS-1$
+        }
+      }
+    } catch (JavaModelException e) {
+      TRACER.trace("Error while creating method locator for {0}: {1}", type //$NON-NLS-1$
+          .getFullyQualifiedName(), e);
+    }
+  }
 }

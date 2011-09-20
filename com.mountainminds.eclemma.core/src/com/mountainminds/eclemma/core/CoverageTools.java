@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2009 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
@@ -10,20 +10,21 @@ package com.mountainminds.eclemma.core;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.jacoco.agent.AgentJar;
+import org.jacoco.core.analysis.ICoverageNode;
 
 import com.mountainminds.eclemma.core.analysis.IJavaCoverageListener;
-import com.mountainminds.eclemma.core.analysis.IJavaElementCoverage;
 import com.mountainminds.eclemma.core.analysis.IJavaModelCoverage;
-import com.mountainminds.eclemma.core.analysis.ILineCoverage;
 import com.mountainminds.eclemma.core.launching.ICoverageLaunchConfigurationConstants;
 import com.mountainminds.eclemma.core.launching.ICoverageLaunchInfo;
 import com.mountainminds.eclemma.core.launching.ICoverageLauncher;
@@ -63,35 +64,17 @@ public final class CoverageTools {
   }
 
   /**
-   * Convenience method that tries to adapt the given object to
-   * IJavaElementCoverage, i.e. find coverage information from the active
-   * session.
+   * Convenience method that tries to adapt the given object to ICoverageNode,
+   * i.e. find coverage information from the active session.
    * 
    * @param object
    *          Object to adapt
    * @return adapter or <code>null</code>
    */
-  public static IJavaElementCoverage getCoverageInfo(Object object) {
+  public static ICoverageNode getCoverageInfo(Object object) {
     if (object instanceof IAdaptable) {
-      return (IJavaElementCoverage) ((IAdaptable) object)
-          .getAdapter(IJavaElementCoverage.class);
-    } else {
-      return null;
-    }
-  }
-
-  /**
-   * Convenience method that tries to adapt the given object to ILineCoverage,
-   * i.e. find line coverage information from the active session.
-   * 
-   * @param object
-   *          Object to adapt
-   * @return adapter or <code>null</code>
-   */
-  public static ILineCoverage getLineCoverage(Object object) {
-    if (object instanceof IAdaptable) {
-      return (ILineCoverage) ((IAdaptable) object)
-          .getAdapter(ILineCoverage.class);
+      return (ICoverageNode) ((IAdaptable) object)
+          .getAdapter(ICoverageNode.class);
     } else {
       return null;
     }
@@ -111,20 +94,20 @@ public final class CoverageTools {
   }
 
   /**
-   * Returns a local path to the emma.jar runtime archive.
+   * Returns a local file path to the code coverage agent JAR.
    * 
-   * @return local path to emma.jar
+   * @return local local path to runtime agent
    * @throws CoreException
    *           if no local version can be created
    */
-  public static IPath getEmmaJar() throws CoreException {
-    URL url = EclEmmaCorePlugin.getInstance().find(EclEmmaCorePlugin.EMMA_JAR);
+  public static IPath getRuntimeAgentJar() throws CoreException {
     try {
-      url = Platform.asLocalURL(url);
+      final URL fileurl = FileLocator.toFileURL(AgentJar.getResource());
+      return new Path(fileurl.getPath());
     } catch (IOException e) {
-      throw new CoreException(EclEmmaStatus.NO_LOCAL_EMMAJAR_ERROR.getStatus(e));
+      throw new CoreException(
+          EclEmmaStatus.NO_LOCAL_AGENTJAR_ERROR.getStatus(e));
     }
-    return new Path(url.getPath());
   }
 
   /**
@@ -166,7 +149,7 @@ public final class CoverageTools {
   public static IClassFiles[] getClassFiles(ILaunchConfiguration configuration,
       boolean includebinaries) throws CoreException {
     ICoverageLauncher launcher = (ICoverageLauncher) configuration.getType()
-        .getDelegate(LAUNCH_MODE);
+        .getDelegates(Collections.singleton(LAUNCH_MODE))[0].getDelegate();
     return launcher.getClassFiles(configuration, includebinaries);
   }
 
@@ -176,30 +159,26 @@ public final class CoverageTools {
    * 
    * @param configuration
    *          launch configuration to look for class files
-   * @param inplace
-   *          flag whether instrumentation will happen inplace. In this case
-   *          binary libraries will be excluded
    * 
    * @return descriptors for all class for instrumentation
    * 
    * @throws CoreException
    */
   public static IClassFiles[] getClassFilesForInstrumentation(
-      final ILaunchConfiguration configuration, final boolean inplace)
-      throws CoreException {
-    final IClassFiles[] all = getClassFiles(configuration, !inplace);
-    final List selection = configuration.getAttribute(
+      final ILaunchConfiguration configuration) throws CoreException {
+    final IClassFiles[] all = getClassFiles(configuration, true);
+    final List<?> selection = configuration.getAttribute(
         ICoverageLaunchConfigurationConstants.ATTR_INSTRUMENTATION_PATHS,
-        (List) null);
+        (List<?>) null);
     if (selection != null && selection.size() > 0) {
       // Classes for instrumentation are already configured:
-      final List filtered = new ArrayList();
+      final List<IClassFiles> filtered = new ArrayList<IClassFiles>();
       for (int i = 0; i < all.length; i++) {
         if (selection.contains(all[i].getLocation().toString())) {
           filtered.add(all[i]);
         }
       }
-      return (IClassFiles[]) filtered.toArray(new IClassFiles[filtered.size()]);
+      return filtered.toArray(new IClassFiles[filtered.size()]);
     }
     // Otherwise we use a default selection:
     final DefaultInstrumentationFilter filter = EclEmmaCorePlugin.getInstance()
@@ -208,10 +187,10 @@ public final class CoverageTools {
   }
 
   public static ICoverageSession createCoverageSession(String description,
-      IInstrumentation[] instrumentations, IPath[] coveragedatafiles,
+      IClassFiles[] classfiles, IPath[] coveragedatafiles,
       ILaunchConfiguration launchconfiguration) {
-    return new CoverageSession(description, instrumentations,
-        coveragedatafiles, launchconfiguration);
+    return new CoverageSession(description, classfiles, coveragedatafiles,
+        launchconfiguration);
   }
 
   public static IJavaModelCoverage getJavaModelCoverage() {

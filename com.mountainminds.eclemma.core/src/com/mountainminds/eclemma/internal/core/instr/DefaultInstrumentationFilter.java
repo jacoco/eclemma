@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 ,2009 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
@@ -55,7 +55,8 @@ public class DefaultInstrumentationFilter {
    */
   public IClassFiles[] filter(final IClassFiles[] classfiles,
       final ILaunchConfiguration configuration) throws CoreException {
-    final List list = new ArrayList(Arrays.asList(classfiles));
+    final List<IClassFiles> list = new ArrayList<IClassFiles>(
+        Arrays.asList(classfiles));
     if (preferences.getDefaultInstrumentationSourceFoldersOnly()) {
       sourceFoldersOnly(list);
     }
@@ -66,24 +67,24 @@ public class DefaultInstrumentationFilter {
     if (filter != null && filter.length() > 0) {
       matchingPathsOnly(list, filter);
     }
-    return (IClassFiles[]) list.toArray(new IClassFiles[list.size()]);
+    return list.toArray(new IClassFiles[list.size()]);
   }
 
-  private void sourceFoldersOnly(final List list) {
-    for (final Iterator i = list.iterator(); i.hasNext();) {
-      final IClassFiles c = (IClassFiles) i.next();
+  private void sourceFoldersOnly(final List<IClassFiles> list) {
+    for (final Iterator<IClassFiles> i = list.iterator(); i.hasNext();) {
+      final IClassFiles c = i.next();
       if (c.isBinary()) {
         i.remove();
       }
     }
   }
 
-  private void sameProjectOnly(final List list,
+  private void sameProjectOnly(final List<IClassFiles> list,
       final ILaunchConfiguration configuration) throws CoreException {
     final IJavaProject javaProject = JavaRuntime.getJavaProject(configuration);
     if (javaProject != null) {
-      for (final Iterator i = list.iterator(); i.hasNext();) {
-        if (!isSameProject((IClassFiles) i.next(), javaProject)) {
+      for (final Iterator<IClassFiles> i = list.iterator(); i.hasNext();) {
+        if (!isSameProject(i.next(), javaProject)) {
           i.remove();
         }
       }
@@ -101,10 +102,11 @@ public class DefaultInstrumentationFilter {
     return false;
   }
 
-  private void matchingPathsOnly(final List list, final String filter) {
+  private void matchingPathsOnly(final List<IClassFiles> list,
+      final String filter) {
     final String[] matchStrings = filter.split(","); //$NON-NLS-1$
-    for (final Iterator i = list.iterator(); i.hasNext();) {
-      if (!isPathMatch((IClassFiles) i.next(), matchStrings)) {
+    for (final Iterator<IClassFiles> i = list.iterator(); i.hasNext();) {
+      if (!isPathMatch(i.next(), matchStrings)) {
         i.remove();
       }
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2009 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
@@ -7,9 +7,7 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.core;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaModelException;
 
@@ -58,22 +56,5 @@ public interface IClassFiles {
    *           May be thrown while querying the Java model
    */
   public ISourceLocation[] getSourceLocations() throws JavaModelException;
-
-  /**
-   * Instruments the class files contained in the folder or archive returned by
-   * {@link #getLocation()}. If in-place mode is enabled, the original class
-   * files or archives will be replaced.
-   * 
-   * @param inplace
-   *          if <code>true</code> the original class files will be overwritten
-   * @param monitor
-   *          optional progress monitor
-   * @return {@link IInstrumentation} object describing the instrumentation
-   *         result
-   * @throws CoreException
-   *           thrown if the instrumentation process fails
-   */
-  public IInstrumentation instrument(boolean inplace, IProgressMonitor monitor)
-      throws CoreException;
 
 }

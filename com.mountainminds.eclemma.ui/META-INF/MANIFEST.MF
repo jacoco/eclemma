@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: com.mountainminds.eclemma.ui; singleton:=true
-Bundle-Version: 1.5.3
+Bundle-Version: 2.0.0.qualifier
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Require-Bundle: com.mountainminds.eclemma.core,
@@ -18,8 +18,10 @@ Require-Bundle: com.mountainminds.eclemma.core,
  org.eclipse.ui.ide,
  org.eclipse.jface.text,
  org.eclipse.ui.workbench.texteditor,
- org.eclipse.ui.editors
+ org.eclipse.ui.editors,
+ org.jacoco.core
 Bundle-Activator: com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin
-Eclipse-AutoStart: true
 Export-Package: com.mountainminds.eclemma.ui.launching
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
 

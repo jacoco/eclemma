@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
@@ -15,7 +15,7 @@ import org.eclipse.core.runtime.Platform;
 /**
  * Access to debug options and tracing facilities for this plugin.
  * 
- * @author  Marc R. Hoffmann
+ * @author Marc R. Hoffmann
  * @version $Revision$
  */
 public final class DebugOptions {
@@ -147,9 +147,9 @@ public final class DebugOptions {
 
     private final String channel;
 
-    private final ThreadLocal starttime = new ThreadLocal();
+    private final ThreadLocal<Long> starttime = new ThreadLocal<Long>();
 
-    private final ThreadLocal heapsize = new ThreadLocal();
+    private final ThreadLocal<Long> heapsize = new ThreadLocal<Long>();
 
     PrintStreamTracer(String channel) {
       this(channel, System.out);
@@ -242,7 +242,7 @@ public final class DebugOptions {
       KEY_EMMAVERBOSITYLEVEL, "silent"); //$NON-NLS-1$
 
   public static final ITracer PERFORMANCETRACER = getTracer("performance"); //$NON-NLS-1$
-  
+
   public static final ITracer INSTRUMENTATIONTRACER = getTracer("instrumentation"); //$NON-NLS-1$
 
   public static final ITracer LAUNCHINGTRACER = getTracer("launching"); //$NON-NLS-1$

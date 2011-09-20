@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
@@ -8,13 +8,11 @@
 package com.mountainminds.eclemma.internal.core;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osgi.util.NLS;
@@ -31,7 +29,7 @@ import com.mountainminds.eclemma.internal.core.analysis.SessionAnalyzer;
  * current {@link IJavaModelCoverage} object and sends out events in case of
  * changed coverage information.
  * 
- * @author  Marc R. Hoffmann
+ * @author Marc R. Hoffmann
  * @version $Revision$
  */
 public class JavaCoverageLoader {
@@ -42,14 +40,14 @@ public class JavaCoverageLoader {
 
   private IJavaModelCoverage coverage;
 
-  private final List listeners = new ArrayList();
+  private final List<IJavaCoverageListener> listeners = new ArrayList<IJavaCoverageListener>();
 
   private ISessionListener sessionListener = new ISessionListener() {
 
     public void sessionActivated(ICoverageSession session) {
       activeSession = session;
       // TODO Looks like this has no effect
-      Platform.getJobManager().cancel(LOADJOB);
+      Job.getJobManager().cancel(LOADJOB);
       if (session == null) {
         coverage = null;
         fireCoverageChanged();
@@ -69,13 +67,14 @@ public class JavaCoverageLoader {
   };
 
   private static final Object LOADJOB = new Object();
-  
+
   private class LoadSessionJob extends Job {
 
     private final ICoverageSession session;
 
     public LoadSessionJob(ICoverageSession session) {
-      super(NLS.bind(CoreMessages.AnalyzingCoverageSession_task, session.getDescription()));
+      super(NLS.bind(CoreMessages.AnalyzingCoverageSession_task,
+          session.getDescription()));
       this.session = session;
     }
 
@@ -116,9 +115,9 @@ public class JavaCoverageLoader {
 
   protected void fireCoverageChanged() {
     // avoid concurrent modification issues
-    Iterator i = new ArrayList(listeners).iterator();
-    while (i.hasNext()) {
-      ((IJavaCoverageListener) i.next()).coverageChanged();
+    for (IJavaCoverageListener l : new ArrayList<IJavaCoverageListener>(
+        listeners)) {
+      l.coverageChanged();
     }
   }
 

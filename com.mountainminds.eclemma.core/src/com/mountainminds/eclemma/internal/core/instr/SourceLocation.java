@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
@@ -32,11 +32,11 @@ import com.mountainminds.eclemma.internal.core.EclEmmaCorePlugin;
 /**
  * Implementation of {@link ISourceLocation}.
  * 
- * @author  Marc R. Hoffmann
+ * @author Marc R. Hoffmann
  * @version $Revision$
  */
 public class SourceLocation implements ISourceLocation {
-  
+
   private static final String JAVA_EXT = ".java"; //$NON-NLS-1$
 
   public static ISourceLocation findLocation(IPackageFragmentRoot root)
@@ -58,14 +58,14 @@ public class SourceLocation implements ISourceLocation {
 
   public static ISourceLocation[] findLocations(IPackageFragmentRoot[] roots)
       throws JavaModelException {
-    List l = new ArrayList();
+    List<ISourceLocation> l = new ArrayList<ISourceLocation>();
     for (int i = 0; i < roots.length; i++) {
       ISourceLocation loc = findLocation(roots[i]);
       if (loc != null) {
         l.add(loc);
       }
     }
-    return (ISourceLocation[]) l.toArray(new ISourceLocation[l.size()]);
+    return l.toArray(new ISourceLocation[l.size()]);
   }
 
   private IPath path;
@@ -96,18 +96,24 @@ public class SourceLocation implements ISourceLocation {
 
   public void extract(IProgressMonitor monitor) throws CoreException {
     if (isArchive()) {
-      monitor.beginTask(NLS.bind(CoreMessages.ExtractingSourceArchive_task, path), 1); 
+      monitor.beginTask(
+          NLS.bind(CoreMessages.ExtractingSourceArchive_task, path), 1);
       String prefix = rootpath == null ? "" : rootpath.toString(); //$NON-NLS-1$
       byte[] buffer = new byte[0x1000];
-      IPath srcfolder = EclEmmaCorePlugin.getInstance().getStateFiles().getSourceFolder(path);
+      IPath srcfolder = EclEmmaCorePlugin.getInstance().getStateFiles()
+          .getSourceFolder(path);
       if (!srcfolder.toFile().exists()) {
         try {
-          ZipInputStream zip = new ZipInputStream(new FileInputStream(path.toFile()));
+          ZipInputStream zip = new ZipInputStream(new FileInputStream(
+              path.toFile()));
           while (true) {
             ZipEntry entry = zip.getNextEntry();
-            if (entry == null) break;
-            if (!entry.isDirectory() && entry.getName().startsWith(prefix) && entry.getName().endsWith(JAVA_EXT)) {
-              IPath path = srcfolder.append(entry.getName().substring(prefix.length()));
+            if (entry == null)
+              break;
+            if (!entry.isDirectory() && entry.getName().startsWith(prefix)
+                && entry.getName().endsWith(JAVA_EXT)) {
+              IPath path = srcfolder.append(entry.getName().substring(
+                  prefix.length()));
               path.removeLastSegments(1).toFile().mkdirs();
               OutputStream out = new FileOutputStream(path.toFile());
               int len;
@@ -120,12 +126,13 @@ public class SourceLocation implements ISourceLocation {
           }
           zip.close();
         } catch (IOException e) {
-          throw new CoreException(EclEmmaStatus.SOURCE_EXTRACTION_ERROR.getStatus(path, e));
+          throw new CoreException(
+              EclEmmaStatus.SOURCE_EXTRACTION_ERROR.getStatus(path, e));
         }
       }
       path = srcfolder;
       rootpath = null;
-   }
+    }
     monitor.done();
   }
 

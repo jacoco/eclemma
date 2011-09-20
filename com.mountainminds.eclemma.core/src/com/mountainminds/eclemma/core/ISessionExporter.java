@@ -1,9 +1,9 @@
 /*******************************************************************************
- * Copyright (c) 2006 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
- * $Id: $
+ * $Id$
  ******************************************************************************/
 package com.mountainminds.eclemma.core;
 
@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * instance.
  * 
  * @author Marc R. Hoffmann
- * @version $Revision: $
+ * @version $Revision$
  */
 public interface ISessionExporter {
 
@@ -32,6 +32,7 @@ public interface ISessionExporter {
   public static final int TXT_FORMAT = 2;
 
   /** Constant for EMMA session file export (value is 3). */
+  // TODO Remove EMMA Reference
   public static final int EMMA_FORMAT = 3;
 
   /**

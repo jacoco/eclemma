@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2007 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
  *
@@ -11,9 +11,9 @@
 package com.mountainminds.eclemma.internal.ui.coverageview;
 
 import org.eclipse.ui.IMemento;
+import org.jacoco.core.analysis.ICounter;
+import org.jacoco.core.analysis.ICoverageNode;
 
-import com.mountainminds.eclemma.core.analysis.ICounter;
-import com.mountainminds.eclemma.core.analysis.IJavaElementCoverage;
 import com.mountainminds.eclemma.internal.ui.UIMessages;
 
 /**
@@ -49,7 +49,7 @@ public class ViewSettings {
 
     public String getActionLabel();
 
-    public ICounter getCounter(IJavaElementCoverage coverage);
+    public ICounter getCounter(ICoverageNode coverage);
   }
 
   public static final ICounterMode[] COUNTERMODES = new ICounterMode[] {
@@ -62,7 +62,7 @@ public class ViewSettings {
           return UIMessages.CoverageViewCounterModeInstructionsAction_label;
         }
 
-        public ICounter getCounter(IJavaElementCoverage coverage) {
+        public ICounter getCounter(ICoverageNode coverage) {
           return coverage.getInstructionCounter();
         }
 
@@ -79,19 +79,19 @@ public class ViewSettings {
         }
 
         public String getActionLabel() {
-          return UIMessages.CoverageViewCounterModeBlocksAction_label;
+          return UIMessages.CoverageViewCounterModeBranchesAction_label;
         }
 
-        public ICounter getCounter(IJavaElementCoverage coverage) {
-          return coverage.getBlockCounter();
+        public ICounter getCounter(ICoverageNode coverage) {
+          return coverage.getBranchCounter();
         }
 
         public String[] getColumnHeaders() {
           return new String[] { UIMessages.CoverageViewColumnElement_label,
               UIMessages.CoverageViewColumnCoverage_label,
-              UIMessages.CoverageViewColumnCoveredBlocks_label,
-              UIMessages.CoverageViewColumnMissedBlocks_label,
-              UIMessages.CoverageViewColumnTotalBlocks_label };
+              UIMessages.CoverageViewColumnCoveredBranches_label,
+              UIMessages.CoverageViewColumnMissedBranches_label,
+              UIMessages.CoverageViewColumnTotalBranches_label };
         }
       }, new ICounterMode() {
         public int getIdx() {
@@ -102,7 +102,7 @@ public class ViewSettings {
           return UIMessages.CoverageViewCounterModeLinesAction_label;
         }
 
-        public ICounter getCounter(IJavaElementCoverage coverage) {
+        public ICounter getCounter(ICoverageNode coverage) {
           return coverage.getLineCounter();
         }
 
@@ -122,7 +122,7 @@ public class ViewSettings {
           return UIMessages.CoverageViewCounterModeMethodsAction_label;
         }
 
-        public ICounter getCounter(IJavaElementCoverage coverage) {
+        public ICounter getCounter(ICoverageNode coverage) {
           return coverage.getMethodCounter();
         }
 
@@ -142,8 +142,8 @@ public class ViewSettings {
           return UIMessages.CoverageViewCounterModeTypesAction_label;
         }
 
-        public ICounter getCounter(IJavaElementCoverage coverage) {
-          return coverage.getTypeCounter();
+        public ICounter getCounter(ICoverageNode coverage) {
+          return coverage.getClassCounter();
         }
 
         public String[] getColumnHeaders() {
@@ -152,6 +152,26 @@ public class ViewSettings {
               UIMessages.CoverageViewColumnCoveredTypes_label,
               UIMessages.CoverageViewColumnMissedTypes_label,
               UIMessages.CoverageViewColumnTotalTypes_label };
+        }
+      }, new ICounterMode() {
+        public int getIdx() {
+          return 5;
+        }
+
+        public String getActionLabel() {
+          return UIMessages.CoverageViewCounterModeComplexityAction_label;
+        }
+
+        public ICounter getCounter(ICoverageNode coverage) {
+          return coverage.getClassCounter();
+        }
+
+        public String[] getColumnHeaders() {
+          return new String[] { UIMessages.CoverageViewColumnElement_label,
+              UIMessages.CoverageViewColumnCoverage_label,
+              UIMessages.CoverageViewColumnCoveredComplexity_label,
+              UIMessages.CoverageViewColumnMissedComplexity_label,
+              UIMessages.CoverageViewColumnTotalComplexity_label };
         }
       } };
 
