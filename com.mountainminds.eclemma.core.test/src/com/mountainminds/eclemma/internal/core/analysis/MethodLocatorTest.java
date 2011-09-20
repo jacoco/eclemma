@@ -11,24 +11,29 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.core.analysis;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import com.mountainminds.eclemma.core.JavaProjectKit;
 
 /**
  * Tests for {@link MethodLocator}.
  */
-public class MethodLocatorTest extends TestCase {
+public class MethodLocatorTest {
 
   private JavaProjectKit javaProject;
 
   private MethodLocator methodLocator;
 
-  protected void setUp() throws Exception {
+  @Before
+  public void setup() throws Exception {
     javaProject = new JavaProjectKit();
     javaProject.enableJava5();
     final IPackageFragmentRoot root = javaProject.createSourceFolder("src");
@@ -39,7 +44,8 @@ public class MethodLocatorTest extends TestCase {
     methodLocator = new MethodLocator(compilationUnit.getTypes()[0]);
   }
 
-  protected void tearDown() throws Exception {
+  @After
+  public void teardown() throws Exception {
     javaProject.destroy();
   }
 
@@ -50,29 +56,35 @@ public class MethodLocatorTest extends TestCase {
     assertEquals(expectedKey, method.getKey());
   }
 
+  @Test
   public void testUnambiguousConstructor() {
     assertMethod("Lmethodlocator/Samples;.Samples()V", "<init>", "()V");
   }
 
+  @Test
   public void testAmbiguousConstructor1() {
     assertMethod("Lmethodlocator/Samples;.Samples(QString;)V", "<init>",
         "(Ljava/lang/String;)V");
   }
 
+  @Test
   public void testAmbiguousConstructor2() {
     assertMethod("Lmethodlocator/Samples;.Samples(I)V", "<init>", "(I)V");
   }
 
+  @Test
   public void testUnambiguousMethod() {
     assertMethod("Lmethodlocator/Samples;.m1(QString;)V", "m1",
         "(Ljava/lang/String;)V");
   }
 
+  @Test
   public void testAmbiguousMethod1() {
     assertMethod("Lmethodlocator/Samples;.m2(QInteger;)V", "m2",
         "(Ljava/lang/Integer;)V");
   }
 
+  @Test
   public void testAmbiguousMethod2() {
     assertMethod("Lmethodlocator/Samples;.m2(QNumber;)V", "m2",
         "(Ljava/lang/Number;)V");

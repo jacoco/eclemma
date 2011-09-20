@@ -11,11 +11,11 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.core.analysis;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-
-import junit.framework.TestCase;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -23,13 +23,16 @@ import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import com.mountainminds.eclemma.core.JavaProjectKit;
 
 /**
  * Tests for {@link TypeTraverser}.
  */
-public class TypeTraverserTest extends TestCase {
+public class TypeTraverserTest {
 
   private static final IProgressMonitor MONITOR = new NullProgressMonitor();
 
@@ -37,7 +40,8 @@ public class TypeTraverserTest extends TestCase {
 
   private IPackageFragmentRoot root;
 
-  protected void setUp() throws Exception {
+  @Before
+  public void setup() throws Exception {
     javaProject = new JavaProjectKit();
     root = javaProject.createSourceFolder("src");
     javaProject.createCompilationUnit(root, "testdata/src",
@@ -46,7 +50,8 @@ public class TypeTraverserTest extends TestCase {
     javaProject.assertNoErrors();
   }
 
-  protected void tearDown() throws Exception {
+  @After
+  public void teardown() throws Exception {
     javaProject.destroy();
   }
 
@@ -57,6 +62,7 @@ public class TypeTraverserTest extends TestCase {
       "typetraverser/Samples$4", "typetraverser/Samples$5",
       "typetraverser/Samples$InnerA" };
 
+  @Test
   public void testTraverse1() throws Exception {
     final Set expected = new HashSet(Arrays.asList(EXPECTEDTYPES));
     TypeTraverser t = new TypeTraverser(root);

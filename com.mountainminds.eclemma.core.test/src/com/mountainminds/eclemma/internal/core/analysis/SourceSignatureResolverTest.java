@@ -11,9 +11,14 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.core.analysis;
 
+import static org.junit.Assert.assertEquals;
+
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import com.mountainminds.eclemma.core.JavaProjectKit;
 
@@ -24,7 +29,8 @@ public class SourceSignatureResolverTest extends SignatureResolverTestBase {
 
   private JavaProjectKit javaProject;
 
-  protected void setUp() throws Exception {
+  @Before
+  public void setup() throws Exception {
     javaProject = new JavaProjectKit();
     javaProject.enableJava5();
     final IPackageFragmentRoot root = javaProject.createSourceFolder("src");
@@ -36,10 +42,12 @@ public class SourceSignatureResolverTest extends SignatureResolverTestBase {
     createMethodIndex();
   }
 
-  protected void tearDown() throws Exception {
+  @After
+  public void teardown() throws Exception {
     javaProject.destroy();
   }
 
+  @Test
   public void test_innerClassTypeVariable() throws Exception {
     final IMethod method = type.getType("Inner").getMethods()[0];
     assertEquals(SignatureResolver.getParameters(method),

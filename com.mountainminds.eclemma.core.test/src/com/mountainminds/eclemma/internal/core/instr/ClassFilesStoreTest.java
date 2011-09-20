@@ -11,13 +11,17 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.core.instr;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import com.mountainminds.eclemma.core.IClassFiles;
 import com.mountainminds.eclemma.core.JavaProjectKit;
@@ -25,7 +29,7 @@ import com.mountainminds.eclemma.core.JavaProjectKit;
 /**
  * Tests for {@link ClassFilesStore}.
  */
-public class ClassFilesStoreTest extends TestCase {
+public class ClassFilesStoreTest {
 
   private ClassFilesStore store;
 
@@ -37,7 +41,8 @@ public class ClassFilesStoreTest extends TestCase {
 
   private IPackageFragmentRoot rootBin;
 
-  protected void setUp() throws Exception {
+  @Before
+  public void setup() throws Exception {
     store = new ClassFilesStore();
     javaProject1 = new JavaProjectKit("projectA");
     rootSrc1 = javaProject1.createSourceFolder("src1");
@@ -49,11 +54,13 @@ public class ClassFilesStoreTest extends TestCase {
     JavaProjectKit.waitForBuild();
   }
 
-  protected void tearDown() throws Exception {
+  @After
+  public void teardown() throws Exception {
     javaProject1.destroy();
     javaProject2.destroy();
   }
 
+  @Test
   public void testAddSrcRoot() throws JavaModelException {
     store.add(rootSrc1);
     final IClassFiles[] classfiles = store.getClassFiles();
@@ -63,6 +70,7 @@ public class ClassFilesStoreTest extends TestCase {
     assertEquals(rootSrc1, classfiles[0].getPackageFragmentRoots()[0]);
   }
 
+  @Test
   public void testAddBinRoot() throws JavaModelException {
     store.add(rootBin);
     final IClassFiles[] classfiles = store.getClassFiles();
@@ -72,6 +80,7 @@ public class ClassFilesStoreTest extends TestCase {
     assertEquals(rootBin, classfiles[0].getPackageFragmentRoots()[0]);
   }
 
+  @Test
   public void testGetAtAbsoluteLocation() throws Exception {
     store.add(rootSrc1);
     final String loc = javaProject1.project.getFolder("bin").getLocation()
@@ -83,6 +92,7 @@ public class ClassFilesStoreTest extends TestCase {
     assertEquals(rootSrc1, classfiles.getPackageFragmentRoots()[0]);
   }
 
+  @Test
   public void testAddProject() throws JavaModelException {
     store.add(javaProject1.javaProject);
     final String loc1 = javaProject1.project.getFolder("bin").getLocation()
@@ -93,6 +103,7 @@ public class ClassFilesStoreTest extends TestCase {
     assertNotNull(store.getAtAbsoluteLocation(loc2));
   }
 
+  @Test
   public void testAddModel() throws JavaModelException {
     store.add(JavaCore.create(ResourcesPlugin.getWorkspace().getRoot()));
     final String loc1 = javaProject1.project.getFolder("bin").getLocation()

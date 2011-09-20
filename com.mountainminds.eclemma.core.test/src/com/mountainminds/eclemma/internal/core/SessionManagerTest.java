@@ -11,13 +11,19 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.core;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.junit.Before;
+import org.junit.Test;
 
 import com.mountainminds.eclemma.core.IClassFiles;
 import com.mountainminds.eclemma.core.ICoverageSession;
@@ -27,19 +33,21 @@ import com.mountainminds.eclemma.core.ISessionManager;
 /**
  * Tests for {@link SessionManager}.
  */
-public class SessionManagerTest extends TestCase {
+public class SessionManagerTest {
 
   protected ISessionManager manager;
   protected ISessionListener listener;
   protected ISessionListener reflistener;
 
-  protected void setUp() throws Exception {
+  @Before
+  public void setup() throws Exception {
     manager = new SessionManager();
     listener = new RecordingListener();
     manager.addSessionListener(listener);
     reflistener = new RecordingListener();
   }
 
+  @Test
   public void testAddSession1() {
     ICoverageSession s0 = new DummySession();
     ICoverageSession s1 = new DummySession();
@@ -55,6 +63,7 @@ public class SessionManagerTest extends TestCase {
     assertNull(manager.getActiveSession());
   }
 
+  @Test
   public void testAddSession2() {
     ICoverageSession s0 = new DummySession();
     ICoverageSession s1 = new DummySession();
@@ -70,6 +79,7 @@ public class SessionManagerTest extends TestCase {
     assertSame(s1, manager.getActiveSession());
   }
 
+  @Test
   public void testAddSession3() {
     ICoverageSession s0 = new DummySession();
     ICoverageSession s1 = new DummySession();
@@ -81,14 +91,13 @@ public class SessionManagerTest extends TestCase {
     assertEquals(reflistener, listener);
   }
 
+  @Test(expected = NullPointerException.class)
   public void testAddSession4() {
-    try {
-      manager.addSession(null, false, null);
-      fail("NullPointerException expected.");
-    } catch (NullPointerException npe) {
-    }
+    manager.addSession(null, false, null);
+    fail("NullPointerException expected.");
   }
 
+  @Test
   public void testRemoveSession1() {
     ICoverageSession s0 = new DummySession();
     manager.addSession(s0, true, null);
@@ -102,6 +111,7 @@ public class SessionManagerTest extends TestCase {
     assertEquals(reflistener, listener);
   }
 
+  @Test
   public void testRemoveSession2() {
     ICoverageSession s0 = new DummySession();
     ICoverageSession s1 = new DummySession();
@@ -120,6 +130,7 @@ public class SessionManagerTest extends TestCase {
     assertEquals(reflistener, listener);
   }
 
+  @Test
   public void testRemoveSession3() {
     Object key0 = new Object();
     Object key1 = new Object();
@@ -140,6 +151,7 @@ public class SessionManagerTest extends TestCase {
     assertEquals(reflistener, listener);
   }
 
+  @Test
   public void testRemoveSession4() {
     Object key0 = new Object();
     Object key1 = new Object();
@@ -152,6 +164,7 @@ public class SessionManagerTest extends TestCase {
     assertEquals(2, manager.getSessions().length);
   }
 
+  @Test
   public void testRemoveAllSessions1() {
     ICoverageSession s0 = new DummySession();
     ICoverageSession s1 = new DummySession();
@@ -169,12 +182,14 @@ public class SessionManagerTest extends TestCase {
     assertEquals(reflistener, listener);
   }
 
+  @Test
   public void testGetSessions1() {
     ICoverageSession[] sessions = manager.getSessions();
     assertNotNull(sessions);
     assertEquals(0, sessions.length);
   }
 
+  @Test
   public void testGetSession1() {
     Object key0 = new Object();
     Object key1 = new Object();

@@ -11,9 +11,9 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.core.instr;
 
-import java.util.Arrays;
+import static org.junit.Assert.assertEquals;
 
-import junit.framework.TestCase;
+import java.util.Arrays;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -22,6 +22,9 @@ import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import com.mountainminds.eclemma.core.IClassFiles;
 import com.mountainminds.eclemma.core.ICorePreferences;
@@ -30,7 +33,7 @@ import com.mountainminds.eclemma.core.JavaProjectKit;
 /**
  * Tests for {@link DefaultInstrumentationFilter}.
  */
-public class DefaultInstrumentationFilterTest extends TestCase {
+public class DefaultInstrumentationFilterTest {
 
   private JavaProjectKit javaProject1;
 
@@ -48,7 +51,8 @@ public class DefaultInstrumentationFilterTest extends TestCase {
 
   private IClassFiles classFilesBin1;
 
-  protected void setUp() throws Exception {
+  @Before
+  public void setup() throws Exception {
     javaProject1 = new JavaProjectKit("project1");
     javaProject2 = new JavaProjectKit("project2");
     preferences = new TestPreferences();
@@ -79,11 +83,13 @@ public class DefaultInstrumentationFilterTest extends TestCase {
     JavaProjectKit.waitForBuild();
   }
 
-  protected void tearDown() throws Exception {
+  @After
+  public void teardown() throws Exception {
     javaProject1.destroy();
     javaProject2.destroy();
   }
 
+  @Test
   public void testNoFilters() throws CoreException {
     preferences.sourceFoldersOnly = false;
     final IClassFiles[] input = new IClassFiles[] { classFilesSrc1,
@@ -92,6 +98,7 @@ public class DefaultInstrumentationFilterTest extends TestCase {
     assertEquals(Arrays.asList(input), Arrays.asList(output));
   }
 
+  @Test
   public void testSourceFoldersOnly() throws CoreException {
     preferences.sourceFoldersOnly = true;
     final IClassFiles[] input = new IClassFiles[] { classFilesSrc1,
@@ -101,6 +108,7 @@ public class DefaultInstrumentationFilterTest extends TestCase {
         Arrays.asList(output));
   }
 
+  @Test
   public void testSameProjectOnly() throws CoreException {
     preferences.sameProjectOnly = true;
     configuration.setAttribute(
@@ -112,6 +120,7 @@ public class DefaultInstrumentationFilterTest extends TestCase {
         Arrays.asList(output));
   }
 
+  @Test
   public void testFilter() throws CoreException {
     preferences.filter = "testsrc,abc";
     final IClassFiles[] input = new IClassFiles[] { classFilesSrc1,

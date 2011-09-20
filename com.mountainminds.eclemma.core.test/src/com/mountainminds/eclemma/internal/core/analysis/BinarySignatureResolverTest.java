@@ -11,9 +11,14 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.core.analysis;
 
+import static org.junit.Assert.assertEquals;
+
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClassFile;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import com.mountainminds.eclemma.core.JavaProjectKit;
 
@@ -24,7 +29,8 @@ public class BinarySignatureResolverTest extends SignatureResolverTestBase {
 
   private JavaProjectKit javaProject;
 
-  protected void setUp() throws Exception {
+  @Before
+  public void setup() throws Exception {
     javaProject = new JavaProjectKit();
     javaProject.enableJava5();
     final IPackageFragmentRoot root = javaProject.createJAR(
@@ -38,14 +44,17 @@ public class BinarySignatureResolverTest extends SignatureResolverTestBase {
     createMethodIndex();
   }
 
-  protected void tearDown() throws Exception {
+  @After
+  public void teardown() throws Exception {
     javaProject.destroy();
   }
 
+  @Test
   public void testGetParameterNoArgs() {
     assertEquals("", SignatureResolver.getParameters("()Ljava.lang.Integer;"));
   }
 
+  @Test
   public void testGetParameterWithArgs() {
     assertEquals("[[Ljava/util/Map$Entry;",
         SignatureResolver.getParameters("([[Ljava/util/Map$Entry;)I"));
