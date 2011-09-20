@@ -1,9 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2009 Mountainminds GmbH & Co. KG
- * This software is provided under the terms of the Eclipse Public License v1.0
- * See http://www.eclipse.org/legal/epl-v10.html.
+ * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * $Id: $
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.core.analysis;
 
@@ -21,9 +25,6 @@ import org.eclipse.jdt.core.Signature;
  * quickly identify methods in most situations: Identification by name and
  * parameter count. Only if the first step does fails to identify a method
  * unambiguously the parameter types are resolved in a second step.
- * 
- * @author Marc R. Hoffmann
- * @version $Revision: $
  */
 public class MethodLocator {
 

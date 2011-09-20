@@ -1,9 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2006 Mountainminds GmbH & Co. KG
- * This software is provided under the terms of the Eclipse Public License v1.0
- * See http://www.eclipse.org/legal/epl-v10.html.
+ * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * $Id: $
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.ui.launching;
 
@@ -21,11 +25,8 @@ import com.mountainminds.eclemma.internal.ui.UIMessages;
 
 /**
  * Status handler that issues an error message when to launch a configuration
- * that does not specify any classes for instrumentation. The used may decide
- * to open the launch dialog directly.
- * 
- * @author  Marc R. Hoffmann
- * @version $Revision: $
+ * that does not specify any classes for instrumentation. The used may decide to
+ * open the launch dialog directly.
  */
 public class NoInstrumentedClassesHandler implements IStatusHandler {
 
@@ -36,13 +37,15 @@ public class NoInstrumentedClassesHandler implements IStatusHandler {
     String title = UIMessages.NoInstrumentedClassesError_title;
     String message = UIMessages.NoInstrumentedClassesError_message;
 
-    MessageDialog d = new MessageDialog(parent, title, null, message, MessageDialog.ERROR,
-        new String[] { IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL }, 0);
+    MessageDialog d = new MessageDialog(parent, title, null, message,
+        MessageDialog.ERROR, new String[] { IDialogConstants.YES_LABEL,
+            IDialogConstants.NO_LABEL }, 0);
     if (d.open() == 0) {
       parent.getDisplay().asyncExec(new Runnable() {
         public void run() {
           DebugUITools.openLaunchConfigurationDialogOnGroup(parent,
-              new StructuredSelection(source), EclEmmaUIPlugin.ID_COVERAGE_LAUNCH_GROUP);
+              new StructuredSelection(source),
+              EclEmmaUIPlugin.ID_COVERAGE_LAUNCH_GROUP);
         }
       });
     }

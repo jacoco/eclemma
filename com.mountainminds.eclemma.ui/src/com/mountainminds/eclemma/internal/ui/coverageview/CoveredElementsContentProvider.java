@@ -1,9 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2006 Mountainminds GmbH & Co. KG
- * This software is provided under the terms of the Eclipse Public License v1.0
- * See http://www.eclipse.org/legal/epl-v10.html.
+ * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * $Id$
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.ui.coverageview;
 
@@ -14,18 +18,15 @@ import com.mountainminds.eclemma.core.analysis.IJavaModelCoverage;
 /**
  * Specialized workbench content provider that selects entry elements depending
  * on the view setting (projects, package roots, packages or types).
- *  
- * @author  Marc R. Hoffmann
- * @version $Revision$
  */
 class CoveredElementsContentProvider extends WorkbenchContentProvider {
 
   private final ViewSettings settings;
-  
+
   public CoveredElementsContentProvider(ViewSettings settings) {
     this.settings = settings;
   }
-  
+
   public Object[] getElements(Object element) {
     IJavaModelCoverage coverage = (IJavaModelCoverage) element;
     if (coverage == IJavaModelCoverage.LOADING) {
@@ -33,14 +34,14 @@ class CoveredElementsContentProvider extends WorkbenchContentProvider {
     }
     if (coverage != null) {
       switch (settings.getEntryMode()) {
-        case ViewSettings.ENTRYMODE_PROJECTS:
-          return coverage.getInstrumentedProjects();
-        case ViewSettings.ENTRYMODE_PACKAGEROOTS:
-          return coverage.getInstrumentedPackageFragmentRoots();
-        case ViewSettings.ENTRYMODE_PACKAGES:
-          return coverage.getInstrumentedPackageFragments();
-        case ViewSettings.ENTRYMODE_TYPES:
-          return coverage.getInstrumentedTypes();
+      case ViewSettings.ENTRYMODE_PROJECTS:
+        return coverage.getInstrumentedProjects();
+      case ViewSettings.ENTRYMODE_PACKAGEROOTS:
+        return coverage.getInstrumentedPackageFragmentRoots();
+      case ViewSettings.ENTRYMODE_PACKAGES:
+        return coverage.getInstrumentedPackageFragments();
+      case ViewSettings.ENTRYMODE_TYPES:
+        return coverage.getInstrumentedTypes();
       }
     }
     return new Object[0];

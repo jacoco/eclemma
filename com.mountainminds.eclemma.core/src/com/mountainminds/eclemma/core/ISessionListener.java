@@ -1,22 +1,22 @@
 /*******************************************************************************
- * Copyright (c) 2006 Mountainminds GmbH & Co. KG
- * This software is provided under the terms of the Eclipse Public License v1.0
- * See http://www.eclipse.org/legal/epl-v10.html.
+ * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * $Id$
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
  ******************************************************************************/
 package com.mountainminds.eclemma.core;
 
-
 /**
- * Callback interface for changes of the session manager. This interface is 
+ * Callback interface for changes of the session manager. This interface is
  * intended to be implemented by clients that want to get notifications.
- *
+ * 
  * @see ISessionManager#addSessionListener(ISessionListener)
  * @see ISessionManager#removeSessionListener(ISessionListener)
- * 
- * @author  Marc R. Hoffmann
- * @version $Revision$
  */
 public interface ISessionListener {
 
@@ -25,7 +25,7 @@ public interface ISessionListener {
    * 
    * @param addedSession
    *          added session
-   */  
+   */
   public void sessionAdded(ICoverageSession addedSession);
 
   /**

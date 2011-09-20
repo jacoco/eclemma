@@ -1,19 +1,20 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG
- * This software is provided under the terms of the Eclipse Public License v1.0
- * See http://www.eclipse.org/legal/epl-v10.html.
+ * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * $Id$
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.ui;
 
 import org.eclipse.osgi.util.NLS;
 
 /**
- * Text messages for the UI plugin.
- * 
- * @author Marc R. Hoffmann
- * @version $Revision$
+ * Text messages for the UI plug-in.
  */
 public class UIMessages extends NLS {
 

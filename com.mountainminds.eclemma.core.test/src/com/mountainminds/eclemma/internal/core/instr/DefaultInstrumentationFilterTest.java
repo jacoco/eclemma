@@ -1,9 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2006 ,2009 Mountainminds GmbH & Co. KG
- * This software is provided under the terms of the Eclipse Public License v1.0
- * See http://www.eclipse.org/legal/epl-v10.html.
+ * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * $Id: $
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.core.instr;
 
@@ -24,8 +28,7 @@ import com.mountainminds.eclemma.core.ICorePreferences;
 import com.mountainminds.eclemma.core.JavaProjectKit;
 
 /**
- * @author Marc R. Hoffmann
- * @version $Revision: $
+ * Tests for {@link DefaultInstrumentationFilter}.
  */
 public class DefaultInstrumentationFilterTest extends TestCase {
 
@@ -51,10 +54,12 @@ public class DefaultInstrumentationFilterTest extends TestCase {
     preferences = new TestPreferences();
     filter = new DefaultInstrumentationFilter(preferences);
 
-    configuration = DebugPlugin.getDefault().getLaunchManager()
+    configuration = DebugPlugin
+        .getDefault()
+        .getLaunchManager()
         .getLaunchConfigurationType(
-            "org.eclipse.jdt.launching.localJavaApplication").newInstance(
-            javaProject1.project, "test.launch");
+            "org.eclipse.jdt.launching.localJavaApplication")
+        .newInstance(javaProject1.project, "test.launch");
 
     final IPackageFragmentRoot rootSrc1 = javaProject1
         .createSourceFolder("src1");
@@ -92,8 +97,8 @@ public class DefaultInstrumentationFilterTest extends TestCase {
     final IClassFiles[] input = new IClassFiles[] { classFilesSrc1,
         classFilesBin1 };
     final IClassFiles[] output = filter.filter(input, configuration);
-    assertEquals(Arrays.asList(new IClassFiles[] { classFilesSrc1 }), Arrays
-        .asList(output));
+    assertEquals(Arrays.asList(new IClassFiles[] { classFilesSrc1 }),
+        Arrays.asList(output));
   }
 
   public void testSameProjectOnly() throws CoreException {
@@ -103,8 +108,8 @@ public class DefaultInstrumentationFilterTest extends TestCase {
     final IClassFiles[] input = new IClassFiles[] { classFilesSrc1,
         classFilesSrc2 };
     final IClassFiles[] output = filter.filter(input, configuration);
-    assertEquals(Arrays.asList(new IClassFiles[] { classFilesSrc1 }), Arrays
-        .asList(output));
+    assertEquals(Arrays.asList(new IClassFiles[] { classFilesSrc1 }),
+        Arrays.asList(output));
   }
 
   public void testFilter() throws CoreException {
@@ -112,8 +117,8 @@ public class DefaultInstrumentationFilterTest extends TestCase {
     final IClassFiles[] input = new IClassFiles[] { classFilesSrc1,
         classFilesSrc2 };
     final IClassFiles[] output = filter.filter(input, configuration);
-    assertEquals(Arrays.asList(new IClassFiles[] { classFilesSrc2 }), Arrays
-        .asList(output));
+    assertEquals(Arrays.asList(new IClassFiles[] { classFilesSrc2 }),
+        Arrays.asList(output));
   }
 
   private static class TestPreferences implements ICorePreferences {

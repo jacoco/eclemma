@@ -1,9 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2006 Mountainminds GmbH & Co. KG
- * This software is provided under the terms of the Eclipse Public License v1.0
- * See http://www.eclipse.org/legal/epl-v10.html.
+ * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * $Id$
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.ui.wizards;
 
@@ -39,23 +43,21 @@ import com.mountainminds.eclemma.internal.ui.UIMessages;
 import com.mountainminds.eclemma.internal.ui.viewers.ClassesViewer;
 
 /**
- * This wizard page allows selecting a coverage file and class path entries
- * for import.
- * 
- * @author Marc R. Hoffmann
- * @version $Revision$
+ * This wizard page allows selecting a coverage file and class path entries for
+ * import.
  */
 public class SessionImportPage1 extends WizardPage {
-  
+
   private static final String ID = "SessionImportPage1"; //$NON-NLS-1$
-  
+
   private static final String STORE_PREFIX = ID + "."; //$NON-NLS-1$
   private static final String STORE_FILES = STORE_PREFIX + "files"; //$NON-NLS-1$
   private static final String STORE_CLASSES = STORE_PREFIX + "classes"; //$NON-NLS-1$
   private static final String STORE_BINARIES = STORE_PREFIX + "binaries"; //$NON-NLS-1$
   private static final String STORE_COPY = STORE_PREFIX + "copy"; //$NON-NLS-1$
-  private static final String STORE_IMPORTMETADATA = STORE_PREFIX + "importmetadata"; //$NON-NLS-1$
-  
+  private static final String STORE_IMPORTMETADATA = STORE_PREFIX
+      + "importmetadata"; //$NON-NLS-1$
+
   private Text descriptiontext;
   private Combo filecombo;
   private ClassesViewer classesviewer;
@@ -93,7 +95,8 @@ public class SessionImportPage1 extends WizardPage {
     layout.marginHeight = 0;
     parent.setLayout(layout);
     parent.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-    new Label(parent, SWT.NONE).setText(UIMessages.ImportSessionPage1Description_label);
+    new Label(parent, SWT.NONE)
+        .setText(UIMessages.ImportSessionPage1Description_label);
     descriptiontext = new Text(parent, SWT.BORDER);
     descriptiontext.addModifyListener(new ModifyListener() {
       public void modifyText(ModifyEvent e) {
@@ -103,7 +106,8 @@ public class SessionImportPage1 extends WizardPage {
     GridData gd = new GridData(GridData.FILL_HORIZONTAL);
     gd.horizontalSpan = 2;
     descriptiontext.setLayoutData(gd);
-    new Label(parent, SWT.NONE).setText(UIMessages.ImportSessionPage1CoverageFile_label);
+    new Label(parent, SWT.NONE)
+        .setText(UIMessages.ImportSessionPage1CoverageFile_label);
     filecombo = new Combo(parent, SWT.BORDER);
     filecombo.addModifyListener(new ModifyListener() {
       public void modifyText(ModifyEvent e) {
@@ -122,7 +126,7 @@ public class SessionImportPage1 extends WizardPage {
       }
     });
   }
-  
+
   private void createClassPathsBlock(Composite parent) {
     classesviewer = new ClassesViewer(parent, SWT.BORDER);
     try {
@@ -140,7 +144,7 @@ public class SessionImportPage1 extends WizardPage {
     gd.heightHint = convertHeightInCharsToPixels(8);
     classesviewer.getTable().setLayoutData(gd);
   }
-  
+
   private void createButtonsBlock(Composite parent) {
     parent = new Composite(parent, SWT.NONE);
     GridLayout layout = new GridLayout(3, false);
@@ -199,20 +203,21 @@ public class SessionImportPage1 extends WizardPage {
     ideclassesradio = new Button(group, SWT.RADIO);
     ideclassesradio.setText(UIMessages.ImportSessionPage1IDEClasses_label);
     importmetadataradio = new Button(group, SWT.RADIO);
-    importmetadataradio.setText(UIMessages.ImportSessionPage1ImportMetaData_label);
+    importmetadataradio
+        .setText(UIMessages.ImportSessionPage1ImportMetaData_label);
   }
-  
+
   private void openBrowseDialog() {
     FileDialog fd = new FileDialog(getShell(), SWT.OPEN);
     fd.setText(UIMessages.ImportSessionPage1BrowseDialog_title);
     fd.setFileName(filecombo.getText());
-    fd.setFilterExtensions(new String[] { "*.ec;*.es", "*.*"} ); //$NON-NLS-1$ //$NON-NLS-2$
+    fd.setFilterExtensions(new String[] { "*.ec;*.es", "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
     String file = fd.open();
     if (file != null) {
       filecombo.setText(file);
     }
   }
-  
+
   private void update() {
     if (getSessionDescription().length() == 0) {
       setMessage(UIMessages.ImportReportPage1NoDescription_message);
@@ -234,7 +239,7 @@ public class SessionImportPage1 extends WizardPage {
     setMessage(null);
     setPageComplete(true);
   }
-  
+
   protected void restoreWidgetValues() {
     String descr = UIMessages.ImportSessionPage1Description_value;
     Object[] arg = new Object[] { new Date() };
@@ -255,7 +260,7 @@ public class SessionImportPage1 extends WizardPage {
     ideclassesradio.setSelection(!importmetadata);
     importmetadataradio.setSelection(importmetadata);
   }
-  
+
   public void saveWidgetValues() {
     IDialogSettings settings = getDialogSettings();
     ComboHistory.save(settings, STORE_FILES, filecombo);
@@ -264,7 +269,7 @@ public class SessionImportPage1 extends WizardPage {
     settings.put(STORE_COPY, copyradio.getSelection());
     settings.put(STORE_IMPORTMETADATA, importmetadataradio.getSelection());
   }
-  
+
   public String getSessionDescription() {
     return descriptiontext.getText().trim();
   }
@@ -276,13 +281,13 @@ public class SessionImportPage1 extends WizardPage {
   public IClassFiles[] getClassFiles() {
     return classesviewer.getSelectedClasses();
   }
-  
+
   public boolean getCreateCopy() {
     return copyradio.getSelection();
   }
-  
+
   public boolean getUseImportedMetaData() {
     return importmetadataradio.getSelection();
   }
-  
+
 }

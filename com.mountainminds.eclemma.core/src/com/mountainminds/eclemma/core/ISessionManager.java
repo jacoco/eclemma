@@ -1,12 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2006 Mountainminds GmbH & Co. KG
- * This software is provided under the terms of the Eclipse Public License v1.0
- * See http://www.eclipse.org/legal/epl-v10.html.
+ * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * $Id$
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
  ******************************************************************************/
 package com.mountainminds.eclemma.core;
-
 
 /**
  * The session manager holds a list of currently available sessions. One of the
@@ -16,17 +19,14 @@ package com.mountainminds.eclemma.core;
  * This interface is not intended to be implemented or extended by clients.
  * 
  * @see com.mountainminds.eclemma.core.CoverageTools#getSessionManager()
- * 
- * @author  Marc R. Hoffmann
- * @version $Revision$
  */
 public interface ISessionManager {
 
   /**
    * Adds the given session to this session manager. If the session is already
    * part of this session manager the method has no effect. If the key parameter
-   * is not <code>null</code> the key is internally assigned to this session
-   * for later access.
+   * is not <code>null</code> the key is internally assigned to this session for
+   * later access.
    * 
    * @param session
    *          the new session
@@ -109,11 +109,11 @@ public interface ISessionManager {
   public ICoverageSession getActiveSession();
 
   /**
-   * Triggers a reload of the active session. If there is no active session
-   * this method has no effect.
+   * Triggers a reload of the active session. If there is no active session this
+   * method has no effect.
    */
   public void refreshActiveSession();
-  
+
   /**
    * Adds the given session listener unless it has been added before.
    * 

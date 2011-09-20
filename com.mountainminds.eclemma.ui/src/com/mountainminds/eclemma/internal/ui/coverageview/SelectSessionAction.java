@@ -1,9 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2006 Mountainminds GmbH & Co. KG
- * This software is provided under the terms of the Eclipse Public License v1.0
- * See http://www.eclipse.org/legal/epl-v10.html.
+ * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * $Id$
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.ui.coverageview;
 
@@ -28,9 +32,6 @@ import com.mountainminds.eclemma.internal.ui.UIMessages;
 /**
  * Drop-down action to select the active session. Internally used by the
  * coverage view.
- * 
- * @author  Marc R. Hoffmann
- * @version $Revision$
  */
 class SelectSessionAction extends Action implements IMenuCreator {
 
@@ -62,8 +63,8 @@ class SelectSessionAction extends Action implements IMenuCreator {
       MenuItem item = new MenuItem(menu, SWT.RADIO);
       Object[] labelparams = new Object[] { new Integer(i + 1),
           labelprovider.getText(session) };
-      item.setText(NLS.bind(UIMessages.CoverageViewSelectSessionActionEntry_label,
-          labelparams));
+      item.setText(NLS.bind(
+          UIMessages.CoverageViewSelectSessionActionEntry_label, labelparams));
       item.setImage(labelprovider.getImage(session));
       item.setSelection(session == active);
       item.addSelectionListener(new SelectionAdapter() {

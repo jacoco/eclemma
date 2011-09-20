@@ -1,9 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2006 Mountainminds GmbH & Co. KG
- * This software is provided under the terms of the Eclipse Public License v1.0
- * See http://www.eclipse.org/legal/epl-v10.html.
+ * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * $Id$
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.ui.wizards;
 
@@ -42,40 +46,40 @@ import com.mountainminds.eclemma.internal.ui.UIMessages;
 /**
  * This wizard page allows selecting a coverage session, the output format and
  * destination.
- * 
- * @author Marc R. Hoffmann
- * @version $Revision$
  */
 public class SessionExportPage1 extends WizardPage {
-  
+
   private static final String ID = "SessionExportPage1"; //$NON-NLS-1$
-  
+
   private static final String STORE_PREFIX = ID + "."; //$NON-NLS-1$
   private static final String STORE_FORMAT = STORE_PREFIX + "format"; //$NON-NLS-1$
-  private static final String STORE_DESTINATIONS = STORE_PREFIX + "destinations"; //$NON-NLS-1$
+  private static final String STORE_DESTINATIONS = STORE_PREFIX
+      + "destinations"; //$NON-NLS-1$
   private static final String STORE_OPENREPORT = STORE_PREFIX + "openreport"; //$NON-NLS-1$
 
   private TableViewer sessionstable;
   private Combo formatcombo;
   private Combo destinationcombo;
   private Button opencheckbox;
-  
+
   public SessionExportPage1() {
     super(ID);
     setTitle(UIMessages.ExportReportPage1_title);
     setDescription(UIMessages.ExportReportPage1_description);
   }
-  
+
   public void createControl(Composite parent) {
     initializeDialogUnits(parent);
     parent = new Composite(parent, SWT.NONE);
     parent.setLayout(new GridLayout());
-    new Label(parent, SWT.NONE).setText(UIMessages.ExportReportPage1Sessions_label);
+    new Label(parent, SWT.NONE)
+        .setText(UIMessages.ExportReportPage1Sessions_label);
     sessionstable = new TableViewer(parent, SWT.BORDER);
     sessionstable.setLabelProvider(new WorkbenchLabelProvider());
     sessionstable.setContentProvider(new ArrayContentProvider());
     sessionstable.setInput(CoverageTools.getSessionManager().getSessions());
-    ICoverageSession active = CoverageTools.getSessionManager().getActiveSession();
+    ICoverageSession active = CoverageTools.getSessionManager()
+        .getActiveSession();
     if (active != null) {
       sessionstable.setSelection(new StructuredSelection(active));
     }
@@ -92,10 +96,11 @@ public class SessionExportPage1 extends WizardPage {
     ContextHelp.setHelp(parent, ContextHelp.SESSION_EXPORT);
     restoreWidgetValues();
   }
-  
+
   private void createExportOptionsGroup(Composite parent) {
     parent.setLayout(new GridLayout(3, false));
-    new Label(parent, SWT.NONE).setText(UIMessages.ExportReportPage1Format_label);
+    new Label(parent, SWT.NONE)
+        .setText(UIMessages.ExportReportPage1Format_label);
     formatcombo = new Combo(parent, SWT.READ_ONLY);
     formatcombo.add(UIMessages.ExportReportPage1HTMLFormat_value);
     formatcombo.add(UIMessages.ExportReportPage1XMLFormat_value);
@@ -106,7 +111,8 @@ public class SessionExportPage1 extends WizardPage {
         // Adjust the extension to the new format
         IPath path = Path.fromOSString(destinationcombo.getText());
         path = path.removeFileExtension();
-        String ext = ISessionExporter.DEFAULT_EXTENSIONS[formatcombo.getSelectionIndex()];
+        String ext = ISessionExporter.DEFAULT_EXTENSIONS[formatcombo
+            .getSelectionIndex()];
         path = path.addFileExtension(ext);
         destinationcombo.setText(path.toOSString());
       }
@@ -114,7 +120,8 @@ public class SessionExportPage1 extends WizardPage {
     GridData gd = new GridData(GridData.FILL_HORIZONTAL);
     gd.horizontalSpan = 2;
     formatcombo.setLayoutData(gd);
-    new Label(parent, SWT.NONE).setText(UIMessages.ExportReportPage1Destination_label);
+    new Label(parent, SWT.NONE)
+        .setText(UIMessages.ExportReportPage1Destination_label);
     destinationcombo = new Combo(parent, SWT.BORDER);
     destinationcombo.addModifyListener(new ModifyListener() {
       public void modifyText(ModifyEvent e) {
@@ -134,19 +141,20 @@ public class SessionExportPage1 extends WizardPage {
     });
     update();
   }
-  
+
   private void openBrowseDialog() {
     FileDialog fd = new FileDialog(getShell(), SWT.SAVE);
     fd.setText(UIMessages.ExportReportPage1BrowseDialog_title);
     fd.setFileName(destinationcombo.getText());
-    String ext = ISessionExporter.DEFAULT_EXTENSIONS[formatcombo.getSelectionIndex()];
-    fd.setFilterExtensions(new String[] { "*." + ext, "*.*"} ); //$NON-NLS-1$ //$NON-NLS-2$
+    String ext = ISessionExporter.DEFAULT_EXTENSIONS[formatcombo
+        .getSelectionIndex()];
+    fd.setFilterExtensions(new String[] { "*." + ext, "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
     String file = fd.open();
     if (file != null) {
       destinationcombo.setText(file);
     }
   }
-  
+
   private void update() {
     // make sure we have a session to export
     if (getSelectedSession() == null) {
@@ -172,7 +180,9 @@ public class SessionExportPage1 extends WizardPage {
     String exta = Path.fromOSString(getDestination()).getFileExtension();
     String exte = ISessionExporter.DEFAULT_EXTENSIONS[getReportFormat()];
     if (!exte.equalsIgnoreCase(exta)) {
-      setMessage(NLS.bind(UIMessages.ExportReportPage1WrongExtension_message, exte), WARNING);
+      setMessage(
+          NLS.bind(UIMessages.ExportReportPage1WrongExtension_message, exte),
+          WARNING);
       setPageComplete(true);
       return;
     }
@@ -180,7 +190,7 @@ public class SessionExportPage1 extends WizardPage {
     setMessage(null);
     setPageComplete(true);
   }
-  
+
   protected void restoreWidgetValues() {
     IDialogSettings settings = getDialogSettings();
     try {
@@ -191,27 +201,28 @@ public class SessionExportPage1 extends WizardPage {
     ComboHistory.restore(settings, STORE_DESTINATIONS, destinationcombo);
     opencheckbox.setSelection(settings.getBoolean(STORE_OPENREPORT));
   }
-  
+
   public void saveWidgetValues() {
     IDialogSettings settings = getDialogSettings();
     settings.put(STORE_FORMAT, formatcombo.getSelectionIndex());
     ComboHistory.save(settings, STORE_DESTINATIONS, destinationcombo);
     settings.put(STORE_OPENREPORT, opencheckbox.getSelection());
   }
-  
+
   public ICoverageSession getSelectedSession() {
-    IStructuredSelection sel = (IStructuredSelection) sessionstable.getSelection();
+    IStructuredSelection sel = (IStructuredSelection) sessionstable
+        .getSelection();
     return (ICoverageSession) sel.getFirstElement();
   }
-  
+
   public int getReportFormat() {
     return formatcombo.getSelectionIndex();
   }
-  
+
   public String getDestination() {
     return destinationcombo.getText().trim();
   }
-  
+
   public boolean getOpenReport() {
     return opencheckbox.getSelection();
   }

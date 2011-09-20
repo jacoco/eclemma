@@ -1,9 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2009 Mountainminds GmbH & Co. KG
- * This software is provided under the terms of the Eclipse Public License v1.0
- * See http://www.eclipse.org/legal/epl-v10.html.
+ * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * $Id$
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
  ******************************************************************************/
 package com.mountainminds.eclemma.core;
 
@@ -41,9 +45,6 @@ import com.mountainminds.eclemma.internal.core.EclEmmaCorePlugin;
 
 /**
  * Utility class to setup Java projects programatically.
- * 
- * @author Marc R. Hoffmann
- * @version $Revision$
  */
 public class JavaProjectKit {
 
@@ -133,8 +134,8 @@ public class JavaProjectKit {
     while ((c = r.read()) != -1)
       sb.append((char) c);
     r.close();
-    return createCompilationUnit(fragment, typepath.lastSegment(), sb
-        .toString());
+    return createCompilationUnit(fragment, typepath.lastSegment(),
+        sb.toString());
   }
 
   public void addClassPathEntry(IClasspathEntry entry) throws CoreException {
@@ -161,8 +162,8 @@ public class JavaProjectKit {
       for (int i = 0; i < markers.length; i++) {
         Integer severity = (Integer) markers[i].getAttribute(IMarker.SEVERITY);
         if (severity != null) {
-          Assert.assertTrue(String.valueOf(markers[i]
-              .getAttribute(IMarker.MESSAGE)),
+          Assert.assertTrue(
+              String.valueOf(markers[i].getAttribute(IMarker.MESSAGE)),
               severity.intValue() < IMarker.SEVERITY_ERROR);
         }
       }

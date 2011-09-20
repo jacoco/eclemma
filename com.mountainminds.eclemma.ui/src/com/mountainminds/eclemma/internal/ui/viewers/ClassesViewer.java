@@ -1,9 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2006 Mountainminds GmbH & Co. KG
- * This software is provided under the terms of the Eclipse Public License v1.0
- * See http://www.eclipse.org/legal/epl-v10.html.
+ * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * $Id$
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.ui.viewers;
 
@@ -41,13 +45,10 @@ import com.mountainminds.eclemma.core.IClassFiles;
 import com.mountainminds.eclemma.internal.ui.UIMessages;
 
 /**
- * Viewer for selecting <code>IClassFiles</code> objects from a given list.
- * The viewer lists the corresponding IPackageFragmentRoots. Source based class
+ * Viewer for selecting <code>IClassFiles</code> objects from a given list. The
+ * viewer lists the corresponding IPackageFragmentRoots. Source based class
  * files may have multiple corresponding roots, their selection status is
  * connected.
- * 
- * @author Marc R. Hoffmann
- * @version $Revision$
  */
 public class ClassesViewer implements ISelectionProvider {
 
@@ -78,31 +79,34 @@ public class ClassesViewer implements ISelectionProvider {
   }
 
   /**
-   * The entries will be sorted by project name, type and path name. 
+   * The entries will be sorted by project name, type and path name.
    */
   private static class PackageFragmentRootSorter extends ViewerSorter {
 
     public int compare(Viewer viewer, Object e1, Object e2) {
       IPackageFragmentRoot root1 = (IPackageFragmentRoot) e1;
       IPackageFragmentRoot root2 = (IPackageFragmentRoot) e2;
-      int result = getCollator().compare(root1.getJavaProject().getElementName(), 
-    	                                 root2.getJavaProject().getElementName());
-      if (result != 0) return result;
+      int result = getCollator().compare(
+          root1.getJavaProject().getElementName(),
+          root2.getJavaProject().getElementName());
+      if (result != 0)
+        return result;
       if (root1.isExternal() != root2.isExternal()) {
         return root1.isExternal() ? 1 : -1;
       }
       return getCollator().compare(getPathLabel(root1), getPathLabel(root2));
     }
-	  
+
   };
-  
+
   /**
    * Calculates a label for the class path of the given package fragment root.
    * For external entries this is the full path, otherwise it is the project
    * relative path.
    * 
-   * @param root  package fragement root
-   * @return  label for the class path entry
+   * @param root
+   *          package fragement root
+   * @return label for the class path entry
    */
   private static String getPathLabel(IPackageFragmentRoot root) {
     IPath path = root.getPath();
@@ -111,7 +115,7 @@ public class ClassesViewer implements ISelectionProvider {
     }
     return path.toString();
   }
-  
+
   private final Table table;
   private final CheckboxTableViewer viewer;
   private final List listeners = new ArrayList();
@@ -217,9 +221,10 @@ public class ClassesViewer implements ISelectionProvider {
         selectedclasses.add(input[i]);
       }
     }
-    viewer.setCheckedElements(getPackageFragmentRoots(selectedclasses.toArray()));
+    viewer
+        .setCheckedElements(getPackageFragmentRoots(selectedclasses.toArray()));
   }
-  
+
   public void selectAll() {
     selectedclasses.clear();
     for (int i = 0; i < input.length; i++) {
@@ -227,14 +232,15 @@ public class ClassesViewer implements ISelectionProvider {
         selectedclasses.add(input[i]);
       }
     }
-    viewer.setCheckedElements(getPackageFragmentRoots(selectedclasses.toArray()));
+    viewer
+        .setCheckedElements(getPackageFragmentRoots(selectedclasses.toArray()));
   }
 
   public void deselectAll() {
     selectedclasses.clear();
     viewer.setCheckedElements(new Object[0]);
   }
-  
+
   /**
    * Returns the currently checked classes.
    * 
@@ -279,7 +285,7 @@ public class ClassesViewer implements ISelectionProvider {
   public void removeSelectionChangedListener(ISelectionChangedListener listener) {
     listeners.remove(listener);
   }
-  
+
   private IPackageFragmentRoot[] getPackageFragmentRoots(Object[] classfiles) {
     Set roots = new HashSet();
     for (int i = 0; i < classfiles.length; i++) {
@@ -304,7 +310,8 @@ public class ClassesViewer implements ISelectionProvider {
         break;
       }
     }
-    viewer.setCheckedElements(getPackageFragmentRoots(selectedclasses.toArray()));
+    viewer
+        .setCheckedElements(getPackageFragmentRoots(selectedclasses.toArray()));
     fireSelectionEvent();
   }
 
@@ -315,7 +322,7 @@ public class ClassesViewer implements ISelectionProvider {
       l.selectionChanged(evt);
     }
   }
-  
+
   // ISelectionProvider interface
 
   public ISelection getSelection() {
@@ -328,5 +335,5 @@ public class ClassesViewer implements ISelectionProvider {
     selectedclasses.addAll(Arrays.asList(classfiles));
     viewer.setCheckedElements(getPackageFragmentRoots(classfiles));
   }
-  
+
 }

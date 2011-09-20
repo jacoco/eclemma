@@ -1,9 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2006 Mountainminds GmbH & Co. KG
- * This software is provided under the terms of the Eclipse Public License v1.0
- * See http://www.eclipse.org/legal/epl-v10.html.
+ * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG and Contributors
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * $Id$
+ * Contributors:
+ *    Marc R. Hoffmann - initial API and implementation
+ *    
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.ui.wizards;
 
@@ -35,16 +39,13 @@ import com.mountainminds.eclemma.internal.ui.UIMessages;
 
 /**
  * The export wizard for coverage sessions.
- * 
- * @author Marc R. Hoffmann
- * @version $Revision$
  */
 public class SessionExportWizard extends Wizard implements IExportWizard {
 
   private static final String SETTINGSID = "SessionExportWizard"; //$NON-NLS-1$
 
   private IWorkbench workbench;
-  
+
   private SessionExportPage1 page1;
 
   public SessionExportWizard() {
@@ -56,8 +57,8 @@ public class SessionExportWizard extends Wizard implements IExportWizard {
     }
     setDialogSettings(wizardsettings);
     setWindowTitle(UIMessages.ExportReport_title);
-    setDefaultPageImageDescriptor(
-        EclEmmaUIPlugin.getImageDescriptor(EclEmmaUIPlugin.WIZBAN_EXPORT_SESSION));
+    setDefaultPageImageDescriptor(EclEmmaUIPlugin
+        .getImageDescriptor(EclEmmaUIPlugin.WIZBAN_EXPORT_SESSION));
     setNeedsProgressMonitor(true);
   }
 
@@ -73,7 +74,7 @@ public class SessionExportWizard extends Wizard implements IExportWizard {
     page1.saveWidgetValues();
     boolean result = createReport();
     if (result && page1.getOpenReport()) {
-        openReport();
+      openReport();
     }
     return result;
   }
@@ -107,14 +108,15 @@ public class SessionExportWizard extends Wizard implements IExportWizard {
       if (ex instanceof CoreException) {
         status = ((CoreException) ex).getStatus();
       } else {
-        status = EclEmmaUIPlugin.errorStatus(String.valueOf(ex.getMessage()), ex);
+        status = EclEmmaUIPlugin.errorStatus(String.valueOf(ex.getMessage()),
+            ex);
       }
       ErrorDialog.openError(getShell(), title, msg, status);
       return false;
     }
     return true;
   }
-  
+
   private void openReport() {
     IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
     File f = new File(page1.getDestination());
@@ -127,10 +129,11 @@ public class SessionExportWizard extends Wizard implements IExportWizard {
       }
     }
   }
-  
+
   private String getEditorId(File file) {
-    IEditorRegistry editorRegistry= workbench.getEditorRegistry();
-    IEditorDescriptor descriptor = editorRegistry.getDefaultEditor(file.getName());
+    IEditorRegistry editorRegistry = workbench.getEditorRegistry();
+    IEditorDescriptor descriptor = editorRegistry.getDefaultEditor(file
+        .getName());
     return descriptor == null ? null : descriptor.getId();
   }
 
