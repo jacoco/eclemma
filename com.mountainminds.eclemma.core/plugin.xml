@@ -73,11 +73,5 @@
             name="%swtBotJunitDelegateName"
             type="org.eclipse.swtbot.eclipse.ui.launcher.JunitLaunchConfig"/>
    </extension>
-   <extension
-         point="org.eclipse.jdt.launching.classpathProviders">
-      <classpathProvider
-            class="com.mountainminds.eclemma.internal.core.launching.InstrumentedClasspathProvider"
-            id="com.mountainminds.eclemma.core.instrumentedClasspathProvider"/>
-   </extension>
 
 </plugin>
