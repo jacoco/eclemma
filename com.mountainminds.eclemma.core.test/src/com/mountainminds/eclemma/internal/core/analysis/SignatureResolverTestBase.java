@@ -27,12 +27,12 @@ import org.junit.Test;
  */
 public abstract class SignatureResolverTestBase {
 
-  private Map methodsByName;
+  private Map<String, IMethod> methodsByName;
 
   protected IType type;
 
   protected void createMethodIndex() throws JavaModelException {
-    methodsByName = new HashMap();
+    methodsByName = new HashMap<String, IMethod>();
     final IMethod[] methods = type.getMethods();
     for (int i = 0; i < methods.length; i++) {
       methodsByName.put(methods[i].getElementName(), methods[i]);

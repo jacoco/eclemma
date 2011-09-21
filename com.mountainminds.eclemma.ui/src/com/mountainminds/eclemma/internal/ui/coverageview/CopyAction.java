@@ -11,8 +11,6 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.ui.coverageview;
 
-import java.util.Iterator;
-
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -73,10 +71,9 @@ class CopyAction extends SelectionProviderAction {
     sb.append(headers[CoverageView.COLUMN_TOTAL]).append(Text.DELIMITER);
 
     // Rows:
-    final Iterator i = ((IStructuredSelection) selectionSource.getSelection())
-        .iterator();
-    while (i.hasNext()) {
-      final Object element = i.next();
+    final IStructuredSelection selection = (IStructuredSelection) selectionSource
+        .getSelection();
+    for (final Object element : selection.toList()) {
       appendColumn(sb, element, CoverageView.COLUMN_ELEMENT).append(SWT.TAB);
       appendColumn(sb, element, CoverageView.COLUMN_RATIO).append(SWT.TAB);
       appendColumn(sb, element, CoverageView.COLUMN_COVERED).append(SWT.TAB);

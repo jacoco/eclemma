@@ -51,10 +51,12 @@ public class CoverageAnnotationModel implements IAnnotationModel {
   private static final Object KEY = new Object();
 
   /** List of current CoverageAnnotation objects */
-  private List annotations = new ArrayList(32);
+  private List<CoverageAnnotation> annotations = new ArrayList<CoverageAnnotation>(
+      32);
 
   /** List of registered IAnnotationModelListener */
-  private List annotationModelListeners = new ArrayList(2);
+  private List<IAnnotationModelListener> annotationModelListeners = new ArrayList<IAnnotationModelListener>(
+      2);
 
   private final ITextEditor editor;
   private final IDocument document;
@@ -198,8 +200,7 @@ public class CoverageAnnotationModel implements IAnnotationModel {
   }
 
   protected void clear(AnnotationModelEvent event) {
-    for (Iterator i = annotations.iterator(); i.hasNext();) {
-      CoverageAnnotation ca = (CoverageAnnotation) i.next();
+    for (final CoverageAnnotation ca : annotations) {
       event.annotationRemoved(ca, ca.getPosition());
     }
     annotations.clear();
@@ -244,8 +245,7 @@ public class CoverageAnnotationModel implements IAnnotationModel {
   protected void fireModelChanged(AnnotationModelEvent event) {
     event.markSealed();
     if (!event.isEmpty()) {
-      for (Iterator i = annotationModelListeners.iterator(); i.hasNext();) {
-        IAnnotationModelListener l = (IAnnotationModelListener) i.next();
+      for (final IAnnotationModelListener l : annotationModelListeners) {
         if (l instanceof IAnnotationModelListenerExtension) {
           ((IAnnotationModelListenerExtension) l).modelChanged(event);
         } else {
@@ -258,8 +258,7 @@ public class CoverageAnnotationModel implements IAnnotationModel {
   public void connect(IDocument document) {
     if (this.document != document)
       throw new RuntimeException("Can't connect to different document."); //$NON-NLS-1$
-    for (Iterator i = annotations.iterator(); i.hasNext();) {
-      CoverageAnnotation ca = (CoverageAnnotation) i.next();
+    for (final CoverageAnnotation ca : annotations) {
       try {
         document.addPosition(ca.getPosition());
       } catch (BadLocationException ex) {
@@ -275,8 +274,7 @@ public class CoverageAnnotationModel implements IAnnotationModel {
   public void disconnect(IDocument document) {
     if (this.document != document)
       throw new RuntimeException("Can't disconnect from different document."); //$NON-NLS-1$
-    for (Iterator i = annotations.iterator(); i.hasNext();) {
-      CoverageAnnotation ca = (CoverageAnnotation) i.next();
+    for (final CoverageAnnotation ca : annotations) {
       document.removePosition(ca.getPosition());
     }
     if (--openConnections == 0) {
@@ -299,7 +297,7 @@ public class CoverageAnnotationModel implements IAnnotationModel {
     throw new UnsupportedOperationException();
   }
 
-  public Iterator getAnnotationIterator() {
+  public Iterator<?> getAnnotationIterator() {
     return annotations.iterator();
   }
 

@@ -36,9 +36,9 @@ public class StateFiles {
 
   private static final String SOURCE_FOLDER = ".src/"; //$NON-NLS-1$
 
-  private static final ReferenceQueue CLEANUPQUEUE = new ReferenceQueue();
+  private static final ReferenceQueue<IPath> CLEANUPQUEUE = new ReferenceQueue<IPath>();
 
-  private static final Set CLEANUPFILES = new HashSet();
+  private static final Set<CleanupFile> CLEANUPFILES = new HashSet<CleanupFile>();
 
   private final IPath stateLocation;
 
@@ -141,7 +141,7 @@ public class StateFiles {
     }
   }
 
-  private static class CleanupFile extends PhantomReference {
+  private static class CleanupFile extends PhantomReference<IPath> {
 
     private final File file;
 

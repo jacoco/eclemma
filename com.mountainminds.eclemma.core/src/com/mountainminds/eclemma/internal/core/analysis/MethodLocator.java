@@ -12,7 +12,9 @@
 package com.mountainminds.eclemma.internal.core.analysis;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
@@ -28,14 +30,17 @@ import org.eclipse.jdt.core.Signature;
  */
 public class MethodLocator {
 
-  /** Special value to identify ambiguous entries in {@link #indexParamCount} */
-  private static final Object AMBIGUOUS = new Object();
-
   /** Index on methods by name and parameter count. */
-  private final Map indexParamCount = new HashMap();
+  private final Map<String, IMethod> indexParamCount = new HashMap<String, IMethod>();
+
+  /**
+   * For the keys in this set there are multiple overloaded methods with the
+   * same name and the more expensive signature resolver must be used.
+   */
+  private final Set<String> ambiguous = new HashSet<String>();
 
   /** Index on methods by name and parameter signature. */
-  private final Map indexParamSignature = new HashMap();
+  private final Map<String, IMethod> indexParamSignature = new HashMap<String, IMethod>();
 
   private final IType type;
 
@@ -67,28 +72,28 @@ public class MethodLocator {
     if (name.equals("<init>")) { //$NON-NLS-1$
       name = type.getElementName();
     }
-    final Object value = indexParamCount.get(createParamCountKey(name,
-        signature));
-    if (value == AMBIGUOUS) {
-      return (IMethod) indexParamSignature.get(createParamSignatureKey(name,
-          signature));
+    final String paramCountKey = createParamCountKey(name, signature);
+    if (ambiguous.contains(paramCountKey)) {
+      return indexParamSignature.get(createParamSignatureKey(name, signature));
+    } else {
+      return indexParamCount.get(paramCountKey);
     }
-    return (IMethod) value;
   }
 
   private void addToIndex(final IMethod method) throws JavaModelException {
     final String paramCountKey = createParamCountKey(method);
-    final Object existing = indexParamCount.get(paramCountKey);
-    if (existing == null) {
-      indexParamCount.put(paramCountKey, method);
-      return;
+    if (ambiguous.contains(paramCountKey)) {
+      indexParamSignature.put(createParamSignatureKey(method), method);
+    } else {
+      final IMethod existing = indexParamCount.get(paramCountKey);
+      if (existing == null) {
+        indexParamCount.put(paramCountKey, method);
+      } else {
+        ambiguous.add(paramCountKey);
+        indexParamSignature.put(createParamSignatureKey(existing), existing);
+        indexParamSignature.put(createParamSignatureKey(method), method);
+      }
     }
-    if (existing != AMBIGUOUS) {
-      indexParamCount.put(paramCountKey, AMBIGUOUS);
-      final IMethod m = (IMethod) existing;
-      indexParamSignature.put(createParamSignatureKey(m), m);
-    }
-    indexParamSignature.put(createParamSignatureKey(method), method);
   }
 
   private String createParamCountKey(final IMethod method) {

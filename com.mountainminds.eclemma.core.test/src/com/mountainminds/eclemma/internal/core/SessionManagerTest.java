@@ -225,7 +225,7 @@ public class SessionManagerTest {
       return new DummySession();
     }
 
-    public Object getAdapter(Class adapter) {
+    public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
       return null;
     }
 
@@ -237,7 +237,7 @@ public class SessionManagerTest {
 
   private static class RecordingListener implements ISessionListener {
 
-    private List l = new ArrayList();
+    private List<Object> l = new ArrayList<Object>();
 
     public void sessionAdded(ICoverageSession addedSession) {
       l.add("ADDED");

@@ -51,7 +51,7 @@ public class ComboHistory {
 
   /**
    * Saves the items of the given combo box as its history. The current text
-   * value is added as the most recent history item. The numer of history items
+   * value is added as the most recent history item. The number of history items
    * is limited.
    * 
    * @param settings
@@ -62,13 +62,14 @@ public class ComboHistory {
    *          the combo box
    */
   public static void save(IDialogSettings settings, String key, Combo combo) {
-    List history = new ArrayList(Arrays.asList(combo.getItems()));
+    List<String> history = new ArrayList<String>(
+        Arrays.asList(combo.getItems()));
     history.remove(combo.getText());
     history.add(0, combo.getText());
     if (history.size() > HISTORY_LIMIT) {
       history = history.subList(0, HISTORY_LIMIT);
     }
-    settings.put(key, (String[]) history.toArray(new String[0]));
+    settings.put(key, history.toArray(new String[history.size()]));
   }
 
 }

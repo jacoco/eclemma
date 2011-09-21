@@ -13,6 +13,8 @@ package com.mountainminds.eclemma.internal.ui.viewers;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -86,15 +88,16 @@ public class ClassesViewer implements ISelectionProvider {
     public int compare(Viewer viewer, Object e1, Object e2) {
       IPackageFragmentRoot root1 = (IPackageFragmentRoot) e1;
       IPackageFragmentRoot root2 = (IPackageFragmentRoot) e2;
-      int result = getCollator().compare(
-          root1.getJavaProject().getElementName(),
+      @SuppressWarnings("unchecked")
+      final Comparator<Object> comparator = getComparator();
+      int result = comparator.compare(root1.getJavaProject().getElementName(),
           root2.getJavaProject().getElementName());
       if (result != 0)
         return result;
       if (root1.isExternal() != root2.isExternal()) {
         return root1.isExternal() ? 1 : -1;
       }
-      return getCollator().compare(getPathLabel(root1), getPathLabel(root2));
+      return comparator.compare(getPathLabel(root1), getPathLabel(root2));
     }
 
   };
@@ -105,7 +108,7 @@ public class ClassesViewer implements ISelectionProvider {
    * relative path.
    * 
    * @param root
-   *          package fragement root
+   *          package fragment root
    * @return label for the class path entry
    */
   private static String getPathLabel(IPackageFragmentRoot root) {
@@ -118,11 +121,11 @@ public class ClassesViewer implements ISelectionProvider {
 
   private final Table table;
   private final CheckboxTableViewer viewer;
-  private final List listeners = new ArrayList();
+  private final List<ISelectionChangedListener> listeners = new ArrayList<ISelectionChangedListener>();
 
   private IClassFiles[] input;
   private boolean includebinaries;
-  private final Set selectedclasses = new HashSet();
+  private final Set<IClassFiles> selectedclasses = new HashSet<IClassFiles>();
 
   /**
    * Creates a new viewer within the given parent.
@@ -172,7 +175,7 @@ public class ClassesViewer implements ISelectionProvider {
    */
   public void setInput(IClassFiles[] input) {
     this.input = input;
-    viewer.setInput(getPackageFragmentRoots(input));
+    viewer.setInput(getPackageFragmentRoots(Arrays.asList(input)));
   }
 
   /**
@@ -184,14 +187,14 @@ public class ClassesViewer implements ISelectionProvider {
   public void setIncludeBinaries(boolean includebinaries) {
     this.includebinaries = includebinaries;
     if (!includebinaries) {
-      for (Iterator i = selectedclasses.iterator(); i.hasNext();) {
-        if (((IClassFiles) i.next()).isBinary()) {
+      for (Iterator<IClassFiles> i = selectedclasses.iterator(); i.hasNext();) {
+        if (i.next().isBinary()) {
           i.remove();
         }
       }
     }
     if (input != null) {
-      viewer.setInput(getPackageFragmentRoots(input));
+      viewer.setInput(getPackageFragmentRoots(Arrays.asList(input)));
     }
   }
 
@@ -204,7 +207,8 @@ public class ClassesViewer implements ISelectionProvider {
   public void setSelectedClasses(IClassFiles[] classfiles) {
     selectedclasses.clear();
     selectedclasses.addAll(Arrays.asList(classfiles));
-    viewer.setCheckedElements(getPackageFragmentRoots(classfiles));
+    viewer
+        .setCheckedElements(getPackageFragmentRoots(Arrays.asList(classfiles)));
   }
 
   /**
@@ -214,15 +218,14 @@ public class ClassesViewer implements ISelectionProvider {
    *          location strings of the classes to select
    */
   public void setSelectedClasses(String[] locations) {
-    Set lset = new HashSet(Arrays.asList(locations));
+    Set<String> lset = new HashSet<String>(Arrays.asList(locations));
     selectedclasses.clear();
-    for (int i = 0; i < input.length; i++) {
-      if (lset.contains(input[i].getLocation().toString())) {
-        selectedclasses.add(input[i]);
+    for (final IClassFiles c : input) {
+      if (lset.contains(c.getLocation().toString())) {
+        selectedclasses.add(c);
       }
     }
-    viewer
-        .setCheckedElements(getPackageFragmentRoots(selectedclasses.toArray()));
+    viewer.setCheckedElements(getPackageFragmentRoots(selectedclasses));
   }
 
   public void selectAll() {
@@ -232,8 +235,7 @@ public class ClassesViewer implements ISelectionProvider {
         selectedclasses.add(input[i]);
       }
     }
-    viewer
-        .setCheckedElements(getPackageFragmentRoots(selectedclasses.toArray()));
+    viewer.setCheckedElements(getPackageFragmentRoots(selectedclasses));
   }
 
   public void deselectAll() {
@@ -247,7 +249,7 @@ public class ClassesViewer implements ISelectionProvider {
    * @return list of class files that are currently checked
    */
   public IClassFiles[] getSelectedClasses() {
-    return (IClassFiles[]) selectedclasses.toArray(new IClassFiles[0]);
+    return selectedclasses.toArray(new IClassFiles[selectedclasses.size()]);
   }
 
   /**
@@ -258,8 +260,8 @@ public class ClassesViewer implements ISelectionProvider {
   public String[] getSelectedClassesLocations() {
     String[] locs = new String[selectedclasses.size()];
     int idx = 0;
-    for (Iterator i = selectedclasses.iterator(); i.hasNext();) {
-      locs[idx++] = ((IClassFiles) i.next()).getLocation().toString();
+    for (final IClassFiles c : selectedclasses) {
+      locs[idx++] = c.getLocation().toString();
     }
     return locs;
   }
@@ -286,16 +288,15 @@ public class ClassesViewer implements ISelectionProvider {
     listeners.remove(listener);
   }
 
-  private IPackageFragmentRoot[] getPackageFragmentRoots(Object[] classfiles) {
-    Set roots = new HashSet();
-    for (int i = 0; i < classfiles.length; i++) {
-      IClassFiles cf = (IClassFiles) classfiles[i];
+  private IPackageFragmentRoot[] getPackageFragmentRoots(
+      Collection<IClassFiles> classfiles) {
+    Set<IPackageFragmentRoot> roots = new HashSet<IPackageFragmentRoot>();
+    for (IClassFiles cf : classfiles) {
       if (includebinaries || !cf.isBinary()) {
         roots.addAll(Arrays.asList(cf.getPackageFragmentRoots()));
       }
     }
-    return (IPackageFragmentRoot[]) roots
-        .toArray(new IPackageFragmentRoot[roots.size()]);
+    return roots.toArray(new IPackageFragmentRoot[roots.size()]);
   }
 
   private void updateCheckedStatus(Object root, boolean checked) {
@@ -310,15 +311,13 @@ public class ClassesViewer implements ISelectionProvider {
         break;
       }
     }
-    viewer
-        .setCheckedElements(getPackageFragmentRoots(selectedclasses.toArray()));
+    viewer.setCheckedElements(getPackageFragmentRoots(selectedclasses));
     fireSelectionEvent();
   }
 
   private void fireSelectionEvent() {
     SelectionChangedEvent evt = new SelectionChangedEvent(this, getSelection());
-    for (Iterator i = listeners.iterator(); i.hasNext();) {
-      ISelectionChangedListener l = (ISelectionChangedListener) i.next();
+    for (final ISelectionChangedListener l : listeners) {
       l.selectionChanged(evt);
     }
   }
@@ -330,10 +329,11 @@ public class ClassesViewer implements ISelectionProvider {
   }
 
   public void setSelection(ISelection selection) {
-    Object[] classfiles = ((IStructuredSelection) selection).toArray();
     selectedclasses.clear();
-    selectedclasses.addAll(Arrays.asList(classfiles));
-    viewer.setCheckedElements(getPackageFragmentRoots(classfiles));
+    for (Object obj : ((IStructuredSelection) selection).toArray()) {
+      selectedclasses.add((IClassFiles) obj);
+    }
+    viewer.setCheckedElements(getPackageFragmentRoots(selectedclasses));
   }
 
 }

@@ -28,10 +28,12 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaProject;
@@ -151,8 +153,8 @@ public class JavaProjectKit {
   }
 
   public InputStream openTestResource(IPath path) throws IOException {
-    return Platform.find(Platform.getBundle(EclEmmaCorePlugin.ID), path)
-        .openStream();
+    return FileLocator.openStream(Platform.getBundle(EclEmmaCorePlugin.ID),
+        path, false);
   }
 
   public void assertNoErrors() throws CoreException {
@@ -172,7 +174,7 @@ public class JavaProjectKit {
 
   public static void waitForBuild() throws OperationCanceledException,
       InterruptedException {
-    Platform.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_BUILD, null);
+    Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_BUILD, null);
   }
 
 }

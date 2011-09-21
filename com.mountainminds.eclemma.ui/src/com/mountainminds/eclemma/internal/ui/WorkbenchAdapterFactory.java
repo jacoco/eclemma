@@ -42,13 +42,15 @@ public class WorkbenchAdapterFactory implements IAdapterFactory {
 
   };
 
-  public Object getAdapter(Object adaptableObject, Class adapterType) {
+  public Object getAdapter(Object adaptableObject,
+      @SuppressWarnings("rawtypes") Class adapterType) {
     if (adaptableObject instanceof ICoverageSession) {
       return SESSIONADAPTER;
     }
     return null;
   }
 
+  @SuppressWarnings("rawtypes")
   public Class[] getAdapterList() {
     return new Class[] { IWorkbenchAdapter.class };
   }

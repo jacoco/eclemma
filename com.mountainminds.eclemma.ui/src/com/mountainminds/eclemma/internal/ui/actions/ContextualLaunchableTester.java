@@ -39,12 +39,12 @@ import com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin;
 public class ContextualLaunchableTester extends PropertyTester {
 
   /** Cache for expressions maps launch shortcut ids to Expression objects. */
-  private Map expressions = new HashMap();
+  private Map<String, Expression> expressions = new HashMap<String, Expression>();
 
   public boolean test(Object receiver, String property, Object[] args,
       Object expectedValue) {
     String delegateShortcutID = (String) args[0];
-    Expression expr = (Expression) expressions.get(delegateShortcutID);
+    Expression expr = expressions.get(delegateShortcutID);
     if (expr == null) {
       expr = createEnablementExpression(delegateShortcutID);
       expressions.put(delegateShortcutID, expr);

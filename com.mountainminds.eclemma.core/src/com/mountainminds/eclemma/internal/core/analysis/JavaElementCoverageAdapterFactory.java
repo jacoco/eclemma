@@ -28,7 +28,8 @@ import com.mountainminds.eclemma.core.analysis.IJavaModelCoverage;
  */
 public class JavaElementCoverageAdapterFactory implements IAdapterFactory {
 
-  public Object getAdapter(Object object, Class adapterType) {
+  public Object getAdapter(Object object,
+      @SuppressWarnings("rawtypes") Class adapterType) {
     // if the object is a IResource find the corresponding IJavaElement
     if (object instanceof IResource) {
       object = ((IResource) object).getAdapter(IJavaElement.class);

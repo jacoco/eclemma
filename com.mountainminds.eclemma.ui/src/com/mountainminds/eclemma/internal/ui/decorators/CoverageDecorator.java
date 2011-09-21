@@ -13,16 +13,13 @@ package com.mountainminds.eclemma.internal.ui.decorators;
 
 import java.text.DecimalFormat;
 import java.text.Format;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.BaseLabelProvider;
 import org.eclipse.jface.viewers.IDecoration;
-import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ILightweightLabelDecorator;
 import org.eclipse.jface.viewers.LabelProviderChangedEvent;
-import org.eclipse.ui.IWorkbench;
+import org.eclipse.swt.widgets.Display;
 import org.jacoco.core.analysis.ICounter;
 import org.jacoco.core.analysis.ICoverageNode;
 
@@ -34,16 +31,29 @@ import com.mountainminds.eclemma.internal.ui.UIMessages;
 /**
  * Decorator to show code coverage for Java elements.
  */
-public class CoverageDecorator implements ILightweightLabelDecorator {
+public class CoverageDecorator extends BaseLabelProvider implements
+    ILightweightLabelDecorator {
 
   private static final Format SUFFIX_FORMAT = new DecimalFormat(
       UIMessages.CoverageDecoratorSuffix_label);
 
-  private List listeners = new ArrayList();
-  private IJavaCoverageListener coverageListener = null;
+  private final IJavaCoverageListener coverageListener;
 
   public CoverageDecorator() {
     super();
+    coverageListener = new IJavaCoverageListener() {
+      public void coverageChanged() {
+        final Display display = EclEmmaUIPlugin.getInstance().getWorkbench()
+            .getDisplay();
+        display.asyncExec(new Runnable() {
+          public void run() {
+            fireLabelProviderChanged(new LabelProviderChangedEvent(
+                CoverageDecorator.this));
+          }
+        });
+      }
+    };
+    CoverageTools.addJavaCoverageListener(coverageListener);
   }
 
   public void decorate(Object element, IDecoration decoration) {
@@ -61,49 +71,13 @@ public class CoverageDecorator implements ILightweightLabelDecorator {
         .getCoveredRatio())));
   }
 
-  protected void fireEvent() {
-    final IWorkbench workbench = EclEmmaUIPlugin.getInstance().getWorkbench();
-    if (workbench == null)
-      return;
-    final LabelProviderChangedEvent event = new LabelProviderChangedEvent(this);
-    workbench.getDisplay().asyncExec(new Runnable() {
-      public void run() {
-        Iterator i = listeners.iterator();
-        while (i.hasNext()) {
-          ((ILabelProviderListener) i.next()).labelProviderChanged(event);
-        }
-      }
-    });
-  }
-
-  public void addListener(ILabelProviderListener listener) {
-    if (!listeners.contains(listener)) {
-      listeners.add(listener);
-    }
-    if (coverageListener == null) {
-      coverageListener = new IJavaCoverageListener() {
-        public void coverageChanged() {
-          fireEvent();
-        }
-      };
-      CoverageTools.addJavaCoverageListener(coverageListener);
-    }
-  }
-
-  public void removeListener(ILabelProviderListener listener) {
-    listeners.remove(listener);
-  }
-
   public boolean isLabelProperty(Object element, String property) {
     // coverage does not depend on IJavaElement properties
     return false;
   }
 
   public void dispose() {
-    if (coverageListener != null) {
-      CoverageTools.removeJavaCoverageListener(coverageListener);
-      coverageListener = null;
-    }
+    CoverageTools.removeJavaCoverageListener(coverageListener);
   }
 
 }
