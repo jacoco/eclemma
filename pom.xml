@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG and Contributors
+   All rights reserved. This program and the accompanying materials
+   are made available under the terms of the Eclipse Public License v1.0
+   which accompanies this distribution, and is available at
+   http://www.eclipse.org/legal/epl-v10.html
+
+   Contributors:
+      Evgeny Mandrikov - initial API and implementation
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.mountainminds.eclemma</groupId>
+  <artifactId>parent</artifactId>
+  <packaging>pom</packaging>
+  <version>2.0.0-SNAPSHOT</version>
+
+  <name>EclEmma</name>
+  <description>Java Code Coverage for Eclipse</description>
+  <url>http://www.eclemma.org/</url>
+  <inceptionYear>2006</inceptionYear>
+  <organization>
+    <name>Mountainminds GmbH &amp; Co. KG</name>
+  </organization>
+  <licenses>
+    <license>
+      <name>Eclipse Public License v1.0</name>
+      <url>http://www.eclipse.org/legal/epl-v10.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <id>mtnminds</id>
+      <name>Marc R. Hoffmann</name>
+      <roles>
+        <role>Project Lead</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>brock_j</id>
+      <name>Brock Janiczak</name>
+      <email>brockj@gmail.com</email>
+      <timezone>+10</timezone>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>mandrikov</id>
+      <name>Evgeny Mandrikov</name>
+      <email>mandrikov@gmail.com</email>
+      <url>http://godin.net.ru</url>
+      <organization>SonarSource</organization>
+      <organizationUrl>http://www.sonarsource.com</organizationUrl>
+      <timezone>+3</timezone>
+      <roles>
+        <role>Build and release manager</role>
+      </roles>
+    </developer>
+  </developers>
+
+  <modules>
+    <module>com.mountainminds.eclemma.target</module>
+    <module>com.mountainminds.eclemma.core</module>
+    <module>com.mountainminds.eclemma.core.test</module>
+    <module>com.mountainminds.eclemma.ui</module>
+    <module>com.mountainminds.eclemma.doc</module>
+    <module>com.mountainminds.eclemma.feature</module>
+    <module>com.mountainminds.eclemma.site</module>
+  </modules>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    <tycho.version>0.13.0</tycho.version>
+
+    <orbit-repository-url>http://download.eclipse.org/tools/orbit/downloads/drops/R20110523182458/repository/</orbit-repository-url>
+
+    <jacoco.version>0.5.3.201107060350</jacoco.version>
+
+    <!-- Sonar -->
+    <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
+    <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+    <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
+    <sonar.surefire.reportsPath>../${project.artifactId}.test/target/surefire-reports/</sonar.surefire.reportsPath>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.jacoco</groupId>
+      <artifactId>org.jacoco.core</artifactId>
+      <version>${jacoco.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jacoco</groupId>
+      <artifactId>org.jacoco.agent</artifactId>
+      <version>${jacoco.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jacoco</groupId>
+      <artifactId>org.jacoco.report</artifactId>
+      <version>${jacoco.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>${jacoco.version}</version>
+        </plugin>
+        <!-- Apache plugins -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jarsigner-plugin</artifactId>
+          <version>1.2</version>
+        </plugin>
+        <!-- Mojo plugins -->
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>1.7</version>
+        </plugin>
+        <!-- Tycho plugins -->
+        <plugin>
+          <groupId>org.eclipse.tycho</groupId>
+          <artifactId>target-platform-configuration</artifactId>
+          <version>${tycho.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.eclipse.tycho</groupId>
+          <artifactId>tycho-surefire-plugin</artifactId>
+          <version>${tycho.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.eclipse.tycho</groupId>
+          <artifactId>tycho-packaging-plugin</artifactId>
+          <version>${tycho.version}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-maven-plugin</artifactId>
+        <version>${tycho.version}</version>
+        <extensions>true</extensions>
+      </plugin>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-packaging-plugin</artifactId>
+        <configuration>
+          <archive>
+            <addMavenDescriptor>false</addMavenDescriptor>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <configuration>
+          <sessionId>${project.artifactId}</sessionId>
+          <destFile>${project.basedir}/../target/jacoco.exec</destFile>
+          <includes>com.mountainminds.eclemma.*</includes>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>e3.5</id>
+      <activation>
+        <property>
+          <name>!target-profile</name>
+        </property>
+      </activation>
+      <properties>
+        <target-platform>eclemma-e3.5</target-platform>
+        <platform-repository-url>http://download.eclipse.org/releases/galileo/</platform-repository-url>
+      </properties>
+    </profile>
+    <profile>
+      <id>e3.6</id>
+      <activation>
+        <property>
+          <name>target-profile</name>
+          <value>e3.6</value>
+         </property>
+      </activation>
+      <properties>
+        <target-platform>eclemma-e3.6</target-platform>
+        <platform-repository-url>http://download.eclipse.org/releases/helios/</platform-repository-url>
+      </properties>
+    </profile>
+    <profile>
+      <id>e3.7</id>
+      <activation>
+        <property>
+          <name>target-profile</name>
+          <value>e3.7</value>
+         </property>
+      </activation>
+      <properties>
+        <target-platform>eclemma-e3.7</target-platform>
+        <platform-repository-url>http://download.eclipse.org/releases/indigo/</platform-repository-url>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>explicit-target</id>
+      <activation>
+        <property>
+          <name>!implicit-target</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.eclipse.tycho</groupId>
+            <artifactId>target-platform-configuration</artifactId>
+            <configuration>
+              <resolver>p2</resolver>
+              <target>
+                <artifact>
+                  <groupId>com.mountainminds.eclemma</groupId>
+                  <artifactId>com.mountainminds.eclemma.target</artifactId>
+                  <version>${project.version}</version>
+                  <classifier>${target-platform}</classifier>
+                </artifact>
+              </target>
+              <ignoreTychoRepositories>true</ignoreTychoRepositories>
+              <pomDependencies>consider</pomDependencies>
+              <environments>
+                <environment>
+                  <os>win32</os>
+                  <ws>win32</ws>
+                  <arch>x86</arch>
+                </environment>
+                <environment>
+                  <os>linux</os>
+                  <ws>gtk</ws>
+                  <arch>x86</arch>
+                </environment>
+                <environment>
+                  <os>linux</os>
+                  <ws>gtk</ws>
+                  <arch>x86_64</arch>
+                </environment>
+                <environment>
+                  <os>macosx</os>
+                  <ws>cocoa</ws>
+                  <arch>x86</arch>
+                </environment>
+                <environment>
+                  <os>macosx</os>
+                  <ws>cocoa</ws>
+                  <arch>x86_64</arch>
+                </environment>
+              </environments>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>implicit-target</id>
+      <activation>
+        <property>
+          <name>implicit-target</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.eclipse.tycho</groupId>
+            <artifactId>target-platform-configuration</artifactId>
+            <configuration>
+              <resolver>p2</resolver>
+              <ignoreTychoRepositories>false</ignoreTychoRepositories>
+              <pomDependencies>consider</pomDependencies>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+      <repositories>
+        <repository>
+          <id>eclipse-platform</id>
+          <layout>p2</layout>
+          <url>${platform-repository-url}</url>
+        </repository>
+        <repository>
+          <id>eclipse-orbit</id>
+          <layout>p2</layout>
+          <url>${orbit-repository-url}</url>
+        </repository>
+      </repositories>
+    </profile>
+
+    <profile>
+      <id>sign</id>
+      <activation>
+        <property>
+          <name>jarsigner.alias</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jarsigner-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>sign</id>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+</project>

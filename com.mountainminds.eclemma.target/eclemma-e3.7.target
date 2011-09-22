@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde version="3.6"?>
+
+<target name="eclemma-e3.7" sequenceNumber="8">
+<locations>
+<location includeAllPlatforms="false" includeMode="planner" includeSource="false" type="InstallableUnit">
+<unit id="org.eclipse.jdt.feature.group" version="3.7.0.v20110520-0800-7z8gFchFMTdFYKuLqBLqRja9B15B"/>
+<repository location="http://download.eclipse.org/releases/indigo/"/>
+</location>
+<location includeAllPlatforms="false" includeMode="planner" includeSource="false" type="InstallableUnit">
+<unit id="org.objectweb.asm" version="3.3.1.v201105211655"/>
+<unit id="org.junit" version="4.8.2.v4_8_2_v20110321-1705"/>
+<repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20110523182458/repository"/>
+</location>
+</locations>
+</target>
