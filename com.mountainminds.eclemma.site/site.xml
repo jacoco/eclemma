@@ -18,7 +18,7 @@
   </feature>
   <category-def name="EclEmma" label="EclEmma">
     <description>
-      EclEmma is a free Java code coverage tool for Eclipse, available under the Eclipse Public License. Internally it is based on the great EMMA  Java code coverage tool, trying to adopt EMMA's philosophy for the Eclipse workbench.
+      EclEmma is a free Java code coverage tool for Eclipse, available under the Eclipse Public License.
     </description>
   </category-def>
 </site>
