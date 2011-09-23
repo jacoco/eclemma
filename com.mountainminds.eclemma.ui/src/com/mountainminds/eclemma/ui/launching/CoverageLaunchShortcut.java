@@ -44,12 +44,11 @@ public class CoverageLaunchShortcut implements ILaunchShortcut,
       IExtensionPoint extensionPoint = Platform.getExtensionRegistry()
           .getExtensionPoint(IDebugUIConstants.PLUGIN_ID,
               IDebugUIConstants.EXTENSION_POINT_LAUNCH_SHORTCUTS);
-      IConfigurationElement[] configs = extensionPoint
-          .getConfigurationElements();
-      for (int i = 0; i < configs.length; i++) {
-        if (delegateId.equals(configs[i].getAttribute("id"))) { //$NON-NLS-1$
+      for (final IConfigurationElement config : extensionPoint
+          .getConfigurationElements()) {
+        if (delegateId.equals(config.getAttribute("id"))) { //$NON-NLS-1$
           try {
-            delegate = (ILaunchShortcut) configs[i]
+            delegate = (ILaunchShortcut) config
                 .createExecutableExtension("class"); //$NON-NLS-1$
           } catch (CoreException e) {
             EclEmmaUIPlugin.log(e);

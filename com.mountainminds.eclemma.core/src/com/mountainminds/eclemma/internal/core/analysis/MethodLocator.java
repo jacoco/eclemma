@@ -53,9 +53,8 @@ public class MethodLocator {
    */
   public MethodLocator(final IType type) throws JavaModelException {
     this.type = type;
-    final IMethod[] methods = type.getMethods();
-    for (int i = 0; i < methods.length; i++) {
-      addToIndex(methods[i]);
+    for (final IMethod m : type.getMethods()) {
+      addToIndex(m);
     }
   }
 

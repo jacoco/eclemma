@@ -59,9 +59,9 @@ public class SourceLocation implements ISourceLocation {
 
   public static ISourceLocation[] findLocations(IPackageFragmentRoot[] roots)
       throws JavaModelException {
-    List<ISourceLocation> l = new ArrayList<ISourceLocation>();
-    for (int i = 0; i < roots.length; i++) {
-      ISourceLocation loc = findLocation(roots[i]);
+    final List<ISourceLocation> l = new ArrayList<ISourceLocation>();
+    for (final IPackageFragmentRoot root : roots) {
+      final ISourceLocation loc = findLocation(root);
       if (loc != null) {
         l.add(loc);
       }

@@ -64,8 +64,8 @@ public class ClassFilesStore {
    */
   public void add(IJavaProject javaProject) throws JavaModelException {
     final IPackageFragmentRoot[] roots = javaProject.getPackageFragmentRoots();
-    for (int i = 0; i < roots.length; i++) {
-      add(roots[i]);
+    for (final IPackageFragmentRoot root : roots) {
+      add(root);
     }
   }
 
@@ -78,9 +78,8 @@ public class ClassFilesStore {
    *           might be thrown by the underlying Java model
    */
   public void add(IJavaModel javaModel) throws JavaModelException {
-    final IJavaProject[] javaProjects = javaModel.getJavaProjects();
-    for (int i = 0; i < javaProjects.length; i++) {
-      add(javaProjects[i]);
+    for (final IJavaProject project : javaModel.getJavaProjects()) {
+      add(project);
     }
   }
 

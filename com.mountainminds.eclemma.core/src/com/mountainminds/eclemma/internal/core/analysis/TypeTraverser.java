@@ -61,12 +61,14 @@ public class TypeTraverser {
   public void process(ITypeVisitor visitor, IProgressMonitor monitor)
       throws JavaModelException {
     if (isOnClasspath(root)) {
-      IJavaElement[] fragments = root.getChildren();
-      monitor.beginTask("", fragments.length); //$NON-NLS-1$
-      for (int i = 0; i < fragments.length && !monitor.isCanceled(); i++) {
-        IPackageFragment fragment = (IPackageFragment) fragments[i];
+      IJavaElement[] children = root.getChildren();
+      monitor.beginTask("", children.length); //$NON-NLS-1$
+      for (final IJavaElement element : children) {
+        if (monitor.isCanceled()) {
+          break;
+        }
         IProgressMonitor submonitor = new SubProgressMonitor(monitor, 1);
-        processPackageFragment(visitor, fragment, submonitor);
+        processPackageFragment(visitor, (IPackageFragment) element, submonitor);
       }
     } else {
       TRACER.trace("Package fragment root {0} not on classpath.", //$NON-NLS-1$
@@ -97,18 +99,24 @@ public class TypeTraverser {
       throws JavaModelException {
     switch (fragment.getKind()) {
     case IPackageFragmentRoot.K_SOURCE:
-      ICompilationUnit[] units = fragment.getCompilationUnits();
+      final ICompilationUnit[] units = fragment.getCompilationUnits();
       monitor.beginTask("", units.length); //$NON-NLS-1$
-      for (int i = 0; i < units.length && !monitor.isCanceled(); i++) {
-        processCompilationUnit(visitor, units[i], monitor);
+      for (final ICompilationUnit unit : units) {
+        if (monitor.isCanceled()) {
+          break;
+        }
+        processCompilationUnit(visitor, unit, monitor);
         monitor.worked(1);
       }
       break;
     case IPackageFragmentRoot.K_BINARY:
-      IClassFile[] classfiles = fragment.getClassFiles();
+      final IClassFile[] classfiles = fragment.getClassFiles();
       monitor.beginTask("", classfiles.length); //$NON-NLS-1$
-      for (int i = 0; i < classfiles.length && !monitor.isCanceled(); i++) {
-        processClassFile(visitor, classfiles[i], monitor);
+      for (final IClassFile classfile : classfiles) {
+        if (monitor.isCanceled()) {
+          break;
+        }
+        processClassFile(visitor, classfile, monitor);
         monitor.worked(1);
       }
       break;
@@ -120,9 +128,10 @@ public class TypeTraverser {
       ICompilationUnit unit, IProgressMonitor monitor)
       throws JavaModelException {
     visitor.visit(unit);
-    IType[] types = unit.getTypes();
-    for (int i = 0; i < types.length && !monitor.isCanceled(); i++) {
-      IType type = types[i];
+    for (final IType type : unit.getTypes()) {
+      if (monitor.isCanceled()) {
+        break;
+      }
       processType(visitor, new BinaryTypeName(type), type, monitor);
     }
   }
@@ -138,9 +147,10 @@ public class TypeTraverser {
     String binaryname = btn.toString();
     monitor.subTask(binaryname);
     visitor.visit(type, binaryname);
-    IJavaElement[] children = type.getChildren();
-    for (int i = 0; i < children.length && !monitor.isCanceled(); i++) {
-      IJavaElement child = children[i];
+    for (final IJavaElement child : type.getChildren()) {
+      if (monitor.isCanceled()) {
+        break;
+      }
       switch (child.getElementType()) {
       case IJavaElement.TYPE:
         IType nestedtype = (IType) child;
@@ -158,9 +168,11 @@ public class TypeTraverser {
   private void processAnonymousInnerTypes(ITypeVisitor visitor,
       BinaryTypeName btn, IMember member, IProgressMonitor monitor)
       throws JavaModelException {
-    IJavaElement[] types = member.getChildren();
-    for (int i = 0; i < types.length && !monitor.isCanceled(); i++) {
-      IType type = (IType) types[i];
+    for (final IJavaElement element : member.getChildren()) {
+      if (monitor.isCanceled()) {
+        break;
+      }
+      final IType type = (IType) element;
       processType(visitor, btn.nest(type), type, monitor);
     }
   }

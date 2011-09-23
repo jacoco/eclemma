@@ -201,7 +201,7 @@ public abstract class CoverageLauncher implements ICoverageLauncher,
   // ICoverageLauncher interface:
 
   /*
-   * The default implemenation delegates to the classpath provider.
+   * The default implementation delegates to the classpath provider.
    */
   public IClassFiles[] getClassFiles(ILaunchConfiguration configuration,
       boolean includebinaries) throws CoreException {
@@ -209,10 +209,10 @@ public abstract class CoverageLauncher implements ICoverageLauncher,
     IRuntimeClasspathEntry[] entries = JavaRuntime
         .computeUnresolvedRuntimeClasspath(configuration);
     entries = JavaRuntime.resolveRuntimeClasspath(entries, configuration);
-    for (int i = 0; i < entries.length; i++) {
-      if (entries[i].getClasspathProperty() == IRuntimeClasspathEntry.USER_CLASSES) {
-        IClassFiles ic = CoverageTools
-            .getClassFilesAtAbsoluteLocation(entries[i].getLocation());
+    for (final IRuntimeClasspathEntry entry : entries) {
+      if (entry.getClasspathProperty() == IRuntimeClasspathEntry.USER_CLASSES) {
+        IClassFiles ic = CoverageTools.getClassFilesAtAbsoluteLocation(entry
+            .getLocation());
         if (ic != null && (includebinaries || !ic.isBinary())) {
           l.add(ic);
         }
@@ -220,23 +220,6 @@ public abstract class CoverageLauncher implements ICoverageLauncher,
     }
     IClassFiles[] arr = new IClassFiles[l.size()];
     return (IClassFiles[]) l.toArray(arr);
-  }
-
-  /**
-   * Internal utility to find the {@link IClassFiles} descriptor for the given
-   * class path location.
-   * 
-   * @param location
-   *          class path location
-   * @return descriptor or <code>null</code>
-   * @throws CoreException
-   *           in case of internal inconsistencies
-   * @deprecated please user
-   *             {@link CoverageTools#getClassFilesAtAbsoluteLocation(String)}
-   *             instead
-   */
-  protected IClassFiles findClassFiles(String location) throws CoreException {
-    return CoverageTools.getClassFilesAtAbsoluteLocation(location);
   }
 
 }

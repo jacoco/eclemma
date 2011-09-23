@@ -73,9 +73,8 @@ public class EditorTracker {
 
   public EditorTracker(IWorkbench workbench) {
     this.workbench = workbench;
-    IWorkbenchWindow[] windows = workbench.getWorkbenchWindows();
-    for (int i = 0; i < windows.length; i++) {
-      windows[i].getPartService().addPartListener(partListener);
+    for (final IWorkbenchWindow w : workbench.getWorkbenchWindows()) {
+      w.getPartService().addPartListener(partListener);
     }
     workbench.addWindowListener(windowListener);
     annotateAllEditors();
@@ -83,20 +82,16 @@ public class EditorTracker {
 
   public void dispose() {
     workbench.removeWindowListener(windowListener);
-    IWorkbenchWindow[] windows = workbench.getWorkbenchWindows();
-    for (int i = 0; i < windows.length; i++) {
-      windows[i].getPartService().removePartListener(partListener);
+    for (final IWorkbenchWindow w : workbench.getWorkbenchWindows()) {
+      w.getPartService().removePartListener(partListener);
     }
   }
 
   private void annotateAllEditors() {
-    IWorkbenchWindow[] windows = workbench.getWorkbenchWindows();
-    for (int i = 0; i < windows.length; i++) {
-      IWorkbenchPage[] pages = windows[i].getPages();
-      for (int j = 0; j < pages.length; j++) {
-        IEditorReference[] editors = pages[j].getEditorReferences();
-        for (int k = 0; k < editors.length; k++) {
-          annotateEditor(editors[k]);
+    for (final IWorkbenchWindow w : workbench.getWorkbenchWindows()) {
+      for (final IWorkbenchPage p : w.getPages()) {
+        for (final IEditorReference e : p.getEditorReferences()) {
+          annotateEditor(e);
         }
       }
     }

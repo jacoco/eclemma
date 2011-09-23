@@ -73,13 +73,19 @@ public class SessionAnalyzer {
                 session.getDescription()), coveragefiles.length
                 + classfiles.length);
     ExecutionDataStore executiondata = new ExecutionDataStore();
-    for (int i = 0; i < coveragefiles.length && !monitor.isCanceled(); i++) {
-      loadExecutionDataFile(executiondata, coveragefiles[i]);
+    for (final IPath file : coveragefiles) {
+      if (monitor.isCanceled()) {
+        break;
+      }
+      loadExecutionDataFile(executiondata, file);
       monitor.worked(1);
     }
-    for (int i = 0; i < classfiles.length && !monitor.isCanceled(); i++) {
-      processClasspathEntry(executiondata, classfiles[i],
-          new SubProgressMonitor(monitor, 1));
+    for (final IClassFiles cf : classfiles) {
+      if (monitor.isCanceled()) {
+        break;
+      }
+      processClasspathEntry(executiondata, cf, new SubProgressMonitor(monitor,
+          1));
     }
     monitor.done();
     PERFORMANCE.stopTimer("loading " + session.getDescription()); //$NON-NLS-1$

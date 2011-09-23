@@ -230,9 +230,9 @@ public class ClassesViewer implements ISelectionProvider {
 
   public void selectAll() {
     selectedclasses.clear();
-    for (int i = 0; i < input.length; i++) {
-      if (includebinaries || !input[i].isBinary()) {
-        selectedclasses.add(input[i]);
+    for (final IClassFiles cf : input) {
+      if (includebinaries || !cf.isBinary()) {
+        selectedclasses.add(cf);
       }
     }
     viewer.setCheckedElements(getPackageFragmentRoots(selectedclasses));
@@ -300,8 +300,7 @@ public class ClassesViewer implements ISelectionProvider {
   }
 
   private void updateCheckedStatus(Object root, boolean checked) {
-    for (int i = 0; i < input.length; i++) {
-      IClassFiles cf = input[i];
+    for (IClassFiles cf : input) {
       if (Arrays.asList(cf.getPackageFragmentRoots()).contains(root)) {
         if (checked) {
           selectedclasses.add(cf);

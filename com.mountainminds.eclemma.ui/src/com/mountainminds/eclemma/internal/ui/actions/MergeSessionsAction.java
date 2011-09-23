@@ -52,12 +52,12 @@ public class MergeSessionsAction extends Action {
     if (d.open() == IDialogConstants.OK_ID) {
       Object[] result = d.getResult();
       ICoverageSession merged = (ICoverageSession) result[0];
-      for (int i = 1; i < result.length; i++) {
-        merged = merged.merge((ICoverageSession) result[i], d.getDescription());
+      for (final Object r : result) {
+        merged = merged.merge((ICoverageSession) r, d.getDescription());
       }
       sm.addSession(merged, true, null);
-      for (int i = 0; i < result.length; i++) {
-        sm.removeSession((ICoverageSession) result[i]);
+      for (final Object r : result) {
+        sm.removeSession((ICoverageSession) r);
       }
     }
   }

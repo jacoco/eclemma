@@ -36,16 +36,15 @@ public class EclipseLauncher extends CoverageLauncher {
    */
   public IClassFiles[] getClassFiles(ILaunchConfiguration configuration,
       boolean includebinaries) throws CoreException {
-    IJavaModel model = JavaCore
-        .create(ResourcesPlugin.getWorkspace().getRoot());
-    IJavaProject[] projects = model.getJavaProjects();
-    List<IClassFiles> l = new ArrayList<IClassFiles>();
-    for (int i = 0; i < projects.length; i++) {
-      if (projects[i].getProject().hasNature(PLUGIN_NATURE)) {
-        IClassFiles[] cf = EclEmmaCorePlugin.getClassFiles(projects[i]);
-        for (int j = 0; j < cf.length; j++) {
-          if (!cf[j].isBinary())
-            l.add(cf[j]);
+    final IJavaModel model = JavaCore.create(ResourcesPlugin.getWorkspace()
+        .getRoot());
+    final List<IClassFiles> l = new ArrayList<IClassFiles>();
+    for (final IJavaProject project : model.getJavaProjects()) {
+      if (project.getProject().hasNature(PLUGIN_NATURE)) {
+        for (final IClassFiles cf : EclEmmaCorePlugin.getClassFiles(project)) {
+          if (!cf.isBinary()) {
+            l.add(cf);
+          }
         }
       }
     }

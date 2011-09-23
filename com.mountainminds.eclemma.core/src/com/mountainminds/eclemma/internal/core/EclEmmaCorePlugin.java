@@ -87,8 +87,7 @@ public class EclEmmaCorePlugin extends Plugin {
 
   private IDebugEventSetListener debugListener = new IDebugEventSetListener() {
     public void handleDebugEvents(DebugEvent[] events) {
-      for (int i = 0; i < events.length; i++) {
-        DebugEvent e = events[i];
+      for (final DebugEvent e : events) {
         if (e.getSource() instanceof IProcess
             && e.getKind() == DebugEvent.TERMINATE) {
           IProcess proc = (IProcess) e.getSource();

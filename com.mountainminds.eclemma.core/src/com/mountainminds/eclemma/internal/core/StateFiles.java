@@ -103,10 +103,9 @@ public class StateFiles {
       MessageDigest md = MessageDigest.getInstance("MD5"); //$NON-NLS-1$
       md.update(location.toString().getBytes("UTF8")); //$NON-NLS-1$
       md.update(Long.toHexString(timestamp).getBytes("UTF8")); //$NON-NLS-1$
-      byte[] sig = md.digest();
-      for (int i = 0; i < sig.length; i++) {
-        sb.append(Character.forDigit((sig[i] >> 4) & 0xf, 0x10));
-        sb.append(Character.forDigit(sig[i] & 0xf, 0x10));
+      for (final byte b : md.digest()) {
+        sb.append(Character.forDigit((b >> 4) & 0xf, 0x10));
+        sb.append(Character.forDigit(b & 0xf, 0x10));
       }
     } catch (NoSuchAlgorithmException e) {
       throw new CoreException(EclEmmaStatus.ID_CREATION_ERROR.getStatus(e));

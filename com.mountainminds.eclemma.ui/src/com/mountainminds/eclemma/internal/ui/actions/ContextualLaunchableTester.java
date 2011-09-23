@@ -79,14 +79,13 @@ public class ContextualLaunchableTester extends PropertyTester {
       String delegateShortcutID) {
     IConfigurationElement[] configs = Platform.getExtensionRegistry()
         .getConfigurationElementsFor("org.eclipse.debug.ui.launchShortcuts"); //$NON-NLS-1$
-    for (int i = 0; i < configs.length; i++) {
-      if (!delegateShortcutID.equals(configs[i].getAttribute("id")))continue; //$NON-NLS-1$
-      String modes = configs[i].getAttribute("modes"); //$NON-NLS-1$
+    for (final IConfigurationElement config : configs) {
+      if (!delegateShortcutID.equals(config.getAttribute("id")))continue; //$NON-NLS-1$
+      String modes = config.getAttribute("modes"); //$NON-NLS-1$
       if (modes == null)
         continue;
       if (!Arrays.asList(modes.split("\\W")).contains(ILaunchManager.RUN_MODE))continue; //$NON-NLS-1$
-      IConfigurationElement[] launch = configs[i]
-          .getChildren("contextualLaunch"); //$NON-NLS-1$
+      IConfigurationElement[] launch = config.getChildren("contextualLaunch"); //$NON-NLS-1$
       if (launch.length != 1)
         continue;
       IConfigurationElement[] enablement = launch[0]

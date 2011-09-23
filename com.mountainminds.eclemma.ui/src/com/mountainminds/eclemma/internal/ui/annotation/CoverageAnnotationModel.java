@@ -133,23 +133,10 @@ public class CoverageAnnotationModel implements IAnnotationModel {
   }
 
   protected void updateAnnotations(boolean force) {
-    ISourceNode lineCoverage = null;
-    boolean annotate = false;
-    preconditions: {
-      if (editor.isDirty())
-        break preconditions;
-      IEditorInput input = editor.getEditorInput();
-      if (input == null)
-        break preconditions;
-      Object element = input.getAdapter(IJavaElement.class);
-      lineCoverage = findLineCoverage(element);
-      if (lineCoverage == null || !hasSource((IJavaElement) element))
-        break preconditions;
-      annotate = true;
-    }
-    if (annotate) {
+    final ISourceNode coverage = findSourceCoverageForEditor();
+    if (coverage != null) {
       if (!annotated || force) {
-        createAnnotations(lineCoverage);
+        createAnnotations(coverage);
         annotated = true;
       }
     } else {
@@ -158,6 +145,21 @@ public class CoverageAnnotationModel implements IAnnotationModel {
         annotated = false;
       }
     }
+  }
+
+  protected ISourceNode findSourceCoverageForEditor() {
+    if (editor.isDirty()) {
+      return null;
+    }
+    final IEditorInput input = editor.getEditorInput();
+    if (input == null) {
+      return null;
+    }
+    final Object element = input.getAdapter(IJavaElement.class);
+    if (!hasSource((IJavaElement) element)) {
+      return null;
+    }
+    return findSourceCoverageForElement(element);
   }
 
   protected boolean hasSource(IJavaElement element) {
@@ -171,7 +173,7 @@ public class CoverageAnnotationModel implements IAnnotationModel {
     return false;
   }
 
-  protected ISourceNode findLineCoverage(Object element) {
+  protected ISourceNode findSourceCoverageForElement(Object element) {
     // Do we have a coverage info for the editor input?
     ICoverageNode coverage = CoverageTools.getCoverageInfo(element);
     if (coverage == null)
@@ -214,8 +216,7 @@ public class CoverageAnnotationModel implements IAnnotationModel {
     try {
       for (int l = firstline; l <= lastline; l++) {
         final ILine line = linecoverage.getLine(l);
-        int status = line.getStatus();
-        if (status != ICounter.EMPTY) {
+        if (line.getStatus() != ICounter.EMPTY) {
           IRegion region = document.getLineInformation(l - 1);
           int docoffset = region.getOffset();
           int doclength = region.getLength();

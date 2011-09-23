@@ -54,16 +54,15 @@ public class CoverageTabGroup implements ILaunchConfigurationTabGroup,
     IConfigurationElement[] tabGroupConfigs = extensionpoint
         .getConfigurationElements();
     IConfigurationElement element = null;
-    findloop: for (int i = 0; i < tabGroupConfigs.length; i++) {
-      IConfigurationElement tabGroupConfig = tabGroupConfigs[i];
+    findloop: for (IConfigurationElement tabGroupConfig : tabGroupConfigs) {
       if (type.equals(tabGroupConfig.getAttribute(CONFIGATTR_TYPE))) {
         IConfigurationElement[] modeConfigs = tabGroupConfig
             .getChildren("launchMode"); //$NON-NLS-1$
         if (modeConfigs.length == 0) {
           element = tabGroupConfig;
         }
-        for (int j = 0; j < modeConfigs.length; j++) {
-          if (DELEGATE_LAUNCHMODE.equals(modeConfigs[j].getAttribute("mode"))) { //$NON-NLS-1$
+        for (final IConfigurationElement config : modeConfigs) {
+          if (DELEGATE_LAUNCHMODE.equals(config.getAttribute("mode"))) { //$NON-NLS-1$
             element = tabGroupConfig;
             break findloop;
           }

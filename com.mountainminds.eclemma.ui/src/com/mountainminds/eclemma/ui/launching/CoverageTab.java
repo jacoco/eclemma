@@ -117,10 +117,9 @@ public class CoverageTab extends AbstractLaunchConfigurationTab {
 
   public void performApply(ILaunchConfigurationWorkingCopy configuration) {
     if (isDirty()) {
-      IClassFiles[] classes = classesviewer.getSelectedClasses();
-      List<String> l = new ArrayList<String>();
-      for (int i = 0; i < classes.length; i++) {
-        l.add(classes[i].getLocation().toString());
+      final List<String> l = new ArrayList<String>();
+      for (final IClassFiles cf : classesviewer.getSelectedClasses()) {
+        l.add(cf.getLocation().toString());
       }
       configuration.setAttribute(
           ICoverageLaunchConfigurationConstants.ATTR_INSTRUMENTATION_PATHS, l);

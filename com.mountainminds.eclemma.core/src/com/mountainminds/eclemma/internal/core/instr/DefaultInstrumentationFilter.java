@@ -95,8 +95,8 @@ public class DefaultInstrumentationFilter {
   private boolean isSameProject(final IClassFiles classfiles,
       final IJavaProject javaProject) {
     final IPackageFragmentRoot[] roots = classfiles.getPackageFragmentRoots();
-    for (int i = 0; i < roots.length; i++) {
-      if (javaProject.equals(roots[i].getJavaProject())) {
+    for (final IPackageFragmentRoot root : roots) {
+      if (javaProject.equals(root.getJavaProject())) {
         return true;
       }
     }
@@ -116,10 +116,10 @@ public class DefaultInstrumentationFilter {
   private boolean isPathMatch(final IClassFiles classfiles,
       final String[] matchStrings) {
     final IPackageFragmentRoot[] roots = classfiles.getPackageFragmentRoots();
-    for (int i = 0; i < roots.length; i++) {
-      final String path = roots[i].getPath().toString();
-      for (int j = 0; j < matchStrings.length; j++) {
-        if (path.indexOf(matchStrings[j]) != -1) {
+    for (final IPackageFragmentRoot root : roots) {
+      final String path = root.getPath().toString();
+      for (final String match : matchStrings) {
+        if (path.indexOf(match) != -1) {
           return true;
         }
       }

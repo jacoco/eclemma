@@ -98,14 +98,13 @@ public class ClassFiles implements IClassFiles {
 
   public ISourceLocation[] getSourceLocations() throws JavaModelException {
     List<ISourceLocation> l = new ArrayList<ISourceLocation>();
-    for (int i = 0; i < roots.length; i++) {
-      ISourceLocation location = SourceLocation.findLocation(roots[i]);
+    for (final IPackageFragmentRoot root : roots) {
+      ISourceLocation location = SourceLocation.findLocation(root);
       if (location != null) {
         l.add(location);
       }
     }
-    ISourceLocation[] array = new ISourceLocation[l.size()];
-    return l.toArray(array);
+    return l.toArray(new ISourceLocation[l.size()]);
   }
 
 }

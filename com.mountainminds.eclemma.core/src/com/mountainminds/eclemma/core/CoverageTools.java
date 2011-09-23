@@ -177,9 +177,9 @@ public final class CoverageTools {
     if (selection != null && selection.size() > 0) {
       // Classes for instrumentation are already configured:
       final List<IClassFiles> filtered = new ArrayList<IClassFiles>();
-      for (int i = 0; i < all.length; i++) {
-        if (selection.contains(all[i].getLocation().toString())) {
-          filtered.add(all[i]);
+      for (final IClassFiles cf : all) {
+        if (selection.contains(cf.getLocation().toString())) {
+          filtered.add(cf);
         }
       }
       return filtered.toArray(new IClassFiles[filtered.size()]);

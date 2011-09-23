@@ -56,8 +56,8 @@ public final class SignatureResolver {
     }
     final StringBuffer buffer = new StringBuffer();
     final String[] parameterTypes = method.getParameterTypes();
-    for (int i = 0; i < parameterTypes.length; i++) {
-      resolveArrayParameterType(method, parameterTypes[i], buffer);
+    for (final String t : parameterTypes) {
+      resolveArrayParameterType(method, t, buffer);
     }
     return buffer.toString();
   }
@@ -131,8 +131,7 @@ public final class SignatureResolver {
   private static final boolean resolveTypeParameter(final IType context,
       final ITypeParameter[] typeParameters, final String identifier,
       final StringBuffer result) throws JavaModelException {
-    for (int i = 0; i < typeParameters.length; i++) {
-      final ITypeParameter p = typeParameters[i];
+    for (final ITypeParameter p : typeParameters) {
       if (identifier.equals(p.getElementName())) {
         final String[] bounds = p.getBounds();
         if (bounds.length == 0) {
