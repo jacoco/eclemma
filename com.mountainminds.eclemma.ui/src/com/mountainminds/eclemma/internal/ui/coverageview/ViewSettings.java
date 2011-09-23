@@ -162,7 +162,7 @@ public class ViewSettings {
         }
 
         public ICounter getCounter(ICoverageNode coverage) {
-          return coverage.getClassCounter();
+          return coverage.getComplexityCounter();
         }
 
         public String[] getColumnHeaders() {
