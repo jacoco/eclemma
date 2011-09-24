@@ -32,7 +32,6 @@ import com.mountainminds.eclemma.core.analysis.IJavaModelCoverage;
 import com.mountainminds.eclemma.core.launching.ICoverageLaunchConfigurationConstants;
 import com.mountainminds.eclemma.core.launching.ICoverageLaunchInfo;
 import com.mountainminds.eclemma.core.launching.ICoverageLauncher;
-import com.mountainminds.eclemma.internal.core.CoverageSession;
 import com.mountainminds.eclemma.internal.core.EclEmmaCorePlugin;
 import com.mountainminds.eclemma.internal.core.SessionExporter;
 import com.mountainminds.eclemma.internal.core.SessionImporter;
@@ -188,13 +187,6 @@ public final class CoverageTools {
     final DefaultInstrumentationFilter filter = EclEmmaCorePlugin.getInstance()
         .createDefaultIntrumentationFilter();
     return filter.filter(all, configuration);
-  }
-
-  public static ICoverageSession createCoverageSession(String description,
-      IClassFiles[] classfiles, IPath[] coveragedatafiles,
-      ILaunchConfiguration launchconfiguration) {
-    return new CoverageSession(description, classfiles, coveragedatafiles,
-        launchconfiguration);
   }
 
   public static IJavaModelCoverage getJavaModelCoverage() {

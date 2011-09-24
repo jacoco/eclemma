@@ -14,11 +14,8 @@ package com.mountainminds.eclemma.internal.core;
 import java.util.Properties;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osgi.util.NLS;
 
-import com.mountainminds.eclemma.core.IClassFiles;
 import com.mountainminds.eclemma.core.ICoverageSession;
 import com.mountainminds.eclemma.core.ISessionExporter;
 
@@ -55,13 +52,7 @@ public class SessionExporter implements ISessionExporter {
   }
 
   private void createReport(IProgressMonitor monitor) throws CoreException {
-    IClassFiles[] classfiles = session.getClassFiles();
-    IPath[] coveragefiles = session.getCoverageDataFiles();
-    monitor.beginTask(
-        NLS.bind(CoreMessages.ExportingSession_task, session.getDescription()),
-        classfiles.length + coveragefiles.length + 1);
-    // TODO: Use JaCoCo APIs
-    monitor.done();
+    throw new UnsupportedOperationException("Not yet implemented."); //$NON-NLS-1$
   }
 
 }

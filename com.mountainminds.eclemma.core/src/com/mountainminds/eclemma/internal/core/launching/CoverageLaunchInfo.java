@@ -11,6 +11,9 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.core.launching;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -18,6 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
 
 import com.mountainminds.eclemma.core.CoverageTools;
 import com.mountainminds.eclemma.core.IClassFiles;
@@ -35,7 +39,7 @@ public class CoverageLaunchInfo implements ICoverageLaunchInfo {
 
   private final ILaunchConfiguration configuration;
   private IPath coveragefile;
-  private IClassFiles[] classfiles;
+  private Collection<IPackageFragmentRoot> scope;
 
   public CoverageLaunchInfo(ILaunch launch) throws CoreException {
     final String id = Integer.toHexString(idcounter++);
@@ -45,7 +49,11 @@ public class CoverageLaunchInfo implements ICoverageLaunchInfo {
     statefiles.registerForCleanup(coveragefile);
 
     configuration = launch.getLaunchConfiguration();
-    classfiles = CoverageTools.getClassFilesForInstrumentation(configuration);
+    scope = new ArrayList<IPackageFragmentRoot>();
+    for (IClassFiles cf : CoverageTools
+        .getClassFilesForInstrumentation(configuration)) {
+      scope.addAll(Arrays.asList(cf.getPackageFragmentRoots()));
+    }
 
     instances.put(launch, this);
   }
@@ -69,8 +77,8 @@ public class CoverageLaunchInfo implements ICoverageLaunchInfo {
     return coveragefile;
   }
 
-  public IClassFiles[] getClassFiles() {
-    return classfiles;
+  public Collection<IPackageFragmentRoot> getScope() {
+    return scope;
   }
 
   public void dispose() {

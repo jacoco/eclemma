@@ -11,15 +11,15 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.core;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
 
-import com.mountainminds.eclemma.core.IClassFiles;
 import com.mountainminds.eclemma.core.ICoverageSession;
 
 /**
@@ -29,18 +29,28 @@ public class CoverageSession extends PlatformObject implements ICoverageSession 
 
   private final String description;
 
-  private final IClassFiles[] classfiles;
+  private final Collection<IPackageFragmentRoot> scope;
 
-  private final IPath[] coveragedatafiles;
+  private final Collection<IPath> executiondatafiles;
 
   private final ILaunchConfiguration launchconfiguration;
 
-  public CoverageSession(String description, IClassFiles[] classfiles,
-      IPath[] coveragedatafiles, ILaunchConfiguration launchconfiguration) {
+  private CoverageSession(String description,
+      Collection<IPackageFragmentRoot> scope,
+      Collection<IPath> executiondatafiles,
+      ILaunchConfiguration launchconfiguration) {
     this.description = description;
-    this.classfiles = classfiles;
-    this.coveragedatafiles = coveragedatafiles;
+    this.scope = scope;
+    this.executiondatafiles = executiondatafiles;
     this.launchconfiguration = launchconfiguration;
+  }
+
+  public CoverageSession(String description,
+      Collection<IPackageFragmentRoot> scope, IPath executiondatafile,
+      ILaunchConfiguration launchconfiguration) {
+    this(description, Collections
+        .unmodifiableCollection(new ArrayList<IPackageFragmentRoot>(scope)),
+        Collections.singleton(executiondatafile), launchconfiguration);
   }
 
   // ICoverageSession implementation
@@ -49,12 +59,12 @@ public class CoverageSession extends PlatformObject implements ICoverageSession 
     return description;
   }
 
-  public IClassFiles[] getClassFiles() {
-    return classfiles;
+  public Collection<IPackageFragmentRoot> getScope() {
+    return scope;
   }
 
-  public IPath[] getCoverageDataFiles() {
-    return this.coveragedatafiles;
+  public Collection<IPath> getExecutionDataFiles() {
+    return executiondatafiles;
   }
 
   public ILaunchConfiguration getLaunchConfiguration() {
@@ -62,18 +72,15 @@ public class CoverageSession extends PlatformObject implements ICoverageSession 
   }
 
   public ICoverageSession merge(ICoverageSession other, String description) {
-    Set<IClassFiles> i = merge(classfiles, other.getClassFiles());
-    Set<IPath> c = merge(coveragedatafiles, other.getCoverageDataFiles());
+    final Collection<IPackageFragmentRoot> scope = new ArrayList<IPackageFragmentRoot>(
+        this.scope);
+    scope.addAll(other.getScope());
+    final Collection<IPath> files = new ArrayList<IPath>(
+        this.executiondatafiles);
+    files.addAll(other.getExecutionDataFiles());
     return new CoverageSession(description,
-        (IClassFiles[]) i.toArray(new IClassFiles[i.size()]),
-        (IPath[]) c.toArray(new IPath[c.size()]), launchconfiguration);
-  }
-
-  private <T> Set<T> merge(T[] arr1, T[] arr2) {
-    final Set<T> set = new HashSet<T>();
-    set.addAll(Arrays.asList(arr1));
-    set.addAll(Arrays.asList(arr2));
-    return set;
+        Collections.unmodifiableCollection(scope),
+        Collections.unmodifiableCollection(files), launchconfiguration);
   }
 
 }

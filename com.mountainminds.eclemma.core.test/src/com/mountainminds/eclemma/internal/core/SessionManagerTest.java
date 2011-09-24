@@ -18,14 +18,16 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.mountainminds.eclemma.core.IClassFiles;
 import com.mountainminds.eclemma.core.ICoverageSession;
 import com.mountainminds.eclemma.core.ISessionListener;
 import com.mountainminds.eclemma.core.ISessionManager;
@@ -209,16 +211,16 @@ public class SessionManagerTest {
       return toString();
     }
 
-    public IClassFiles[] getClassFiles() {
-      return new IClassFiles[0];
-    }
-
-    public IPath[] getCoverageDataFiles() {
-      return new IPath[0];
-    }
-
     public ILaunchConfiguration getLaunchConfiguration() {
       return null;
+    }
+
+    public Collection<IPackageFragmentRoot> getScope() {
+      return Collections.emptyList();
+    }
+
+    public Collection<IPath> getExecutionDataFiles() {
+      return Collections.emptyList();
     }
 
     public ICoverageSession merge(ICoverageSession other, String description) {

@@ -11,9 +11,12 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.core;
 
+import java.util.Collection;
+
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
 
 /**
  * A coverage session is the result of a coverage run (or multiple merged runs)
@@ -41,25 +44,26 @@ public interface ICoverageSession extends IAdaptable {
   public String getDescription();
 
   /**
-   * Returns the array of class files objects for this session.
+   * Returns the collection of package fragment roots defining the scope of this
+   * session.
    * 
-   * @return array of {@link IClassFiles} used for this session
+   * @return session scope as collection of {@link IPackageFragmentRoot}
    */
-  public IClassFiles[] getClassFiles();
+  public Collection<IPackageFragmentRoot> getScope();
 
   /**
-   * Returns a list of absolute paths to the Emma coverage data files that
-   * belong to this session.
+   * Returns a collection of absolute paths to the JaCoCo execution data files
+   * that belong to this session.
    * 
-   * @return list of absolute paths to the Emma coverage data files
+   * @return list of absolute paths to the JaCoCo execution data files
    */
-  public IPath[] getCoverageDataFiles();
+  public Collection<IPath> getExecutionDataFiles();
 
   /**
    * If this session was the result of a Eclipse launch this method returns the
-   * respective launch configutation. Otherwise <code>null</code> is returned.
+   * respective launch configuration. Otherwise <code>null</code> is returned.
    * 
-   * @return launch configutation or <code>null</code>
+   * @return launch configuration or <code>null</code>
    */
   public ILaunchConfiguration getLaunchConfiguration();
 

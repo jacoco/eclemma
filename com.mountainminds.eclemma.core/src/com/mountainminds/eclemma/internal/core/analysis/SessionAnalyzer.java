@@ -38,7 +38,6 @@ import org.jacoco.core.data.SessionInfoStore;
 import org.jacoco.core.internal.analysis.BundleCoverageImpl;
 
 import com.mountainminds.eclemma.core.EclEmmaStatus;
-import com.mountainminds.eclemma.core.IClassFiles;
 import com.mountainminds.eclemma.core.ICoverageSession;
 import com.mountainminds.eclemma.core.analysis.IJavaModelCoverage;
 import com.mountainminds.eclemma.internal.core.CoreMessages;
@@ -59,27 +58,31 @@ public class SessionAnalyzer {
     PERFORMANCE.startTimer();
     PERFORMANCE.startMemoryUsage();
     modelcoverage = new JavaModelCoverage();
-    IPath[] coveragefiles = session.getCoverageDataFiles();
-    IClassFiles[] classfiles = session.getClassFiles();
+    final Collection<IPath> executiondatafiles = session.getExecutionDataFiles();
+    final Collection<IPackageFragmentRoot> roots = session.getScope();
     monitor
         .beginTask(
             NLS.bind(CoreMessages.AnalyzingCoverageSession_task,
-                session.getDescription()), coveragefiles.length
-                + classfiles.length);
-    ExecutionDataStore executiondata = new ExecutionDataStore();
-    for (final IPath file : coveragefiles) {
+                session.getDescription()),
+            executiondatafiles.size() + roots.size());
+    final ExecutionDataStore executiondata = new ExecutionDataStore();
+    for (final IPath file : executiondatafiles) {
       if (monitor.isCanceled()) {
         break;
       }
       loadExecutionDataFile(executiondata, file);
       monitor.worked(1);
     }
-    for (final IClassFiles cf : classfiles) {
+
+    final PackageFragementRootAnalyzer analyzer = new PackageFragementRootAnalyzer(
+        executiondata);
+
+    for (final IPackageFragmentRoot root : roots) {
       if (monitor.isCanceled()) {
         break;
       }
-      processClasspathEntry(executiondata, cf, new SubProgressMonitor(monitor,
-          1));
+      processPackageFragmentRoot(root, analyzer, new SubProgressMonitor(
+          monitor, 1));
     }
     monitor.done();
     PERFORMANCE.stopTimer("loading " + session.getDescription()); //$NON-NLS-1$
@@ -105,23 +108,6 @@ public class SessionAnalyzer {
       throw new CoreException(
           EclEmmaStatus.COVERAGEDATA_FILE_READ_ERROR.getStatus(path, e));
     }
-  }
-
-  private void processClasspathEntry(ExecutionDataStore executiondata,
-      IClassFiles classfiles, IProgressMonitor monitor) throws CoreException {
-
-    PackageFragementRootAnalyzer analyzer = new PackageFragementRootAnalyzer(
-        executiondata);
-
-    // Calculate coverage for each fragment root separately:
-    final IPackageFragmentRoot[] roots = classfiles.getPackageFragmentRoots();
-    monitor.beginTask("", roots.length); //$NON-NLS-1$
-    for (IPackageFragmentRoot root : roots) {
-
-      final SubProgressMonitor submonitor = new SubProgressMonitor(monitor, 1);
-      processPackageFragmentRoot(root, analyzer, submonitor);
-    }
-    monitor.done();
   }
 
   private void processPackageFragmentRoot(IPackageFragmentRoot root,

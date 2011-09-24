@@ -22,12 +22,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.SubProgressMonitor;
 
-import com.mountainminds.eclemma.core.CoverageTools;
 import com.mountainminds.eclemma.core.EclEmmaStatus;
 import com.mountainminds.eclemma.core.IClassFiles;
-import com.mountainminds.eclemma.core.ICoverageSession;
 import com.mountainminds.eclemma.core.ISessionImporter;
 
 /**
@@ -57,13 +54,7 @@ public class SessionImporter implements ISessionImporter {
   }
 
   public void importSession(IProgressMonitor monitor) throws CoreException {
-    monitor.beginTask(CoreMessages.ImportingSession_task, 1);
-    IPath[] cfiles = new IPath[1];
-    cfiles[0] = createCopy(new SubProgressMonitor(monitor, 1));
-    ICoverageSession s = CoverageTools.createCoverageSession(description,
-        classfiles, cfiles, null);
-    CoverageTools.getSessionManager().addSession(s, true, null);
-    monitor.done();
+    throw new UnsupportedOperationException("Not yet implemented."); //$NON-NLS-1$
   }
 
   private IPath createCopy(IProgressMonitor monitor) throws CoreException {

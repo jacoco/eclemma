@@ -11,9 +11,10 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.core.launching;
 
-import org.eclipse.core.runtime.IPath;
+import java.util.Collection;
 
-import com.mountainminds.eclemma.core.IClassFiles;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
 
 /**
  * Descriptor how a particular launch was instrumented. To every launch in
@@ -29,11 +30,12 @@ public interface ICoverageLaunchInfo {
   public IPath getExecutionDataFile();
 
   /**
-   * Returns the list of {@link IClassFiles} considered for this launch.
+   * Returns the collection of {@link IPackageFragmentRoot} considered as the
+   * scope for this launch.
    * 
-   * @return class files for this launch
+   * @return package fragment roots for this launch
    */
-  public IClassFiles[] getClassFiles();
+  public Collection<IPackageFragmentRoot> getScope();
 
   /**
    * Allow the implementation to perform internal cleanup when this info object
