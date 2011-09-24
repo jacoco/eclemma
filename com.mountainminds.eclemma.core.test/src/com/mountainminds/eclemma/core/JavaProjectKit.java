@@ -99,6 +99,19 @@ public class JavaProjectKit {
     return packageRoot;
   }
 
+  public IPackageFragmentRoot createSourceFolder(String foldername,
+      String output) throws CoreException {
+    IFolder folder = project.getFolder(foldername);
+    folder.create(false, true, null);
+    IPackageFragmentRoot packageRoot = javaProject
+        .getPackageFragmentRoot(folder);
+    IFolder outputFolder = project.getFolder(output);
+    outputFolder.create(false, true, null);
+    addClassPathEntry(JavaCore.newSourceEntry(packageRoot.getPath(), null,
+        outputFolder.getFullPath()));
+    return packageRoot;
+  }
+
   public IPackageFragmentRoot createJAR(String jarsrc, String jarpath,
       IPath sourceAttachmentPath, IPath sourceAttachmentRootPath)
       throws CoreException, IOException {
