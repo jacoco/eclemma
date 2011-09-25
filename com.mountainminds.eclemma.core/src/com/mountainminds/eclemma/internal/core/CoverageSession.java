@@ -14,6 +14,7 @@ package com.mountainminds.eclemma.internal.core;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.PlatformObject;
@@ -28,11 +29,8 @@ import com.mountainminds.eclemma.core.ICoverageSession;
 public class CoverageSession extends PlatformObject implements ICoverageSession {
 
   private final String description;
-
   private final Collection<IPackageFragmentRoot> scope;
-
   private final Collection<IPath> executiondatafiles;
-
   private final ILaunchConfiguration launchconfiguration;
 
   private CoverageSession(String description,
@@ -72,11 +70,10 @@ public class CoverageSession extends PlatformObject implements ICoverageSession 
   }
 
   public ICoverageSession merge(ICoverageSession other, String description) {
-    final Collection<IPackageFragmentRoot> scope = new ArrayList<IPackageFragmentRoot>(
+    final Collection<IPackageFragmentRoot> scope = new HashSet<IPackageFragmentRoot>(
         this.scope);
     scope.addAll(other.getScope());
-    final Collection<IPath> files = new ArrayList<IPath>(
-        this.executiondatafiles);
+    final Collection<IPath> files = new HashSet<IPath>(this.executiondatafiles);
     files.addAll(other.getExecutionDataFiles());
     return new CoverageSession(description,
         Collections.unmodifiableCollection(scope),
