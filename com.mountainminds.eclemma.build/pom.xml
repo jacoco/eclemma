@@ -65,13 +65,13 @@
   </developers>
 
   <modules>
-    <module>com.mountainminds.eclemma.target</module>
-    <module>com.mountainminds.eclemma.core</module>
-    <module>com.mountainminds.eclemma.core.test</module>
-    <module>com.mountainminds.eclemma.ui</module>
-    <module>com.mountainminds.eclemma.doc</module>
-    <module>com.mountainminds.eclemma.feature</module>
-    <module>com.mountainminds.eclemma.site</module>
+    <module>../com.mountainminds.eclemma.target</module>
+    <module>../com.mountainminds.eclemma.core</module>
+    <module>../com.mountainminds.eclemma.core.test</module>
+    <module>../com.mountainminds.eclemma.ui</module>
+    <module>../com.mountainminds.eclemma.doc</module>
+    <module>../com.mountainminds.eclemma.feature</module>
+    <module>../com.mountainminds.eclemma.site</module>
   </modules>
 
   <properties>
