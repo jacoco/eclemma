@@ -82,6 +82,7 @@
     <orbit-repository-url>http://download.eclipse.org/tools/orbit/downloads/drops/R20110523182458/repository/</orbit-repository-url>
 
     <jacoco.version>0.5.3.201107060350</jacoco.version>
+    <tycho.testArgLine>-Xmx800m</tycho.testArgLine>
 
     <!-- Sonar -->
     <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
