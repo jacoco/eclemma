@@ -11,11 +11,12 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.core.launching;
 
+import java.util.Collection;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate2;
-
-import com.mountainminds.eclemma.core.IClassFiles;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
 
 /**
  * The launch delegate for coverage configurations.
@@ -23,18 +24,18 @@ import com.mountainminds.eclemma.core.IClassFiles;
 public interface ICoverageLauncher extends ILaunchConfigurationDelegate2 {
 
   /**
-   * Returns all class file descriptors for the given launch configuration.
+   * Determines all {@link IPackageFragmentRoot}s that are part of the given
+   * launch configuration.
    * 
    * @param configuration
-   *          launch configuration to look for class files
-   * @param includebinaries
-   *          flag whether binary classpath entries should be included
+   *          launch configuration to determine overall scope
    * 
-   * @return descriptors for all class for instrumentation
+   * @return overall scope as collection of {@link IPackageFragmentRoot}
+   *         elements
    * 
    * @throws CoreException
    */
-  public IClassFiles[] getClassFiles(ILaunchConfiguration configuration,
-      boolean includebinaries) throws CoreException;
+  public Collection<IPackageFragmentRoot> getOverallScope(
+      ILaunchConfiguration configuration) throws CoreException;
 
 }

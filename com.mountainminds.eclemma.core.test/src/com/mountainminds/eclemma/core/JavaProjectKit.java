@@ -89,6 +89,13 @@ public class JavaProjectKit {
     return folder;
   }
 
+  public IPackageFragmentRoot createSourceFolder() throws CoreException {
+    IPackageFragmentRoot packageRoot = javaProject
+        .getPackageFragmentRoot(javaProject.getResource());
+    addClassPathEntry(JavaCore.newSourceEntry(packageRoot.getPath()));
+    return packageRoot;
+  }
+
   public IPackageFragmentRoot createSourceFolder(String foldername)
       throws CoreException {
     IFolder folder = project.getFolder(foldername);
@@ -123,6 +130,12 @@ public class JavaProjectKit {
     addClassPathEntry(JavaCore.newLibraryEntry(packageRoot.getPath(),
         sourceAttachmentPath, sourceAttachmentRootPath));
     return packageRoot;
+  }
+
+  public void addProjectReference(JavaProjectKit otherProject)
+      throws CoreException {
+    addClassPathEntry(JavaCore.newProjectEntry(otherProject.project
+        .getFullPath()));
   }
 
   public IPackageFragment createPackage(IPackageFragmentRoot fragmentRoot,

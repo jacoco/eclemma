@@ -11,8 +11,6 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.core.launching;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -23,8 +21,7 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 
-import com.mountainminds.eclemma.core.CoverageTools;
-import com.mountainminds.eclemma.core.IClassFiles;
+import com.mountainminds.eclemma.core.ScopeUtils;
 import com.mountainminds.eclemma.core.launching.ICoverageLaunchInfo;
 import com.mountainminds.eclemma.internal.core.EclEmmaCorePlugin;
 import com.mountainminds.eclemma.internal.core.StateFiles;
@@ -43,17 +40,14 @@ public class CoverageLaunchInfo implements ICoverageLaunchInfo {
 
   public CoverageLaunchInfo(ILaunch launch) throws CoreException {
     final String id = Integer.toHexString(idcounter++);
-    StateFiles statefiles = EclEmmaCorePlugin.getInstance().getStateFiles();
-    IPath base = statefiles.getLaunchDataFolder().append(id);
+    final StateFiles statefiles = EclEmmaCorePlugin.getInstance()
+        .getStateFiles();
+    final IPath base = statefiles.getLaunchDataFolder().append(id);
     coveragefile = base.addFileExtension("exec"); //$NON-NLS-1$
     statefiles.registerForCleanup(coveragefile);
 
     configuration = launch.getLaunchConfiguration();
-    scope = new ArrayList<IPackageFragmentRoot>();
-    for (IClassFiles cf : CoverageTools
-        .getClassFilesForInstrumentation(configuration)) {
-      scope.addAll(Arrays.asList(cf.getPackageFragmentRoots()));
-    }
+    scope = ScopeUtils.getConfiguredScope(configuration);
 
     instances.put(launch, this);
   }

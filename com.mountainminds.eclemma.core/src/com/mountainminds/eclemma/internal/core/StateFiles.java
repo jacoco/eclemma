@@ -34,8 +34,6 @@ public class StateFiles {
 
   private static final String IMPORTDATA_FOLDER = ".import/"; //$NON-NLS-1$
 
-  private static final String SOURCE_FOLDER = ".src/"; //$NON-NLS-1$
-
   private static final ReferenceQueue<IPath> CLEANUPQUEUE = new ReferenceQueue<IPath>();
 
   private static final Set<CleanupFile> CLEANUPFILES = new HashSet<CleanupFile>();
@@ -46,13 +44,11 @@ public class StateFiles {
     this.stateLocation = stateLocation;
     this.stateLocation.toFile().mkdirs();
     getLaunchDataFolder().toFile().mkdirs();
-    getSourceDataFolder().toFile().mkdirs();
     getImportDataFolder().toFile().mkdirs();
   }
 
   public void deleteTemporaryFiles() {
     deleteFiles(getLaunchDataFolder().toFile(), false);
-    deleteFiles(getSourceDataFolder().toFile(), false);
     deleteFiles(getImportDataFolder().toFile(), false);
   }
 
@@ -69,14 +65,6 @@ public class StateFiles {
 
   public IPath getLaunchDataFolder() {
     return stateLocation.append(LAUNCHDATA_FOLDER);
-  }
-
-  private IPath getSourceDataFolder() {
-    return stateLocation.append(SOURCE_FOLDER);
-  }
-
-  public IPath getSourceFolder(IPath location) throws CoreException {
-    return getSourceDataFolder().append(getInternalId(location, true));
   }
 
   private IPath getImportDataFolder() {

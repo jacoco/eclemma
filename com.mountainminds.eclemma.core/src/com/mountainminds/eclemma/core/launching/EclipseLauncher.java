@@ -12,17 +12,16 @@
 package com.mountainminds.eclemma.core.launching;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
+import java.util.Collection;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.jdt.core.IJavaModel;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
-
-import com.mountainminds.eclemma.core.IClassFiles;
-import com.mountainminds.eclemma.internal.core.EclEmmaCorePlugin;
 
 /**
  * Laucher for the Eclipse runtime workbench.
@@ -32,23 +31,19 @@ public class EclipseLauncher extends CoverageLauncher {
   protected static final String PLUGIN_NATURE = "org.eclipse.pde.PluginNature"; //$NON-NLS-1$
 
   /*
-   * We list all source based class files of all plugins in the workspace.
+   * The overall scope are all plug-in projects in the workspace.
    */
-  public IClassFiles[] getClassFiles(ILaunchConfiguration configuration,
-      boolean includebinaries) throws CoreException {
+  public Collection<IPackageFragmentRoot> getOverallScope(
+      ILaunchConfiguration configuration) throws CoreException {
     final IJavaModel model = JavaCore.create(ResourcesPlugin.getWorkspace()
         .getRoot());
-    final List<IClassFiles> l = new ArrayList<IClassFiles>();
+    final Collection<IPackageFragmentRoot> result = new ArrayList<IPackageFragmentRoot>();
     for (final IJavaProject project : model.getJavaProjects()) {
       if (project.getProject().hasNature(PLUGIN_NATURE)) {
-        for (final IClassFiles cf : EclEmmaCorePlugin.getClassFiles(project)) {
-          if (!cf.isBinary()) {
-            l.add(cf);
-          }
-        }
+        result.addAll(Arrays.asList(project.getPackageFragmentRoots()));
       }
     }
-    return l.toArray(new IClassFiles[0]);
+    return result;
   }
 
 }

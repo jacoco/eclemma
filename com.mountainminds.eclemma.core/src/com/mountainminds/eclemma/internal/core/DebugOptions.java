@@ -222,14 +222,6 @@ public final class DebugOptions {
   private static final String KEYPREFIX_DEBUG = EclEmmaCorePlugin.ID
       + "/debug/"; //$NON-NLS-1$
 
-  private static final String KEY_EMMAVERBOSITYLEVEL = KEYPREFIX_DEBUG
-      + "emmaVerbosityLevel"; //$NON-NLS-1$
-
-  private static String getOption(String key, String defaultvalue) {
-    String value = Platform.getDebugOption(key);
-    return value == null ? defaultvalue : value;
-  }
-
   private static ITracer getTracer(String channel) {
     String key = KEYPREFIX_DEBUG + channel;
     if (Boolean.valueOf(Platform.getDebugOption(key)).booleanValue()) {
@@ -238,9 +230,6 @@ public final class DebugOptions {
       return NUL_TRACER;
     }
   }
-
-  public static final String EMMAVERBOSITYLEVEL = getOption(
-      KEY_EMMAVERBOSITYLEVEL, "silent"); //$NON-NLS-1$
 
   public static final ITracer PERFORMANCETRACER = getTracer("performance"); //$NON-NLS-1$
 

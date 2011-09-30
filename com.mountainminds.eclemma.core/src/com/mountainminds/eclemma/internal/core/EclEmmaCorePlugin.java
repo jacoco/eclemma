@@ -14,8 +14,6 @@ package com.mountainminds.eclemma.internal.core;
 import java.text.MessageFormat;
 import java.util.Date;
 
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
@@ -29,22 +27,14 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchListener;
 import org.eclipse.debug.core.IStatusHandler;
 import org.eclipse.debug.core.model.IProcess;
-import org.eclipse.jdt.core.ElementChangedEvent;
-import org.eclipse.jdt.core.IElementChangedListener;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.core.JavaModelException;
 import org.osgi.framework.BundleContext;
 
 import com.mountainminds.eclemma.core.CoverageTools;
 import com.mountainminds.eclemma.core.EclEmmaStatus;
-import com.mountainminds.eclemma.core.IClassFiles;
 import com.mountainminds.eclemma.core.ICorePreferences;
 import com.mountainminds.eclemma.core.ICoverageSession;
 import com.mountainminds.eclemma.core.ISessionManager;
 import com.mountainminds.eclemma.core.launching.ICoverageLaunchInfo;
-import com.mountainminds.eclemma.internal.core.instr.ClassFilesStore;
-import com.mountainminds.eclemma.internal.core.instr.DefaultInstrumentationFilter;
 
 /**
  * Bundle activator for the EclEmma core.
@@ -68,8 +58,6 @@ public class EclEmmaCorePlugin extends Plugin {
   private JavaCoverageLoader coverageLoader;
 
   private StateFiles stateFiles;
-
-  private ClassFilesStore allClassFiles = null;
 
   private ILaunchListener launchListener = new ILaunchListener() {
     public void launchRemoved(ILaunch launch) {
@@ -125,14 +113,6 @@ public class EclEmmaCorePlugin extends Plugin {
     }
   };
 
-  private IElementChangedListener elementListener = new IElementChangedListener() {
-    public void elementChanged(ElementChangedEvent event) {
-      synchronized (EclEmmaCorePlugin.this) {
-        allClassFiles = null;
-      }
-    }
-  };
-
   public void start(BundleContext context) throws Exception {
     super.start(context);
     sessionManager = new SessionManager();
@@ -142,14 +122,12 @@ public class EclEmmaCorePlugin extends Plugin {
     DebugPlugin.getDefault().getLaunchManager()
         .addLaunchListener(launchListener);
     DebugPlugin.getDefault().addDebugEventListener(debugListener);
-    JavaCore.addElementChangedListener(elementListener);
     instance = this;
   }
 
   public void stop(BundleContext context) throws Exception {
     instance = null;
     stateFiles.deleteTemporaryFiles();
-    JavaCore.removeElementChangedListener(elementListener);
     DebugPlugin.getDefault().removeDebugEventListener(debugListener);
     DebugPlugin.getDefault().getLaunchManager()
         .removeLaunchListener(launchListener);
@@ -174,8 +152,8 @@ public class EclEmmaCorePlugin extends Plugin {
    * 
    * @return new filter
    */
-  public DefaultInstrumentationFilter createDefaultIntrumentationFilter() {
-    return new DefaultInstrumentationFilter(this.preferences);
+  public DefaultScopeFilter createDefaultIntrumentationFilter() {
+    return new DefaultScopeFilter(this.preferences);
   }
 
   public ISessionManager getSessionManager() {
@@ -214,50 +192,6 @@ public class EclEmmaCorePlugin extends Plugin {
     } else {
       return ((Boolean) prompter.handleStatus(status, info)).booleanValue();
     }
-  }
-
-  /**
-   * Tries to find the absolute path for the given workspace relative path.
-   * 
-   * @param path
-   *          workspace relative path to resolve
-   * @return absolute path
-   */
-  public static IPath getAbsolutePath(IPath path) {
-    if (path.getDevice() == null) {
-      IResource res = ResourcesPlugin.getWorkspace().getRoot().findMember(path);
-      if (res != null) {
-        return res.getLocation();
-      }
-    }
-    return path;
-  }
-
-  /**
-   * Calculates the list of IClassFiles for the given Java project. Basically
-   * for every separate output location a entry will be returned.
-   * 
-   * @param project
-   *          Java project to calculate IClassFiles for
-   * @return aArray of IClassFiles objects
-   * @throws JavaModelException
-   *           thrown when a problem with the underlying Java model occures
-   */
-  public static IClassFiles[] getClassFiles(IJavaProject project)
-      throws JavaModelException {
-    final ClassFilesStore store = new ClassFilesStore();
-    store.add(project);
-    return store.getClassFiles();
-  }
-
-  public ClassFilesStore getAllClassFiles() throws CoreException {
-    ClassFilesStore store = allClassFiles;
-    if (store == null) {
-      store = new ClassFilesStore();
-      store.add(JavaCore.create(ResourcesPlugin.getWorkspace().getRoot()));
-      allClassFiles = store;
-    }
-    return store;
   }
 
 }

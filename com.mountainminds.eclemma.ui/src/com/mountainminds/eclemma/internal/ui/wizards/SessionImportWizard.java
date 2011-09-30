@@ -70,7 +70,7 @@ public class SessionImportWizard extends Wizard implements IImportWizard {
     final ISessionImporter importer = CoverageTools.getImporter();
     importer.setDescription(page1.getSessionDescription());
     importer.setCoverageFile(page1.getCoverageFile());
-    importer.setClassFiles(page1.getClassFiles());
+    importer.setScope(page1.getScope());
     importer.setCopy(page1.getCreateCopy());
     IRunnableWithProgress op = new IRunnableWithProgress() {
       public void run(IProgressMonitor monitor)

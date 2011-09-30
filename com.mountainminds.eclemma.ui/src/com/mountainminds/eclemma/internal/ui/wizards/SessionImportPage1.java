@@ -13,9 +13,11 @@ package com.mountainminds.eclemma.internal.ui.wizards;
 
 import java.io.File;
 import java.text.MessageFormat;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -35,12 +37,10 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-import com.mountainminds.eclemma.core.CoverageTools;
-import com.mountainminds.eclemma.core.IClassFiles;
+import com.mountainminds.eclemma.core.ScopeUtils;
 import com.mountainminds.eclemma.internal.ui.ContextHelp;
-import com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin;
+import com.mountainminds.eclemma.internal.ui.ScopeViewer;
 import com.mountainminds.eclemma.internal.ui.UIMessages;
-import com.mountainminds.eclemma.internal.ui.viewers.ClassesViewer;
 
 /**
  * This wizard page allows selecting a coverage file and class path entries for
@@ -60,7 +60,7 @@ public class SessionImportPage1 extends WizardPage {
 
   private Text descriptiontext;
   private Combo filecombo;
-  private ClassesViewer classesviewer;
+  private ScopeViewer classesviewer;
   private Button binariescheck;
   private Button referenceradio;
   private Button copyradio;
@@ -128,12 +128,9 @@ public class SessionImportPage1 extends WizardPage {
   }
 
   private void createClassPathsBlock(Composite parent) {
-    classesviewer = new ClassesViewer(parent, SWT.BORDER);
-    try {
-      classesviewer.setInput(CoverageTools.getClassFiles());
-    } catch (CoreException e) {
-      EclEmmaUIPlugin.log(e);
-    }
+    classesviewer = new ScopeViewer(parent, SWT.BORDER);
+    // TODO initialize viewer
+    // classesviewer.setInput(CoverageTools.getClassFiles());
     classesviewer.addSelectionChangedListener(new ISelectionChangedListener() {
       public void selectionChanged(SelectionChangedEvent event) {
         update();
@@ -230,7 +227,7 @@ public class SessionImportPage1 extends WizardPage {
       setPageComplete(false);
       return;
     }
-    if (getClassFiles().length == 0) {
+    if (getScope().isEmpty()) {
       setMessage(UIMessages.ImportReportPage1NoClassFiles_message);
       setPageComplete(false);
       return;
@@ -251,7 +248,8 @@ public class SessionImportPage1 extends WizardPage {
     binariescheck.setSelection(binaries);
     String[] classes = settings.getArray(STORE_CLASSES);
     if (classes != null) {
-      classesviewer.setSelectedClasses(classes);
+      classesviewer.setSelectedScope(ScopeUtils.readScope(Arrays
+          .asList(classes)));
     }
     boolean copy = settings.getBoolean(STORE_COPY);
     referenceradio.setSelection(!copy);
@@ -264,7 +262,10 @@ public class SessionImportPage1 extends WizardPage {
   public void saveWidgetValues() {
     IDialogSettings settings = getDialogSettings();
     ComboHistory.save(settings, STORE_FILES, filecombo);
-    settings.put(STORE_CLASSES, classesviewer.getSelectedClassesLocations());
+    settings.put(
+        STORE_CLASSES,
+        ScopeUtils.writeScope(classesviewer.getSelectedScope()).toArray(
+            new String[0]));
     settings.put(STORE_BINARIES, binariescheck.getSelection());
     settings.put(STORE_COPY, copyradio.getSelection());
     settings.put(STORE_IMPORTMETADATA, importmetadataradio.getSelection());
@@ -278,8 +279,8 @@ public class SessionImportPage1 extends WizardPage {
     return filecombo.getText();
   }
 
-  public IClassFiles[] getClassFiles() {
-    return classesviewer.getSelectedClasses();
+  public Collection<IPackageFragmentRoot> getScope() {
+    return classesviewer.getSelectedScope();
   }
 
   public boolean getCreateCopy() {

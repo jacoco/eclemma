@@ -9,19 +9,16 @@
  *    Marc R. Hoffmann - initial API and implementation
  *    
  ******************************************************************************/
-package com.mountainminds.eclemma.internal.ui.viewers;
+package com.mountainminds.eclemma.internal.ui;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
@@ -35,6 +32,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -43,16 +41,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 
-import com.mountainminds.eclemma.core.IClassFiles;
-import com.mountainminds.eclemma.internal.ui.UIMessages;
-
 /**
- * Viewer for selecting <code>IClassFiles</code> objects from a given list. The
- * viewer lists the corresponding IPackageFragmentRoots. Source based class
- * files may have multiple corresponding roots, their selection status is
- * connected.
+ * Viewer for selecting {@link IPackageFragmentRoot} objects from a given list.
  */
-public class ClassesViewer implements ISelectionProvider {
+public class ScopeViewer implements ISelectionProvider {
 
   private static class PackageFragmentRootLabelProvider extends LabelProvider {
 
@@ -123,9 +115,7 @@ public class ClassesViewer implements ISelectionProvider {
   private final CheckboxTableViewer viewer;
   private final List<ISelectionChangedListener> listeners = new ArrayList<ISelectionChangedListener>();
 
-  private IClassFiles[] input;
   private boolean includebinaries;
-  private final Set<IClassFiles> selectedclasses = new HashSet<IClassFiles>();
 
   /**
    * Creates a new viewer within the given parent.
@@ -135,7 +125,7 @@ public class ClassesViewer implements ISelectionProvider {
    * @param style
    *          flags specifying the table's style
    */
-  public ClassesViewer(Composite parent, int style) {
+  public ScopeViewer(Composite parent, int style) {
     this(new Table(parent, SWT.CHECK | style));
   }
 
@@ -145,15 +135,30 @@ public class ClassesViewer implements ISelectionProvider {
    * @param table
    *          view table
    */
-  public ClassesViewer(Table table) {
+  public ScopeViewer(Table table) {
     this.table = table;
     viewer = new CheckboxTableViewer(table);
     viewer.setContentProvider(new ArrayContentProvider());
     viewer.setLabelProvider(new PackageFragmentRootLabelProvider());
     viewer.setSorter(new PackageFragmentRootSorter());
+    viewer.addFilter(new ViewerFilter() {
+      @Override
+      public boolean select(Viewer viewer, Object parentElement, Object element) {
+        if (includebinaries) {
+          return true;
+        }
+        final IPackageFragmentRoot root = (IPackageFragmentRoot) element;
+        try {
+          return root.getKind() == IPackageFragmentRoot.K_SOURCE;
+        } catch (JavaModelException e) {
+          EclEmmaUIPlugin.log(e);
+          return false;
+        }
+      }
+    });
     viewer.addCheckStateListener(new ICheckStateListener() {
       public void checkStateChanged(CheckStateChangedEvent event) {
-        updateCheckedStatus(event.getElement(), event.getChecked());
+        fireSelectionEvent();
       }
     });
   }
@@ -171,99 +176,54 @@ public class ClassesViewer implements ISelectionProvider {
    * Sets the input for this viewer.
    * 
    * @param input
-   *          list of classfiles objects the user can select from
+   *          list of {@link IPackageFragmentRoot}s the user can select from
    */
-  public void setInput(IClassFiles[] input) {
-    this.input = input;
-    viewer.setInput(getPackageFragmentRoots(Arrays.asList(input)));
+  public void setInput(Collection<IPackageFragmentRoot> input) {
+    viewer.setInput(input);
   }
 
   /**
-   * Specifies whether binary classpath entries should also be listed.
+   * Specifies whether binary package fragment roots should also be listed.
    * 
    * @param includebinaries
    *          <code>true</code> if binary entries should be listed
    */
   public void setIncludeBinaries(boolean includebinaries) {
     this.includebinaries = includebinaries;
-    if (!includebinaries) {
-      for (Iterator<IClassFiles> i = selectedclasses.iterator(); i.hasNext();) {
-        if (i.next().isBinary()) {
-          i.remove();
-        }
-      }
-    }
-    if (input != null) {
-      viewer.setInput(getPackageFragmentRoots(Arrays.asList(input)));
-    }
+    this.viewer.refresh();
   }
 
   /**
-   * Sets the initially checked classes.
+   * Sets the selected scope.
    * 
-   * @param classfiles
-   *          list of classfiles that should be checked
+   * @param scope
+   *          list of package fragment roots that should be checked
    */
-  public void setSelectedClasses(IClassFiles[] classfiles) {
-    selectedclasses.clear();
-    selectedclasses.addAll(Arrays.asList(classfiles));
-    viewer
-        .setCheckedElements(getPackageFragmentRoots(Arrays.asList(classfiles)));
-  }
-
-  /**
-   * Sets the initially checked classes from the given locations.
-   * 
-   * @param locations
-   *          location strings of the classes to select
-   */
-  public void setSelectedClasses(String[] locations) {
-    Set<String> lset = new HashSet<String>(Arrays.asList(locations));
-    selectedclasses.clear();
-    for (final IClassFiles c : input) {
-      if (lset.contains(c.getLocation().toString())) {
-        selectedclasses.add(c);
-      }
-    }
-    viewer.setCheckedElements(getPackageFragmentRoots(selectedclasses));
+  public void setSelectedScope(final Collection<IPackageFragmentRoot> scope) {
+    viewer.setCheckedElements(scope.toArray());
   }
 
   public void selectAll() {
-    selectedclasses.clear();
-    for (final IClassFiles cf : input) {
-      if (includebinaries || !cf.isBinary()) {
-        selectedclasses.add(cf);
-      }
-    }
-    viewer.setCheckedElements(getPackageFragmentRoots(selectedclasses));
+    viewer.setAllChecked(true);
+    fireSelectionEvent();
   }
 
   public void deselectAll() {
-    selectedclasses.clear();
-    viewer.setCheckedElements(new Object[0]);
+    viewer.setAllChecked(false);
+    fireSelectionEvent();
   }
 
   /**
-   * Returns the currently checked classes.
+   * Returns the currently selected scope.
    * 
-   * @return list of class files that are currently checked
+   * @return list of package fragment roots that are currently checked
    */
-  public IClassFiles[] getSelectedClasses() {
-    return selectedclasses.toArray(new IClassFiles[selectedclasses.size()]);
-  }
-
-  /**
-   * Returns the locations of the currently checked classes.
-   * 
-   * @return list of locations of class files that are currently checked
-   */
-  public String[] getSelectedClassesLocations() {
-    String[] locs = new String[selectedclasses.size()];
-    int idx = 0;
-    for (final IClassFiles c : selectedclasses) {
-      locs[idx++] = c.getLocation().toString();
+  public Collection<IPackageFragmentRoot> getSelectedScope() {
+    Collection<IPackageFragmentRoot> scope = new ArrayList<IPackageFragmentRoot>();
+    for (final Object element : viewer.getCheckedElements()) {
+      scope.add((IPackageFragmentRoot) element);
     }
-    return locs;
+    return scope;
   }
 
   /**
@@ -288,32 +248,6 @@ public class ClassesViewer implements ISelectionProvider {
     listeners.remove(listener);
   }
 
-  private IPackageFragmentRoot[] getPackageFragmentRoots(
-      Collection<IClassFiles> classfiles) {
-    Set<IPackageFragmentRoot> roots = new HashSet<IPackageFragmentRoot>();
-    for (IClassFiles cf : classfiles) {
-      if (includebinaries || !cf.isBinary()) {
-        roots.addAll(Arrays.asList(cf.getPackageFragmentRoots()));
-      }
-    }
-    return roots.toArray(new IPackageFragmentRoot[roots.size()]);
-  }
-
-  private void updateCheckedStatus(Object root, boolean checked) {
-    for (IClassFiles cf : input) {
-      if (Arrays.asList(cf.getPackageFragmentRoots()).contains(root)) {
-        if (checked) {
-          selectedclasses.add(cf);
-        } else {
-          selectedclasses.remove(cf);
-        }
-        break;
-      }
-    }
-    viewer.setCheckedElements(getPackageFragmentRoots(selectedclasses));
-    fireSelectionEvent();
-  }
-
   private void fireSelectionEvent() {
     SelectionChangedEvent evt = new SelectionChangedEvent(this, getSelection());
     for (final ISelectionChangedListener l : listeners) {
@@ -324,15 +258,15 @@ public class ClassesViewer implements ISelectionProvider {
   // ISelectionProvider interface
 
   public ISelection getSelection() {
-    return new StructuredSelection(getSelectedClasses());
+    return new StructuredSelection(getSelectedScope().toArray());
   }
 
   public void setSelection(ISelection selection) {
-    selectedclasses.clear();
-    for (Object obj : ((IStructuredSelection) selection).toArray()) {
-      selectedclasses.add((IClassFiles) obj);
+    Collection<IPackageFragmentRoot> scope = new ArrayList<IPackageFragmentRoot>();
+    for (final Object obj : ((IStructuredSelection) selection).toArray()) {
+      scope.add((IPackageFragmentRoot) obj);
     }
-    viewer.setCheckedElements(getPackageFragmentRoots(selectedclasses));
+    setSelectedScope(scope);
   }
 
 }

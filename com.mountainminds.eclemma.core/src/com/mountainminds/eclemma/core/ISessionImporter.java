@@ -11,8 +11,11 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.core;
 
+import java.util.Collection;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
 
 /**
  * API for importing sessions. This interface is not intended to be implemented
@@ -37,13 +40,13 @@ public interface ISessionImporter {
   public void setCoverageFile(String file);
 
   /**
-   * Sets the list of class files that should be considered for coverage
-   * analysis.
+   * Sets the list of package fragment roots that should be considered for
+   * coverage analysis.
    * 
-   * @param classfiles
-   *          class files for analysis
+   * @param scope
+   *          scope for analysis
    */
-  public void setClassFiles(IClassFiles[] classfiles);
+  public void setScope(Collection<IPackageFragmentRoot> scope);
 
   /**
    * Specifies whether the original file should be copied while importing.

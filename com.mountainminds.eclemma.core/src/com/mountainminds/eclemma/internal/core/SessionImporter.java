@@ -17,14 +17,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Collection;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
 
 import com.mountainminds.eclemma.core.EclEmmaStatus;
-import com.mountainminds.eclemma.core.IClassFiles;
 import com.mountainminds.eclemma.core.ISessionImporter;
 
 /**
@@ -34,7 +35,7 @@ public class SessionImporter implements ISessionImporter {
 
   private String description;
   private String coveragefile;
-  private IClassFiles[] classfiles;
+  private Collection<IPackageFragmentRoot> scope;
   private boolean copy;
 
   public void setDescription(String description) {
@@ -45,8 +46,8 @@ public class SessionImporter implements ISessionImporter {
     this.coveragefile = file;
   }
 
-  public void setClassFiles(IClassFiles[] classfiles) {
-    this.classfiles = classfiles;
+  public void setScope(Collection<IPackageFragmentRoot> scope) {
+    this.scope = scope;
   }
 
   public void setCopy(boolean copy) {

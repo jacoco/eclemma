@@ -19,10 +19,11 @@ import com.mountainminds.eclemma.internal.core.EclEmmaCorePlugin;
 public interface ICoverageLaunchConfigurationConstants {
 
   /**
-   * List of workspace relative paths for instrumentation. If unspecified all
-   * output locations of source folders will be instrumented.
+   * List of Java element ids pointing to package fragment roots that form the
+   * scope of a coverage launch. If unspecified a default scope is calculated
+   * based on the launch type and preferences..
    */
-  public static final String ATTR_INSTRUMENTATION_PATHS = EclEmmaCorePlugin.ID
-      + ".INSTRUMENTATION_PATHS"; //$NON-NLS-1$
+  public static final String ATTR_SCOPE_IDS = EclEmmaCorePlugin.ID
+      + ".SCOPE_IDS"; //$NON-NLS-1$
 
 }

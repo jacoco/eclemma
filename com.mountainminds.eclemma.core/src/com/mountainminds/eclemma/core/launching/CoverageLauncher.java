@@ -12,15 +12,16 @@
 package com.mountainminds.eclemma.core.launching;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.io.IOException;
+import java.net.URL;
 import java.util.Collections;
-import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExecutableExtension;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
@@ -32,16 +33,13 @@ import org.eclipse.debug.core.Launch;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate2;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
-import org.eclipse.jdt.launching.IRuntimeClasspathEntry;
-import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.osgi.util.NLS;
+import org.jacoco.agent.AgentJar;
 import org.jacoco.core.runtime.AgentOptions;
 
 import com.mountainminds.eclemma.core.CoverageTools;
 import com.mountainminds.eclemma.core.EclEmmaStatus;
-import com.mountainminds.eclemma.core.IClassFiles;
 import com.mountainminds.eclemma.internal.core.CoreMessages;
-import com.mountainminds.eclemma.internal.core.EclEmmaCorePlugin;
 import com.mountainminds.eclemma.internal.core.launching.CoverageLaunchInfo;
 
 /**
@@ -76,9 +74,14 @@ public abstract class CoverageLauncher implements ICoverageLauncher,
       ICoverageLaunchInfo info) throws CoreException {
     final AgentOptions options = new AgentOptions();
     options.setDestfile(info.getExecutionDataFile().toOSString());
-    final File agentfile = CoverageTools.getRuntimeAgentJar().toFile();
-    final String arg = options.getVMArgument(agentfile);
-    addVMArgument(workingcopy, arg);
+    try {
+      final URL agentfileurl = FileLocator.toFileURL(AgentJar.getResource());
+      final File agentfile = new Path(agentfileurl.getPath()).toFile();
+      addVMArgument(workingcopy, options.getVMArgument(agentfile));
+    } catch (IOException e) {
+      throw new CoreException(
+          EclEmmaStatus.NO_LOCAL_AGENTJAR_ERROR.getStatus(e));
+    }
   }
 
   /**
@@ -174,12 +177,6 @@ public abstract class CoverageLauncher implements ICoverageLauncher,
 
   public boolean preLaunchCheck(ILaunchConfiguration configuration,
       String mode, IProgressMonitor monitor) throws CoreException {
-    if (CoverageTools.getClassFilesForInstrumentation(configuration).length == 0) {
-      IStatus status = EclEmmaStatus.NO_INSTRUMENTED_CLASSES.getStatus();
-      EclEmmaCorePlugin.getInstance().showPrompt(status, configuration);
-      return false;
-    }
-    // Then allow the delegate's veto:
     if (launchdelegate2 == null) {
       return true;
     } else {
@@ -196,30 +193,6 @@ public abstract class CoverageLauncher implements ICoverageLauncher,
       return launchdelegate2.finalLaunchCheck(configuration,
           DELEGATELAUNCHMODE, monitor);
     }
-  }
-
-  // ICoverageLauncher interface:
-
-  /*
-   * The default implementation delegates to the classpath provider.
-   */
-  public IClassFiles[] getClassFiles(ILaunchConfiguration configuration,
-      boolean includebinaries) throws CoreException {
-    List<IClassFiles> l = new ArrayList<IClassFiles>();
-    IRuntimeClasspathEntry[] entries = JavaRuntime
-        .computeUnresolvedRuntimeClasspath(configuration);
-    entries = JavaRuntime.resolveRuntimeClasspath(entries, configuration);
-    for (final IRuntimeClasspathEntry entry : entries) {
-      if (entry.getClasspathProperty() == IRuntimeClasspathEntry.USER_CLASSES) {
-        IClassFiles ic = CoverageTools.getClassFilesAtAbsoluteLocation(entry
-            .getLocation());
-        if (ic != null && (includebinaries || !ic.isBinary())) {
-          l.add(ic);
-        }
-      }
-    }
-    IClassFiles[] arr = new IClassFiles[l.size()];
-    return (IClassFiles[]) l.toArray(arr);
   }
 
 }

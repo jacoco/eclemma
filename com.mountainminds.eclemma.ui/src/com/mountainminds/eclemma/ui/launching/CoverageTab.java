@@ -11,7 +11,6 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.ui.launching;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -30,20 +29,19 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 
-import com.mountainminds.eclemma.core.CoverageTools;
-import com.mountainminds.eclemma.core.IClassFiles;
+import com.mountainminds.eclemma.core.ScopeUtils;
 import com.mountainminds.eclemma.core.launching.ICoverageLaunchConfigurationConstants;
 import com.mountainminds.eclemma.internal.ui.ContextHelp;
 import com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin;
+import com.mountainminds.eclemma.internal.ui.ScopeViewer;
 import com.mountainminds.eclemma.internal.ui.UIMessages;
-import com.mountainminds.eclemma.internal.ui.viewers.ClassesViewer;
 
 /**
  * The "Coverage" tab of the launch configuration dialog.
  */
 public class CoverageTab extends AbstractLaunchConfigurationTab {
 
-  private ClassesViewer classesviewer;
+  private ScopeViewer classesviewer;
 
   public CoverageTab() {
   }
@@ -65,7 +63,7 @@ public class CoverageTab extends AbstractLaunchConfigurationTab {
     GridLayout layout = new GridLayout();
     layout.numColumns = 2;
     group.setLayout(layout);
-    classesviewer = new ClassesViewer(group, SWT.BORDER);
+    classesviewer = new ScopeViewer(group, SWT.BORDER);
     GridData gd = new GridData(GridData.FILL_BOTH);
     gd.horizontalSpan = 2;
     classesviewer.getTable().setLayoutData(gd);
@@ -105,9 +103,9 @@ public class CoverageTab extends AbstractLaunchConfigurationTab {
 
   public void initializeFrom(ILaunchConfiguration configuration) {
     try {
-      classesviewer.setInput(CoverageTools.getClassFiles(configuration, true));
-      classesviewer.setSelectedClasses(CoverageTools
-          .getClassFilesForInstrumentation(configuration));
+      classesviewer.setInput(ScopeUtils.getOverallScope(configuration));
+      classesviewer.setSelectedScope(ScopeUtils
+          .getConfiguredScope(configuration));
     } catch (CoreException e) {
       EclEmmaUIPlugin.log(e);
     }
@@ -117,12 +115,10 @@ public class CoverageTab extends AbstractLaunchConfigurationTab {
 
   public void performApply(ILaunchConfigurationWorkingCopy configuration) {
     if (isDirty()) {
-      final List<String> l = new ArrayList<String>();
-      for (final IClassFiles cf : classesviewer.getSelectedClasses()) {
-        l.add(cf.getLocation().toString());
-      }
+      final List<String> ids = ScopeUtils.writeScope(classesviewer
+          .getSelectedScope());
       configuration.setAttribute(
-          ICoverageLaunchConfigurationConstants.ATTR_INSTRUMENTATION_PATHS, l);
+          ICoverageLaunchConfigurationConstants.ATTR_SCOPE_IDS, ids);
     }
   }
 
