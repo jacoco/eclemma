@@ -60,7 +60,7 @@ class SelectSessionAction extends Action implements IMenuCreator {
     int count = 0;
     for (final ICoverageSession session : manager.getSessions()) {
       MenuItem item = new MenuItem(menu, SWT.RADIO);
-      Object[] labelparams = new Object[] { new Integer(++count),
+      Object[] labelparams = new Object[] { Integer.valueOf(++count),
           labelprovider.getText(session) };
       item.setText(NLS.bind(
           UIMessages.CoverageViewSelectSessionActionEntry_label, labelparams));

@@ -18,7 +18,6 @@ import java.util.WeakHashMap;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.ILaunch;
-import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 
 import com.mountainminds.eclemma.core.ScopeUtils;
@@ -33,7 +32,6 @@ public class CoverageLaunchInfo implements ICoverageLaunchInfo {
 
   private static final Map<ILaunch, ICoverageLaunchInfo> instances = new WeakHashMap<ILaunch, ICoverageLaunchInfo>();
 
-  private final ILaunchConfiguration configuration;
   private IPath executiondatafile;
   private Collection<IPackageFragmentRoot> scope;
 
@@ -42,8 +40,7 @@ public class CoverageLaunchInfo implements ICoverageLaunchInfo {
         .getExecutionDataFiles();
     executiondatafile = statefiles.newFile();
 
-    configuration = launch.getLaunchConfiguration();
-    scope = ScopeUtils.getConfiguredScope(configuration);
+    scope = ScopeUtils.getConfiguredScope(launch.getLaunchConfiguration());
 
     instances.put(launch, this);
   }

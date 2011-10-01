@@ -37,8 +37,6 @@ public class JavaCoverageLoader {
 
   private final ISessionManager sessionManager;
 
-  private ICoverageSession activeSession;
-
   private IJavaModelCoverage coverage;
 
   private final List<IJavaCoverageListener> listeners = new ArrayList<IJavaCoverageListener>();
@@ -46,7 +44,6 @@ public class JavaCoverageLoader {
   private ISessionListener sessionListener = new ISessionListener() {
 
     public void sessionActivated(ICoverageSession session) {
-      activeSession = session;
       // TODO Looks like this has no effect
       Job.getJobManager().cancel(LOADJOB);
       if (session == null) {
@@ -55,7 +52,7 @@ public class JavaCoverageLoader {
       } else {
         coverage = IJavaModelCoverage.LOADING;
         fireCoverageChanged();
-        new LoadSessionJob(activeSession).schedule();
+        new LoadSessionJob(session).schedule();
       }
     }
 

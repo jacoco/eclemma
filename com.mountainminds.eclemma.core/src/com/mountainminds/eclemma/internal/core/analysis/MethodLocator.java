@@ -68,7 +68,7 @@ public class MethodLocator {
    * @return method or <code>null</code>
    */
   public IMethod findMethod(String name, String signature) {
-    if (name.equals("<init>")) { //$NON-NLS-1$
+    if ("<init>".equals(name)) { //$NON-NLS-1$
       name = type.getElementName();
     }
     final String paramCountKey = createParamCountKey(name, signature);

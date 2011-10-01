@@ -203,7 +203,8 @@ public class CoverageView extends ViewPart implements IShowInTarget {
         if (counter.getTotalCount() == 0) {
           return ""; //$NON-NLS-1$
         } else {
-          return COVERAGE_VALUE.format(new Double(counter.getCoveredRatio()));
+          return COVERAGE_VALUE
+              .format(Double.valueOf(counter.getCoveredRatio()));
         }
       case COLUMN_COVERED:
         return String.valueOf(counter.getCoveredCount());

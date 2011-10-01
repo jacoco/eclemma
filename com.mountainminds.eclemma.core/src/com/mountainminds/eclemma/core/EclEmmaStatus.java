@@ -36,22 +36,22 @@ public final class EclEmmaStatus {
   }
 
   public IStatus getStatus() {
-    String m = NLS.bind(message, new Integer(code));
+    String m = NLS.bind(message, Integer.valueOf(code));
     return new Status(severity, EclEmmaCorePlugin.ID, code, m, null);
   }
 
   public IStatus getStatus(Throwable t) {
-    String m = NLS.bind(message, new Integer(code));
+    String m = NLS.bind(message, Integer.valueOf(code));
     return new Status(severity, EclEmmaCorePlugin.ID, code, m, t);
   }
 
   public IStatus getStatus(Object param1, Throwable t) {
-    String m = NLS.bind(message, new Integer(code), param1);
+    String m = NLS.bind(message, Integer.valueOf(code), param1);
     return new Status(severity, EclEmmaCorePlugin.ID, code, m, t);
   }
 
   public IStatus getStatus(Object param1) {
-    String m = NLS.bind(message, new Integer(code), param1);
+    String m = NLS.bind(message, Integer.valueOf(code), param1);
     return new Status(severity, EclEmmaCorePlugin.ID, code, m, null);
   }
 

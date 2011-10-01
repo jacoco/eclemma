@@ -189,7 +189,7 @@ public final class DebugOptions {
     }
 
     public void startTimer() {
-      starttime.set(new Long(System.currentTimeMillis()));
+      starttime.set(Long.valueOf(System.currentTimeMillis()));
     }
 
     public void stopTimer(String message) {
@@ -198,13 +198,13 @@ public final class DebugOptions {
         trace("Timer {0} not startet.", message); //$NON-NLS-1$
       } else {
         long time = System.currentTimeMillis() - start.longValue();
-        trace("{0} ms for {1}", new Object[] { new Long(time), message }); //$NON-NLS-1$
+        trace("{0} ms for {1}", new Object[] { Long.valueOf(time), message }); //$NON-NLS-1$
       }
     }
 
     public void startMemoryUsage() {
       Runtime rt = Runtime.getRuntime();
-      heapsize.set(new Long(rt.totalMemory() - rt.freeMemory()));
+      heapsize.set(Long.valueOf(rt.totalMemory() - rt.freeMemory()));
     }
 
     public void stopMemoryUsage(String message) {
@@ -214,7 +214,8 @@ public final class DebugOptions {
       } else {
         Runtime rt = Runtime.getRuntime();
         long bytes = rt.totalMemory() - rt.freeMemory() - start.longValue();
-        trace("{0} bytes for {1}", new Object[] { new Long(bytes), message }); //$NON-NLS-1$
+        trace(
+            "{0} bytes for {1}", new Object[] { Long.valueOf(bytes), message }); //$NON-NLS-1$
       }
     }
   }

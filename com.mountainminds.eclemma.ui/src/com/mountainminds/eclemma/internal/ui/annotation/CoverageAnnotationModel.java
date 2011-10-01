@@ -45,7 +45,7 @@ import com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin;
 /**
  * IAnnotationModel implementation for efficient coverage highlighting.
  */
-public class CoverageAnnotationModel implements IAnnotationModel {
+public final class CoverageAnnotationModel implements IAnnotationModel {
 
   /** Key used to piggyback our model to the editor's model. */
   private static final Object KEY = new Object();

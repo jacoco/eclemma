@@ -67,7 +67,7 @@ public class CoverageDecorator extends BaseLabelProvider implements
     ImageDescriptor overlay = EclEmmaUIPlugin.getCoverageOverlay(counter
         .getCoveredRatio());
     decoration.addOverlay(overlay, IDecoration.TOP_LEFT);
-    decoration.addSuffix(SUFFIX_FORMAT.format(new Double(counter
+    decoration.addSuffix(SUFFIX_FORMAT.format(Double.valueOf(counter
         .getCoveredRatio())));
   }
 
