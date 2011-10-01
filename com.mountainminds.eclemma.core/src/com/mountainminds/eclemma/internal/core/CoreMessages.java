@@ -35,6 +35,7 @@ public class CoreMessages extends NLS {
   public static String StatusUNKOWN_LAUNCH_TYPE_ERROR_message;
   public static String StatusINVALID_CLASSPATH_PROVIDER_CONTEXT_ERROR_message;
   public static String StatusMISSING_LAUNCH_INFO_ERROR_message;
+  public static String StatusEXECFILE_ERROR_message;
   public static String StatusCOVERAGEDATA_FILE_READ_ERROR_message;
   public static String StatusMETADATA_FILE_READ_ERROR_message;
   public static String StatusSOURCE_EXTRACTION_ERROR_message;

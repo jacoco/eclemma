@@ -57,7 +57,7 @@ public class EclEmmaCorePlugin extends Plugin {
 
   private JavaCoverageLoader coverageLoader;
 
-  private StateFiles stateFiles;
+  private ExecutionDataFiles executionDataFiles;
 
   private ILaunchListener launchListener = new ILaunchListener() {
     public void launchRemoved(ILaunch launch) {
@@ -94,7 +94,6 @@ public class EclEmmaCorePlugin extends Plugin {
               sessionManager.addSession(session,
                   preferences.getActivateNewSessions(), launch);
             }
-            info.dispose();
           }
         }
       }
@@ -117,8 +116,8 @@ public class EclEmmaCorePlugin extends Plugin {
     super.start(context);
     sessionManager = new SessionManager();
     coverageLoader = new JavaCoverageLoader(sessionManager);
-    stateFiles = new StateFiles(getStateLocation());
-    stateFiles.deleteTemporaryFiles();
+    executionDataFiles = new ExecutionDataFiles(getStateLocation());
+    executionDataFiles.deleteTemporaryFiles();
     DebugPlugin.getDefault().getLaunchManager()
         .addLaunchListener(launchListener);
     DebugPlugin.getDefault().addDebugEventListener(debugListener);
@@ -127,11 +126,11 @@ public class EclEmmaCorePlugin extends Plugin {
 
   public void stop(BundleContext context) throws Exception {
     instance = null;
-    stateFiles.deleteTemporaryFiles();
+    executionDataFiles.deleteTemporaryFiles();
     DebugPlugin.getDefault().removeDebugEventListener(debugListener);
     DebugPlugin.getDefault().getLaunchManager()
         .removeLaunchListener(launchListener);
-    stateFiles = null;
+    executionDataFiles = null;
     coverageLoader.dispose();
     coverageLoader = null;
     sessionManager = null;
@@ -164,8 +163,8 @@ public class EclEmmaCorePlugin extends Plugin {
     return coverageLoader;
   }
 
-  public StateFiles getStateFiles() {
-    return stateFiles;
+  public ExecutionDataFiles getExecutionDataFiles() {
+    return executionDataFiles;
   }
 
   /**

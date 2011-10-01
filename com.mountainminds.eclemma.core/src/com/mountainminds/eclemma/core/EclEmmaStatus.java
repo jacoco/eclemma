@@ -90,6 +90,12 @@ public final class EclEmmaStatus {
       5004, IStatus.ERROR, CoreMessages.StatusMISSING_LAUNCH_INFO_ERROR_message);
 
   /**
+   * The execution data file can not be created.
+   */
+  public static final EclEmmaStatus EXECFILE_ERROR = new EclEmmaStatus(5004,
+      IStatus.ERROR, CoreMessages.StatusEXECFILE_ERROR_message);
+
+  /**
    * Error while reading coverage data file.
    */
   public static final EclEmmaStatus COVERAGEDATA_FILE_READ_ERROR = new EclEmmaStatus(

@@ -61,8 +61,7 @@ public class SessionImporter implements ISessionImporter {
   private IPath createCopy(IProgressMonitor monitor) throws CoreException {
     IPath file = Path.fromOSString(coveragefile);
     if (copy) {
-      file = EclEmmaCorePlugin.getInstance().getStateFiles()
-          .getImportSessionFile(file);
+      file = EclEmmaCorePlugin.getInstance().getExecutionDataFiles().newFile();
       File source = new File(coveragefile);
       monitor.beginTask("", (int) source.length()); //$NON-NLS-1$
       byte[] buffer = new byte[0x1000];

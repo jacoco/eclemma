@@ -37,10 +37,4 @@ public interface ICoverageLaunchInfo {
    */
   public Collection<IPackageFragmentRoot> getScope();
 
-  /**
-   * Allow the implementation to perform internal cleanup when this info object
-   * is no longer required.
-   */
-  public void dispose();
-
 }

@@ -24,27 +24,23 @@ import org.eclipse.jdt.core.IPackageFragmentRoot;
 import com.mountainminds.eclemma.core.ScopeUtils;
 import com.mountainminds.eclemma.core.launching.ICoverageLaunchInfo;
 import com.mountainminds.eclemma.internal.core.EclEmmaCorePlugin;
-import com.mountainminds.eclemma.internal.core.StateFiles;
+import com.mountainminds.eclemma.internal.core.ExecutionDataFiles;
 
 /**
  * Implementation of {@link ICoverageLaunchInfo}.
  */
 public class CoverageLaunchInfo implements ICoverageLaunchInfo {
 
-  private static int idcounter = (int) System.currentTimeMillis();
   private static final Map<ILaunch, ICoverageLaunchInfo> instances = new WeakHashMap<ILaunch, ICoverageLaunchInfo>();
 
   private final ILaunchConfiguration configuration;
-  private IPath coveragefile;
+  private IPath executiondatafile;
   private Collection<IPackageFragmentRoot> scope;
 
   public CoverageLaunchInfo(ILaunch launch) throws CoreException {
-    final String id = Integer.toHexString(idcounter++);
-    final StateFiles statefiles = EclEmmaCorePlugin.getInstance()
-        .getStateFiles();
-    final IPath base = statefiles.getLaunchDataFolder().append(id);
-    coveragefile = base.addFileExtension("exec"); //$NON-NLS-1$
-    statefiles.registerForCleanup(coveragefile);
+    final ExecutionDataFiles statefiles = EclEmmaCorePlugin.getInstance()
+        .getExecutionDataFiles();
+    executiondatafile = statefiles.newFile();
 
     configuration = launch.getLaunchConfiguration();
     scope = ScopeUtils.getConfiguredScope(configuration);
@@ -68,17 +64,11 @@ public class CoverageLaunchInfo implements ICoverageLaunchInfo {
   // ICoverageLaunchInfo interface
 
   public IPath getExecutionDataFile() {
-    return coveragefile;
+    return executiondatafile;
   }
 
   public Collection<IPackageFragmentRoot> getScope() {
     return scope;
-  }
-
-  public void dispose() {
-    // TODO check why this is still necessary, someone seems to hold a reference
-    // to the launch objects.
-    coveragefile = null;
   }
 
 }
