@@ -234,8 +234,6 @@ public final class DebugOptions {
 
   public static final ITracer PERFORMANCETRACER = getTracer("performance"); //$NON-NLS-1$
 
-  public static final ITracer INSTRUMENTATIONTRACER = getTracer("instrumentation"); //$NON-NLS-1$
-
   public static final ITracer LAUNCHINGTRACER = getTracer("launching"); //$NON-NLS-1$
 
   public static final ITracer ANALYSISTRACER = getTracer("analysis"); //$NON-NLS-1$
