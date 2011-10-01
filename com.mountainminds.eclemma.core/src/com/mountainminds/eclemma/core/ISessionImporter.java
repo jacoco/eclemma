@@ -32,12 +32,12 @@ public interface ISessionImporter {
   public void setDescription(String description);
 
   /**
-   * Sets the path to the coverage file to import.
+   * Sets the path to the execution data file to import.
    * 
    * @param file
-   *          coverage file to import
+   *          execution data file to import
    */
-  public void setCoverageFile(String file);
+  public void setExecutionDataFile(String file);
 
   /**
    * Sets the list of package fragment roots that should be considered for

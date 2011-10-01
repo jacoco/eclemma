@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.Date;
 
 import org.eclipse.jdt.core.IPackageFragmentRoot;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -39,6 +40,7 @@ import org.eclipse.swt.widgets.Text;
 
 import com.mountainminds.eclemma.core.ScopeUtils;
 import com.mountainminds.eclemma.internal.ui.ContextHelp;
+import com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin;
 import com.mountainminds.eclemma.internal.ui.ScopeViewer;
 import com.mountainminds.eclemma.internal.ui.UIMessages;
 
@@ -52,20 +54,16 @@ public class SessionImportPage1 extends WizardPage {
 
   private static final String STORE_PREFIX = ID + "."; //$NON-NLS-1$
   private static final String STORE_FILES = STORE_PREFIX + "files"; //$NON-NLS-1$
-  private static final String STORE_CLASSES = STORE_PREFIX + "classes"; //$NON-NLS-1$
+  private static final String STORE_SCOPE = STORE_PREFIX + "scope"; //$NON-NLS-1$
   private static final String STORE_BINARIES = STORE_PREFIX + "binaries"; //$NON-NLS-1$
   private static final String STORE_COPY = STORE_PREFIX + "copy"; //$NON-NLS-1$
-  private static final String STORE_IMPORTMETADATA = STORE_PREFIX
-      + "importmetadata"; //$NON-NLS-1$
 
   private Text descriptiontext;
   private Combo filecombo;
-  private ScopeViewer classesviewer;
+  private ScopeViewer scopeviewer;
   private Button binariescheck;
   private Button referenceradio;
   private Button copyradio;
-  private Button ideclassesradio;
-  private Button importmetadataradio;
 
   protected SessionImportPage1() {
     super(ID);
@@ -79,7 +77,7 @@ public class SessionImportPage1 extends WizardPage {
     GridLayout layout = new GridLayout(1, false);
     parent.setLayout(layout);
     createNameAndFileBlock(parent);
-    createClassPathsBlock(parent);
+    createScopeBlock(parent);
     createButtonsBlock(parent);
     createOptionsBlock(parent);
     setControl(parent);
@@ -107,7 +105,7 @@ public class SessionImportPage1 extends WizardPage {
     gd.horizontalSpan = 2;
     descriptiontext.setLayoutData(gd);
     new Label(parent, SWT.NONE)
-        .setText(UIMessages.ImportSessionPage1CoverageFile_label);
+        .setText(UIMessages.ImportSessionPage1ExecutionDataFile_label);
     filecombo = new Combo(parent, SWT.BORDER);
     filecombo.addModifyListener(new ModifyListener() {
       public void modifyText(ModifyEvent e) {
@@ -127,11 +125,14 @@ public class SessionImportPage1 extends WizardPage {
     });
   }
 
-  private void createClassPathsBlock(Composite parent) {
-    classesviewer = new ScopeViewer(parent, SWT.BORDER);
-    // TODO initialize viewer
-    // classesviewer.setInput(CoverageTools.getClassFiles());
-    classesviewer.addSelectionChangedListener(new ISelectionChangedListener() {
+  private void createScopeBlock(Composite parent) {
+    scopeviewer = new ScopeViewer(parent, SWT.BORDER);
+    try {
+      scopeviewer.setInput(ScopeUtils.getWorkspaceScope());
+    } catch (JavaModelException e) {
+      EclEmmaUIPlugin.log(e);
+    }
+    scopeviewer.addSelectionChangedListener(new ISelectionChangedListener() {
       public void selectionChanged(SelectionChangedEvent event) {
         update();
       }
@@ -139,7 +140,7 @@ public class SessionImportPage1 extends WizardPage {
     GridData gd = new GridData(GridData.FILL_BOTH);
     gd.widthHint = convertHorizontalDLUsToPixels(120);
     gd.heightHint = convertHeightInCharsToPixels(8);
-    classesviewer.getTable().setLayoutData(gd);
+    scopeviewer.getTable().setLayoutData(gd);
   }
 
   private void createButtonsBlock(Composite parent) {
@@ -153,7 +154,7 @@ public class SessionImportPage1 extends WizardPage {
     binariescheck.setText(UIMessages.ImportSessionPage1Binaries_label);
     binariescheck.addSelectionListener(new SelectionAdapter() {
       public void widgetSelected(SelectionEvent e) {
-        classesviewer.setIncludeBinaries(binariescheck.getSelection());
+        scopeviewer.setIncludeBinaries(binariescheck.getSelection());
         update();
       }
     });
@@ -162,7 +163,7 @@ public class SessionImportPage1 extends WizardPage {
     buttonSelectAll.setText(UIMessages.SelectAllAction_label);
     buttonSelectAll.addSelectionListener(new SelectionAdapter() {
       public void widgetSelected(SelectionEvent e) {
-        classesviewer.selectAll();
+        scopeviewer.selectAll();
         update();
       }
     });
@@ -171,7 +172,7 @@ public class SessionImportPage1 extends WizardPage {
     buttonDeselectAll.setText(UIMessages.DeselectAllAction_label);
     buttonDeselectAll.addSelectionListener(new SelectionAdapter() {
       public void widgetSelected(SelectionEvent e) {
-        classesviewer.deselectAll();
+        scopeviewer.deselectAll();
         update();
       }
     });
@@ -179,11 +180,6 @@ public class SessionImportPage1 extends WizardPage {
   }
 
   private void createOptionsBlock(Composite parent) {
-    parent = new Composite(parent, SWT.NONE);
-    GridLayout layout = new GridLayout(2, true);
-    layout.marginWidth = 0;
-    layout.marginHeight = 0;
-    parent.setLayout(layout);
     parent.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
     Group group = new Group(parent, SWT.NONE);
     group.setText(UIMessages.ImportSessionPage1ModeGroup_label);
@@ -193,22 +189,13 @@ public class SessionImportPage1 extends WizardPage {
     referenceradio.setText(UIMessages.ImportSessionPage1Reference_label);
     copyradio = new Button(group, SWT.RADIO);
     copyradio.setText(UIMessages.ImportSessionPage1Copy_label);
-    group = new Group(parent, SWT.NONE);
-    group.setText(UIMessages.ImportSessionPage1MetadataGroup_label);
-    group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-    group.setLayout(new GridLayout());
-    ideclassesradio = new Button(group, SWT.RADIO);
-    ideclassesradio.setText(UIMessages.ImportSessionPage1IDEClasses_label);
-    importmetadataradio = new Button(group, SWT.RADIO);
-    importmetadataradio
-        .setText(UIMessages.ImportSessionPage1ImportMetaData_label);
   }
 
   private void openBrowseDialog() {
     FileDialog fd = new FileDialog(getShell(), SWT.OPEN);
     fd.setText(UIMessages.ImportSessionPage1BrowseDialog_title);
     fd.setFileName(filecombo.getText());
-    fd.setFilterExtensions(new String[] { "*.ec;*.es", "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
+    fd.setFilterExtensions(new String[] { "*.exec", "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
     String file = fd.open();
     if (file != null) {
       filecombo.setText(file);
@@ -223,7 +210,7 @@ public class SessionImportPage1 extends WizardPage {
     }
     File cf = new File(getCoverageFile());
     if (!cf.exists() || !cf.isFile()) {
-      setMessage(UIMessages.ImportReportPage1NoCoverageFile_message);
+      setMessage(UIMessages.ImportReportPage1NoExecutionDataFile_message);
       setPageComplete(false);
       return;
     }
@@ -244,31 +231,27 @@ public class SessionImportPage1 extends WizardPage {
     IDialogSettings settings = getDialogSettings();
     ComboHistory.restore(settings, STORE_FILES, filecombo);
     boolean binaries = settings.getBoolean(STORE_BINARIES);
-    classesviewer.setIncludeBinaries(binaries);
+    scopeviewer.setIncludeBinaries(binaries);
     binariescheck.setSelection(binaries);
-    String[] classes = settings.getArray(STORE_CLASSES);
+    String[] classes = settings.getArray(STORE_SCOPE);
     if (classes != null) {
-      classesviewer.setSelectedScope(ScopeUtils.readScope(Arrays
-          .asList(classes)));
+      scopeviewer
+          .setSelectedScope(ScopeUtils.readScope(Arrays.asList(classes)));
     }
     boolean copy = settings.getBoolean(STORE_COPY);
     referenceradio.setSelection(!copy);
     copyradio.setSelection(copy);
-    boolean importmetadata = settings.getBoolean(STORE_IMPORTMETADATA);
-    ideclassesradio.setSelection(!importmetadata);
-    importmetadataradio.setSelection(importmetadata);
   }
 
   public void saveWidgetValues() {
     IDialogSettings settings = getDialogSettings();
     ComboHistory.save(settings, STORE_FILES, filecombo);
     settings.put(
-        STORE_CLASSES,
-        ScopeUtils.writeScope(classesviewer.getSelectedScope()).toArray(
+        STORE_SCOPE,
+        ScopeUtils.writeScope(scopeviewer.getSelectedScope()).toArray(
             new String[0]));
     settings.put(STORE_BINARIES, binariescheck.getSelection());
     settings.put(STORE_COPY, copyradio.getSelection());
-    settings.put(STORE_IMPORTMETADATA, importmetadataradio.getSelection());
   }
 
   public String getSessionDescription() {
@@ -280,15 +263,11 @@ public class SessionImportPage1 extends WizardPage {
   }
 
   public Collection<IPackageFragmentRoot> getScope() {
-    return classesviewer.getSelectedScope();
+    return scopeviewer.getSelectedScope();
   }
 
   public boolean getCreateCopy() {
     return copyradio.getSelection();
-  }
-
-  public boolean getUseImportedMetaData() {
-    return importmetadataradio.getSelection();
   }
 
 }

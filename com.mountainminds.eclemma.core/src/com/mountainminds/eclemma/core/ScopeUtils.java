@@ -16,11 +16,16 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IJavaModel;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
 
 import com.mountainminds.eclemma.core.launching.ICoverageLaunchConfigurationConstants;
 import com.mountainminds.eclemma.core.launching.ICoverageLauncher;
@@ -108,4 +113,26 @@ public final class ScopeUtils {
     return filter.filter(all, configuration);
   }
 
+  /**
+   * Determines all package fragment roots in the workspace.
+   * 
+   * @return all package fragment roots
+   */
+  public static Collection<IPackageFragmentRoot> getWorkspaceScope()
+      throws JavaModelException {
+    final Collection<IPackageFragmentRoot> scope = new ArrayList<IPackageFragmentRoot>();
+    final IJavaModel model = JavaCore.create(ResourcesPlugin.getWorkspace()
+        .getRoot());
+    for (IJavaProject p : model.getJavaProjects()) {
+      for (final IPackageFragmentRoot root : p.getPackageFragmentRoots()) {
+        final IClasspathEntry cpentry = root.getRawClasspathEntry();
+        switch (cpentry.getEntryKind()) {
+        case IClasspathEntry.CPE_SOURCE:
+        case IClasspathEntry.CPE_LIBRARY:
+          scope.add(root);
+        }
+      }
+    }
+    return scope;
+  }
 }

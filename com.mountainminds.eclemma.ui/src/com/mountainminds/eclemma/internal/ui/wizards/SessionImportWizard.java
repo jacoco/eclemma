@@ -69,7 +69,7 @@ public class SessionImportWizard extends Wizard implements IImportWizard {
   private boolean importSession() {
     final ISessionImporter importer = CoverageTools.getImporter();
     importer.setDescription(page1.getSessionDescription());
-    importer.setCoverageFile(page1.getCoverageFile());
+    importer.setExecutionDataFile(page1.getCoverageFile());
     importer.setScope(page1.getScope());
     importer.setCopy(page1.getCreateCopy());
     IRunnableWithProgress op = new IRunnableWithProgress() {
@@ -89,9 +89,9 @@ public class SessionImportWizard extends Wizard implements IImportWizard {
     } catch (InvocationTargetException ite) {
       Throwable ex = ite.getTargetException();
       EclEmmaUIPlugin.log(ex);
-      String title = UIMessages.ImportReportErrorDialog_title;
-      String msg = UIMessages.ImportReportErrorDialog_message;
-      IStatus status;
+      final String title = UIMessages.ImportReportErrorDialog_title;
+      final String msg = UIMessages.ImportReportErrorDialog_message;
+      final IStatus status;
       if (ex instanceof CoreException) {
         status = ((CoreException) ex).getStatus();
       } else {
