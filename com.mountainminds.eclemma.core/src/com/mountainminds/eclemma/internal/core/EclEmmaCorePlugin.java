@@ -11,6 +11,7 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.core;
 
+import java.io.File;
 import java.text.MessageFormat;
 import java.util.Date;
 
@@ -78,9 +79,9 @@ public class EclEmmaCorePlugin extends Plugin {
       for (final DebugEvent e : events) {
         if (e.getSource() instanceof IProcess
             && e.getKind() == DebugEvent.TERMINATE) {
-          IProcess proc = (IProcess) e.getSource();
+          final IProcess proc = (IProcess) e.getSource();
           final ILaunch launch = proc.getLaunch();
-          ICoverageLaunchInfo info = CoverageTools.getLaunchInfo(launch);
+          final ICoverageLaunchInfo info = CoverageTools.getLaunchInfo(launch);
           if (info != null) {
             IPath coveragedatafile = info.getExecutionDataFile();
             if (checkCoverageDataFile(coveragedatafile)) {
@@ -100,7 +101,8 @@ public class EclEmmaCorePlugin extends Plugin {
     }
 
     private boolean checkCoverageDataFile(IPath path) {
-      boolean ok = path.toFile().exists();
+      final File file = path.toFile();
+      final boolean ok = file.exists() && file.length() > 0;
       if (!ok) {
         try {
           showPrompt(EclEmmaStatus.NO_COVERAGE_DATA_ERROR.getStatus(), path);
@@ -179,7 +181,7 @@ public class EclEmmaCorePlugin extends Plugin {
    * @throws CoreException
    *           if the status has severity error and no handler is available
    */
-  public boolean showPrompt(IStatus status, Object info) throws CoreException {
+  private boolean showPrompt(IStatus status, Object info) throws CoreException {
     IStatusHandler prompter = DebugPlugin.getDefault().getStatusHandler(
         PROMPT_STATUS);
     if (prompter == null) {
