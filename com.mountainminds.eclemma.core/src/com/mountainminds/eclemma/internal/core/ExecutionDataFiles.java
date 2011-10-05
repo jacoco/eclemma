@@ -35,18 +35,12 @@ public final class ExecutionDataFiles {
     folder.mkdirs();
   }
 
+  /**
+   * Delete any existing execution data file.
+   */
   public void deleteTemporaryFiles() {
-    deleteFiles(folder, false);
-  }
-
-  private static void deleteFiles(File file, boolean deleteparent) {
-    if (file.isDirectory()) {
-      File[] files = file.listFiles();
-      for (int i = 0; files != null && i < files.length; i++) {
-        deleteFiles(files[i], true);
-      }
-    }
-    if (deleteparent) {
+    final File[] files = folder.listFiles();
+    for (final File file : files) {
       file.delete();
     }
   }
