@@ -11,6 +11,12 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.core;
 
+import java.util.Collection;
+import java.util.List;
+
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+
 /**
  * The session manager holds a list of currently available sessions. One of the
  * sessions in the list may be the active session, which is the one that is used
@@ -36,6 +42,22 @@ public interface ISessionManager {
    *          key object this session will be assigned to
    */
   public void addSession(ICoverageSession session, boolean activate, Object key);
+
+  /**
+   * Merges the given sessions into a new one with the given name, then adds and
+   * activates the new session. All merged sessions will be removed from the
+   * session manager.
+   * 
+   * @param sessions
+   *          sessions to merge
+   * @param description
+   *          for new session
+   * @param monitor
+   *          progress monitor
+   * @return the new session
+   */
+  public ICoverageSession mergeSessions(Collection<ICoverageSession> sessions,
+      String description, IProgressMonitor monitor) throws CoreException;
 
   /**
    * Removes the given session. If the session is not in included in this
@@ -69,7 +91,7 @@ public interface ISessionManager {
    * @see #addSession(ICoverageSession, boolean, Object)
    * @return list of registered session
    */
-  public ICoverageSession[] getSessions();
+  public List<ICoverageSession> getSessions();
 
   /**
    * Returns the session that has been assigned to the given key. If there is no
@@ -90,16 +112,6 @@ public interface ISessionManager {
    *          session to activate
    */
   public void activateSession(ICoverageSession session);
-
-  /**
-   * Activates the session that has been assigned to the given key. If there is
-   * no session for the key this method has no effect.
-   * 
-   * @see #addSession(ICoverageSession, boolean, Object)
-   * @param key
-   *          key object for the session to activate
-   */
-  public void activateSession(Object key);
 
   /**
    * Returns the active session or <code>null</code> if there is no session.

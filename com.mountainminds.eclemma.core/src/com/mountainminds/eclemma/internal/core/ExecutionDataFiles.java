@@ -55,7 +55,7 @@ public final class ExecutionDataFiles {
       final File file = File.createTempFile("session", ".exec", folder); //$NON-NLS-1$ //$NON-NLS-2$
       return Path.fromOSString(file.getAbsolutePath());
     } catch (IOException e) {
-      throw new CoreException(EclEmmaStatus.EXECFILE_ERROR.getStatus(e));
+      throw new CoreException(EclEmmaStatus.EXEC_FILE_CREATE_ERROR.getStatus(e));
     }
   }
 

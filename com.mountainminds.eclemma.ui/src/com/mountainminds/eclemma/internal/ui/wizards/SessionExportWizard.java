@@ -11,12 +11,13 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.ui.wizards;
 
-import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -80,11 +81,11 @@ public class SessionExportWizard extends Wizard implements IExportWizard {
   }
 
   private boolean createReport() {
-    ICoverageSession session = page1.getSelectedSession();
+    final ICoverageSession session = page1.getSelectedSession();
     final ISessionExporter exporter = CoverageTools.getExporter(session);
-    exporter.setFormat(page1.getReportFormat());
+    exporter.setFormat(page1.getExportFormat());
     exporter.setDestination(page1.getDestination());
-    IRunnableWithProgress op = new IRunnableWithProgress() {
+    final IRunnableWithProgress op = new IRunnableWithProgress() {
       public void run(IProgressMonitor monitor)
           throws InvocationTargetException, InterruptedException {
         try {
@@ -99,12 +100,12 @@ public class SessionExportWizard extends Wizard implements IExportWizard {
     } catch (InterruptedException e) {
       return false;
     } catch (InvocationTargetException ite) {
-      Throwable ex = ite.getTargetException();
+      final Throwable ex = ite.getTargetException();
       EclEmmaUIPlugin.log(ex);
-      String title = UIMessages.ExportReportErrorDialog_title;
+      final String title = UIMessages.ExportReportErrorDialog_title;
       String msg = UIMessages.ExportReportErrorDialog_message;
       msg = NLS.bind(msg, session.getDescription());
-      IStatus status;
+      final IStatus status;
       if (ex instanceof CoreException) {
         status = ((CoreException) ex).getStatus();
       } else {
@@ -118,22 +119,26 @@ public class SessionExportWizard extends Wizard implements IExportWizard {
   }
 
   private void openReport() {
+    IPath file = Path.fromOSString(page1.getDestination());
+    if (page1.getExportFormat().isFolderOutput()) {
+      file = file.append("index.html"); //$NON-NLS-1$
+    }
+    String editorid = getEditorId(file);
     IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
-    File f = new File(page1.getDestination());
-    String editorid = getEditorId(f);
     if (editorid != null) {
       try {
-        IDE.openEditor(page, new ExternalFileEditorInput(f), editorid);
+        IDE.openEditor(page, new ExternalFileEditorInput(file.toFile()),
+            editorid);
       } catch (PartInitException e) {
         EclEmmaUIPlugin.log(e);
       }
     }
   }
 
-  private String getEditorId(File file) {
+  private String getEditorId(IPath file) {
     IEditorRegistry editorRegistry = workbench.getEditorRegistry();
     IEditorDescriptor descriptor = editorRegistry.getDefaultEditor(file
-        .getName());
+        .lastSegment());
     return descriptor == null ? null : descriptor.getId();
   }
 

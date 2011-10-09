@@ -37,11 +37,6 @@ public final class CoverageTools {
    */
   public static final String LAUNCH_MODE = "coverage"; //$NON-NLS-1$
 
-  public static final int EXPORT_HTML = 0;
-  public static final int EXPORT_XML = 1;
-  public static final int EXPORT_TEXT = 2;
-  public static final int EXPORT_ES = 3;
-
   /**
    * Returns the global session manager.
    * 

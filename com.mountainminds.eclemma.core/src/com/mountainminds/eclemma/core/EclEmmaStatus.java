@@ -92,27 +92,26 @@ public final class EclEmmaStatus {
   /**
    * The execution data file can not be created.
    */
-  public static final EclEmmaStatus EXECFILE_ERROR = new EclEmmaStatus(5004,
-      IStatus.ERROR, CoreMessages.StatusEXECFILE_ERROR_message);
+  public static final EclEmmaStatus EXEC_FILE_CREATE_ERROR = new EclEmmaStatus(
+      5005, IStatus.ERROR, CoreMessages.StatusEXEC_FILE_CREATE_ERROR_message);
 
   /**
    * Error while reading coverage data file.
    */
-  public static final EclEmmaStatus COVERAGEDATA_FILE_READ_ERROR = new EclEmmaStatus(
-      5006, IStatus.ERROR,
-      CoreMessages.StatusCOVERAGEDATA_FILE_READ_ERROR_message);
+  public static final EclEmmaStatus EXEC_FILE_READ_ERROR = new EclEmmaStatus(
+      5006, IStatus.ERROR, CoreMessages.StatusEXEC_FILE_READ_ERROR_message);
 
   /**
-   * Error while reading meta data file.
+   * Error while reading class file.
    */
-  public static final EclEmmaStatus METADATA_FILE_READ_ERROR = new EclEmmaStatus(
-      5007, IStatus.ERROR, CoreMessages.StatusMETADATA_FILE_READ_ERROR_message);
+  public static final EclEmmaStatus CLASS_FILE_READ_ERROR = new EclEmmaStatus(
+      5007, IStatus.ERROR, CoreMessages.StatusCLASS_FILE_READ_ERROR_message);
 
   /**
-   * Error while extracting source files.
+   * Error while extracting coverage session.
    */
-  public static final EclEmmaStatus SOURCE_EXTRACTION_ERROR = new EclEmmaStatus(
-      5008, IStatus.ERROR, CoreMessages.StatusSOURCE_EXTRACTION_ERROR_message);
+  public static final EclEmmaStatus EXPORT_ERROR = new EclEmmaStatus(5008,
+      IStatus.ERROR, CoreMessages.StatusEXPORT_ERROR_message);
 
   /**
    * Error while importing external coverage session.
@@ -123,8 +122,8 @@ public final class EclEmmaStatus {
   /**
    * Error while importing external coverage session.
    */
-  public static final EclEmmaStatus FILE_CONTAINS_NO_METADATA = new EclEmmaStatus(
-      5010, IStatus.ERROR, CoreMessages.StatusFILE_CONTAINS_NO_METADATA_message);
+  public static final EclEmmaStatus MERGE_ERROR = new EclEmmaStatus(5010,
+      IStatus.ERROR, CoreMessages.StatusMERGE_ERROR_message);
 
   /**
    * No coverage data file has been created during a coverage launch. This
@@ -132,12 +131,5 @@ public final class EclEmmaStatus {
    */
   public static final EclEmmaStatus NO_COVERAGE_DATA_ERROR = new EclEmmaStatus(
       5101, IStatus.ERROR, CoreMessages.StatusNO_COVERAGE_DATA_ERROR_message);
-
-  /**
-   * No classes are selected for instrumentation. This status is used to issue
-   * an error prompt during launching.
-   */
-  public static final EclEmmaStatus NO_INSTRUMENTED_CLASSES = new EclEmmaStatus(
-      5102, IStatus.ERROR, CoreMessages.StatusNO_INSTRUMENTED_CLASSES_message);
 
 }

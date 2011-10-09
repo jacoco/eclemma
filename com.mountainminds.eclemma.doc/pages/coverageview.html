@@ -86,37 +86,12 @@
   in the coverage tree: Projects, package fragment roots (source folders or
   libraries), package fragments or types.</li>
   <li><b>Counter Mode</b>: Different counter modes can be selected from the
-  view's drop-down menu: bytecode instructions, basic blocks, lines, methods
-  and types. See next sections for details.</li>  
+  view's drop-down menu: bytecode instructions, branches, lines, methods,
+  types and cyclomatic complexity. Please see
+  <a class="extern" href="http://www.eclemma.org/jacoco/trunk/doc/counters.html">JaCoCo documentation</a>
+  for detailed counter definitions.</li>  
   <li><b>Hide Unused Types</b>: Filter all Java types from the coverage view
   that has not been loaded during the coverage session.</li>  
-</ul>
-
-<h3>Counters</h3>
-
-<p>
-  When analyzing the coverage data collected during a coverage session different
-  counters are evaluated for each Java element. The <i>coverage
-  view</i> allows to select from its drop-down menu which counter should be
-  displayed:
-</p>
-
-<ul>
-  <li><b>Basic Blocks:</b> This is EMMA's fundamental unit of coverage. A basic
-  block is a sequence of bytecode instructions without any jumps or jump
-  targets. A basic block is considered as covered when its last instruction has
-  been executed.</li>
-  <li><b>Lines:</b> The number of covered Java source code lines. A source line
-  is considered as covered if it contains at least one covered basic block. This
-  counter is only available if the line numbers are included in the compiled
-  class files (debug mode).</li>
-  <li><b>Bytecode Instructions:</b> The number of bytecode instructions within
-  the basic blocks. If no line information is available this is a good
-  approximation for line coverage.</li>
-  <li><b>Methods:</b> A method is considered as covered if at least one basic
-  block of the method has been executed.</li>
-  <li><b>Types:</b> A Java type is considered as covered if it has been loaded
-  and initialized.</li>
 </ul>
 
 <h3>Filtering</h3>

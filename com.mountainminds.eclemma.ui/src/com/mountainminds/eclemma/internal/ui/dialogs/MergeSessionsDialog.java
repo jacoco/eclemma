@@ -11,6 +11,10 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.ui.dialogs;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
@@ -53,13 +57,13 @@ public class MergeSessionsDialog extends ListSelectionDialog {
    * @param description
    *          Preset value for the description
    */
-  public MergeSessionsDialog(Shell parent, ICoverageSession[] sessions,
+  public MergeSessionsDialog(Shell parent, List<ICoverageSession> sessions,
       String description) {
     super(parent, sessions, new ArrayContentProvider(),
         new WorkbenchLabelProvider(),
         UIMessages.MergeSessionsDialogSelection_label);
     setTitle(UIMessages.MergeSessionsDialog_title);
-    setInitialSelections(sessions);
+    setInitialSelections(sessions.toArray());
     this.description = description;
   }
 
@@ -70,6 +74,19 @@ public class MergeSessionsDialog extends ListSelectionDialog {
    */
   public String getDescription() {
     return description;
+  }
+
+  /**
+   * Returns the selected sessions to merge.
+   * 
+   * @return selected sessions
+   */
+  public Collection<ICoverageSession> getSessions() {
+    final Collection<ICoverageSession> sessions = new ArrayList<ICoverageSession>();
+    for (Object s : getResult()) {
+      sessions.add((ICoverageSession) s);
+    }
+    return sessions;
   }
 
   protected void configureShell(Shell shell) {

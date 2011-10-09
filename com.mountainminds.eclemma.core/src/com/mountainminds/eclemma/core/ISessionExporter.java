@@ -11,10 +11,10 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.core;
 
-import java.util.Properties;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+
+import com.mountainminds.eclemma.internal.core.CoreMessages;
 
 /**
  * API for exporting sessions. This interface is not intended to be implemented
@@ -23,25 +23,56 @@ import org.eclipse.core.runtime.IProgressMonitor;
  */
 public interface ISessionExporter {
 
-  /** Constant for export as HTML files (value is 0). */
-  public static final int HTML_FORMAT = 0;
+  /** Supported export formats. */
+  public enum ExportFormat {
 
-  /** Constant for XML file export (value is 1). */
-  public static final int XML_FORMAT = 1;
+    /** HTML report */
+    HTML(CoreMessages.ExportFormatHTML_value, null),
 
-  /** Constant for plain text export (value is 2). */
-  public static final int TXT_FORMAT = 2;
+    /** HTML report in single ZIP file */
+    HTMLZIP(CoreMessages.ExportFormatHTMLZIP_value, "zip"), //$NON-NLS-1$
 
-  /** Constant for EMMA session file export (value is 3). */
-  // TODO Remove EMMA Reference
-  public static final int EMMA_FORMAT = 3;
+    /** XML report */
+    XML(CoreMessages.ExportFormatXML_value, "xml"), //$NON-NLS-1$
 
-  /**
-   * Default file extensions for the different file formats. The array index
-   * corresponds to the format constant.
-   */
-  public static final String[] DEFAULT_EXTENSIONS = new String[] { "html", //$NON-NLS-1$
-      "xml", "txt", "es" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    /** CSV report */
+    CSV(CoreMessages.ExportFormatCSV_value, "csv"), //$NON-NLS-1$
+
+    /** Execution data only */
+    EXEC(CoreMessages.ExportFormatEXEC_value, "exec"); //$NON-NLS-1$
+
+    private final String label;
+    private final String fileExtension;
+
+    private ExportFormat(String label, String fileExtension) {
+      this.label = label;
+      this.fileExtension = fileExtension;
+    }
+
+    /**
+     * @return localized display label
+     */
+    public String getLabel() {
+      return label;
+    }
+
+    /**
+     * @return default file extension for output in this format,
+     *         <code>null</code> if output is written to folders
+     */
+    public String getFileExtension() {
+      return fileExtension;
+    }
+
+    /**
+     * @return <code>true</code>, this the output of this format requires a
+     *         folder to write multiple files to.
+     */
+    public boolean isFolderOutput() {
+      return fileExtension == null;
+    }
+
+  }
 
   /**
    * Sets the export format.
@@ -49,7 +80,7 @@ public interface ISessionExporter {
    * @param format
    *          export format constant
    */
-  public void setFormat(int format);
+  public void setFormat(ExportFormat format);
 
   /**
    * Sets the export file name. Note that in case of HTML export this is only
@@ -59,14 +90,6 @@ public interface ISessionExporter {
    *          file name of export destination
    */
   public void setDestination(String filename);
-
-  /**
-   * Sets EMMA specific report options that overwrite the default setting.
-   * 
-   * @param options
-   *          EMMA specific report options
-   */
-  public void setReportOptions(Properties options);
 
   /**
    * A call to this method triggers the actual export process.

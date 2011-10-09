@@ -116,10 +116,10 @@ public class EclEmmaCorePlugin extends Plugin {
 
   public void start(BundleContext context) throws Exception {
     super.start(context);
-    sessionManager = new SessionManager();
-    coverageLoader = new JavaCoverageLoader(sessionManager);
     executionDataFiles = new ExecutionDataFiles(getStateLocation());
     executionDataFiles.deleteTemporaryFiles();
+    sessionManager = new SessionManager(executionDataFiles);
+    coverageLoader = new JavaCoverageLoader(sessionManager);
     DebugPlugin.getDefault().getLaunchManager()
         .addLaunchListener(launchListener);
     DebugPlugin.getDefault().addDebugEventListener(debugListener);

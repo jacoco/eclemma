@@ -13,6 +13,7 @@
 package com.mountainminds.eclemma.internal.ui.coverageview;
 
 import java.text.DecimalFormat;
+import java.util.List;
 
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.ui.IContextMenuConstants;
@@ -473,15 +474,15 @@ public class CoverageView extends ViewPart implements IShowInTarget {
         setContentDescription(active == null ? "" : active.getDescription()); //$NON-NLS-1$
         relaunchSessionAction.setEnabled(active != null
             && active.getLaunchConfiguration() != null);
-        ICoverageSession[] sessions = CoverageTools.getSessionManager()
+        List<ICoverageSession> sessions = CoverageTools.getSessionManager()
             .getSessions();
-        boolean atLeastOne = sessions.length >= 1;
+        boolean atLeastOne = !sessions.isEmpty();
         removeActiveSessionAction.setEnabled(atLeastOne);
         removeAllSessionsAction.setEnabled(atLeastOne);
         exportAction.setEnabled(atLeastOne);
         refreshAction.setEnabled(atLeastOne);
         selectSessionAction.setEnabled(atLeastOne);
-        boolean atLeastTwo = sessions.length >= 2;
+        boolean atLeastTwo = sessions.size() >= 2;
         mergeSessionsAction.setEnabled(atLeastTwo);
       }
     });

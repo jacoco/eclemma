@@ -11,16 +11,26 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.core;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
+import org.jacoco.core.data.ExecutionDataReader;
+import org.jacoco.core.data.IExecutionDataVisitor;
+import org.jacoco.core.data.ISessionInfoVisitor;
 
+import com.mountainminds.eclemma.core.EclEmmaStatus;
 import com.mountainminds.eclemma.core.ICoverageSession;
 
 /**
@@ -30,25 +40,17 @@ public class CoverageSession extends PlatformObject implements ICoverageSession 
 
   private final String description;
   private final Collection<IPackageFragmentRoot> scope;
-  private final Collection<IPath> executiondatafiles;
+  private final IPath executiondatafile;
   private final ILaunchConfiguration launchconfiguration;
-
-  private CoverageSession(String description,
-      Collection<IPackageFragmentRoot> scope,
-      Collection<IPath> executiondatafiles,
-      ILaunchConfiguration launchconfiguration) {
-    this.description = description;
-    this.scope = scope;
-    this.executiondatafiles = executiondatafiles;
-    this.launchconfiguration = launchconfiguration;
-  }
 
   public CoverageSession(String description,
       Collection<IPackageFragmentRoot> scope, IPath executiondatafile,
       ILaunchConfiguration launchconfiguration) {
-    this(description, Collections
-        .unmodifiableCollection(new ArrayList<IPackageFragmentRoot>(scope)),
-        Collections.singleton(executiondatafile), launchconfiguration);
+    this.description = description;
+    this.scope = Collections
+        .unmodifiableCollection(new ArrayList<IPackageFragmentRoot>(scope));
+    this.executiondatafile = executiondatafile;
+    this.launchconfiguration = launchconfiguration;
   }
 
   // ICoverageSession implementation
@@ -61,23 +63,31 @@ public class CoverageSession extends PlatformObject implements ICoverageSession 
     return scope;
   }
 
-  public Collection<IPath> getExecutionDataFiles() {
-    return executiondatafiles;
-  }
-
   public ILaunchConfiguration getLaunchConfiguration() {
     return launchconfiguration;
   }
 
-  public ICoverageSession merge(ICoverageSession other, String description) {
-    final Collection<IPackageFragmentRoot> scope = new HashSet<IPackageFragmentRoot>(
-        this.scope);
-    scope.addAll(other.getScope());
-    final Collection<IPath> files = new HashSet<IPath>(this.executiondatafiles);
-    files.addAll(other.getExecutionDataFiles());
-    return new CoverageSession(description,
-        Collections.unmodifiableCollection(scope),
-        Collections.unmodifiableCollection(files), launchconfiguration);
+  public void readExecutionData(IExecutionDataVisitor executionDataVisitor,
+      ISessionInfoVisitor sessionInfoVisitor, IProgressMonitor monitor)
+      throws CoreException {
+    monitor.beginTask(CoreMessages.ReadingExecutionDataFile_task,
+        IProgressMonitor.UNKNOWN);
+    try {
+      final File f = executiondatafile.toFile();
+      final InputStream in = new BufferedInputStream(new FileInputStream(f));
+      final ExecutionDataReader reader = new ExecutionDataReader(in);
+      reader.setExecutionDataVisitor(executionDataVisitor);
+      reader.setSessionInfoVisitor(sessionInfoVisitor);
+      while (!monitor.isCanceled() && reader.read()) {
+        // nothing here
+      }
+      in.close();
+    } catch (IOException e) {
+      throw new CoreException(
+          EclEmmaStatus.EXEC_FILE_READ_ERROR.getStatus(
+              executiondatafile, e));
+    }
+    monitor.done();
   }
 
 }

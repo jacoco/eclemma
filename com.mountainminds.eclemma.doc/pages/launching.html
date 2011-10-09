@@ -69,13 +69,6 @@
   <a href="preferences.html">code coverage preferences</a>.   
 </p>
 
-<p>
-  <b>Note:</b> Source folders with the same output location can not be selected
-  separately. If you want to select them individually please specify a different
-  output location for each source folder. This can be done in the Java project
-  settings.
-</p>
-
 <h3>Coverage Data Collection</h3>
 
 <p>
@@ -83,56 +76,6 @@
   application has terminated on its own. If the Java VM is killed externally,
   e.g. with the Eclipse <i>Terminate</i> action, coverage results can not be
   shown.
-</p>
-
-<h3>In-place Instrumentation</h3>
-
-<p>
-  EclEmma tries not to touch your project's content. Therefore class files are
-  normally instrumented outside your project in a temporary folder. Optionally
-  class files can be instrumented in-place by selecting the corresponding check
-  box on the <i>Coverage</i> tab.
-</p>
-
-<table border="1" cellspacing="0" cellpadding="4">
-  <tr>
-    <td></td>
-    <td><b>Outside Instrumentation</b></td>
-    <td><b>In-place Instrumentation</b></td>
-  </tr>
-  <tr>
-    <td><b>Instrumentation</b></td>
-    <td>Instrumented classes will be saved in a temporary folder outside your project.</td>
-    <td>The compiled classes will be instrumented directly in your project.</td>
-  </tr>
-  <tr>
-    <td><b>Runtime Classpath</b></td>
-    <td>The classpath will be modified to include the locations of the instrumented classes.</td>
-    <td>The classpath will not be modified.</td>
-  </tr>
-  <tr>
-    <td><b>Binary Libraries</b></td>
-    <td>Binary libraries can also be analysed for coverage.</td>
-    <td>Binary libraries can not be analysed, as this would permanently modify them.</td>
-  </tr>
-  <tr>
-    <td><b>Supported Launch Types</b></td>
-    <td>Local Java application, JUnit test, TestNG test</td>
-    <td>Local Java application, Eclipse/RCP application, Equinox OSGi framework,
-        JUnit test, TestNG test, JUnit plug-in test, JUnit RAP test, SWTBot test</td>
-  </tr>
-</table>
-
-<p>
-  Programs that do not accept a Java classpath, i.e. using their own class
-  loading mechanisms, require in-place instrumentation.
-</p>
-
-<p>
-  <b>Warning:</b> In-place instrumentation will modify your class files.
-  Instrumented class files can not be used with launch modes other than
-  <i>Coverage</i>. Therefore a clean build is required after a coverage launch
-  with in-place instrumentation.
 </p>
 
 </body>

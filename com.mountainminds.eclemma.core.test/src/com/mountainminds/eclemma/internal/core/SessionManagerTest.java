@@ -12,21 +12,36 @@
 package com.mountainminds.eclemma.internal.core;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.debug.core.ILaunchConfigurationType;
+import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
+import org.eclipse.debug.core.ILaunchDelegate;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
+import org.jacoco.core.data.IExecutionDataVisitor;
+import org.jacoco.core.data.ISessionInfoVisitor;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import com.mountainminds.eclemma.core.ICoverageSession;
 import com.mountainminds.eclemma.core.ISessionListener;
@@ -37,13 +52,17 @@ import com.mountainminds.eclemma.core.ISessionManager;
  */
 public class SessionManagerTest {
 
+  @Rule
+  public TemporaryFolder folder = new TemporaryFolder();
+
   protected ISessionManager manager;
-  protected ISessionListener listener;
-  protected ISessionListener reflistener;
+  protected RecordingListener listener;
+  protected RecordingListener reflistener;
 
   @Before
   public void setup() throws Exception {
-    manager = new SessionManager();
+    final IPath path = Path.fromOSString(folder.getRoot().getAbsolutePath());
+    manager = new SessionManager(new ExecutionDataFiles(path));
     listener = new RecordingListener();
     manager.addSessionListener(listener);
     reflistener = new RecordingListener();
@@ -54,15 +73,17 @@ public class SessionManagerTest {
     ICoverageSession s0 = new DummySession();
     ICoverageSession s1 = new DummySession();
     ICoverageSession s2 = new DummySession();
+
     manager.addSession(s0, false, null);
     manager.addSession(s1, false, null);
     manager.addSession(s2, false, null);
-    ICoverageSession[] sessions = manager.getSessions();
-    assertEquals(3, sessions.length);
-    assertSame(s0, sessions[0]);
-    assertSame(s1, sessions[1]);
-    assertSame(s2, sessions[2]);
+
+    assertEquals(Arrays.asList(s0, s1, s2), manager.getSessions());
     assertNull(manager.getActiveSession());
+    reflistener.sessionAdded(s0);
+    reflistener.sessionAdded(s1);
+    reflistener.sessionAdded(s2);
+    assertEquals(reflistener, listener);
   }
 
   @Test
@@ -70,44 +91,62 @@ public class SessionManagerTest {
     ICoverageSession s0 = new DummySession();
     ICoverageSession s1 = new DummySession();
     ICoverageSession s2 = new DummySession();
+
     manager.addSession(s0, false, null);
     manager.addSession(s1, true, null);
     manager.addSession(s2, false, null);
-    ICoverageSession[] sessions = manager.getSessions();
-    assertEquals(3, sessions.length);
-    assertSame(s0, sessions[0]);
-    assertSame(s1, sessions[1]);
-    assertSame(s2, sessions[2]);
+
+    assertEquals(Arrays.asList(s0, s1, s2), manager.getSessions());
     assertSame(s1, manager.getActiveSession());
+    reflistener.sessionAdded(s0);
+    reflistener.sessionAdded(s1);
+    reflistener.sessionActivated(s1);
+    reflistener.sessionAdded(s2);
+    assertEquals(reflistener, listener);
   }
 
   @Test
   public void testAddSession3() {
     ICoverageSession s0 = new DummySession();
-    ICoverageSession s1 = new DummySession();
+
     manager.addSession(s0, false, null);
-    manager.addSession(s1, true, null);
+    manager.addSession(s0, false, null);
+
+    assertEquals(Arrays.asList(s0), manager.getSessions());
+    assertNull(manager.getActiveSession());
     reflistener.sessionAdded(s0);
-    reflistener.sessionAdded(s1);
-    reflistener.sessionActivated(s1);
     assertEquals(reflistener, listener);
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void testAddSession4() {
+    ICoverageSession s0 = new DummySession();
+
+    manager.addSession(s0, false, null);
+    manager.addSession(s0, true, null);
+
+    assertEquals(Arrays.asList(s0), manager.getSessions());
+    assertSame(s0, manager.getActiveSession());
+    reflistener.sessionAdded(s0);
+    reflistener.sessionActivated(s0);
+    assertEquals(reflistener, listener);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testAddSession5() {
     manager.addSession(null, false, null);
-    fail("NullPointerException expected.");
   }
 
   @Test
   public void testRemoveSession1() {
     ICoverageSession s0 = new DummySession();
     manager.addSession(s0, true, null);
+    listener.clear();
+
     manager.removeSession(s0);
-    assertEquals(0, manager.getSessions().length);
+
+    assertEquals(Arrays.asList(), manager.getSessions());
     assertNull(manager.getActiveSession());
-    reflistener.sessionAdded(s0);
-    reflistener.sessionActivated(s0);
     reflistener.sessionRemoved(s0);
     reflistener.sessionActivated(null);
     assertEquals(reflistener, listener);
@@ -117,37 +156,28 @@ public class SessionManagerTest {
   public void testRemoveSession2() {
     ICoverageSession s0 = new DummySession();
     ICoverageSession s1 = new DummySession();
-    manager.addSession(s0, false, null);
-    manager.addSession(s1, true, null);
+    manager.addSession(s0, true, null);
+    manager.addSession(s1, false, null);
+    listener.clear();
+
     manager.removeSession(s1);
-    ICoverageSession[] sessions = manager.getSessions();
-    assertEquals(1, sessions.length);
-    assertSame(s0, sessions[0]);
-    assertSame(s0, manager.getActiveSession());
-    reflistener.sessionAdded(s0);
-    reflistener.sessionAdded(s1);
-    reflistener.sessionActivated(s1);
+
+    assertEquals(Arrays.asList(s0), manager.getSessions());
     reflistener.sessionRemoved(s1);
-    reflistener.sessionActivated(s0);
     assertEquals(reflistener, listener);
   }
 
   @Test
   public void testRemoveSession3() {
-    Object key0 = new Object();
-    Object key1 = new Object();
     ICoverageSession s0 = new DummySession();
     ICoverageSession s1 = new DummySession();
-    manager.addSession(s0, false, key0);
-    manager.addSession(s1, true, key1);
-    manager.removeSession(key1);
-    ICoverageSession[] sessions = manager.getSessions();
-    assertEquals(1, sessions.length);
-    assertSame(s0, sessions[0]);
-    assertSame(s0, manager.getActiveSession());
-    reflistener.sessionAdded(s0);
-    reflistener.sessionAdded(s1);
-    reflistener.sessionActivated(s1);
+    manager.addSession(s0, false, null);
+    manager.addSession(s1, true, null);
+    listener.clear();
+
+    manager.removeSession(s1);
+
+    assertEquals(Arrays.asList(s0), manager.getSessions());
     reflistener.sessionRemoved(s1);
     reflistener.sessionActivated(s0);
     assertEquals(reflistener, listener);
@@ -157,13 +187,35 @@ public class SessionManagerTest {
   public void testRemoveSession4() {
     Object key0 = new Object();
     Object key1 = new Object();
+    ICoverageSession s0 = new DummySession();
+    ICoverageSession s1 = new DummySession();
+    manager.addSession(s0, false, key0);
+    manager.addSession(s1, true, key1);
+    listener.clear();
+
+    manager.removeSession(key1);
+
+    assertEquals(Arrays.asList(s0), manager.getSessions());
+    reflistener.sessionRemoved(s1);
+    reflistener.sessionActivated(s0);
+    assertEquals(reflistener, listener);
+  }
+
+  @Test
+  public void testRemoveSession5() {
+    Object key0 = new Object();
+    Object key1 = new Object();
     Object key2 = new Object();
     ICoverageSession s0 = new DummySession();
     ICoverageSession s1 = new DummySession();
     manager.addSession(s0, false, key0);
     manager.addSession(s1, true, key1);
+    listener.clear();
+
     manager.removeSession(key2);
-    assertEquals(2, manager.getSessions().length);
+
+    assertEquals(Arrays.asList(s0, s1), manager.getSessions());
+    assertEquals(reflistener, listener);
   }
 
   @Test
@@ -171,13 +223,30 @@ public class SessionManagerTest {
     ICoverageSession s0 = new DummySession();
     ICoverageSession s1 = new DummySession();
     manager.addSession(s0, false, null);
-    manager.addSession(s1, true, null);
+    manager.addSession(s1, false, null);
+    listener.clear();
+
     manager.removeAllSessions();
-    assertEquals(0, manager.getSessions().length);
+
+    assertEquals(Arrays.asList(), manager.getSessions());
     assertNull(manager.getActiveSession());
-    reflistener.sessionAdded(s0);
-    reflistener.sessionAdded(s1);
-    reflistener.sessionActivated(s1);
+    reflistener.sessionRemoved(s0);
+    reflistener.sessionRemoved(s1);
+    assertEquals(reflistener, listener);
+  }
+
+  @Test
+  public void testRemoveAllSessions2() {
+    ICoverageSession s0 = new DummySession();
+    ICoverageSession s1 = new DummySession();
+    manager.addSession(s0, false, null);
+    manager.addSession(s1, true, null);
+    listener.clear();
+
+    manager.removeAllSessions();
+
+    assertEquals(Arrays.asList(), manager.getSessions());
+    assertNull(manager.getActiveSession());
     reflistener.sessionRemoved(s0);
     reflistener.sessionRemoved(s1);
     reflistener.sessionActivated(null);
@@ -186,9 +255,7 @@ public class SessionManagerTest {
 
   @Test
   public void testGetSessions1() {
-    ICoverageSession[] sessions = manager.getSessions();
-    assertNotNull(sessions);
-    assertEquals(0, sessions.length);
+    assertEquals(Arrays.asList(), manager.getSessions());
   }
 
   @Test
@@ -200,31 +267,169 @@ public class SessionManagerTest {
     ICoverageSession s1 = new DummySession();
     manager.addSession(s0, false, key0);
     manager.addSession(s1, false, key1);
+
     assertEquals(s0, manager.getSession(key0));
     assertEquals(s1, manager.getSession(key1));
     assertNull(manager.getSession(key2));
   }
 
+  @Test
+  public void testActivateSession1() {
+    ICoverageSession s0 = new DummySession();
+    ICoverageSession s1 = new DummySession();
+    manager.addSession(s0, false, null);
+    listener.clear();
+
+    manager.activateSession(s1);
+
+    assertNull(manager.getActiveSession());
+    assertEquals(reflistener, listener);
+  }
+
+  @Test
+  public void testActivateSession2() {
+    ICoverageSession s0 = new DummySession();
+    manager.addSession(s0, true, null);
+    listener.clear();
+
+    manager.activateSession(s0);
+
+    assertSame(s0, manager.getActiveSession());
+    assertEquals(reflistener, listener);
+  }
+
+  @Test
+  public void testActivateSession3() {
+    ICoverageSession s0 = new DummySession();
+    manager.addSession(s0, false, null);
+    listener.clear();
+
+    manager.activateSession(s0);
+
+    assertSame(s0, manager.getActiveSession());
+    reflistener.sessionActivated(s0);
+    assertEquals(reflistener, listener);
+  }
+
+  @Test
+  public void testRefreshActivateSession1() {
+    manager.refreshActiveSession();
+
+    assertEquals(reflistener, listener);
+  }
+
+  @Test
+  public void testRefreshActivateSession2() {
+    ICoverageSession s0 = new DummySession();
+    manager.addSession(s0, true, null);
+    listener.clear();
+
+    manager.refreshActiveSession();
+
+    reflistener.sessionActivated(s0);
+    assertEquals(reflistener, listener);
+  }
+
+  @Test
+  public void testAddSessionListener1() {
+    // Add listener a second time
+    manager.addSessionListener(listener);
+
+    ICoverageSession s0 = new DummySession();
+    manager.addSession(s0, false, null);
+    // Events are only sent once to the listener
+    reflistener.sessionAdded(s0);
+    assertEquals(reflistener, listener);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testAddSessionListener2() {
+    manager.addSessionListener(null);
+  }
+
+  @Test
+  public void testRemoveSessionListener1() {
+    manager.removeSessionListener(listener);
+
+    ICoverageSession s0 = new DummySession();
+    manager.addSession(s0, false, null);
+    // No events recorded any more
+    assertEquals(reflistener, listener);
+  }
+
+  @Test
+  public void testMergeSession1() throws Exception {
+    ICoverageSession s0 = new DummySession();
+    ICoverageSession s1 = new DummySession();
+    ICoverageSession s2 = new DummySession();
+    manager.addSession(s0, false, null);
+    manager.addSession(s1, false, null);
+    manager.addSession(s2, false, null);
+    listener.clear();
+
+    final ICoverageSession m0 = manager.mergeSessions(Arrays.asList(s0, s1),
+        "Merged", new NullProgressMonitor());
+
+    assertEquals("Merged", m0.getDescription());
+    assertNull(m0.getLaunchConfiguration());
+    assertEquals(Arrays.asList(s2, m0), manager.getSessions());
+    assertEquals(m0, manager.getActiveSession());
+    reflistener.sessionAdded(m0);
+    reflistener.sessionActivated(m0);
+    reflistener.sessionRemoved(s0);
+    reflistener.sessionRemoved(s1);
+    assertEquals(reflistener, listener);
+  }
+
+  @Test
+  public void testMergeSession2() throws Exception {
+    ILaunchConfiguration launch = new DummyLaunchConfiguration();
+    ICoverageSession s0 = new DummySession(launch);
+    ICoverageSession s1 = new DummySession(launch);
+    manager.addSession(s0, false, null);
+    manager.addSession(s1, false, null);
+    listener.clear();
+
+    final ICoverageSession m0 = manager.mergeSessions(Arrays.asList(s0, s1),
+        "Merged", new NullProgressMonitor());
+
+    assertEquals("Merged", m0.getDescription());
+    assertSame(launch, m0.getLaunchConfiguration());
+    assertEquals(Arrays.asList(m0), manager.getSessions());
+    assertEquals(m0, manager.getActiveSession());
+    reflistener.sessionAdded(m0);
+    reflistener.sessionActivated(m0);
+    reflistener.sessionRemoved(s0);
+    reflistener.sessionRemoved(s1);
+    assertEquals(reflistener, listener);
+  }
+
   private static class DummySession implements ICoverageSession {
+
+    private final ILaunchConfiguration launch;
+
+    DummySession(ILaunchConfiguration launch) {
+      this.launch = launch;
+    }
+
+    DummySession() {
+      this(null);
+    }
 
     public String getDescription() {
       return toString();
     }
 
     public ILaunchConfiguration getLaunchConfiguration() {
-      return null;
+      return launch;
     }
 
     public Collection<IPackageFragmentRoot> getScope() {
       return Collections.emptyList();
     }
 
-    public Collection<IPath> getExecutionDataFiles() {
-      return Collections.emptyList();
-    }
-
-    public ICoverageSession merge(ICoverageSession other, String description) {
-      return new DummySession();
+    public void readExecutionData(IExecutionDataVisitor executionDataVisitor,
+        ISessionInfoVisitor sessionInfoVisitor, IProgressMonitor monitor) {
     }
 
     public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
@@ -233,6 +438,148 @@ public class SessionManagerTest {
 
     public String toString() {
       return "Session@" + System.identityHashCode(this);
+    }
+
+  }
+
+  private static class DummyLaunchConfiguration implements ILaunchConfiguration {
+
+    public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
+      return null;
+    }
+
+    public boolean contentsEqual(ILaunchConfiguration configuration) {
+      return false;
+    }
+
+    public ILaunchConfigurationWorkingCopy copy(String name)
+        throws CoreException {
+      return null;
+    }
+
+    public void delete() throws CoreException {
+    }
+
+    public boolean exists() {
+      return false;
+    }
+
+    public boolean getAttribute(String attributeName, boolean defaultValue)
+        throws CoreException {
+      return false;
+    }
+
+    public int getAttribute(String attributeName, int defaultValue)
+        throws CoreException {
+      return 0;
+    }
+
+    public List<?> getAttribute(String attributeName,
+        @SuppressWarnings("rawtypes") List defaultValue) throws CoreException {
+      return null;
+    }
+
+    public Set<?> getAttribute(String attributeName,
+        @SuppressWarnings("rawtypes") Set defaultValue) throws CoreException {
+      return null;
+    }
+
+    public Map<?, ?> getAttribute(String attributeName,
+        @SuppressWarnings("rawtypes") Map defaultValue) throws CoreException {
+      return null;
+    }
+
+    public String getAttribute(String attributeName, String defaultValue)
+        throws CoreException {
+      return null;
+    }
+
+    public Map<?, ?> getAttributes() throws CoreException {
+      return null;
+    }
+
+    public String getCategory() throws CoreException {
+      return null;
+    }
+
+    public IFile getFile() {
+      return null;
+    }
+
+    public IPath getLocation() {
+      return null;
+    }
+
+    public IResource[] getMappedResources() throws CoreException {
+      return null;
+    }
+
+    public String getMemento() throws CoreException {
+      return null;
+    }
+
+    public String getName() {
+      return null;
+    }
+
+    public Set<?> getModes() throws CoreException {
+      return null;
+    }
+
+    public ILaunchDelegate getPreferredDelegate(
+        @SuppressWarnings("rawtypes") Set modes) throws CoreException {
+      return null;
+    }
+
+    public ILaunchConfigurationType getType() throws CoreException {
+      return null;
+    }
+
+    public ILaunchConfigurationWorkingCopy getWorkingCopy()
+        throws CoreException {
+      return null;
+    }
+
+    public boolean hasAttribute(String attributeName) throws CoreException {
+      return false;
+    }
+
+    public boolean isLocal() {
+      return false;
+    }
+
+    public boolean isMigrationCandidate() throws CoreException {
+      return false;
+    }
+
+    public boolean isWorkingCopy() {
+      return false;
+    }
+
+    public ILaunch launch(String mode, IProgressMonitor monitor)
+        throws CoreException {
+      return null;
+    }
+
+    public ILaunch launch(String mode, IProgressMonitor monitor, boolean build)
+        throws CoreException {
+      return null;
+    }
+
+    public ILaunch launch(String mode, IProgressMonitor monitor, boolean build,
+        boolean register) throws CoreException {
+      return null;
+    }
+
+    public void migrate() throws CoreException {
+    }
+
+    public boolean supportsMode(String mode) throws CoreException {
+      return false;
+    }
+
+    public boolean isReadOnly() {
+      return false;
     }
 
   }
@@ -270,6 +617,10 @@ public class SessionManagerTest {
 
     public String toString() {
       return l.toString();
+    }
+
+    public void clear() {
+      l.clear();
     }
 
   }

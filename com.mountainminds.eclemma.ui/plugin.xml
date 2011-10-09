@@ -470,11 +470,6 @@
             code="5101"
             id="com.mountainminds.eclemma.ui.noCoverageDataHandler"
             plugin="com.mountainminds.eclemma.core"/>
-      <statusHandler
-            class="com.mountainminds.eclemma.internal.ui.launching.NoInstrumentedClassesHandler"
-            code="5102"
-            id="com.mountainminds.eclemma.ui.noInstrumentedClassesHandler"
-            plugin="com.mountainminds.eclemma.core"/>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">
@@ -493,6 +488,7 @@
    <extension
          point="org.eclipse.ui.exportWizards">
       <wizard
+            category="org.eclipse.jdt.ui.Java"
             class="com.mountainminds.eclemma.internal.ui.wizards.SessionExportWizard"
             icon="$nl$/icons/full/etool16/session_export.gif"
             id="com.mountainminds.eclemma.ui.sessionExportWizard"

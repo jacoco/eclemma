@@ -58,9 +58,8 @@ final class PackageFragementRootAnalyzer {
     try {
       analyzer.analyzeAll(path.toFile());
     } catch (IOException e) {
-      // TODO wrong status info
-      throw new CoreException(
-          EclEmmaStatus.METADATA_FILE_READ_ERROR.getStatus(e));
+      throw new CoreException(EclEmmaStatus.CLASS_FILE_READ_ERROR.getStatus(
+          path, e));
     }
 
     return new AnalyzedNodes(builder.getClasses(), builder.getSourceFiles());

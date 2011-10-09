@@ -17,7 +17,11 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.wizard.WizardPage;
@@ -32,6 +36,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
@@ -39,7 +44,7 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
 
 import com.mountainminds.eclemma.core.CoverageTools;
 import com.mountainminds.eclemma.core.ICoverageSession;
-import com.mountainminds.eclemma.core.ISessionExporter;
+import com.mountainminds.eclemma.core.ISessionExporter.ExportFormat;
 import com.mountainminds.eclemma.internal.ui.ContextHelp;
 import com.mountainminds.eclemma.internal.ui.UIMessages;
 
@@ -58,7 +63,7 @@ public class SessionExportPage1 extends WizardPage {
   private static final String STORE_OPENREPORT = STORE_PREFIX + "openreport"; //$NON-NLS-1$
 
   private TableViewer sessionstable;
-  private Combo formatcombo;
+  private ComboViewer formatcombo;
   private Combo destinationcombo;
   private Button opencheckbox;
 
@@ -101,25 +106,29 @@ public class SessionExportPage1 extends WizardPage {
     parent.setLayout(new GridLayout(3, false));
     new Label(parent, SWT.NONE)
         .setText(UIMessages.ExportReportPage1Format_label);
-    formatcombo = new Combo(parent, SWT.READ_ONLY);
-    formatcombo.add(UIMessages.ExportReportPage1HTMLFormat_value);
-    formatcombo.add(UIMessages.ExportReportPage1XMLFormat_value);
-    formatcombo.add(UIMessages.ExportReportPage1TextFormat_value);
-    formatcombo.add(UIMessages.ExportReportPage1EMMAFormat_value);
-    formatcombo.addSelectionListener(new SelectionAdapter() {
-      public void widgetSelected(SelectionEvent e) {
-        // Adjust the extension to the new format
+    formatcombo = new ComboViewer(parent, SWT.READ_ONLY);
+    formatcombo.setContentProvider(new ArrayContentProvider());
+    formatcombo.setLabelProvider(new LabelProvider() {
+      @Override
+      public String getText(Object element) {
+        return ((ExportFormat) element).getLabel();
+      }
+    });
+    formatcombo.setInput(ExportFormat.values());
+    formatcombo.addSelectionChangedListener(new ISelectionChangedListener() {
+      public void selectionChanged(SelectionChangedEvent event) {
         IPath path = Path.fromOSString(destinationcombo.getText());
         path = path.removeFileExtension();
-        String ext = ISessionExporter.DEFAULT_EXTENSIONS[formatcombo
-            .getSelectionIndex()];
-        path = path.addFileExtension(ext);
+        final ExportFormat format = getExportFormat();
+        if (!format.isFolderOutput()) {
+          path = path.addFileExtension(format.getFileExtension());
+        }
         destinationcombo.setText(path.toOSString());
       }
     });
     GridData gd = new GridData(GridData.FILL_HORIZONTAL);
     gd.horizontalSpan = 2;
-    formatcombo.setLayoutData(gd);
+    formatcombo.getControl().setLayoutData(gd);
     new Label(parent, SWT.NONE)
         .setText(UIMessages.ExportReportPage1Destination_label);
     destinationcombo = new Combo(parent, SWT.BORDER);
@@ -136,22 +145,35 @@ public class SessionExportPage1 extends WizardPage {
     setButtonLayoutData(browsebutton);
     browsebutton.addSelectionListener(new SelectionAdapter() {
       public void widgetSelected(SelectionEvent e) {
-        openBrowseDialog();
+        if (getExportFormat().isFolderOutput()) {
+          openFolderDialog();
+        } else {
+          openFileDialog();
+        }
       }
     });
     update();
   }
 
-  private void openBrowseDialog() {
+  private void openFileDialog() {
     FileDialog fd = new FileDialog(getShell(), SWT.SAVE);
     fd.setText(UIMessages.ExportReportPage1BrowseDialog_title);
     fd.setFileName(destinationcombo.getText());
-    String ext = ISessionExporter.DEFAULT_EXTENSIONS[formatcombo
-        .getSelectionIndex()];
+    String ext = getExportFormat().getFileExtension();
     fd.setFilterExtensions(new String[] { "*." + ext, "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
     String file = fd.open();
     if (file != null) {
       destinationcombo.setText(file);
+    }
+  }
+
+  private void openFolderDialog() {
+    final DirectoryDialog fd = new DirectoryDialog(getShell(), SWT.NONE);
+    fd.setText(UIMessages.ExportReportPage1BrowseDialog_title);
+    fd.setFilterPath(destinationcombo.getText());
+    final String folder = fd.open();
+    if (folder != null) {
+      destinationcombo.setText(folder);
     }
   }
 
@@ -168,23 +190,28 @@ public class SessionExportPage1 extends WizardPage {
       setPageComplete(false);
       return;
     }
-    // the destination must be a file and must be in a existing directory
-    File f = new File(getDestination());
-    File p = f.getParentFile();
-    if (f.isDirectory() || (p != null && !p.isDirectory())) {
-      setErrorMessage(UIMessages.ExportReportPage1InvalidDestination_message);
-      setPageComplete(false);
-      return;
-    }
-    // the extension should correspond to the report type
-    String exta = Path.fromOSString(getDestination()).getFileExtension();
-    String exte = ISessionExporter.DEFAULT_EXTENSIONS[getReportFormat()];
-    if (!exte.equalsIgnoreCase(exta)) {
-      setMessage(
-          NLS.bind(UIMessages.ExportReportPage1WrongExtension_message, exte),
-          WARNING);
-      setPageComplete(true);
-      return;
+    final ExportFormat format = getExportFormat();
+    if (format.isFolderOutput()) {
+
+    } else {
+      // the destination must be a file and must be in a existing directory
+      File f = new File(getDestination());
+      File p = f.getParentFile();
+      if (f.isDirectory() || (p != null && !p.isDirectory())) {
+        setErrorMessage(UIMessages.ExportReportPage1InvalidDestination_message);
+        setPageComplete(false);
+        return;
+      }
+      // the extension should correspond to the report type
+      String exta = Path.fromOSString(getDestination()).getFileExtension();
+      String exte = format.getFileExtension();
+      if (!exte.equalsIgnoreCase(exta)) {
+        setMessage(
+            NLS.bind(UIMessages.ExportReportPage1WrongExtension_message, exte),
+            WARNING);
+        setPageComplete(true);
+        return;
+      }
     }
     setErrorMessage(null);
     setMessage(null);
@@ -193,18 +220,20 @@ public class SessionExportPage1 extends WizardPage {
 
   protected void restoreWidgetValues() {
     IDialogSettings settings = getDialogSettings();
+    ExportFormat format;
     try {
-      formatcombo.select(settings.getInt(STORE_FORMAT));
-    } catch (NumberFormatException nfe) {
-      formatcombo.select(0);
+      format = ExportFormat.valueOf(settings.get(STORE_FORMAT));
+    } catch (IllegalArgumentException e) {
+      format = ExportFormat.HTML;
     }
+    formatcombo.setSelection(new StructuredSelection(format));
     ComboHistory.restore(settings, STORE_DESTINATIONS, destinationcombo);
     opencheckbox.setSelection(settings.getBoolean(STORE_OPENREPORT));
   }
 
   public void saveWidgetValues() {
     IDialogSettings settings = getDialogSettings();
-    settings.put(STORE_FORMAT, formatcombo.getSelectionIndex());
+    settings.put(STORE_FORMAT, getExportFormat().name());
     ComboHistory.save(settings, STORE_DESTINATIONS, destinationcombo);
     settings.put(STORE_OPENREPORT, opencheckbox.getSelection());
   }
@@ -215,8 +244,10 @@ public class SessionExportPage1 extends WizardPage {
     return (ICoverageSession) sel.getFirstElement();
   }
 
-  public int getReportFormat() {
-    return formatcombo.getSelectionIndex();
+  public ExportFormat getExportFormat() {
+    final IStructuredSelection selection = (IStructuredSelection) formatcombo
+        .getSelection();
+    return (ExportFormat) selection.getFirstElement();
   }
 
   public String getDestination() {

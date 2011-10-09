@@ -15,10 +15,10 @@
 <h2>Source Code Annotation</h2>
 
 <p>
-  The line coverage of the active coverage <a href="sessions.html">session</a>
-  is also directly displayed in the Java source editors. This works for Java
-  source files contained in the project as well as source code attached to
-  binary libraries.
+  Line coverage and branch coverage of the active coverage
+  <a href="sessions.html">session</a> is also directly displayed in the Java
+  source editors. This works for Java source files contained in the project as
+  well as source code attached to binary libraries.
 </p>
 
 <p>
@@ -26,14 +26,25 @@
 </p>
 
 <p>
-  Source lines corresponding to compiled Java instructions get the following
-  color code:
+  Source lines containing executable code get the following color code:
 </p>
 
 <ul>
   <li>green for fully covered lines,</li>
-  <li>yellow for partly covered lines and</li>
+  <li>yellow for partly covered lines (some instructions or branches missed) and</li>
   <li>red for lines that have not been executed at all.</li>
+</ul>
+
+<p>
+  In addition colored diamonds are shown at the left for lines containing
+  decission branches. The colors for the diamonds have a similar semantic
+  than the line highlighting colors: 
+</p>
+
+<ul>
+  <li>green for fully covered branches,</li>
+  <li>yellow for partly covered branches and</li>
+  <li>red when no branches in the particular line have been executed.</li>
 </ul>
 
 <p> 

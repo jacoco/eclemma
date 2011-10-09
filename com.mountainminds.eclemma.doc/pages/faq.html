@@ -16,11 +16,9 @@
 <h3>Usage</h3>
 <ul>
   <li><a href="#usage01">How can I remove the coverage coloring from the Java editors again?</a></li>
-  <li><a href="#usage02">Why can't I select source folders separately for instrumentation?</a></li>
   <li><a href="#usage03">How can I run {whateverapplication} with EclEmma?</a></li>
-  <li><a href="#usage04">Does EclEmma support automated Ant builds?</a></li>
+  <li><a href="#usage04">Does EclEmma support automated Ant or Maven builds?</a></li>
   <li><a href="#usage05">How do I change the source code highlighting?</a></li>
-  <li><a href="#usage06">Why can't I uncheck in-place instrumentation in the launch dialog?</a></li>
   <li><a href="#usage07">Do I need source code to use EclEmma?</a></li>
   <li><a href="#usage08">Why is this line yellow?</a></li>
 </ul>
@@ -34,12 +32,6 @@
   <li><a href="#trouble05">Why are JUnit4 test cases with expected exceptions shown as not covered?</a></li>
 </ul>
 
-<h3>Installation</h3>
-<ul>
-  <li><a href="#install01">Does EclEmma work with IBM Rational products?</a></li>
-</ul>
-
-
 
 <h2>Usage</h2>
 
@@ -50,35 +42,24 @@
   <i>Coverage</i> view's toolbar.
 </p>
 
-<h3><a name="usage02"></a>Why can't I select source folders separately for instrumentation?</h3>
-<p>
-  EMMA works on Java class files. If source folders have the same output
-  location, only all or none of them can be selected for instrumentation. If you
-  want to select them individually please specify a different output location
-  for each source folder. This can be done in the <i>Java Build Path</i>
-  settings in the project properties. Check <i>Allow output folders</i> on the
-  <i>Source</i> tab and specify different output folders for your source folders
-  (for example bin-src/, bin-test/ etc.).
-</p>
-
 <h3><a name="usage03"></a>How can I run {whateverapplication} with EclEmma?</h3>
 <p>
   EclEmma is designed for Java programs launched within Eclipse. Java
-  applications that run in a different environment may be analyzed with the
-  <a class="extern" href="http://emma.sourceforge.net/">EMMA library</a>
-  directly. There are different supported launch types, other plug-ins may
-  define additional launch types which are not supported by EclEmma. Check user
-  documentation for currently supported launch types.
+  applications that run in a different environment may be directly analyzed with
+  <a class="extern" href="http://www.eclemma.org/jacoco">JaCoCo</a> using for
+  example the Ant or Maven integrations. There are different supported launch
+  types, other plug-ins may define additional launch types which are not
+  supported by EclEmma. Check user  documentation for currently supported launch types.
 </p>
 
-<h3><a name="usage04"></a>Does EclEmma support automated Ant builds?</h3>
+<h3><a name="usage04"></a>Does EclEmma support automated Ant or Maven builds?</h3>
 <p>
-  EclEmma is a Eclipse integration of the EMMA code coverage tool. EMMA itself
-  comes with a set of <a class="extern" href="http://emma.sourceforge.net/docs.html">Ant tasks</a>
-  for automated builds. If your test target is a Eclips/OSGi application 
-  (e.g. JUnit plug-in tests) the
-  <a href="http://www.eclemma.org/devdoc/headless.html">EclEmma Equinox Runtime</a>
-  easily adds code coverage. 
+  EclEmma is a Eclipse integration of the
+  <a class="extern" href="http://www.eclemma.org/jacoco">JaCoCo</a> code
+  coverage tool. JaCoCo comes with a set of
+  <a class="extern" href="http://www.eclemma.org/jacoco/trunk/doc/ant.html">Ant tasks</a>
+  and <a class="extern" href="http://www.eclemma.org/jacoco/trunk/doc/maven.html">Maven goals</a>
+  for automated builds. 
 </p>
 
 <h3><a name="usage05"></a>How do I change the source code highlighting?</h3>
@@ -88,13 +69,6 @@
   &rarr; Annotations</i>. You can modify the highlighting style and color or use
   the vertical rulers instead.
 </p>
-
-<h3><a name="usage06"></a>Why can't I uncheck in-place instrumentation in the launch dialog?</h3>
-<p>
-  Some launch types require in-place instrumentation as there is no other way
-  to get the instrumented classes into the classpath. In this case the checkbox
-  is disabled and can not be unchecked.
-</p> 
 
 <h3><a name="usage07"></a>Do I need source code to use EclEmma?</h3>
 <p>
@@ -110,11 +84,11 @@
 <h3><a name="usage08"></a>Why is this line yellow?</h3>
 <p>
   EclEmma annotates all lines which are partly covered in yellow. Partly covered
-  means that not all of the basic blocks associated with this line have been
-  executed during the coverage session. In some cases it is not obvious why the
-  Java compiler creates multiple blocks for a particular line of source code.
-  Please see <a class="extern" href="http://emma.sourceforge.net/faq.html#q.fractional.examples">EMMA's
-  FAQ entry about partially covered lines</a> for details. 
+  means that not all instructions and branches associated with this line have
+  been executed during the coverage session. In some cases it is not obvious why
+  the Java compiler creates extra byte code for a particular line of source code.
+  Such <a class="extern" href="http://sourceforge.net/apps/trac/eclemma/wiki/FilteringOptions">situations</a>
+  might be filtered by future versions of JaCoCo/EclEmma. 
 </p>
 
 <h2>Troubleshooting</h2>
@@ -130,24 +104,15 @@
   <li>The Java process did not terminate properly, e.g. has been manually killed
   with the <i>Terminate</i> button. Make sure your program terminates on its
   own.</li>
-  <li>Your project contains the emma.jar file file in its Java path or contains
-  a emma.properties file. To make EclEmma work properly, your project must not
-  contain any EMMA specific resources or settings.</li>
-  <li>Your launch configuration defines EMMA specific system properties. Make
-  sure no such definitions are made.</li>
-  <li>There is a <code>emma.jar</code> file in your JDK's <code>lib/ext/</code>
-  folder. Please remove this and restart Eclipse.</li>
 </ul>
 
 <h3><a name="trouble02"></a>Code with exceptions shows no coverage. Why?</h3>
 <p>
-  The underlying EMMA library works on so called <i>basic blocks</i>. A basic
-  block is a sequence of instructions without any jumps or jump targets. A
-  basic block is marked as executed when it reaches its last instruction. In
-  case of exceptions a basic block is aborted somewhere in the middle and not
-  marked as executed. See
-  <a class="extern" href="http://emma.sourceforge.net/faq.html#q.blockcoverage">EMMA's FAQ</a>
-  for details. 
+  The underlying JaCoCo code coverage library works with so called <i>probes</i>.
+  Probes are inserted into the control flow at certain positions. Code is
+  considered as executed when a subsequent probe has been executed. In case of
+  exceptions such a sequence of instructions is aborted somewhere in the middle
+  and not marked as executed.
 </p>
 
 <h3><a name="trouble03"></a>My application does not run with EclEmma!</h3>
@@ -169,20 +134,12 @@
 
 <h3><a name="trouble05">Why are JUnit4 test cases with expected exceptions shown as not covered?</a></h3>
 <p>
-  JUnit4 test cases with expected exceptions are shown as not covered even though
-  they were executed. The reason for this is that underlying coverage library EMMA
-  only considers block as executed when they reach their last instruction. For
-  successful test cases marked with <code>@Test{expected=...}</code> this is not
-  the case. See also <a href="#trouble02">"Code with exceptions shows no coverage. Why?"</a>.
-</p>
-
-<h2>Installation</h2>
-
-<h3><a name="install01">Does EclEmma work with IBM Rational products?</a></h3>
-<p>
-  Yes, it has been confirmed that EclEmma works with RAD 7.0. The IBM Rational
-  6.0 products will <b>not</b> work with EclEmma, as they are based on Eclipse
-  3.0, EclEmma requires at least Eclipse 3.1.
+  JUnit4 test cases with expected exceptions are shown as not covered even
+  though they were executed. The reason for this is that underlying JaCoCo code
+  coverage library only considers code as executed when certain probes are
+  executed. For successful test cases marked with <code>@Test{expected=...}</code>
+  this is not the case. See also <a href="#trouble02">"Code with exceptions
+  shows no coverage. Why?"</a>.
 </p>
 
 </body>

@@ -13,10 +13,14 @@ package com.mountainminds.eclemma.core;
 
 import java.util.Collection;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
+import org.jacoco.core.data.IExecutionDataVisitor;
+import org.jacoco.core.data.ISessionInfoVisitor;
 
 /**
  * A coverage session is the result of a coverage run (or multiple merged runs)
@@ -52,12 +56,18 @@ public interface ICoverageSession extends IAdaptable {
   public Collection<IPackageFragmentRoot> getScope();
 
   /**
-   * Returns a collection of absolute paths to the JaCoCo execution data files
-   * that belong to this session.
+   * Reads all stored execution data in the given visitors.
    * 
-   * @return list of absolute paths to the JaCoCo execution data files
+   * @param executionDataVisitor
+   *          visitor for execution data
+   * @param visitor
+   *          for session information
+   * @param monitor
+   *          progress monitor
    */
-  public Collection<IPath> getExecutionDataFiles();
+  public void readExecutionData(IExecutionDataVisitor executionDataVisitor,
+      ISessionInfoVisitor sessionInfoVisitor, IProgressMonitor monitor)
+      throws CoreException;
 
   /**
    * If this session was the result of a Eclipse launch this method returns the
@@ -66,17 +76,5 @@ public interface ICoverageSession extends IAdaptable {
    * @return launch configuration or <code>null</code>
    */
   public ILaunchConfiguration getLaunchConfiguration();
-
-  /**
-   * Merges this session with the given session creating a new session with the
-   * given description.
-   * 
-   * @param other
-   *          Session to merge with
-   * @param description
-   *          Name of the new session
-   * @return New session object merged from this and the given session
-   */
-  public ICoverageSession merge(ICoverageSession other, String description);
 
 }

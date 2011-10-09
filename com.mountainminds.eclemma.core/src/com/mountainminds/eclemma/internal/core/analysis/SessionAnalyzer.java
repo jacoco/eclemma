@@ -11,15 +11,11 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.core.analysis;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jdt.core.ICompilationUnit;
@@ -32,12 +28,12 @@ import org.jacoco.core.analysis.IBundleCoverage;
 import org.jacoco.core.analysis.IClassCoverage;
 import org.jacoco.core.analysis.IPackageCoverage;
 import org.jacoco.core.analysis.ISourceFileCoverage;
-import org.jacoco.core.data.ExecutionDataReader;
+import org.jacoco.core.data.ExecutionData;
 import org.jacoco.core.data.ExecutionDataStore;
+import org.jacoco.core.data.SessionInfo;
 import org.jacoco.core.data.SessionInfoStore;
 import org.jacoco.core.internal.analysis.BundleCoverageImpl;
 
-import com.mountainminds.eclemma.core.EclEmmaStatus;
 import com.mountainminds.eclemma.core.ICoverageSession;
 import com.mountainminds.eclemma.core.analysis.IJavaModelCoverage;
 import com.mountainminds.eclemma.internal.core.CoreMessages;
@@ -53,29 +49,26 @@ public class SessionAnalyzer {
 
   private JavaModelCoverage modelcoverage;
 
+  private ExecutionDataStore executiondatastore;
+
+  private SessionInfoStore sessioninfostore;
+
   public IJavaModelCoverage processSession(ICoverageSession session,
       IProgressMonitor monitor) throws CoreException {
     PERFORMANCE.startTimer();
     PERFORMANCE.startMemoryUsage();
     modelcoverage = new JavaModelCoverage();
-    final Collection<IPath> executiondatafiles = session.getExecutionDataFiles();
     final Collection<IPackageFragmentRoot> roots = session.getScope();
-    monitor
-        .beginTask(
-            NLS.bind(CoreMessages.AnalyzingCoverageSession_task,
-                session.getDescription()),
-            executiondatafiles.size() + roots.size());
-    final ExecutionDataStore executiondata = new ExecutionDataStore();
-    for (final IPath file : executiondatafiles) {
-      if (monitor.isCanceled()) {
-        break;
-      }
-      loadExecutionDataFile(executiondata, file);
-      monitor.worked(1);
-    }
+    monitor.beginTask(
+        NLS.bind(CoreMessages.AnalyzingCoverageSession_task,
+            session.getDescription()), 1 + roots.size());
+    executiondatastore = new ExecutionDataStore();
+    sessioninfostore = new SessionInfoStore();
+    session.readExecutionData(executiondatastore, sessioninfostore,
+        new SubProgressMonitor(monitor, 1));
 
     final PackageFragementRootAnalyzer analyzer = new PackageFragementRootAnalyzer(
-        executiondata);
+        executiondatastore);
 
     for (final IPackageFragmentRoot root : roots) {
       if (monitor.isCanceled()) {
@@ -90,24 +83,12 @@ public class SessionAnalyzer {
     return modelcoverage;
   }
 
-  private void loadExecutionDataFile(ExecutionDataStore store, IPath path)
-      throws CoreException {
-    try {
-      File f = path.toFile();
-      if (f.exists()) {
-        final InputStream in = new FileInputStream(f);
-        final ExecutionDataReader reader = new ExecutionDataReader(in);
-        reader.setExecutionDataVisitor(store);
-        reader.setSessionInfoVisitor(new SessionInfoStore());
-        while (reader.read()) {
-          // nothing here
-        }
-        in.close();
-      }
-    } catch (IOException e) {
-      throw new CoreException(
-          EclEmmaStatus.COVERAGEDATA_FILE_READ_ERROR.getStatus(path, e));
-    }
+  public List<SessionInfo> getSessionInfos() {
+    return sessioninfostore.getInfos();
+  }
+
+  public Collection<ExecutionData> getExecutionData() {
+    return executiondatastore.getContents();
   }
 
   private void processPackageFragmentRoot(IPackageFragmentRoot root,

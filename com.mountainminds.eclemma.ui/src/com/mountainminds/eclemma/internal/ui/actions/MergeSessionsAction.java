@@ -11,11 +11,17 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.ui.actions;
 
+import java.lang.reflect.InvocationTargetException;
 import java.text.MessageFormat;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ui.IWorkbenchWindow;
 
 import com.mountainminds.eclemma.core.CoverageTools;
@@ -43,23 +49,36 @@ public class MergeSessionsAction extends Action {
   }
 
   public void run() {
-    ISessionManager sm = CoverageTools.getSessionManager();
-    ICoverageSession[] sessions = sm.getSessions();
+    final ISessionManager sm = CoverageTools.getSessionManager();
+    List<ICoverageSession> sessions = sm.getSessions();
     String descr = UIMessages.MergeSessionsDialogDescriptionDefault_value;
     descr = MessageFormat.format(descr, new Object[] { new Date() });
-    MergeSessionsDialog d = new MergeSessionsDialog(window.getShell(),
+    final MergeSessionsDialog d = new MergeSessionsDialog(window.getShell(),
         sessions, descr);
     if (d.open() == IDialogConstants.OK_ID) {
-      Object[] result = d.getResult();
-      ICoverageSession merged = (ICoverageSession) result[0];
-      for (final Object r : result) {
-        merged = merged.merge((ICoverageSession) r, d.getDescription());
-      }
-      sm.addSession(merged, true, null);
-      for (final Object r : result) {
-        sm.removeSession((ICoverageSession) r);
+      try {
+        window.run(true, true,
+            createJob(sm, d.getSessions(), d.getDescription()));
+      } catch (InvocationTargetException e) {
+        EclEmmaUIPlugin.log(e.getTargetException());
+      } catch (InterruptedException e) {
+        // ignore
       }
     }
+  }
+
+  private IRunnableWithProgress createJob(final ISessionManager sm,
+      final Collection<ICoverageSession> sessions, final String description) {
+    return new IRunnableWithProgress() {
+      public void run(IProgressMonitor monitor)
+          throws InvocationTargetException, InterruptedException {
+        try {
+          sm.mergeSessions(sessions, description, monitor);
+        } catch (CoreException e) {
+          EclEmmaUIPlugin.log(e);
+        }
+      }
+    };
   }
 
 }

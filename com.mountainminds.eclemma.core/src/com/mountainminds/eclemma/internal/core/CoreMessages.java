@@ -28,21 +28,27 @@ public class CoreMessages extends NLS {
   public static String AnalyzingCoverageSession_task;
   public static String ExportingSession_task;
   public static String ImportingSession_task;
-  public static String ExtractingSourceArchive_task;
+  public static String ReadingExecutionDataFile_task;
+  public static String MergingCoverageSessions_task;
 
   public static String StatusNO_LOCAL_AGENTJAR_ERROR_message;
   public static String StatusID_CREATION_ERROR_message;
   public static String StatusUNKOWN_LAUNCH_TYPE_ERROR_message;
   public static String StatusINVALID_CLASSPATH_PROVIDER_CONTEXT_ERROR_message;
   public static String StatusMISSING_LAUNCH_INFO_ERROR_message;
-  public static String StatusEXECFILE_ERROR_message;
-  public static String StatusCOVERAGEDATA_FILE_READ_ERROR_message;
-  public static String StatusMETADATA_FILE_READ_ERROR_message;
-  public static String StatusSOURCE_EXTRACTION_ERROR_message;
+  public static String StatusEXEC_FILE_CREATE_ERROR_message;
+  public static String StatusEXEC_FILE_READ_ERROR_message;
+  public static String StatusCLASS_FILE_READ_ERROR_message;
+  public static String StatusEXPORT_ERROR_message;
   public static String StatusIMPORT_ERROR_message;
-  public static String StatusFILE_CONTAINS_NO_METADATA_message;
+  public static String StatusMERGE_ERROR_message;
   public static String StatusNO_COVERAGE_DATA_ERROR_message;
-  public static String StatusNO_INSTRUMENTED_CLASSES_message;
+
+  public static String ExportFormatHTML_value;
+  public static String ExportFormatHTMLZIP_value;
+  public static String ExportFormatXML_value;
+  public static String ExportFormatCSV_value;
+  public static String ExportFormatEXEC_value;
 
   static {
     NLS.initializeMessages(BUNDLE_NAME, CoreMessages.class);
