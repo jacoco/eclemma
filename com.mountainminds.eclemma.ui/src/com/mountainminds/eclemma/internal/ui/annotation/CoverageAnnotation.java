@@ -47,29 +47,21 @@ public class CoverageAnnotation extends Annotation {
   }
 
   public String getText() {
-    final StringBuilder text = new StringBuilder();
     final ICounter branches = line.getBranchCounter();
     switch (branches.getStatus()) {
     case ICounter.NOT_COVERED:
-      text.append(NLS.bind(UIMessages.AnnotationTextAllBranchesMissed_message,
-          Integer.valueOf(branches.getMissedCount())));
-      break;
+      return NLS.bind(UIMessages.AnnotationTextAllBranchesMissed_message,
+          Integer.valueOf(branches.getMissedCount()));
     case ICounter.FULLY_COVERED:
-      text.append(NLS.bind(UIMessages.AnnotationTextAllBranchesCovered_message,
-          Integer.valueOf(branches.getTotalCount())));
-      break;
+      return NLS.bind(UIMessages.AnnotationTextAllBranchesCovered_message,
+          Integer.valueOf(branches.getTotalCount()));
     case ICounter.PARTLY_COVERED:
-      text.append(NLS.bind(UIMessages.AnnotationTextSomeBranchesMissed_message,
+      return NLS.bind(UIMessages.AnnotationTextSomeBranchesMissed_message,
           Integer.valueOf(branches.getMissedCount()),
-          Integer.valueOf(branches.getTotalCount())));
-      break;
+          Integer.valueOf(branches.getTotalCount()));
+    default:
+      return null;
     }
-
-    final ICounter instructions = line.getInstructionCounter();
-    text.append("\n").append(instructions.getCoveredCount()).append(" of ")
-        .append(instructions.getTotalCount()).append(" covered");
-
-    return text.toString();
   }
 
   private static String getAnnotationID(ILine line) {
