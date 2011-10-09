@@ -11,9 +11,9 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.core.launching;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -33,11 +33,11 @@ public class EclipseLauncher extends CoverageLauncher {
   /*
    * The overall scope are all plug-in projects in the workspace.
    */
-  public Collection<IPackageFragmentRoot> getOverallScope(
+  public Set<IPackageFragmentRoot> getOverallScope(
       ILaunchConfiguration configuration) throws CoreException {
     final IJavaModel model = JavaCore.create(ResourcesPlugin.getWorkspace()
         .getRoot());
-    final Collection<IPackageFragmentRoot> result = new ArrayList<IPackageFragmentRoot>();
+    final Set<IPackageFragmentRoot> result = new HashSet<IPackageFragmentRoot>();
     for (final IJavaProject project : model.getJavaProjects()) {
       if (project.getProject().hasNature(PLUGIN_NATURE)) {
         result.addAll(Arrays.asList(project.getPackageFragmentRoots()));

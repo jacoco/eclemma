@@ -11,7 +11,7 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.core.launching;
 
-import java.util.Collection;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -30,12 +30,11 @@ public interface ICoverageLauncher extends ILaunchConfigurationDelegate2 {
    * @param configuration
    *          launch configuration to determine overall scope
    * 
-   * @return overall scope as collection of {@link IPackageFragmentRoot}
-   *         elements
+   * @return overall scope as set of {@link IPackageFragmentRoot} elements
    * 
    * @throws CoreException
    */
-  public Collection<IPackageFragmentRoot> getOverallScope(
+  public Set<IPackageFragmentRoot> getOverallScope(
       ILaunchConfiguration configuration) throws CoreException;
 
 }

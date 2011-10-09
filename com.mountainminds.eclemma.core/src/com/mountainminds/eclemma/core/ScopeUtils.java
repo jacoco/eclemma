@@ -14,7 +14,9 @@ package com.mountainminds.eclemma.core;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -41,15 +43,15 @@ public final class ScopeUtils {
   }
 
   /**
-   * Reads a coverage scope from a list of element ids.
+   * Reads a coverage scope from a collection of element ids.
    * 
-   * @param list
+   * @param ids
    *          List of {@link String} ids
    * @return scope as {@link IPackageFragmentRoot} collection
    */
-  public static Collection<IPackageFragmentRoot> readScope(List<?> list) {
-    final Collection<IPackageFragmentRoot> scope = new ArrayList<IPackageFragmentRoot>();
-    for (final Object handle : list) {
+  public static Set<IPackageFragmentRoot> readScope(Collection<?> ids) {
+    final Set<IPackageFragmentRoot> scope = new HashSet<IPackageFragmentRoot>();
+    for (final Object handle : ids) {
       final IJavaElement element = JavaCore.create((String) handle);
       if (element instanceof IPackageFragmentRoot) {
         scope.add((IPackageFragmentRoot) element);
@@ -65,7 +67,7 @@ public final class ScopeUtils {
    *          Scope as {@link IPackageFragmentRoot} collection
    * @return List of ids
    */
-  public static List<String> writeScope(Collection<IPackageFragmentRoot> scope) {
+  public static List<String> writeScope(Set<IPackageFragmentRoot> scope) {
     final List<String> ids = new ArrayList<String>();
     for (final IPackageFragmentRoot root : scope) {
       ids.add(root.getHandleIdentifier());
@@ -82,7 +84,7 @@ public final class ScopeUtils {
    * 
    * @return overall scope
    */
-  public static Collection<IPackageFragmentRoot> getOverallScope(
+  public static Set<IPackageFragmentRoot> getOverallScope(
       ILaunchConfiguration configuration) throws CoreException {
     ICoverageLauncher launcher = (ICoverageLauncher) configuration.getType()
         .getDelegates(Collections.singleton(CoverageTools.LAUNCH_MODE))[0]
@@ -100,9 +102,9 @@ public final class ScopeUtils {
    * 
    * @return configured scope
    */
-  public static Collection<IPackageFragmentRoot> getConfiguredScope(
+  public static Set<IPackageFragmentRoot> getConfiguredScope(
       final ILaunchConfiguration configuration) throws CoreException {
-    final Collection<IPackageFragmentRoot> all = getOverallScope(configuration);
+    final Set<IPackageFragmentRoot> all = getOverallScope(configuration);
     final List<?> selection = configuration.getAttribute(
         ICoverageLaunchConfigurationConstants.ATTR_SCOPE_IDS, (List<?>) null);
     if (selection != null) {
@@ -118,9 +120,9 @@ public final class ScopeUtils {
    * 
    * @return all package fragment roots
    */
-  public static Collection<IPackageFragmentRoot> getWorkspaceScope()
+  public static Set<IPackageFragmentRoot> getWorkspaceScope()
       throws JavaModelException {
-    final Collection<IPackageFragmentRoot> scope = new ArrayList<IPackageFragmentRoot>();
+    final Set<IPackageFragmentRoot> scope = new HashSet<IPackageFragmentRoot>();
     final IJavaModel model = JavaCore.create(ResourcesPlugin.getWorkspace()
         .getRoot());
     for (IJavaProject p : model.getJavaProjects()) {

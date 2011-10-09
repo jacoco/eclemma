@@ -14,8 +14,8 @@ package com.mountainminds.eclemma.internal.ui.wizards;
 import java.io.File;
 import java.text.MessageFormat;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
+import java.util.Set;
 
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaModelException;
@@ -262,7 +262,7 @@ public class SessionImportPage1 extends WizardPage {
     return filecombo.getText();
   }
 
-  public Collection<IPackageFragmentRoot> getScope() {
+  public Set<IPackageFragmentRoot> getScope() {
     return scopeviewer.getSelectedScope();
   }
 

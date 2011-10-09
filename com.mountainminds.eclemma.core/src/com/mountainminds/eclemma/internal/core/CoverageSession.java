@@ -16,9 +16,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -39,7 +40,7 @@ import com.mountainminds.eclemma.core.ICoverageSession;
 public class CoverageSession extends PlatformObject implements ICoverageSession {
 
   private final String description;
-  private final Collection<IPackageFragmentRoot> scope;
+  private final Set<IPackageFragmentRoot> scope;
   private final IPath executiondatafile;
   private final ILaunchConfiguration launchconfiguration;
 
@@ -47,8 +48,8 @@ public class CoverageSession extends PlatformObject implements ICoverageSession 
       Collection<IPackageFragmentRoot> scope, IPath executiondatafile,
       ILaunchConfiguration launchconfiguration) {
     this.description = description;
-    this.scope = Collections
-        .unmodifiableCollection(new ArrayList<IPackageFragmentRoot>(scope));
+    this.scope = Collections.unmodifiableSet(new HashSet<IPackageFragmentRoot>(
+        scope));
     this.executiondatafile = executiondatafile;
     this.launchconfiguration = launchconfiguration;
   }
@@ -59,7 +60,7 @@ public class CoverageSession extends PlatformObject implements ICoverageSession 
     return description;
   }
 
-  public Collection<IPackageFragmentRoot> getScope() {
+  public Set<IPackageFragmentRoot> getScope() {
     return scope;
   }
 
@@ -83,9 +84,8 @@ public class CoverageSession extends PlatformObject implements ICoverageSession 
       }
       in.close();
     } catch (IOException e) {
-      throw new CoreException(
-          EclEmmaStatus.EXEC_FILE_READ_ERROR.getStatus(
-              executiondatafile, e));
+      throw new CoreException(EclEmmaStatus.EXEC_FILE_READ_ERROR.getStatus(
+          executiondatafile, e));
     }
     monitor.done();
   }

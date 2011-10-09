@@ -17,7 +17,6 @@ import static org.junit.Assert.assertSame;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -424,8 +423,8 @@ public class SessionManagerTest {
       return launch;
     }
 
-    public Collection<IPackageFragmentRoot> getScope() {
-      return Collections.emptyList();
+    public Set<IPackageFragmentRoot> getScope() {
+      return Collections.emptySet();
     }
 
     public void readExecutionData(IExecutionDataVisitor executionDataVisitor,

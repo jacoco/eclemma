@@ -11,7 +11,7 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.core;
 
-import java.util.Collection;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -40,13 +40,13 @@ public interface ISessionImporter {
   public void setExecutionDataFile(String file);
 
   /**
-   * Sets the list of package fragment roots that should be considered for
+   * Sets the set of package fragment roots that should be considered for
    * coverage analysis.
    * 
    * @param scope
    *          scope for analysis
    */
-  public void setScope(Collection<IPackageFragmentRoot> scope);
+  public void setScope(Set<IPackageFragmentRoot> scope);
 
   /**
    * Specifies whether the original file should be copied while importing.

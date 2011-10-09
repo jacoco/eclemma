@@ -15,6 +15,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
@@ -82,21 +84,19 @@ public class DefaultScopeFilterTest {
   @Test
   public void testNoFilters() throws CoreException {
     preferences.sourceFoldersOnly = false;
-    final Collection<IPackageFragmentRoot> input = Arrays.asList(rootSrc1,
-        rootSrc2, rootBin1);
-    final Collection<IPackageFragmentRoot> output = filter.filter(input,
-        configuration);
+    final Set<IPackageFragmentRoot> input = set(rootSrc1, rootSrc2, rootBin1);
+    final Set<IPackageFragmentRoot> output = filter
+        .filter(input, configuration);
     assertEquals(input, output);
   }
 
   @Test
   public void testSourceFoldersOnly() throws CoreException {
     preferences.sourceFoldersOnly = true;
-    final Collection<IPackageFragmentRoot> input = Arrays.asList(rootSrc1,
-        rootBin1);
+    final Set<IPackageFragmentRoot> input = set(rootSrc1, rootBin1);
     final Collection<IPackageFragmentRoot> output = filter.filter(input,
         configuration);
-    assertEquals(Arrays.asList(rootSrc1), output);
+    assertEquals(set(rootSrc1), output);
   }
 
   @Test
@@ -104,21 +104,19 @@ public class DefaultScopeFilterTest {
     preferences.sameProjectOnly = true;
     configuration.setAttribute(
         IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, "project1");
-    final Collection<IPackageFragmentRoot> input = Arrays.asList(rootSrc1,
-        rootSrc2);
+    final Set<IPackageFragmentRoot> input = set(rootSrc1, rootSrc2);
     final Collection<IPackageFragmentRoot> output = filter.filter(input,
         configuration);
-    assertEquals(Arrays.asList(rootSrc1), output);
+    assertEquals(set(rootSrc1), output);
   }
 
   @Test
   public void testFilter() throws CoreException {
     preferences.filter = "testsrc,abc";
-    final Collection<IPackageFragmentRoot> input = Arrays.asList(rootSrc1,
-        rootSrc2);
+    final Set<IPackageFragmentRoot> input = set(rootSrc1, rootSrc2);
     final Collection<IPackageFragmentRoot> output = filter.filter(input,
         configuration);
-    assertEquals(Arrays.asList(rootSrc2), output);
+    assertEquals(set(rootSrc2), output);
   }
 
   private static class TestPreferences implements ICorePreferences {
@@ -149,6 +147,10 @@ public class DefaultScopeFilterTest {
       return false;
     }
 
+  }
+
+  private <E> Set<E> set(E... elements) {
+    return new HashSet<E>(Arrays.asList(elements));
   }
 
 }

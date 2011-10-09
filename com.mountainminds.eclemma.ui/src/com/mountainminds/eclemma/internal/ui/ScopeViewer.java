@@ -14,7 +14,9 @@ package com.mountainminds.eclemma.internal.ui;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
@@ -218,8 +220,8 @@ public class ScopeViewer implements ISelectionProvider {
    * 
    * @return list of package fragment roots that are currently checked
    */
-  public Collection<IPackageFragmentRoot> getSelectedScope() {
-    Collection<IPackageFragmentRoot> scope = new ArrayList<IPackageFragmentRoot>();
+  public Set<IPackageFragmentRoot> getSelectedScope() {
+    Set<IPackageFragmentRoot> scope = new HashSet<IPackageFragmentRoot>();
     for (final Object element : viewer.getCheckedElements()) {
       scope.add((IPackageFragmentRoot) element);
     }

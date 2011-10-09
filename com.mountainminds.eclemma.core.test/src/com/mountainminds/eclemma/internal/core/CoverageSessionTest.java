@@ -14,7 +14,6 @@ package com.mountainminds.eclemma.internal.core;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -88,7 +87,7 @@ public class CoverageSessionTest {
         Arrays.asList(root1, root2), new Path("example.exec"), configuration);
 
     assertEquals("Description", session.getDescription());
-    assertEquals(set(root1, root2), set(session.getScope()));
+    assertEquals(set(root1, root2), session.getScope());
     assertSame(configuration, session.getLaunchConfiguration());
   }
 
@@ -172,14 +171,6 @@ public class CoverageSessionTest {
 
   private <E> Set<E> set(E... elements) {
     return new HashSet<E>(Arrays.asList(elements));
-  }
-
-  private <E> Set<E> set(Collection<E> elements) {
-    Set<E> set = new HashSet<E>();
-    for (E e : elements) {
-      assertTrue("Duplicate element " + e, set.add(e));
-    }
-    return set;
   }
 
 }

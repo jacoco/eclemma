@@ -17,7 +17,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Collection;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -36,7 +36,7 @@ public class SessionImporter implements ISessionImporter {
 
   private String description;
   private String coveragefile;
-  private Collection<IPackageFragmentRoot> scope;
+  private Set<IPackageFragmentRoot> scope;
   private boolean copy;
 
   public void setDescription(String description) {
@@ -47,7 +47,7 @@ public class SessionImporter implements ISessionImporter {
     this.coveragefile = file;
   }
 
-  public void setScope(Collection<IPackageFragmentRoot> scope) {
+  public void setScope(Set<IPackageFragmentRoot> scope) {
     this.scope = scope;
   }
 

@@ -11,9 +11,10 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.core;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -43,20 +44,20 @@ public class DefaultScopeFilter {
   }
 
   /**
-   * Returns a filtered copy of the given {@link IClassFiles} array.
+   * Returns a filtered copy of the given {@link IClassFiles} set.
    * 
    * @param classfiles
    *          {@link IClassFiles} to filter
    * @param configuration
    *          context information
-   * @return filtered list
+   * @return filtered set
    * @throws CoreException
    *           may occur when accessing the Java model
    */
-  public Collection<IPackageFragmentRoot> filter(
-      final Collection<IPackageFragmentRoot> scope,
+  public Set<IPackageFragmentRoot> filter(
+      final Set<IPackageFragmentRoot> scope,
       final ILaunchConfiguration configuration) throws CoreException {
-    final Collection<IPackageFragmentRoot> filtered = new ArrayList<IPackageFragmentRoot>(
+    final Set<IPackageFragmentRoot> filtered = new HashSet<IPackageFragmentRoot>(
         scope);
     if (preferences.getDefaultInstrumentationSourceFoldersOnly()) {
       sourceFoldersOnly(filtered);

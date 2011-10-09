@@ -11,7 +11,7 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.core;
 
-import java.util.Collection;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
@@ -48,12 +48,12 @@ public interface ICoverageSession extends IAdaptable {
   public String getDescription();
 
   /**
-   * Returns the collection of package fragment roots defining the scope of this
+   * Returns the set of package fragment roots defining the scope of this
    * session.
    * 
-   * @return session scope as collection of {@link IPackageFragmentRoot}
+   * @return session scope as set of {@link IPackageFragmentRoot}
    */
-  public Collection<IPackageFragmentRoot> getScope();
+  public Set<IPackageFragmentRoot> getScope();
 
   /**
    * Reads all stored execution data in the given visitors.

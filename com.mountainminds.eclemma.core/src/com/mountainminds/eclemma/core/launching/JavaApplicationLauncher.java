@@ -11,8 +11,8 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.core.launching;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -26,9 +26,9 @@ import org.eclipse.jdt.launching.JavaRuntime;
  */
 public class JavaApplicationLauncher extends CoverageLauncher {
 
-  public Collection<IPackageFragmentRoot> getOverallScope(
+  public Set<IPackageFragmentRoot> getOverallScope(
       ILaunchConfiguration configuration) throws CoreException {
-    final Collection<IPackageFragmentRoot> scope = new ArrayList<IPackageFragmentRoot>();
+    final Set<IPackageFragmentRoot> scope = new HashSet<IPackageFragmentRoot>();
     final IJavaProject project = JavaRuntime.getJavaProject(configuration);
     for (final IPackageFragmentRoot root : project.getAllPackageFragmentRoots()) {
       final IClasspathEntry cpentry = root.getRawClasspathEntry();
