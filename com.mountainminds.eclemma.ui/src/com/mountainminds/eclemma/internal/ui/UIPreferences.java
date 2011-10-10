@@ -27,14 +27,14 @@ public class UIPreferences extends AbstractPreferenceInitializer {
   public static final String PREF_ACTICATE_NEW_SESSIONS = EclEmmaUIPlugin.ID
       + ".activate_new_sessions"; //$NON-NLS-1$ 
 
-  public static final String PREF_DEFAULT_INSTRUMENTATION_SOURCE_FOLDERS_ONLY = EclEmmaUIPlugin.ID
-      + ".default_instrumentation_source_folders_only"; //$NON-NLS-1$ 
+  public static final String PREF_DEFAULT_SCOPE_SOURCE_FOLDERS_ONLY = EclEmmaUIPlugin.ID
+      + ".default_scope_source_folders_only"; //$NON-NLS-1$ 
 
-  public static final String PREF_DEFAULT_INSTRUMENTATION_SAME_PROJECT_ONLY = EclEmmaUIPlugin.ID
-      + ".default_instrumentation_same_project_only"; //$NON-NLS-1$ 
+  public static final String PREF_DEFAULT_SCOPE_SAME_PROJECT_ONLY = EclEmmaUIPlugin.ID
+      + ".default_scope_same_project_only"; //$NON-NLS-1$ 
 
-  public static final String PREF_DEFAULT_INSTRUMENTATION_FILTER = EclEmmaUIPlugin.ID
-      + ".default_instrumentation_filter"; //$NON-NLS-1$ 
+  public static final String PREF_DEFAULT_SCOPE_FILTER = EclEmmaUIPlugin.ID
+      + ".default_scope_filter"; //$NON-NLS-1$ 
 
   public static final String PREF_AUTO_REMOVE_SESSIONS = EclEmmaUIPlugin.ID
       + ".auto_remove_sessions"; //$NON-NLS-1$ 
@@ -48,19 +48,18 @@ public class UIPreferences extends AbstractPreferenceInitializer {
       return getPreferenceStore().getBoolean(PREF_AUTO_REMOVE_SESSIONS);
     }
 
-    public boolean getDefaultInstrumentationSourceFoldersOnly() {
+    public boolean getDefaultScopeSourceFoldersOnly() {
       return getPreferenceStore().getBoolean(
-          PREF_DEFAULT_INSTRUMENTATION_SOURCE_FOLDERS_ONLY);
+          PREF_DEFAULT_SCOPE_SOURCE_FOLDERS_ONLY);
     }
 
-    public boolean getDefaultInstrumentationSameProjectOnly() {
+    public boolean getDefaultScopeSameProjectOnly() {
       return getPreferenceStore().getBoolean(
-          PREF_DEFAULT_INSTRUMENTATION_SAME_PROJECT_ONLY);
+          PREF_DEFAULT_SCOPE_SAME_PROJECT_ONLY);
     }
 
-    public String getDefaultInstrumentationFilter() {
-      return getPreferenceStore()
-          .getString(PREF_DEFAULT_INSTRUMENTATION_FILTER);
+    public String getDefaultScopeFilter() {
+      return getPreferenceStore().getString(PREF_DEFAULT_SCOPE_FILTER);
     }
   };
 
@@ -71,12 +70,12 @@ public class UIPreferences extends AbstractPreferenceInitializer {
         ICorePreferences.DEFAULT.getActivateNewSessions());
     pref.setDefault(PREF_AUTO_REMOVE_SESSIONS,
         ICorePreferences.DEFAULT.getAutoRemoveSessions());
-    pref.setDefault(PREF_DEFAULT_INSTRUMENTATION_SOURCE_FOLDERS_ONLY,
-        ICorePreferences.DEFAULT.getDefaultInstrumentationSourceFoldersOnly());
-    pref.setDefault(PREF_DEFAULT_INSTRUMENTATION_SAME_PROJECT_ONLY,
-        ICorePreferences.DEFAULT.getDefaultInstrumentationSameProjectOnly());
-    pref.setDefault(PREF_DEFAULT_INSTRUMENTATION_FILTER,
-        ICorePreferences.DEFAULT.getDefaultInstrumentationFilter());
+    pref.setDefault(PREF_DEFAULT_SCOPE_SOURCE_FOLDERS_ONLY,
+        ICorePreferences.DEFAULT.getDefaultScopeSourceFoldersOnly());
+    pref.setDefault(PREF_DEFAULT_SCOPE_SAME_PROJECT_ONLY,
+        ICorePreferences.DEFAULT.getDefaultScopeSameProjectOnly());
+    pref.setDefault(PREF_DEFAULT_SCOPE_FILTER,
+        ICorePreferences.DEFAULT.getDefaultScopeFilter());
   }
 
   private static IPreferenceStore getPreferenceStore() {

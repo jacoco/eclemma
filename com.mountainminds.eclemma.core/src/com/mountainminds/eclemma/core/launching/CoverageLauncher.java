@@ -44,8 +44,8 @@ import com.mountainminds.eclemma.internal.core.launching.CoverageLaunchInfo;
 
 /**
  * Abstract base class for coverage mode launchers. Coverage launchers perform
- * class instrumentation and then delegate to the corresponding launcher
- * responsible for the "run" mode.
+ * adjust the launch configuration to inject the JaCoCo coverage agent and then
+ * delegate to the corresponding launcher responsible for the "run" mode.
  */
 public abstract class CoverageLauncher implements ICoverageLauncher,
     IExecutableExtension {

@@ -53,13 +53,13 @@ public class CoverageTab extends AbstractLaunchConfigurationTab {
     layout.verticalSpacing = 0;
     parent.setLayout(layout);
     setControl(parent);
-    createInstrumentedClasses(parent);
+    createAnalysisScope(parent);
   }
 
-  private void createInstrumentedClasses(Composite parent) {
+  private void createAnalysisScope(Composite parent) {
     Group group = new Group(parent, SWT.NONE);
     group.setLayoutData(new GridData(GridData.FILL_BOTH));
-    group.setText(UIMessages.CoverageTabInstrumentedClassesGroup_label);
+    group.setText(UIMessages.CoverageTabAnalysisScopeGroup_label);
     GridLayout layout = new GridLayout();
     layout.numColumns = 2;
     group.setLayout(layout);
@@ -136,7 +136,7 @@ public class CoverageTab extends AbstractLaunchConfigurationTab {
 
   private void updateErrorStatus() {
     if (classesviewer.getSelection().isEmpty()) {
-      setErrorMessage(UIMessages.CoverageTabNoClassesSelected_message);
+      setErrorMessage(UIMessages.CoverageTabEmptyAnalysisScope_message);
     } else {
       setErrorMessage(null);
     }

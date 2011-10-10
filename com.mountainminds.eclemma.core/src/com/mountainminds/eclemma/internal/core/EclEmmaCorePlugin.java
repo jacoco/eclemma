@@ -147,14 +147,8 @@ public class EclEmmaCorePlugin extends Plugin {
     this.preferences = preferences;
   }
 
-  /**
-   * Returns a new filter instance for default selection of instrumemted
-   * classes.
-   * 
-   * @return new filter
-   */
-  public DefaultScopeFilter createDefaultIntrumentationFilter() {
-    return new DefaultScopeFilter(this.preferences);
+  public ICorePreferences getPreferences() {
+    return this.preferences;
   }
 
   public ISessionManager getSessionManager() {

@@ -95,8 +95,8 @@ public class UIMessages extends NLS {
   public static String MergeSessionsDialogSelection_label;
 
   public static String CoverageTab_title;
-  public static String CoverageTabInstrumentedClassesGroup_label;
-  public static String CoverageTabNoClassesSelected_message;
+  public static String CoverageTabAnalysisScopeGroup_label;
+  public static String CoverageTabEmptyAnalysisScope_message;
 
   public static String NoCoverageDataError_title;
   public static String NoCoverageDataError_message;
@@ -155,7 +155,7 @@ public class UIMessages extends NLS {
   public static String CoveragePreferencesShowCoverageView_label;
   public static String CoveragePreferencesActivateNewSessions_label;
   public static String CoveragePreferencesAutoRemoveSessions_label;
-  public static String CoveragePreferencesDefaultInstrumentation_title;
+  public static String CoveragePreferencesDefaultScope_title;
   public static String CoveragePreferencesSourceFoldersOnly_label;
   public static String CoveragePreferencesSameProjectOnly_label;
   public static String CoveragePreferencesClasspathFilter_label;

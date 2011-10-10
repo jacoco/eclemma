@@ -127,15 +127,15 @@ public class DefaultScopeFilterTest {
 
     boolean sourceFoldersOnly;
 
-    public String getDefaultInstrumentationFilter() {
+    public String getDefaultScopeFilter() {
       return filter;
     }
 
-    public boolean getDefaultInstrumentationSameProjectOnly() {
+    public boolean getDefaultScopeSameProjectOnly() {
       return sameProjectOnly;
     }
 
-    public boolean getDefaultInstrumentationSourceFoldersOnly() {
+    public boolean getDefaultScopeSourceFoldersOnly() {
       return sourceFoldersOnly;
     }
 

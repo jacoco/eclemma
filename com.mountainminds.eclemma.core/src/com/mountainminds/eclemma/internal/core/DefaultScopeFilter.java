@@ -26,8 +26,7 @@ import org.eclipse.jdt.launching.JavaRuntime;
 import com.mountainminds.eclemma.core.ICorePreferences;
 
 /**
- * Utility to retrieve the list of {@link IClassFiles} that will be instrumented
- * by default.
+ * Utility to calculate the default scope for a given launch configuration.
  */
 public class DefaultScopeFilter {
 
@@ -59,13 +58,13 @@ public class DefaultScopeFilter {
       final ILaunchConfiguration configuration) throws CoreException {
     final Set<IPackageFragmentRoot> filtered = new HashSet<IPackageFragmentRoot>(
         scope);
-    if (preferences.getDefaultInstrumentationSourceFoldersOnly()) {
+    if (preferences.getDefaultScopeSourceFoldersOnly()) {
       sourceFoldersOnly(filtered);
     }
-    if (preferences.getDefaultInstrumentationSameProjectOnly()) {
+    if (preferences.getDefaultScopeSameProjectOnly()) {
       sameProjectOnly(filtered, configuration);
     }
-    String filter = preferences.getDefaultInstrumentationFilter();
+    String filter = preferences.getDefaultScopeFilter();
     if (filter != null && filter.length() > 0) {
       matchingPathsOnly(filtered, filter);
     }

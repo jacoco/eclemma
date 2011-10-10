@@ -31,15 +31,15 @@ public interface ICorePreferences {
       return false;
     }
 
-    public boolean getDefaultInstrumentationSourceFoldersOnly() {
+    public boolean getDefaultScopeSourceFoldersOnly() {
       return true;
     }
 
-    public boolean getDefaultInstrumentationSameProjectOnly() {
+    public boolean getDefaultScopeSameProjectOnly() {
       return false;
     }
 
-    public String getDefaultInstrumentationFilter() {
+    public String getDefaultScopeFilter() {
       return "";//$NON-NLS-1$
     }
   };
@@ -60,30 +60,30 @@ public interface ICorePreferences {
   public boolean getAutoRemoveSessions();
 
   /**
-   * Specification of the default instrumentation behavior: Instrument source
+   * Specification of the default coverage scope behavior: Analyze source
    * folders only.
    * 
-   * @return <code>true</code>, if source folders only should be instrumented by
+   * @return <code>true</code>, if source folders only should be analyzed by
    *         default
    */
-  public boolean getDefaultInstrumentationSourceFoldersOnly();
+  public boolean getDefaultScopeSourceFoldersOnly();
 
   /**
-   * Specification of the default instrumentation behavior: Instrument code in
-   * the same project only. This filter works only for launch configuration
-   * types that have a reference to a project.
+   * Specification of the default coverage scope behavior: Analyze code in the
+   * same project only. This filter works only for launch configuration types
+   * that have a reference to a project.
    * 
-   * @return <code>true</code>, if code in the same project should be
-   *         instrumented only
+   * @return <code>true</code>, if code in the same project should be analyzed
+   *         only
    */
-  public boolean getDefaultInstrumentationSameProjectOnly();
+  public boolean getDefaultScopeSameProjectOnly();
 
   /**
    * Returns a comma separated list of match strings that specifies patterns for
-   * class path entries to be instrumented by default.
+   * class path entries to be in coverage scope by default.
    * 
    * @return List of match strings
    */
-  public String getDefaultInstrumentationFilter();
+  public String getDefaultScopeFilter();
 
 }

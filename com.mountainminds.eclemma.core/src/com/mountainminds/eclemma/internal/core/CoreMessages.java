@@ -22,8 +22,6 @@ public class CoreMessages extends NLS {
 
   public static String LaunchSessionDescription_value;
 
-  public static String InstrumentingClasses_task;
-  public static String InstrumentingClassesIn_task;
   public static String Launching_task;
   public static String AnalyzingCoverageSession_task;
   public static String ExportingSession_task;

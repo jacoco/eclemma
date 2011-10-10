@@ -54,18 +54,17 @@ public class CoveragePreferencePage extends FieldEditorPreferencePage implements
     addField(new BooleanFieldEditor(UIPreferences.PREF_AUTO_REMOVE_SESSIONS,
         UIMessages.CoveragePreferencesAutoRemoveSessions_label, parent));
 
-    // Default instrumentation:
+    // Default scope:
     createSpacer(parent);
     createLabel(parent,
-        UIMessages.CoveragePreferencesDefaultInstrumentation_title);
+        UIMessages.CoveragePreferencesDefaultScope_title);
     addField(new BooleanFieldEditor(
-        UIPreferences.PREF_DEFAULT_INSTRUMENTATION_SOURCE_FOLDERS_ONLY,
+        UIPreferences.PREF_DEFAULT_SCOPE_SOURCE_FOLDERS_ONLY,
         UIMessages.CoveragePreferencesSourceFoldersOnly_label, parent));
     addField(new BooleanFieldEditor(
-        UIPreferences.PREF_DEFAULT_INSTRUMENTATION_SAME_PROJECT_ONLY,
+        UIPreferences.PREF_DEFAULT_SCOPE_SAME_PROJECT_ONLY,
         UIMessages.CoveragePreferencesSameProjectOnly_label, parent));
-    addField(new StringFieldEditor(
-        UIPreferences.PREF_DEFAULT_INSTRUMENTATION_FILTER,
+    addField(new StringFieldEditor(UIPreferences.PREF_DEFAULT_SCOPE_FILTER,
         UIMessages.CoveragePreferencesClasspathFilter_label, parent));
 
     // Links:

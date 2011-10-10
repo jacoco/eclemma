@@ -110,8 +110,8 @@ public final class ScopeUtils {
     if (selection != null) {
       all.retainAll(readScope(selection));
     }
-    final DefaultScopeFilter filter = EclEmmaCorePlugin.getInstance()
-        .createDefaultIntrumentationFilter();
+    final DefaultScopeFilter filter = new DefaultScopeFilter(EclEmmaCorePlugin
+        .getInstance().getPreferences());
     return filter.filter(all, configuration);
   }
 

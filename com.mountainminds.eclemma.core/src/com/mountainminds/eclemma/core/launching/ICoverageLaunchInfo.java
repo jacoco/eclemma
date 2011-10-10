@@ -17,8 +17,8 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 
 /**
- * Descriptor how a particular launch was instrumented. To every launch in
- * "Coverage" mode an instance is attached.
+ * Descriptor how a particular launch was configured for code coverage analysis.
+ * To every launch in "Coverage" mode an instance is attached.
  */
 public interface ICoverageLaunchInfo {
 
