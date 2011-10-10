@@ -84,12 +84,6 @@ public final class EclEmmaStatus {
       CoreMessages.StatusINVALID_CLASSPATH_PROVIDER_CONTEXT_ERROR_message);
 
   /**
-   * The coverage launch info object is missing unexpectedly.
-   */
-  public static final EclEmmaStatus MISSING_LAUNCH_INFO_ERROR = new EclEmmaStatus(
-      5004, IStatus.ERROR, CoreMessages.StatusMISSING_LAUNCH_INFO_ERROR_message);
-
-  /**
    * The execution data file can not be created.
    */
   public static final EclEmmaStatus EXEC_FILE_CREATE_ERROR = new EclEmmaStatus(

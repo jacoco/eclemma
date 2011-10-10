@@ -30,12 +30,11 @@ import org.eclipse.debug.core.IStatusHandler;
 import org.eclipse.debug.core.model.IProcess;
 import org.osgi.framework.BundleContext;
 
-import com.mountainminds.eclemma.core.CoverageTools;
 import com.mountainminds.eclemma.core.EclEmmaStatus;
 import com.mountainminds.eclemma.core.ICorePreferences;
 import com.mountainminds.eclemma.core.ICoverageSession;
 import com.mountainminds.eclemma.core.ISessionManager;
-import com.mountainminds.eclemma.core.launching.ICoverageLaunchInfo;
+import com.mountainminds.eclemma.core.launching.ICoverageLaunch;
 
 /**
  * Bundle activator for the EclEmma core.
@@ -81,16 +80,16 @@ public class EclEmmaCorePlugin extends Plugin {
             && e.getKind() == DebugEvent.TERMINATE) {
           final IProcess proc = (IProcess) e.getSource();
           final ILaunch launch = proc.getLaunch();
-          final ICoverageLaunchInfo info = CoverageTools.getLaunchInfo(launch);
-          if (info != null) {
-            IPath coveragedatafile = info.getExecutionDataFile();
+          if (launch instanceof ICoverageLaunch) {
+            final ICoverageLaunch coverage = (ICoverageLaunch) launch;
+            IPath coveragedatafile = coverage.getExecutionDataFile();
             if (checkCoverageDataFile(coveragedatafile)) {
               Object[] args = new Object[] {
                   launch.getLaunchConfiguration().getName(), new Date() };
               String description = MessageFormat.format(
                   CoreMessages.LaunchSessionDescription_value, args);
               ICoverageSession session = new CoverageSession(description,
-                  info.getScope(), coveragedatafile,
+                  coverage.getScope(), coveragedatafile,
                   launch.getLaunchConfiguration());
               sessionManager.addSession(session,
                   preferences.getActivateNewSessions(), launch);

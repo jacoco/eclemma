@@ -12,16 +12,13 @@
 package com.mountainminds.eclemma.core;
 
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.debug.core.ILaunch;
 import org.jacoco.core.analysis.ICoverageNode;
 
 import com.mountainminds.eclemma.core.analysis.IJavaCoverageListener;
 import com.mountainminds.eclemma.core.analysis.IJavaModelCoverage;
-import com.mountainminds.eclemma.core.launching.ICoverageLaunchInfo;
 import com.mountainminds.eclemma.internal.core.EclEmmaCorePlugin;
 import com.mountainminds.eclemma.internal.core.SessionExporter;
 import com.mountainminds.eclemma.internal.core.SessionImporter;
-import com.mountainminds.eclemma.internal.core.launching.CoverageLaunchInfo;
 
 /**
  * For central access to the tools provided by the coverage core plug-in this
@@ -61,19 +58,6 @@ public final class CoverageTools {
     } else {
       return null;
     }
-  }
-
-  /**
-   * Returns the coverage launch info that is assoziated with the given launch.
-   * If no info object is assoziated with the given launch <code>null</code> is
-   * returned, i.e. the launch was probably not in coverage mode.
-   * 
-   * @param launch
-   *          the launch object we need coverage data for
-   * @return the info object or <code>null</code>
-   */
-  public static ICoverageLaunchInfo getLaunchInfo(ILaunch launch) {
-    return CoverageLaunchInfo.getInfo(launch);
   }
 
   public static IJavaModelCoverage getJavaModelCoverage() {

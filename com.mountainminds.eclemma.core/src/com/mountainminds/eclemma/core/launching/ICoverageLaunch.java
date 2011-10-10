@@ -11,16 +11,17 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.core.launching;
 
-import java.util.Collection;
+import java.util.Set;
 
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.debug.core.ILaunch;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 
 /**
- * Descriptor how a particular launch was configured for code coverage analysis.
- * To every launch in "Coverage" mode an instance is attached.
+ * Extension of the {@link ILaunch} interface to keep specific information for
+ * coverage launches.
  */
-public interface ICoverageLaunchInfo {
+public interface ICoverageLaunch extends ILaunch {
 
   /**
    * Returns the location of the execution data file for this launch.
@@ -35,6 +36,6 @@ public interface ICoverageLaunchInfo {
    * 
    * @return package fragment roots for this launch
    */
-  public Collection<IPackageFragmentRoot> getScope();
+  public Set<IPackageFragmentRoot> getScope();
 
 }

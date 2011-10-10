@@ -15,11 +15,13 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExecutableExtension;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubProgressMonitor;
@@ -29,18 +31,19 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
-import org.eclipse.debug.core.Launch;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate2;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.osgi.util.NLS;
 import org.jacoco.agent.AgentJar;
 import org.jacoco.core.runtime.AgentOptions;
 
-import com.mountainminds.eclemma.core.CoverageTools;
 import com.mountainminds.eclemma.core.EclEmmaStatus;
+import com.mountainminds.eclemma.core.ScopeUtils;
 import com.mountainminds.eclemma.internal.core.CoreMessages;
-import com.mountainminds.eclemma.internal.core.launching.CoverageLaunchInfo;
+import com.mountainminds.eclemma.internal.core.EclEmmaCorePlugin;
+import com.mountainminds.eclemma.internal.core.launching.CoverageLaunch;
 
 /**
  * Abstract base class for coverage mode launchers. Coverage launchers perform
@@ -65,15 +68,15 @@ public abstract class CoverageLauncher implements ICoverageLauncher,
    * 
    * @param workingcopy
    *          Configuration to modify
-   * @param info
+   * @param launch
    *          Info object of this launch
    * @throws CoreException
    *           may be thrown by implementations
    */
   private void addCoverageAgent(ILaunchConfigurationWorkingCopy workingcopy,
-      ICoverageLaunchInfo info) throws CoreException {
+      ICoverageLaunch launch) throws CoreException {
     final AgentOptions options = new AgentOptions();
-    options.setDestfile(info.getExecutionDataFile().toOSString());
+    options.setDestfile(launch.getExecutionDataFile().toOSString());
     try {
       final URL agentfileurl = FileLocator.toFileURL(AgentJar.getResource());
       final File agentfile = new Path(agentfileurl.getPath()).toFile();
@@ -140,17 +143,11 @@ public abstract class CoverageLauncher implements ICoverageLauncher,
       ILaunch launch, IProgressMonitor monitor) throws CoreException {
     monitor.beginTask(
         NLS.bind(CoreMessages.Launching_task, configuration.getName()), 2);
-    ICoverageLaunchInfo info = CoverageTools.getLaunchInfo(launch);
-    if (info == null) {
-      // Must not happen as we should have created the launch
-      throw new CoreException(
-          EclEmmaStatus.MISSING_LAUNCH_INFO_ERROR.getStatus(null));
-    }
     if (monitor.isCanceled()) {
       return;
     }
     ILaunchConfigurationWorkingCopy wc = configuration.getWorkingCopy();
-    addCoverageAgent(wc, info);
+    addCoverageAgent(wc, (ICoverageLaunch) launch);
     launchdelegate.launch(wc, DELEGATELAUNCHMODE, launch,
         new SubProgressMonitor(monitor, 1));
     monitor.done();
@@ -160,9 +157,11 @@ public abstract class CoverageLauncher implements ICoverageLauncher,
 
   public ILaunch getLaunch(ILaunchConfiguration configuration, String mode)
       throws CoreException {
-    ILaunch launch = new Launch(configuration, CoverageTools.LAUNCH_MODE, null);
-    new CoverageLaunchInfo(launch);
-    return launch;
+    final IPath execfile = EclEmmaCorePlugin.getInstance()
+        .getExecutionDataFiles().newFile();
+    final Set<IPackageFragmentRoot> scope = ScopeUtils
+        .getConfiguredScope(configuration);
+    return new CoverageLaunch(configuration, execfile, scope);
   }
 
   public boolean buildForLaunch(ILaunchConfiguration configuration,
