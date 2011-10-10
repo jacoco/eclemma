@@ -18,7 +18,6 @@ import java.util.Date;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugEvent;
@@ -46,8 +45,6 @@ public class EclEmmaCorePlugin extends Plugin {
   /** Status used to trigger user prompts */
   private static final IStatus PROMPT_STATUS = new Status(IStatus.INFO,
       "org.eclipse.debug.ui", 200, "", null); //$NON-NLS-1$//$NON-NLS-2$
-
-  public static final IPath EMMA_JAR = new Path("/emma.jar"); //$NON-NLS-1$
 
   private static EclEmmaCorePlugin instance;
 
@@ -169,7 +166,7 @@ public class EclEmmaCorePlugin extends Plugin {
    * @param status
    *          IStatus object to find prompter for
    * @param info
-   *          addional information passed to the handler
+   *          additional information passed to the handler
    * @return boolean result returned by the status handler
    * @throws CoreException
    *           if the status has severity error and no handler is available

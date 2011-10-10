@@ -63,25 +63,10 @@ public final class EclEmmaStatus {
       5000, IStatus.ERROR, CoreMessages.StatusNO_LOCAL_AGENTJAR_ERROR_message);
 
   /**
-   * Status indication that it was not possible to generate a internal id for a
-   * resource.
-   */
-  public static final EclEmmaStatus ID_CREATION_ERROR = new EclEmmaStatus(5001,
-      IStatus.ERROR, CoreMessages.StatusID_CREATION_ERROR_message);
-
-  /**
    * The requested launch type is not known.
    */
   public static final EclEmmaStatus UNKOWN_LAUNCH_TYPE_ERROR = new EclEmmaStatus(
       5002, IStatus.ERROR, CoreMessages.StatusUNKOWN_LAUNCH_TYPE_ERROR_message);
-
-  /**
-   * The coverage runtime classpath provider has been called in an invalid
-   * execution context, i.e. outside of <code>CoverageLauncher.launch()</code>.
-   */
-  public static final EclEmmaStatus INVALID_CLASSPATH_PROVIDER_CONTEXT_ERROR = new EclEmmaStatus(
-      5003, IStatus.ERROR,
-      CoreMessages.StatusINVALID_CLASSPATH_PROVIDER_CONTEXT_ERROR_message);
 
   /**
    * The execution data file can not be created.

@@ -30,9 +30,7 @@ public class CoreMessages extends NLS {
   public static String MergingCoverageSessions_task;
 
   public static String StatusNO_LOCAL_AGENTJAR_ERROR_message;
-  public static String StatusID_CREATION_ERROR_message;
   public static String StatusUNKOWN_LAUNCH_TYPE_ERROR_message;
-  public static String StatusINVALID_CLASSPATH_PROVIDER_CONTEXT_ERROR_message;
   public static String StatusEXEC_FILE_CREATE_ERROR_message;
   public static String StatusEXEC_FILE_READ_ERROR_message;
   public static String StatusCLASS_FILE_READ_ERROR_message;
