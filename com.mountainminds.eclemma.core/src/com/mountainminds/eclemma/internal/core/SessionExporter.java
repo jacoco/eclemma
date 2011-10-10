@@ -57,8 +57,6 @@ public class SessionExporter implements ISessionExporter {
   private ExportFormat format;
   private String destination;
 
-  private OutputStream out;
-
   public SessionExporter(ICoverageSession session) {
     this.session = session;
   }
@@ -133,7 +131,8 @@ public class SessionExporter implements ISessionExporter {
       htmlFormatter.setFooterText(session.getDescription());
       return htmlFormatter.createVisitor(new FileMultiReportOutput(file));
     }
-    out = new BufferedOutputStream(new FileOutputStream(file));
+    final OutputStream out = new BufferedOutputStream(
+        new FileOutputStream(file));
     switch (format) {
     case HTMLZIP:
       final HTMLFormatter htmlFormatter = new HTMLFormatter();
@@ -180,7 +179,8 @@ public class SessionExporter implements ISessionExporter {
       try {
         return new InputStreamReader(file.getContents(), file.getCharset());
       } catch (CoreException e) {
-        throw new IOException(e.getMessage());
+        final IOException ioException = new IOException(e.getMessage());
+        throw (IOException) ioException.initCause(e);
       }
     }
   }
