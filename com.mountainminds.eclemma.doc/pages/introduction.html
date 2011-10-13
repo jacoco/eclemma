@@ -16,9 +16,8 @@
 
 <p>
   EclEmma is a free Java code coverage tool for Eclipse, available under the 
-  <a href="license.html">Eclipse Public License</a>. Internally it is based on
-  the great <a href="http://emma.sourceforge.net/">EMMA</a> Java code coverage
-  tool, trying to adopt EMMA's philosophy for the Eclipse workbench:
+  <a class="extern" href="license.html">Eclipse Public License</a>. It brings
+  code coverage analysis directly into the Eclipse workbench:
 </p>
 
 <ul>
@@ -32,9 +31,12 @@
  </ul>
 
 <p>
-  The Eclipse integration has its focus on supporting the individual developer
-  in an highly interactive way. Please refer to Emma's command line tools and
-  Ant tasks for automated test runs and report generation for teams.
+  Since version 2.0 EclEmma is based on the
+  <a class="extern" href="http://www.eclemma.org/jacoco">JaCoCo</a> code
+  coverage library. The Eclipse integration has its focus on supporting the
+  individual developer in an highly interactive way. For automated builds please
+  refer to <a class="extern" href="http://www.eclemma.org/jacoco/trunk/doc">JaCoCo
+  documentation</a> for integrations with other tools.
 </p>
 
 <h2>Feature Overview</h2>
@@ -91,12 +93,12 @@
 </p>
 
 <ul>  
-  <li><b>Different counters:</b> Select whether instructions, lines, basic
-  blocks, methods or loaded types should be summarized.</li>
+  <li><b>Different counters:</b> Select whether instructions, branches, lines,
+  methods, types or cyclomatic complexity should be summarized.</li>
   <li><b>Multiple coverage sessions:</b> Switching between coverage data from
   multiple sessions is possible.</li>
-  <li><b>Merge Sessions:</b> If multiple different test runs
-  should be considered for analysis coverage sessions can easily be merged.</li>
+  <li><b>Merge Sessions:</b> If multiple different test runs should be
+  considered for analysis coverage sessions can easily be merged.</li>
 </ul>
 
 <h3>Import/Export</h3>
@@ -107,11 +109,10 @@
 </p>
 
 <ul>
-  <li><b>Coverage data import:</b> A wizard allows to import
-  <code>*.ec</code> coverage data files from external launches.</li>
-  <li><b>Coverage report export:</b> Coverage data can be
-  exported as HTML, XML or plain text files or as EMMA session file
-  (<code>*.ec</code>).</li>
+  <li><b>Execution data import:</b> A wizard allows to import JaCoCo
+  <code>*.exec</code> execution data files from external launches.</li>
+  <li><b>Coverage report export:</b> Coverage data can be exported in HTML, XML
+  or CSV format or as JaCoCo execution data files (<code>*.exec</code>).</li>
 </ul>
 
 </body>

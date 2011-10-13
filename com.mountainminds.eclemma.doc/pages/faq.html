@@ -95,16 +95,10 @@
 
 <h3><a name="trouble01"></a>I get the error message "No coverage data file has been written". Please help!</h3>
 <p>
-  This may have several reasons:
+  This happens when the Java process did not terminate properly, e.g. has been
+  manually killed with the <i>Terminate</i> button. Make sure your program
+  terminates on its own.
 </p>
-<ul>
-  <li>No instrumented class has been loaded during the test run at all. Make
-  sure that the classes in focus are selected for instrumentation in the
-  coverage launch dialog.</li>
-  <li>The Java process did not terminate properly, e.g. has been manually killed
-  with the <i>Terminate</i> button. Make sure your program terminates on its
-  own.</li>
-</ul>
 
 <h3><a name="trouble02"></a>Code with exceptions shows no coverage. Why?</h3>
 <p>
