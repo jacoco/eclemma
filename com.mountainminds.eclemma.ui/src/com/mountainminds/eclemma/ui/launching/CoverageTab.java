@@ -103,6 +103,7 @@ public class CoverageTab extends AbstractLaunchConfigurationTab {
 
   public void initializeFrom(ILaunchConfiguration configuration) {
     try {
+      classesviewer.setIncludeBinaries(true);
       classesviewer.setInput(ScopeUtils.getOverallScope(configuration));
       classesviewer.setSelectedScope(ScopeUtils
           .getConfiguredScope(configuration));
