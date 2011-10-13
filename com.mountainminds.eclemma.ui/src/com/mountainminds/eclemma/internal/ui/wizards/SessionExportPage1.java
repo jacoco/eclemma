@@ -220,15 +220,21 @@ public class SessionExportPage1 extends WizardPage {
 
   protected void restoreWidgetValues() {
     IDialogSettings settings = getDialogSettings();
-    ExportFormat format;
-    try {
-      format = ExportFormat.valueOf(settings.get(STORE_FORMAT));
-    } catch (IllegalArgumentException e) {
-      format = ExportFormat.HTML;
-    }
-    formatcombo.setSelection(new StructuredSelection(format));
+    formatcombo.setSelection(new StructuredSelection(readFormat(settings)));
     ComboHistory.restore(settings, STORE_DESTINATIONS, destinationcombo);
     opencheckbox.setSelection(settings.getBoolean(STORE_OPENREPORT));
+  }
+
+  private ExportFormat readFormat(IDialogSettings settings) {
+    final String format = settings.get(STORE_FORMAT);
+    if (format != null) {
+      try {
+        return ExportFormat.valueOf(format);
+      } catch (IllegalArgumentException e) {
+        // we fall-back to default
+      }
+    }
+    return ExportFormat.HTML;
   }
 
   public void saveWidgetValues() {
