@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.jdt.core.IClassFile;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
@@ -92,15 +93,14 @@ public class JavaModelCoverage extends CoverageNodeImpl implements
     types.add(element);
   }
 
+  public void putClassFile(IClassFile element, ICoverageNode coverage) {
+    coveragemap.put(element, coverage);
+  }
+
   public void putCompilationUnit(ICompilationUnit element,
       ICoverageNode coverage) {
     coveragemap.put(element, coverage);
   }
-
-  // TODO
-  // projects.add((IJavaProject) element);
-  // fragmentroots.add((IPackageFragmentRoot) element);
-  // fragments.add((IPackageFragment) element);
 
   // IJavaModelCoverage interface
 

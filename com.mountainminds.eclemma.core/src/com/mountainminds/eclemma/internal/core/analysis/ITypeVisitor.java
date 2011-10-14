@@ -11,6 +11,7 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.core.analysis;
 
+import org.eclipse.jdt.core.IClassFile;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
@@ -37,5 +38,13 @@ public interface ITypeVisitor {
    *          Java model handle
    */
   public void visit(ICompilationUnit unit) throws JavaModelException;
+
+  /**
+   * Called for every class file.
+   * 
+   * @param unit
+   *          Java model handle
+   */
+  public void visit(IClassFile classfile) throws JavaModelException;
 
 }

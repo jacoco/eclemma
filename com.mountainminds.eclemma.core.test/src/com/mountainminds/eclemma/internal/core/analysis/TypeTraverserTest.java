@@ -19,6 +19,7 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.jdt.core.IClassFile;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
@@ -93,6 +94,9 @@ public class TypeTraverserTest {
       }
 
       public void visit(ICompilationUnit unit) throws JavaModelException {
+      }
+
+      public void visit(IClassFile classfile) throws JavaModelException {
       }
     }, MONITOR);
     assertTrue("Not all types processed: " + expected, expected.isEmpty());

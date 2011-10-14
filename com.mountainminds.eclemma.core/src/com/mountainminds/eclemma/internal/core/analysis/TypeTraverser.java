@@ -138,13 +138,14 @@ public class TypeTraverser {
 
   private void processClassFile(ITypeVisitor visitor, IClassFile file,
       IProgressMonitor monitor) throws JavaModelException {
-    IType type = file.getType();
+    visitor.visit(file);
+    final IType type = file.getType();
     processType(visitor, new BinaryTypeName(type), type, monitor);
   }
 
   private void processType(ITypeVisitor visitor, BinaryTypeName btn,
       IType type, IProgressMonitor monitor) throws JavaModelException {
-    String binaryname = btn.toString();
+    final String binaryname = btn.toString();
     monitor.subTask(binaryname);
     visitor.visit(type, binaryname);
     for (final IJavaElement child : type.getChildren()) {

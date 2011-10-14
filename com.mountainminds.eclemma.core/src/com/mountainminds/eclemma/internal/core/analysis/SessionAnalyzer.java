@@ -11,13 +11,15 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.core.analysis;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.jdt.core.IClassFile;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
@@ -116,13 +118,13 @@ public class SessionAnalyzer {
 
     private final AnalyzedNodes nodes;
 
-    private final Collection<IClassCoverage> classes;
-    private final Collection<ISourceFileCoverage> sources;
+    private final Set<IClassCoverage> classes;
+    private final Set<ISourceFileCoverage> sources;
 
     TypeVisitor(AnalyzedNodes nodes) {
       this.nodes = nodes;
-      this.classes = new ArrayList<IClassCoverage>();
-      this.sources = new ArrayList<ISourceFileCoverage>();
+      this.classes = new HashSet<IClassCoverage>();
+      this.sources = new HashSet<ISourceFileCoverage>();
     }
 
     Collection<IClassCoverage> getClasses() {
@@ -134,10 +136,26 @@ public class SessionAnalyzer {
     }
 
     public void visit(IType type, String vmname) {
-      IClassCoverage coverage = nodes.getClassCoverage(vmname);
+      final IClassCoverage coverage = nodes.getClassCoverage(vmname);
       if (coverage != null) {
         classes.add(coverage);
         modelcoverage.putType(type, coverage);
+      }
+    }
+
+    public void visit(IClassFile classfile) throws JavaModelException {
+      final String vmname = classfile.getType().getFullyQualifiedName()
+          .replace('.', '/');
+      final IClassCoverage coverage = nodes.getClassCoverage(vmname);
+      if (coverage != null) {
+        modelcoverage.putClassFile(classfile, coverage);
+        // Add source file coverage manually in case of binary roots
+        // as we will not see compilation units:
+        final ISourceFileCoverage source = nodes.getSourceFileCoverage(
+            coverage.getPackageName(), coverage.getSourceFileName());
+        if (source != null) {
+          sources.add(source);
+        }
       }
     }
 

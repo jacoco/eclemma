@@ -107,12 +107,14 @@ public final class ScopeUtils {
     final Set<IPackageFragmentRoot> all = getOverallScope(configuration);
     final List<?> selection = configuration.getAttribute(
         ICoverageLaunchConfigurationConstants.ATTR_SCOPE_IDS, (List<?>) null);
-    if (selection != null) {
+    if (selection == null) {
+      final DefaultScopeFilter filter = new DefaultScopeFilter(
+          EclEmmaCorePlugin.getInstance().getPreferences());
+      return filter.filter(all, configuration);
+    } else {
       all.retainAll(readScope(selection));
+      return all;
     }
-    final DefaultScopeFilter filter = new DefaultScopeFilter(EclEmmaCorePlugin
-        .getInstance().getPreferences());
-    return filter.filter(all, configuration);
   }
 
   /**
