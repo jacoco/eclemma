@@ -11,15 +11,16 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.core.launching;
 
-import java.util.HashSet;
+import java.util.Arrays;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.launching.JavaRuntime;
+
+import com.mountainminds.eclemma.core.ScopeUtils;
 
 /**
  * Launcher for local Java applications.
@@ -28,17 +29,9 @@ public class JavaApplicationLauncher extends CoverageLauncher {
 
   public Set<IPackageFragmentRoot> getOverallScope(
       ILaunchConfiguration configuration) throws CoreException {
-    final Set<IPackageFragmentRoot> scope = new HashSet<IPackageFragmentRoot>();
     final IJavaProject project = JavaRuntime.getJavaProject(configuration);
-    for (final IPackageFragmentRoot root : project.getAllPackageFragmentRoots()) {
-      final IClasspathEntry cpentry = root.getRawClasspathEntry();
-      switch (cpentry.getEntryKind()) {
-      case IClasspathEntry.CPE_SOURCE:
-      case IClasspathEntry.CPE_LIBRARY:
-        scope.add(root);
-      }
-    }
-    return scope;
+    return ScopeUtils.filterJREEntries(Arrays.asList(project
+        .getAllPackageFragmentRoots()));
   }
 
 }

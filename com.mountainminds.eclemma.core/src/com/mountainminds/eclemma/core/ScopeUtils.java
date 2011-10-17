@@ -12,6 +12,7 @@
 package com.mountainminds.eclemma.core;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -21,6 +22,7 @@ import java.util.Set;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaModel;
@@ -128,15 +130,40 @@ public final class ScopeUtils {
     final IJavaModel model = JavaCore.create(ResourcesPlugin.getWorkspace()
         .getRoot());
     for (IJavaProject p : model.getJavaProjects()) {
-      for (final IPackageFragmentRoot root : p.getPackageFragmentRoots()) {
-        final IClasspathEntry cpentry = root.getRawClasspathEntry();
-        switch (cpentry.getEntryKind()) {
-        case IClasspathEntry.CPE_SOURCE:
-        case IClasspathEntry.CPE_LIBRARY:
-          scope.add(root);
+      scope.addAll(Arrays.asList(p.getPackageFragmentRoots()));
+    }
+    return filterJREEntries(scope);
+  }
+
+  /**
+   * Remove all JRE runtime entries from the given set
+   * 
+   * @param scope
+   *          set to filter
+   * @return filtered set without JRE runtime entries
+   */
+  public static Set<IPackageFragmentRoot> filterJREEntries(
+      Collection<IPackageFragmentRoot> scope) throws JavaModelException {
+    final Set<IPackageFragmentRoot> filtered = new HashSet<IPackageFragmentRoot>();
+    for (final IPackageFragmentRoot root : scope) {
+      final IClasspathEntry entry = root.getRawClasspathEntry();
+      switch (entry.getEntryKind()) {
+      case IClasspathEntry.CPE_SOURCE:
+      case IClasspathEntry.CPE_LIBRARY:
+      case IClasspathEntry.CPE_VARIABLE:
+        filtered.add(root);
+        break;
+      case IClasspathEntry.CPE_CONTAINER:
+        IClasspathContainer container = JavaCore.getClasspathContainer(
+            entry.getPath(), root.getJavaProject());
+        if (container != null
+            && container.getKind() == IClasspathContainer.K_APPLICATION) {
+          filtered.add(root);
         }
+        break;
       }
     }
-    return scope;
+    return filtered;
   }
+
 }

@@ -23,6 +23,8 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 
+import com.mountainminds.eclemma.core.ScopeUtils;
+
 /**
  * Laucher for the Eclipse runtime workbench.
  */
@@ -43,7 +45,7 @@ public class EclipseLauncher extends CoverageLauncher {
         result.addAll(Arrays.asList(project.getPackageFragmentRoots()));
       }
     }
-    return result;
+    return ScopeUtils.filterJREEntries(result);
   }
 
 }

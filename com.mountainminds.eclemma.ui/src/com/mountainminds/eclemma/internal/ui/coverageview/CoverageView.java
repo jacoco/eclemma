@@ -16,6 +16,7 @@ import java.text.DecimalFormat;
 import java.util.List;
 
 import org.eclipse.jdt.core.IPackageFragmentRoot;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.ui.IContextMenuConstants;
 import org.eclipse.jdt.ui.actions.IJavaEditorActionDefinitionIds;
 import org.eclipse.jdt.ui.actions.JdtActionConstants;
@@ -169,10 +170,18 @@ public class CoverageView extends ViewPart implements IShowInTarget {
 
     private String getSimpleTextForJavaElement(Object element) {
       if (element instanceof IPackageFragmentRoot) {
+        final IPackageFragmentRoot root = (IPackageFragmentRoot) element;
         // tweak label if the package fragment root is the project itself:
-        IPackageFragmentRoot root = (IPackageFragmentRoot) element;
         if (root.getElementName().length() == 0) {
           element = root.getJavaProject();
+        }
+        // shorten JAR references
+        try {
+          if (root.getKind() == IPackageFragmentRoot.K_BINARY) {
+            return root.getPath().lastSegment();
+          }
+        } catch (JavaModelException e) {
+          EclEmmaUIPlugin.log(e);
         }
       }
       return delegate.getText(element);

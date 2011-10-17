@@ -106,11 +106,15 @@ public class ScopeViewer implements ISelectionProvider {
    * @return label for the class path entry
    */
   private static String getPathLabel(IPackageFragmentRoot root) {
-    IPath path = root.getPath();
-    if (!root.isExternal()) {
-      path = path.removeFirstSegments(1);
+    final IPath path = root.getPath();
+    try {
+      if (root.getKind() == IPackageFragmentRoot.K_BINARY) {
+        return path.lastSegment();
+      }
+    } catch (JavaModelException e) {
+      EclEmmaUIPlugin.log(e);
     }
-    return path.toString();
+    return path.removeFirstSegments(1).toString();
   }
 
   private final Table table;
