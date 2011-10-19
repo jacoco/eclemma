@@ -70,6 +70,8 @@ public class CoveragePropertyPage extends PropertyPage {
     Text t1 = new Text(parent, SWT.READ_ONLY | SWT.WRAP);
     t1.setText(getSessionDescription());
     t1.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false));
+    t1.setBackground(t1.getDisplay()
+        .getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
 
     Control table = createTable(parent);
     GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
