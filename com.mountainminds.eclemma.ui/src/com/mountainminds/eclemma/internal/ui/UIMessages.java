@@ -115,7 +115,6 @@ public class UIMessages extends NLS {
   public static String ExportReportPage1Format_label;
   public static String ExportReportPage1Destination_label;
   public static String ExportReportPage1BrowseDialog_title;
-  public static String ExportReportOpenReport_label;
 
   public static String ImportSession_title;
   public static String ImportSessionPage1_title;

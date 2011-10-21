@@ -60,12 +60,10 @@ public class SessionExportPage1 extends WizardPage {
   private static final String STORE_FORMAT = STORE_PREFIX + "format"; //$NON-NLS-1$
   private static final String STORE_DESTINATIONS = STORE_PREFIX
       + "destinations"; //$NON-NLS-1$
-  private static final String STORE_OPENREPORT = STORE_PREFIX + "openreport"; //$NON-NLS-1$
 
   private TableViewer sessionstable;
   private ComboViewer formatcombo;
   private Combo destinationcombo;
-  private Button opencheckbox;
 
   public SessionExportPage1() {
     super(ID);
@@ -95,8 +93,6 @@ public class SessionExportPage1 extends WizardPage {
     group.setText(UIMessages.ExportReportPage1DestinationGroup_label);
     group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
     createExportOptionsGroup(group);
-    opencheckbox = new Button(parent, SWT.CHECK);
-    opencheckbox.setText(UIMessages.ExportReportOpenReport_label);
     setControl(parent);
     ContextHelp.setHelp(parent, ContextHelp.SESSION_EXPORT);
     restoreWidgetValues();
@@ -222,7 +218,6 @@ public class SessionExportPage1 extends WizardPage {
     IDialogSettings settings = getDialogSettings();
     formatcombo.setSelection(new StructuredSelection(readFormat(settings)));
     ComboHistory.restore(settings, STORE_DESTINATIONS, destinationcombo);
-    opencheckbox.setSelection(settings.getBoolean(STORE_OPENREPORT));
   }
 
   private ExportFormat readFormat(IDialogSettings settings) {
@@ -241,7 +236,6 @@ public class SessionExportPage1 extends WizardPage {
     IDialogSettings settings = getDialogSettings();
     settings.put(STORE_FORMAT, getExportFormat().name());
     ComboHistory.save(settings, STORE_DESTINATIONS, destinationcombo);
-    settings.put(STORE_OPENREPORT, opencheckbox.getSelection());
   }
 
   public ICoverageSession getSelectedSession() {
@@ -258,10 +252,6 @@ public class SessionExportPage1 extends WizardPage {
 
   public String getDestination() {
     return destinationcombo.getText().trim();
-  }
-
-  public boolean getOpenReport() {
-    return opencheckbox.getSelection();
   }
 
 }

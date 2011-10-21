@@ -14,23 +14,16 @@ package com.mountainminds.eclemma.internal.ui.wizards;
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.ui.IEditorDescriptor;
-import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.ide.IDE;
 
 import com.mountainminds.eclemma.core.CoverageTools;
 import com.mountainminds.eclemma.core.ICoverageSession;
@@ -44,8 +37,6 @@ import com.mountainminds.eclemma.internal.ui.UIMessages;
 public class SessionExportWizard extends Wizard implements IExportWizard {
 
   private static final String SETTINGSID = "SessionExportWizard"; //$NON-NLS-1$
-
-  private IWorkbench workbench;
 
   private SessionExportPage1 page1;
 
@@ -64,7 +55,6 @@ public class SessionExportWizard extends Wizard implements IExportWizard {
   }
 
   public void init(IWorkbench workbench, IStructuredSelection selection) {
-    this.workbench = workbench;
   }
 
   public void addPages() {
@@ -74,9 +64,6 @@ public class SessionExportWizard extends Wizard implements IExportWizard {
   public boolean performFinish() {
     page1.saveWidgetValues();
     boolean result = createReport();
-    if (result && page1.getOpenReport()) {
-      openReport();
-    }
     return result;
   }
 
@@ -116,30 +103,6 @@ public class SessionExportWizard extends Wizard implements IExportWizard {
       return false;
     }
     return true;
-  }
-
-  private void openReport() {
-    IPath file = Path.fromOSString(page1.getDestination());
-    if (page1.getExportFormat().isFolderOutput()) {
-      file = file.append("index.html"); //$NON-NLS-1$
-    }
-    String editorid = getEditorId(file);
-    IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
-    if (editorid != null) {
-      try {
-        IDE.openEditor(page, new ExternalFileEditorInput(file.toFile()),
-            editorid);
-      } catch (PartInitException e) {
-        EclEmmaUIPlugin.log(e);
-      }
-    }
-  }
-
-  private String getEditorId(IPath file) {
-    IEditorRegistry editorRegistry = workbench.getEditorRegistry();
-    IEditorDescriptor descriptor = editorRegistry.getDefaultEditor(file
-        .lastSegment());
-    return descriptor == null ? null : descriptor.getId();
   }
 
 }
