@@ -23,11 +23,11 @@
 
 <p>
   If your program is launched outside the Eclipse debugging environment, you
-  might import EMMA coverage (<code>*.ec</code>) or session files
-  (<code>*.es</code>) from these launches. This allows to study the coverage
-  results directly in your source code. The <i>Coverage Session</i> import
-  wizard can be activated form the <i>File &rarr; Import...</i> menu or from the
-  <i>Coverage</i> view's context menu.
+  might import JaCoCo coverage files (<code>*.exec</code>) from these launches.
+  This allows to study the coverage results directly in your source code.
+  The <i>Coverage Session</i> import wizard can be activated form the
+  <i>File &rarr; Import...</i> menu or from the <i>Coverage</i> view's context
+  menu.
 </p>
 
 <p>
@@ -52,15 +52,10 @@
 </p>
 
 <p>
-  Coverage analysis is based on runtime coverage data plus so called <i>Meta
-  data</i> derived from the corresponding class files. For the import you can
-  select whether the Meta data should be taken from the imported EMMA session
-  file or from the classes compiled locally within your workbench.
-</p>
-
-<p>
-  <b>Warning:</b> If the Meta data and runtime coverage data are not based on
-  the same class files, no or improper coverage information will be visualized.  
+  <b>Warning:</b> Imported execution data must be based on the exact same
+  class files that are also used within the Eclipse IDE. If the external launch
+  was based on different class files (e.g. created with different compiler) no
+  coverage will be shown.
 </p>
 
 <h3>Session Export</h3>
@@ -73,10 +68,11 @@
 <ul>
   <li><b>HTML:</b> A detailed and browseable report as a set of HTML
   files.</li>
+  <li><b>Zipped HTML:</b> Same as above but zipped into a single file.</li>
   <li><b>XML:</b> Coverage data as a single, structured XML file.</li>
-  <li><b>Plain text:</b> Limited coverage information as a plain text
-  document.</li>
-  <li><b>EMMA coverage file:</b> Coverage file as used internally by EMMA.</li>
+  <li><b>CSV:</b> Coverage data on class level granularity as comma-separated
+  values.</li>
+  <li><b>Execution data file:</b> Native JaCoCo execution data format.</li>
 </ul>
 
 <p>

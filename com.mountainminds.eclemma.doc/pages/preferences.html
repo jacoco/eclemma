@@ -15,7 +15,7 @@
 <h2>Code Coverage Preferences</h2>
 
 <p>
-  The behaviour of the EclEmma plug-in can be adjusted in the Eclipse
+  The behavior of the EclEmma plug-in can be adjusted in the Eclipse
   <i>Preferences</i> dialog. Open the dialog from the
   <i>Window</i> &rarr; <i>Preferences</i> menu. EclEmma's settings are located
   on the page <i>Java</i> &rarr; <i>Code Coverage</i>. Or simply type
@@ -46,7 +46,7 @@
 
 <p>
   When a launch configuration is executed in code coverage mode the first time
-  EclEmma selects class path entries that will be instrumented for code coverage
+  EclEmma selects class path entries that will be in scope for code coverage
   analysis by default. There are several options to modify the default selection
   behavior:
 </p>
@@ -61,16 +61,16 @@
     (Default: off)
   </li>
   <li><b>Only path entries matching:</b>
-    Comma separated list of strings, that must match with the class path entry. A class
-    path entry matches the filter, if it contains one of the given strings.
-    (e.g. "src/main/java", Default: no filter)
+    Comma separated list of strings that must match with the class path entry.
+    A class path entry matches the filter, if it contains one of the given
+    strings. (e.g. "src/main/java", Default: no filter)
   </li> 
 </ul>
 
 <p>
-  <b>Warning:</b> If your settings do not match any of the class path entries in your
-  project(s), every new launch in coverage mode will fail with error message
-  "No classes are selected for instrumentation". 
+  <b>Warning:</b> If your settings do not match any of the class path entries in
+  your project(s), every new launch in coverage mode will have an empty analysis
+  scope. 
 </p>
 
 <h3>Other Relevant Preference Pages</h3>
