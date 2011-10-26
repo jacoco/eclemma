@@ -99,8 +99,14 @@ public class SessionAnalyzer {
     final TypeVisitor visitor = new TypeVisitor(analyzer.analyze(root));
     new TypeTraverser(root).process(visitor, monitor);
 
-    IBundleCoverage bundle = new BundleCoverageImpl(root.getElementName(),
-        visitor.getClasses(), visitor.getSources());
+    String name = root.getElementName();
+    if (name.length() == 0) {
+      // for project roots take project name:
+      name = root.getParent().getElementName();
+    }
+
+    IBundleCoverage bundle = new BundleCoverageImpl(name, visitor.getClasses(),
+        visitor.getSources());
     modelcoverage.putFragmentRoot(root, bundle);
     putPackages(bundle.getPackages(), root);
   }
