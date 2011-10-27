@@ -35,13 +35,13 @@ class CoveredElementsContentProvider extends WorkbenchContentProvider {
     if (coverage != null) {
       switch (settings.getEntryMode()) {
       case ViewSettings.ENTRYMODE_PROJECTS:
-        return coverage.getInstrumentedProjects();
+        return coverage.getProjects();
       case ViewSettings.ENTRYMODE_PACKAGEROOTS:
-        return coverage.getInstrumentedPackageFragmentRoots();
+        return coverage.getPackageFragmentRoots();
       case ViewSettings.ENTRYMODE_PACKAGES:
-        return coverage.getInstrumentedPackageFragments();
+        return coverage.getPackageFragments();
       case ViewSettings.ENTRYMODE_TYPES:
-        return coverage.getInstrumentedTypes();
+        return coverage.getTypes();
       }
     }
     return new Object[0];

@@ -73,19 +73,19 @@ public interface IJavaModelCoverage extends ICoverageNode {
       return this;
     }
 
-    public IJavaProject[] getInstrumentedProjects() {
+    public IJavaProject[] getProjects() {
       return new IJavaProject[0];
     }
 
-    public IPackageFragmentRoot[] getInstrumentedPackageFragmentRoots() {
+    public IPackageFragmentRoot[] getPackageFragmentRoots() {
       return new IPackageFragmentRoot[0];
     }
 
-    public IPackageFragment[] getInstrumentedPackageFragments() {
+    public IPackageFragment[] getPackageFragments() {
       return new IPackageFragment[0];
     }
 
-    public IType[] getInstrumentedTypes() {
+    public IType[] getTypes() {
       return new IType[0];
     }
 
@@ -100,7 +100,7 @@ public interface IJavaModelCoverage extends ICoverageNode {
    * 
    * @return list of Java projects
    */
-  public IJavaProject[] getInstrumentedProjects();
+  public IJavaProject[] getProjects();
 
   /**
    * Returns all package fragment roots where coverage information is available
@@ -108,21 +108,21 @@ public interface IJavaModelCoverage extends ICoverageNode {
    * 
    * @return list of package fragment roots.
    */
-  public IPackageFragmentRoot[] getInstrumentedPackageFragmentRoots();
+  public IPackageFragmentRoot[] getPackageFragmentRoots();
 
   /**
    * Returns all package fragments where coverage information is available for.
    * 
    * @return list of package fragments
    */
-  public IPackageFragment[] getInstrumentedPackageFragments();
+  public IPackageFragment[] getPackageFragments();
 
   /**
    * Returns all Java types where coverage information is available for.
    * 
    * @return list of Java types
    */
-  public IType[] getInstrumentedTypes();
+  public IType[] getTypes();
 
   /**
    * Returns the coverage information associated with the given Java element. If

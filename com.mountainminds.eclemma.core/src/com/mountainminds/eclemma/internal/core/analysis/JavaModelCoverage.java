@@ -50,15 +50,13 @@ public class JavaModelCoverage extends CoverageNodeImpl implements
   /** List of all IJavaProject objects with coverage information attached */
   private final List<IJavaProject> projects = new ArrayList<IJavaProject>();
 
-  /**
-   * List of all IPackageFragmentRoot objects with coverage information attached
-   */
+  /** List of all IPackageFragmentRoot objects with coverage information */
   private final List<IPackageFragmentRoot> fragmentroots = new ArrayList<IPackageFragmentRoot>();
 
-  /** List of all IPackageFragment objects with coverage information attached */
+  /** List of all IPackageFragment objects with coverage information */
   private final List<IPackageFragment> fragments = new ArrayList<IPackageFragment>();
 
-  /** List of all IType objects with coverage information attached */
+  /** List of all IType objects with coverage information */
   private final List<IType> types = new ArrayList<IType>();
 
   public JavaModelCoverage() {
@@ -104,22 +102,22 @@ public class JavaModelCoverage extends CoverageNodeImpl implements
 
   // IJavaModelCoverage interface
 
-  public IJavaProject[] getInstrumentedProjects() {
+  public IJavaProject[] getProjects() {
     IJavaProject[] arr = new IJavaProject[projects.size()];
     return projects.toArray(arr);
   }
 
-  public IPackageFragmentRoot[] getInstrumentedPackageFragmentRoots() {
+  public IPackageFragmentRoot[] getPackageFragmentRoots() {
     IPackageFragmentRoot[] arr = new IPackageFragmentRoot[fragmentroots.size()];
     return fragmentroots.toArray(arr);
   }
 
-  public IPackageFragment[] getInstrumentedPackageFragments() {
+  public IPackageFragment[] getPackageFragments() {
     IPackageFragment[] arr = new IPackageFragment[fragments.size()];
     return fragments.toArray(arr);
   }
 
-  public IType[] getInstrumentedTypes() {
+  public IType[] getTypes() {
     IType[] arr = new IType[types.size()];
     return types.toArray(arr);
   }

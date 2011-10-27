@@ -108,7 +108,7 @@ public class SessionExporter implements ISessionExporter {
         .visitInfo(analyzer.getSessionInfos(), analyzer.getExecutionData());
     final IReportGroupVisitor modelgroup = formatter.visitGroup(session
         .getDescription());
-    for (IJavaProject project : modelCoverage.getInstrumentedProjects()) {
+    for (IJavaProject project : modelCoverage.getProjects()) {
       final IReportGroupVisitor projectgroup = modelgroup.visitGroup(project
           .getElementName());
       for (IPackageFragmentRoot root : project.getPackageFragmentRoots()) {
