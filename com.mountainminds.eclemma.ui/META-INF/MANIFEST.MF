@@ -19,7 +19,7 @@ Require-Bundle: com.mountainminds.eclemma.core,
  org.eclipse.jface.text,
  org.eclipse.ui.workbench.texteditor,
  org.eclipse.ui.editors,
- org.jacoco.core
+ org.jacoco.core;bundle-version="0.5.3"
 Bundle-Activator: com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin
 Export-Package: com.mountainminds.eclemma.ui.launching
 Bundle-ActivationPolicy: lazy
