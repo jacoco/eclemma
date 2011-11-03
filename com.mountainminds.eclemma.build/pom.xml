@@ -164,6 +164,7 @@
           <archive>
             <addMavenDescriptor>false</addMavenDescriptor>
           </archive>
+          <archiveSite>true</archiveSite>
         </configuration>
       </plugin>
       <plugin>
