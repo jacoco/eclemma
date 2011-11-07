@@ -154,4 +154,8 @@ public final class SignatureResolver {
     }
   }
 
+  private SignatureResolver() {
+    // no instances
+  }
+
 }

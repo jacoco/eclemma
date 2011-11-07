@@ -236,4 +236,8 @@ public final class DebugOptions {
 
   public static final ITracer ANALYSISTRACER = getTracer("analysis"); //$NON-NLS-1$
 
+  private DebugOptions() {
+    // no instances
+  }
+
 }

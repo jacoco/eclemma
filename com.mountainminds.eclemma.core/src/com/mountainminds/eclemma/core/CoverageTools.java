@@ -94,4 +94,8 @@ public final class CoverageTools {
     EclEmmaCorePlugin.getInstance().setPreferences(preferences);
   }
 
+  private CoverageTools() {
+    // no instances
+  }
+
 }

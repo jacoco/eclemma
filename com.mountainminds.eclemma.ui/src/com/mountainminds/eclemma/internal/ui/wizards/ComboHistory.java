@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Combo;
  * Utility class for saving/restoring the history of entered text strings in a
  * combo box widget.
  */
-public class ComboHistory {
+public final class ComboHistory {
 
   /**
    * Maximum number of history items.
@@ -70,6 +70,10 @@ public class ComboHistory {
       history = history.subList(0, HISTORY_LIMIT);
     }
     settings.put(key, history.toArray(new String[history.size()]));
+  }
+
+  private ComboHistory() {
+    // no instances
   }
 
 }

@@ -20,7 +20,7 @@ import org.eclipse.ui.PlatformUI;
  * @author Marc R. Hoffmann
  * @version $Revision: $
  */
-public class ContextHelp {
+public final class ContextHelp {
 
   private static final String PREFIX = EclEmmaUIPlugin.ID + "."; //$NON-NLS-1$
 
@@ -54,6 +54,10 @@ public class ContextHelp {
    */
   public static void setHelp(Control control, String id) {
     PlatformUI.getWorkbench().getHelpSystem().setHelp(control, id);
+  }
+
+  private ContextHelp() {
+    // no instances
   }
 
 }
