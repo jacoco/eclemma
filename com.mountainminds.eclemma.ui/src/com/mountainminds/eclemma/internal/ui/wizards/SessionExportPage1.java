@@ -11,8 +11,6 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.ui.wizards;
 
-import java.io.File;
-
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IDialogSettings;
@@ -187,17 +185,7 @@ public class SessionExportPage1 extends WizardPage {
       return;
     }
     final ExportFormat format = getExportFormat();
-    if (format.isFolderOutput()) {
-
-    } else {
-      // the destination must be a file and must be in a existing directory
-      File f = new File(getDestination());
-      File p = f.getParentFile();
-      if (f.isDirectory() || (p != null && !p.isDirectory())) {
-        setErrorMessage(UIMessages.ExportReportPage1InvalidDestination_message);
-        setPageComplete(false);
-        return;
-      }
+    if (!format.isFolderOutput()) {
       // the extension should correspond to the report type
       String exta = Path.fromOSString(getDestination()).getFileExtension();
       String exte = format.getFileExtension();
