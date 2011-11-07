@@ -39,6 +39,7 @@ public class SessionImportWizard extends Wizard implements IImportWizard {
   private SessionImportPage1 page1;
 
   public SessionImportWizard() {
+    super();
     IDialogSettings pluginsettings = EclEmmaUIPlugin.getInstance()
         .getDialogSettings();
     IDialogSettings wizardsettings = pluginsettings.getSection(SETTINGSID);
@@ -57,8 +58,8 @@ public class SessionImportWizard extends Wizard implements IImportWizard {
   }
 
   public void addPages() {
-    addPage(page1 = new SessionImportPage1());
-    super.addPages();
+    page1 = new SessionImportPage1();
+    addPage(page1);
   }
 
   public boolean performFinish() {

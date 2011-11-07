@@ -41,6 +41,7 @@ public class SessionExportWizard extends Wizard implements IExportWizard {
   private SessionExportPage1 page1;
 
   public SessionExportWizard() {
+    super();
     IDialogSettings pluginsettings = EclEmmaUIPlugin.getInstance()
         .getDialogSettings();
     IDialogSettings wizardsettings = pluginsettings.getSection(SETTINGSID);
@@ -58,13 +59,13 @@ public class SessionExportWizard extends Wizard implements IExportWizard {
   }
 
   public void addPages() {
-    addPage(page1 = new SessionExportPage1());
+    page1 = new SessionExportPage1();
+    addPage(page1);
   }
 
   public boolean performFinish() {
     page1.saveWidgetValues();
-    boolean result = createReport();
-    return result;
+    return createReport();
   }
 
   private boolean createReport() {
