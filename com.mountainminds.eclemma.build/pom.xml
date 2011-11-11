@@ -81,7 +81,7 @@
 
     <orbit-repository-url>http://download.eclipse.org/tools/orbit/downloads/drops/R20110523182458/repository/</orbit-repository-url>
 
-    <jacoco.version>0.5.3.201107060350</jacoco.version>
+    <jacoco.version>0.5.4.201111111111</jacoco.version>
     <tycho.testArgLine>-Xmx800m</tycho.testArgLine>
 
     <!-- Sonar -->
@@ -173,7 +173,9 @@
         <configuration>
           <sessionId>${project.artifactId}</sessionId>
           <destFile>${project.basedir}/../target/jacoco.exec</destFile>
-          <includes>com.mountainminds.eclemma.*</includes>
+          <includes>
+            <include>com.mountainminds.eclemma.*</include>
+          </includes>
         </configuration>
         <executions>
           <execution>
