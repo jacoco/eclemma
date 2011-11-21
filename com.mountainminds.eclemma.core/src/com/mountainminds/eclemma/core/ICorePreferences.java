@@ -11,6 +11,9 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.core;
 
+import org.jacoco.core.runtime.AgentOptions;
+import org.jacoco.core.runtime.WildcardMatcher;
+
 /**
  * Clients may implement this interface to customize the behavior of the EclEmma
  * core plug-in and pass a instance to
@@ -23,6 +26,9 @@ public interface ICorePreferences {
    * Default behavior if no customization is set.
    */
   public static final ICorePreferences DEFAULT = new ICorePreferences() {
+
+    private AgentOptions AGENT_DEFAULTS = new AgentOptions();
+
     public boolean getActivateNewSessions() {
       return true;
     }
@@ -42,6 +48,19 @@ public interface ICorePreferences {
     public String getDefaultScopeFilter() {
       return "";//$NON-NLS-1$
     }
+
+    public String getAgentIncludes() {
+      return AGENT_DEFAULTS.getIncludes();
+    }
+
+    public String getAgentExcludes() {
+      return AGENT_DEFAULTS.getExcludes();
+    }
+
+    public String getAgentExclClassloader() {
+      return AGENT_DEFAULTS.getExclClassloader();
+    }
+
   };
 
   /**
@@ -85,5 +104,29 @@ public interface ICorePreferences {
    * @return List of match strings
    */
   public String getDefaultScopeFilter();
+
+  /**
+   * Returns the wildcard expression for classes to include.
+   * 
+   * @return wildcard expression for classes to include
+   * @see WildcardMatcher
+   */
+  public String getAgentIncludes();
+
+  /**
+   * Returns the wildcard expression for classes to exclude.
+   * 
+   * @return wildcard expression for classes to exclude
+   * @see WildcardMatcher
+   */
+  public String getAgentExcludes();
+
+  /**
+   * Returns the wildcard expression for excluded class loaders.
+   * 
+   * @return expression for excluded class loaders
+   * @see WildcardMatcher
+   */
+  public String getAgentExclClassloader();
 
 }

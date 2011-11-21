@@ -39,6 +39,15 @@ public class UIPreferences extends AbstractPreferenceInitializer {
   public static final String PREF_AUTO_REMOVE_SESSIONS = EclEmmaUIPlugin.ID
       + ".auto_remove_sessions"; //$NON-NLS-1$ 
 
+  public static final String PREF_AGENT_INCLUDES = EclEmmaUIPlugin.ID
+      + ".agent_includes"; //$NON-NLS-1$ 
+
+  public static final String PREF_AGENT_EXCLUDES = EclEmmaUIPlugin.ID
+      + ".agent_excludes"; //$NON-NLS-1$ 
+
+  public static final String PREF_AGENT_EXCLCLASSLOADER = EclEmmaUIPlugin.ID
+      + ".agent_exclclassloader"; //$NON-NLS-1$ 
+
   public static final ICorePreferences CORE_PREFERENCES = new ICorePreferences() {
     public boolean getActivateNewSessions() {
       return getPreferenceStore().getBoolean(PREF_ACTICATE_NEW_SESSIONS);
@@ -61,6 +70,18 @@ public class UIPreferences extends AbstractPreferenceInitializer {
     public String getDefaultScopeFilter() {
       return getPreferenceStore().getString(PREF_DEFAULT_SCOPE_FILTER);
     }
+
+    public String getAgentIncludes() {
+      return getPreferenceStore().getString(PREF_AGENT_INCLUDES);
+    }
+
+    public String getAgentExcludes() {
+      return getPreferenceStore().getString(PREF_AGENT_EXCLUDES);
+    }
+
+    public String getAgentExclClassloader() {
+      return getPreferenceStore().getString(PREF_AGENT_EXCLCLASSLOADER);
+    }
   };
 
   public void initializeDefaultPreferences() {
@@ -76,6 +97,12 @@ public class UIPreferences extends AbstractPreferenceInitializer {
         ICorePreferences.DEFAULT.getDefaultScopeSameProjectOnly());
     pref.setDefault(PREF_DEFAULT_SCOPE_FILTER,
         ICorePreferences.DEFAULT.getDefaultScopeFilter());
+    pref.setDefault(PREF_AGENT_INCLUDES,
+        ICorePreferences.DEFAULT.getAgentIncludes());
+    pref.setDefault(PREF_AGENT_EXCLUDES,
+        ICorePreferences.DEFAULT.getAgentExcludes());
+    pref.setDefault(PREF_AGENT_EXCLCLASSLOADER,
+        ICorePreferences.DEFAULT.getAgentExclClassloader());
   }
 
   private static IPreferenceStore getPreferenceStore() {

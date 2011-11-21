@@ -150,6 +150,7 @@ public class UIMessages extends NLS {
   public static String CoverageDecoratorSuffix_label;
 
   public static String CoveragePreferences_description;
+  public static String CoverageSessionManagement_titel;
   public static String CoveragePreferencesShowCoverageView_label;
   public static String CoveragePreferencesActivateNewSessions_label;
   public static String CoveragePreferencesAutoRemoveSessions_label;
@@ -157,6 +158,11 @@ public class UIMessages extends NLS {
   public static String CoveragePreferencesSourceFoldersOnly_label;
   public static String CoveragePreferencesSameProjectOnly_label;
   public static String CoveragePreferencesClasspathFilter_label;
+  public static String CoveragePreferencesCoverageRuntime_title;
+  public static String CoveragePreferencesIncludes_label;
+  public static String CoveragePreferencesExcludes_label;
+  public static String CoveragePreferencesExcludeClassloaders_label;
+  public static String CoveragePreferencesCoverageRuntime_message;
   public static String CoveragePreferencesDecoratorsLink_label;
   public static String CoveragePreferencesAnnotationsLink_label;
 

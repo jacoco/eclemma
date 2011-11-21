@@ -147,6 +147,18 @@ public class DefaultScopeFilterTest {
       return false;
     }
 
+    public String getAgentIncludes() {
+      return null;
+    }
+
+    public String getAgentExcludes() {
+      return null;
+    }
+
+    public String getAgentExclClassloader() {
+      return null;
+    }
+
   }
 
   private <E> Set<E> set(E... elements) {

@@ -73,6 +73,41 @@
   scope. 
 </p>
 
+<p>
+  For technical reasons it might be necessary to exclude certain classes from
+  code coverage analysis. The following options configure the coverage agent to
+  exclude certain classes from analysis. Except for performance optimization or
+  technical corner cases these options are normally not required.
+</p>
+
+<ul>
+  <li><b>Includes:</b>
+    A list of class names that should be included in execution analysis. The
+    list entries are separated by a colon (:) and may use wildcard characters
+    (* and ?). (Default: *)
+  </li>
+  <li><b>Includes:</b>
+    A list of class names that should be excluded from execution analysis. The
+    list entries are separated by a colon (:) and may use wildcard characters
+    (* and ?). (Default: <i>empty</i>)
+  </li>
+  <li><b>Exclude classloaders:</b>
+    A list of class loader names that should be excluded from execution
+    analysis. The list entries are separated by a colon (:) and may use wildcard
+    characters (* and ?). This option might be required in case of special
+    frameworks that conflict with JaCoCo code instrumentation, in particular
+    class loaders that do not have access to the Java runtime classes.
+    (Default: sun.reflect.DelegatingClassLoader) 
+  </li>
+</ul>
+
+<p>
+  <b>Warning:</b> Use these options with caution! Invalid entries might break
+  the code coverage launcher. Also do not use these options to define the scope
+  of your analysis. Excluded classes will still show as not covered.
+</p>
+
+
 <h3>Other Relevant Preference Pages</h3>
 
 <p>

@@ -40,6 +40,7 @@ import org.jacoco.agent.AgentJar;
 import org.jacoco.core.runtime.AgentOptions;
 
 import com.mountainminds.eclemma.core.EclEmmaStatus;
+import com.mountainminds.eclemma.core.ICorePreferences;
 import com.mountainminds.eclemma.core.ScopeUtils;
 import com.mountainminds.eclemma.internal.core.CoreMessages;
 import com.mountainminds.eclemma.internal.core.EclEmmaCorePlugin;
@@ -76,6 +77,11 @@ public abstract class CoverageLauncher implements ICoverageLauncher,
   private void addCoverageAgent(ILaunchConfigurationWorkingCopy workingcopy,
       ICoverageLaunch launch) throws CoreException {
     final AgentOptions options = new AgentOptions();
+    final ICorePreferences preferences = EclEmmaCorePlugin.getInstance()
+        .getPreferences();
+    options.setIncludes(preferences.getAgentIncludes());
+    options.setExcludes(preferences.getAgentExcludes());
+    options.setExclClassloader(preferences.getAgentExclClassloader());
     options.setDestfile(launch.getExecutionDataFile().toOSString());
     try {
       final URL agentfileurl = FileLocator.toFileURL(AgentJar.getResource());
