@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
+import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -30,6 +31,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.core.formatter.IndentManipulation;
 import org.eclipse.osgi.util.NLS;
 import org.jacoco.core.analysis.IBundleCoverage;
 import org.jacoco.core.data.ExecutionDataWriter;
@@ -157,18 +159,28 @@ public class SessionExporter implements ISessionExporter {
     }
   }
 
-  private static class SourceFolderSourceFileLocator implements
+  private static abstract class AbstractSourceFileLocator implements
       ISourceFileLocator {
 
-    private final IPackageFragmentRoot root;
+    protected final IPackageFragmentRoot root;
+    private final int tabWidth;
 
-    public SourceFolderSourceFileLocator(IPackageFragmentRoot root) {
+    public AbstractSourceFileLocator(IPackageFragmentRoot root) {
       this.root = root;
+      final Map<?, ?> options = root.getJavaProject().getOptions(true);
+      this.tabWidth = IndentManipulation.getTabWidth(options);
     }
 
-    public int getTabWidth() {
-      // TODO read from editor preferences
-      return 4;
+    public final int getTabWidth() {
+      return tabWidth;
+    }
+  }
+
+  private static class SourceFolderSourceFileLocator extends
+      AbstractSourceFileLocator {
+
+    public SourceFolderSourceFileLocator(IPackageFragmentRoot root) {
+      super(root);
     }
 
     public Reader getSourceFile(String packagename, String sourcename)
@@ -185,13 +197,11 @@ public class SessionExporter implements ISessionExporter {
     }
   }
 
-  private static class LibrarySourceFileLocator implements ISourceFileLocator {
+  private static class LibrarySourceFileLocator extends
+      AbstractSourceFileLocator {
 
     public LibrarySourceFileLocator(IPackageFragmentRoot root) {
-    }
-
-    public int getTabWidth() {
-      return 4;
+      super(root);
     }
 
     public Reader getSourceFile(String packagename, String sourcename)
