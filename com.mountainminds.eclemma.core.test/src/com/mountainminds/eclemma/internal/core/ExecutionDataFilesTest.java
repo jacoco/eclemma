@@ -17,6 +17,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.junit.Before;
@@ -48,6 +49,12 @@ public class ExecutionDataFilesTest {
     assertTrue(file.exists());
     assertTrue(file.isFile());
     assertEquals(0, file.length());
+  }
+
+  @Test(expected = CoreException.class)
+  public void testNewFileNegative() throws Exception {
+    folder.delete();
+    files.newFile();
   }
 
   @Test
