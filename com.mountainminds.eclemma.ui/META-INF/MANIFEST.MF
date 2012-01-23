@@ -6,6 +6,7 @@ Bundle-Version: 2.1.0.qualifier
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Require-Bundle: com.mountainminds.eclemma.core,
+ org.jacoco.core;bundle-version="0.5.5",
  org.eclipse.core.runtime,
  org.eclipse.core.expressions,
  org.eclipse.core.resources,
@@ -19,7 +20,7 @@ Require-Bundle: com.mountainminds.eclemma.core,
  org.eclipse.jface.text,
  org.eclipse.ui.workbench.texteditor,
  org.eclipse.ui.editors,
- org.jacoco.core;bundle-version="0.5.5"
+ org.eclipse.ui.forms
 Bundle-Activator: com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin
 Export-Package: com.mountainminds.eclemma.internal.ui;x-internal:=true,
  com.mountainminds.eclemma.internal.ui.actions;x-internal:=true,

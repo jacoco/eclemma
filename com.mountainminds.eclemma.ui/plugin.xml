@@ -566,4 +566,17 @@
          </enablement>
       </objectContribution>
    </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="com.mountainminds.eclemma.internal.ui.editors.ExecutionDataEditor"
+            extensions="exec"
+            icon="icons/full/eview16/exec.gif"
+            id="com.mountainminds.eclemma.ui.editors.executiondata"
+            name="%executionDataEditor.label">
+         <contentTypeBinding
+               contentTypeId="com.mountainminds.eclemma.core.executiondata">
+         </contentTypeBinding>
+      </editor>
+   </extension>
 </plugin>

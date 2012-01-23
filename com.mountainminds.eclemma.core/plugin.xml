@@ -73,5 +73,24 @@
             name="%swtBotJunitDelegateName"
             type="org.eclipse.swtbot.eclipse.ui.launcher.JunitLaunchConfig"/>
    </extension>
-
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            file-extensions="exec"
+            id="com.mountainminds.eclemma.core.executiondata"
+            name="%execFileContentType"
+            priority="normal">
+         <describer
+               class="org.eclipse.core.runtime.content.BinarySignatureDescriber">
+            <parameter
+                  name="signature"
+                  value="01, C0, C0">
+            </parameter>
+            <parameter
+                  name="offset"
+                  value="0">
+            </parameter>
+         </describer>
+      </content-type>
+   </extension>
 </plugin>
