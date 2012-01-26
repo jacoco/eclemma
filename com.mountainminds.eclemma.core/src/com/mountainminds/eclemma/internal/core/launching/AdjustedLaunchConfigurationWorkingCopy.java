@@ -10,6 +10,7 @@
  *    
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.core.launching;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,7 +20,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
-
 
 /**
  * Internal wrapper for {@link ILaunchConfigurationWorkingCopy} instances.
@@ -48,6 +48,12 @@ class AdjustedLaunchConfigurationWorkingCopy extends
     return true;
   }
 
+  public void setAttribute(String attributeName,
+      @SuppressWarnings("rawtypes") Set value) {
+    // Not supported in Eclipse 3.5
+    throw new UnsupportedOperationException();
+  }
+
   // delegate-only methods:
 
   public boolean isDirty() {
@@ -73,11 +79,6 @@ class AdjustedLaunchConfigurationWorkingCopy extends
 
   public void setAttribute(String attributeName,
       @SuppressWarnings("rawtypes") Map value) {
-    delegate.setAttribute(attributeName, value);
-  }
-
-  public void setAttribute(String attributeName,
-      @SuppressWarnings("rawtypes") Set value) {
     delegate.setAttribute(attributeName, value);
   }
 
