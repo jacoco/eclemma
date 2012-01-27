@@ -19,12 +19,15 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.jacoco.core.analysis.Analyzer;
 import org.jacoco.core.analysis.CoverageBuilder;
 import org.jacoco.core.data.ExecutionDataStore;
 
 import com.mountainminds.eclemma.core.EclEmmaStatus;
+import com.mountainminds.eclemma.internal.core.EclEmmaCorePlugin;
 
 /**
  * Analyzes the class files that belong to given package fragment roots. This
@@ -45,6 +48,13 @@ final class PackageFragementRootAnalyzer {
     final IPath path = getClassfilesLocation(root);
     AnalyzedNodes nodes = cache.get(path);
     if (nodes == null) {
+
+      // TODO temporary logging, convert to tracer
+      final String msg = "Analyzing " + root.getHandleIdentifier() + " (" //$NON-NLS-1$ //$NON-NLS-2$
+          + path + ")"; //$NON-NLS-1$
+      EclEmmaCorePlugin.getInstance().getLog()
+          .log(new Status(IStatus.INFO, EclEmmaCorePlugin.ID, msg));
+
       nodes = analyze(path);
       cache.put(path, nodes);
     }
