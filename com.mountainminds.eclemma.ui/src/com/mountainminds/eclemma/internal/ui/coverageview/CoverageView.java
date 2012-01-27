@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2006, 2012 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -52,6 +52,7 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.dialogs.PropertyDialogAction;
+import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.part.IShowInTarget;
 import org.eclipse.ui.part.ShowInContext;
@@ -59,6 +60,7 @@ import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.texteditor.IWorkbenchActionDefinitionIds;
 import org.jacoco.core.analysis.ICounter;
 import org.jacoco.core.analysis.ICoverageNode;
+import org.jacoco.core.analysis.ICoverageNode.ElementType;
 
 import com.mountainminds.eclemma.core.CoverageTools;
 import com.mountainminds.eclemma.core.ICoverageSession;
@@ -157,8 +159,8 @@ public class CoverageView extends ViewPart implements IShowInTarget {
       case COLUMN_ELEMENT:
         return delegate.getImage(element);
       case COLUMN_RATIO:
-        ICounter counter = settings.getCounterMode().getCounter(
-            CoverageTools.getCoverageInfo(element));
+        ICounter counter = CoverageTools.getCoverageInfo(element).getCounter(
+            settings.getCounters());
         if (counter.getTotalCount() == 0) {
           return null;
         } else {
@@ -189,12 +191,9 @@ public class CoverageView extends ViewPart implements IShowInTarget {
 
     private String getTextForJavaElement(Object element) {
       String text = getSimpleTextForJavaElement(element);
-      switch (settings.getEntryMode()) {
-      case ViewSettings.ENTRYMODE_PACKAGEROOTS:
-        if (element instanceof IPackageFragmentRoot) {
-          text += " - " + getTextForJavaElement(((IPackageFragmentRoot) element).getJavaProject()); //$NON-NLS-1$
-        }
-        break;
+      if (element instanceof IPackageFragmentRoot
+          && ElementType.BUNDLE.equals(settings.getRootType())) {
+        text += " - " + getTextForJavaElement(((IPackageFragmentRoot) element).getJavaProject()); //$NON-NLS-1$
       }
       return text;
     }
@@ -204,8 +203,8 @@ public class CoverageView extends ViewPart implements IShowInTarget {
         return columnIndex == COLUMN_ELEMENT ? UIMessages.CoverageView_loadingMessage
             : ""; //$NON-NLS-1$
       }
-      ICounter counter = settings.getCounterMode().getCounter(
-          CoverageTools.getCoverageInfo(element));
+      ICounter counter = CoverageTools.getCoverageInfo(element).getCounter(
+          settings.getCounters());
       switch (columnIndex) {
       case COLUMN_ELEMENT:
         return getTextForJavaElement(element);
@@ -338,6 +337,7 @@ public class CoverageView extends ViewPart implements IShowInTarget {
 
     createActions();
     updateActions();
+    createHandlers();
     configureToolbar();
 
     viewer.addOpenListener(new IOpenListener() {
@@ -359,7 +359,7 @@ public class CoverageView extends ViewPart implements IShowInTarget {
     CoverageTools.addJavaCoverageListener(coverageListener);
   }
 
-  protected void createActions() {
+  private void createActions() {
     final IKeyBindingService kb = getSite().getKeyBindingService();
     final IActionBars ab = getViewSite().getActionBars();
 
@@ -406,7 +406,18 @@ public class CoverageView extends ViewPart implements IShowInTarget {
         propertiesAction);
   }
 
-  protected void configureToolbar() {
+  private void createHandlers() {
+    final IHandlerService hs = (IHandlerService) getSite().getService(
+        IHandlerService.class);
+    hs.activateHandler(SelectRootElementsHandler.ID,
+        new SelectRootElementsHandler(settings, this));
+    hs.activateHandler(SelectCountersHandler.ID, new SelectCountersHandler(
+        settings, this));
+    hs.activateHandler(HideUnusedTypesHandler.ID, new HideUnusedTypesHandler(
+        settings, this));
+  }
+
+  private void configureToolbar() {
     IToolBarManager tbm = getViewSite().getActionBars().getToolBarManager();
     tbm.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
     tbm.add(new Separator());
@@ -419,30 +430,9 @@ public class CoverageView extends ViewPart implements IShowInTarget {
     tbm.add(new Separator());
     tbm.add(new CollapseAllAction(viewer));
     tbm.add(new LinkWithSelectionAction(settings, selectiontracker));
-
-    IMenuManager mm = getViewSite().getActionBars().getMenuManager();
-    mm.add(new SelectEntryModeAction(ViewSettings.ENTRYMODE_PROJECTS, settings,
-        this));
-    mm.add(new SelectEntryModeAction(ViewSettings.ENTRYMODE_PACKAGEROOTS,
-        settings, this));
-    mm.add(new SelectEntryModeAction(ViewSettings.ENTRYMODE_PACKAGES, settings,
-        this));
-    mm.add(new SelectEntryModeAction(ViewSettings.ENTRYMODE_TYPES, settings,
-        this));
-    mm.add(new Separator());
-    mm.add(new SelectCounterModeAction(0, settings, this));
-    mm.add(new SelectCounterModeAction(1, settings, this));
-    mm.add(new SelectCounterModeAction(2, settings, this));
-    mm.add(new SelectCounterModeAction(3, settings, this));
-    mm.add(new SelectCounterModeAction(4, settings, this));
-    mm.add(new SelectCounterModeAction(5, settings, this));
-    mm.add(new Separator());
-    mm.add(new HideUnusedTypesAction(settings, this));
-    mm.add(new Separator());
-    mm.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
   }
 
-  public void configureContextMenu(IMenuManager mm) {
+  private void configureContextMenu(IMenuManager mm) {
     mm.add(openAction);
     mm.add(new Separator());
     mm.add(copyAction);
@@ -467,7 +457,7 @@ public class CoverageView extends ViewPart implements IShowInTarget {
   }
 
   protected void updateColumnHeaders() {
-    String[] columns = settings.getCounterMode().getColumnHeaders();
+    String[] columns = settings.getColumnHeaders();
     column0.setText(columns[0]);
     column1.setText(columns[1]);
     column2.setText(columns[2]);
@@ -475,7 +465,7 @@ public class CoverageView extends ViewPart implements IShowInTarget {
     column4.setText(columns[4]);
   }
 
-  protected void updateActions() {
+  private void updateActions() {
     tree.getDisplay().asyncExec(new Runnable() {
       public void run() {
         ICoverageSession active = CoverageTools.getSessionManager()

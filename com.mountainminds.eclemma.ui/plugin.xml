@@ -173,6 +173,10 @@
    </extension>
    <extension
          point="org.eclipse.ui.commands">
+      <category
+            id="com.mountainminds.eclemma.ui"
+            name="%EclEmmaCommandCategory.name">
+      </category>
       <command
             categoryId="org.eclipse.debug.ui.category.run"
             description="%CoverageLastCommand.description"
@@ -214,6 +218,31 @@
             description="%CoverageSWTBotJUnitCommand.description"
             id="com.mountainminds.eclemma.ui.swtBotJunitShortcut.coverage"
             name="%CoverageSWTBotJUnitCommand.name">
+      </command>
+      <command
+            categoryId="com.mountainminds.eclemma.ui"
+            id="com.mountainminds.eclemma.ui.selectRootElements"
+            name="%SelectRootElementsCommand.name">
+         <commandParameter
+               id="type"
+               name="type"
+               optional="false">
+         </commandParameter>
+      </command>
+      <command
+            categoryId="com.mountainminds.eclemma.ui"
+            id="com.mountainminds.eclemma.ui.selectCounters"
+            name="%SelectCountersCommand.name">
+         <commandParameter
+               id="type"
+               name="type"
+               optional="false">
+         </commandParameter>
+      </command>
+      <command
+            categoryId="com.mountainminds.eclemma.ui"
+            id="com.mountainminds.eclemma.ui.hideUnusedTypes"
+            name="%HideUnusedTypesCommand.name">
       </command>
    </extension>
    
@@ -578,5 +607,122 @@
                contentTypeId="com.mountainminds.eclemma.core.executiondata">
          </contentTypeBinding>
       </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:com.mountainminds.eclemma.ui.CoverageView">
+         <command
+               commandId="com.mountainminds.eclemma.ui.selectRootElements"
+               icon="icons/full/elcl16/showprojects.gif"
+               label="%SelectProjectsMenu.label"
+               style="radio">
+            <parameter
+                  name="type"
+                  value="GROUP">
+            </parameter>
+         </command>
+         <command
+               commandId="com.mountainminds.eclemma.ui.selectRootElements"
+               icon="icons/full/elcl16/showpackageroots.gif"
+               label="%SelectPackageRootsMenu.label"
+               style="radio">
+            <parameter
+                  name="type"
+                  value="BUNDLE">
+            </parameter>
+         </command>
+         <command
+               commandId="com.mountainminds.eclemma.ui.selectRootElements"
+               icon="icons/full/elcl16/showpackages.gif"
+               label="%SelectPackagesMenu.label"
+               style="radio">
+            <parameter
+                  name="type"
+                  value="PACKAGE">
+            </parameter>
+         </command>
+         <command
+               commandId="com.mountainminds.eclemma.ui.selectRootElements"
+               icon="icons/full/elcl16/showtypes.gif"
+               label="%SelectTypesMenu.label"
+               style="radio">
+            <parameter
+                  name="type"
+                  value="CLASS">
+            </parameter>
+         </command>
+         <separator
+               name="separator1"
+               visible="true">
+         </separator>
+         <command
+               commandId="com.mountainminds.eclemma.ui.selectCounters"
+               label="%SelectInstructionsMenu.label"
+               style="radio">
+            <parameter
+                  name="type"
+                  value="INSTRUCTION">
+            </parameter>
+         </command>
+         <command
+               commandId="com.mountainminds.eclemma.ui.selectCounters"
+               label="%SelectBranchesMenu.label"
+               style="radio">
+            <parameter
+                  name="type"
+                  value="BRANCH">
+            </parameter>
+         </command>
+         <command
+               commandId="com.mountainminds.eclemma.ui.selectCounters"
+               label="%SelectLinesMenu.label"
+               style="radio">
+            <parameter
+                  name="type"
+                  value="LINE">
+            </parameter>
+         </command>
+         <command
+               commandId="com.mountainminds.eclemma.ui.selectCounters"
+               label="%SelectMethodsMenu.label"
+               style="radio">
+            <parameter
+                  name="type"
+                  value="METHOD">
+            </parameter>
+         </command>
+         <command
+               commandId="com.mountainminds.eclemma.ui.selectCounters"
+               label="%SelectTypesMenu.label"
+               style="radio">
+            <parameter
+                  name="type"
+                  value="CLASS">
+            </parameter>
+         </command>
+         <command
+               commandId="com.mountainminds.eclemma.ui.selectCounters"
+               label="%SelectComplexityMenu.label"
+               style="radio">
+            <parameter
+                  name="type"
+                  value="COMPLEXITY">
+            </parameter>
+         </command>
+         <separator
+               name="separator2"
+               visible="true">
+         </separator>
+         <command
+               commandId="com.mountainminds.eclemma.ui.hideUnusedTypes"
+               style="toggle">
+         </command>
+         <separator
+               name="additions"
+               visible="true">
+         </separator>
+      </menuContribution>
    </extension>
 </plugin>

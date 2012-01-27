@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2006, 2012 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,9 +12,13 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.ui.coverageview;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.ui.IMemento;
-import org.jacoco.core.analysis.ICounter;
 import org.jacoco.core.analysis.ICoverageNode;
+import org.jacoco.core.analysis.ICoverageNode.CounterEntity;
+import org.jacoco.core.analysis.ICoverageNode.ElementType;
 
 import com.mountainminds.eclemma.internal.ui.UIMessages;
 
@@ -24,16 +28,11 @@ import com.mountainminds.eclemma.internal.ui.UIMessages;
  */
 public class ViewSettings {
 
-  public static final int ENTRYMODE_PROJECTS = 1;
-  public static final int ENTRYMODE_PACKAGEROOTS = 2;
-  public static final int ENTRYMODE_PACKAGES = 3;
-  public static final int ENTRYMODE_TYPES = 4;
-
   private static final String KEY_SORTCOLUMN = "sortcolumn"; //$NON-NLS-1$
   private static final String KEY_REVERSESORT = "reversesort"; //$NON-NLS-1$
-  private static final String KEY_COUNTERMODE = "countermode"; //$NON-NLS-1$
+  private static final String KEY_COUNTERS = "counters"; //$NON-NLS-1$
   private static final String KEY_HIDEUNUSEDTYPES = "hideunusedtypes"; //$NON-NLS-1$
-  private static final String KEY_ENTRYMODE = "entrymode"; //$NON-NLS-1$
+  private static final String KEY_ROOTTYPE = "roottype"; //$NON-NLS-1$
   private static final String KEY_COLUMN0 = "column0"; //$NON-NLS-1$
   private static final String KEY_COLUMN1 = "column1"; //$NON-NLS-1$
   private static final String KEY_COLUMN2 = "column2"; //$NON-NLS-1$
@@ -41,146 +40,54 @@ public class ViewSettings {
   private static final String KEY_COLUMN4 = "column4"; //$NON-NLS-1$
   private static final String KEY_LINKED = "linked"; //$NON-NLS-1$
 
-  public interface ICounterMode {
-    public int getIdx();
+  private static final Map<CounterEntity, String[]> COLUMNS_HEADERS = new HashMap<ICoverageNode.CounterEntity, String[]>();
 
-    public String[] getColumnHeaders();
-
-    public String getActionLabel();
-
-    public ICounter getCounter(ICoverageNode coverage);
+  static {
+    COLUMNS_HEADERS.put(CounterEntity.INSTRUCTION, new String[] {
+        UIMessages.CoverageViewColumnElement_label,
+        UIMessages.CoverageViewColumnCoverage_label,
+        UIMessages.CoverageViewColumnCoveredInstructions_label,
+        UIMessages.CoverageViewColumnMissedInstructions_label,
+        UIMessages.CoverageViewColumnTotalInstructions_label });
+    COLUMNS_HEADERS.put(CounterEntity.BRANCH, new String[] {
+        UIMessages.CoverageViewColumnElement_label,
+        UIMessages.CoverageViewColumnCoverage_label,
+        UIMessages.CoverageViewColumnCoveredBranches_label,
+        UIMessages.CoverageViewColumnMissedBranches_label,
+        UIMessages.CoverageViewColumnTotalBranches_label });
+    COLUMNS_HEADERS.put(CounterEntity.LINE, new String[] {
+        UIMessages.CoverageViewColumnElement_label,
+        UIMessages.CoverageViewColumnCoverage_label,
+        UIMessages.CoverageViewColumnCoveredLines_label,
+        UIMessages.CoverageViewColumnMissedLines_label,
+        UIMessages.CoverageViewColumnTotalLines_label });
+    COLUMNS_HEADERS.put(CounterEntity.METHOD, new String[] {
+        UIMessages.CoverageViewColumnElement_label,
+        UIMessages.CoverageViewColumnCoverage_label,
+        UIMessages.CoverageViewColumnCoveredMethods_label,
+        UIMessages.CoverageViewColumnMissedMethods_label,
+        UIMessages.CoverageViewColumnTotalMethods_label });
+    COLUMNS_HEADERS.put(CounterEntity.CLASS, new String[] {
+        UIMessages.CoverageViewColumnElement_label,
+        UIMessages.CoverageViewColumnCoverage_label,
+        UIMessages.CoverageViewColumnCoveredTypes_label,
+        UIMessages.CoverageViewColumnMissedTypes_label,
+        UIMessages.CoverageViewColumnTotalTypes_label });
+    COLUMNS_HEADERS.put(CounterEntity.COMPLEXITY, new String[] {
+        UIMessages.CoverageViewColumnElement_label,
+        UIMessages.CoverageViewColumnCoverage_label,
+        UIMessages.CoverageViewColumnCoveredComplexity_label,
+        UIMessages.CoverageViewColumnMissedComplexity_label,
+        UIMessages.CoverageViewColumnTotalComplexity_label });
   }
-
-  public static final ICounterMode[] COUNTERMODES = new ICounterMode[] {
-      new ICounterMode() {
-        public int getIdx() {
-          return 0;
-        }
-
-        public String getActionLabel() {
-          return UIMessages.CoverageViewCounterModeInstructionsAction_label;
-        }
-
-        public ICounter getCounter(ICoverageNode coverage) {
-          return coverage.getInstructionCounter();
-        }
-
-        public String[] getColumnHeaders() {
-          return new String[] { UIMessages.CoverageViewColumnElement_label,
-              UIMessages.CoverageViewColumnCoverage_label,
-              UIMessages.CoverageViewColumnCoveredInstructions_label,
-              UIMessages.CoverageViewColumnMissedInstructions_label,
-              UIMessages.CoverageViewColumnTotalInstructions_label };
-        }
-      }, new ICounterMode() {
-        public int getIdx() {
-          return 1;
-        }
-
-        public String getActionLabel() {
-          return UIMessages.CoverageViewCounterModeBranchesAction_label;
-        }
-
-        public ICounter getCounter(ICoverageNode coverage) {
-          return coverage.getBranchCounter();
-        }
-
-        public String[] getColumnHeaders() {
-          return new String[] { UIMessages.CoverageViewColumnElement_label,
-              UIMessages.CoverageViewColumnCoverage_label,
-              UIMessages.CoverageViewColumnCoveredBranches_label,
-              UIMessages.CoverageViewColumnMissedBranches_label,
-              UIMessages.CoverageViewColumnTotalBranches_label };
-        }
-      }, new ICounterMode() {
-        public int getIdx() {
-          return 2;
-        }
-
-        public String getActionLabel() {
-          return UIMessages.CoverageViewCounterModeLinesAction_label;
-        }
-
-        public ICounter getCounter(ICoverageNode coverage) {
-          return coverage.getLineCounter();
-        }
-
-        public String[] getColumnHeaders() {
-          return new String[] { UIMessages.CoverageViewColumnElement_label,
-              UIMessages.CoverageViewColumnCoverage_label,
-              UIMessages.CoverageViewColumnCoveredLines_label,
-              UIMessages.CoverageViewColumnMissedLines_label,
-              UIMessages.CoverageViewColumnTotalLines_label };
-        }
-      }, new ICounterMode() {
-        public int getIdx() {
-          return 3;
-        }
-
-        public String getActionLabel() {
-          return UIMessages.CoverageViewCounterModeMethodsAction_label;
-        }
-
-        public ICounter getCounter(ICoverageNode coverage) {
-          return coverage.getMethodCounter();
-        }
-
-        public String[] getColumnHeaders() {
-          return new String[] { UIMessages.CoverageViewColumnElement_label,
-              UIMessages.CoverageViewColumnCoverage_label,
-              UIMessages.CoverageViewColumnCoveredMethods_label,
-              UIMessages.CoverageViewColumnMissedMethods_label,
-              UIMessages.CoverageViewColumnTotalMethods_label };
-        }
-      }, new ICounterMode() {
-        public int getIdx() {
-          return 4;
-        }
-
-        public String getActionLabel() {
-          return UIMessages.CoverageViewCounterModeTypesAction_label;
-        }
-
-        public ICounter getCounter(ICoverageNode coverage) {
-          return coverage.getClassCounter();
-        }
-
-        public String[] getColumnHeaders() {
-          return new String[] { UIMessages.CoverageViewColumnElement_label,
-              UIMessages.CoverageViewColumnCoverage_label,
-              UIMessages.CoverageViewColumnCoveredTypes_label,
-              UIMessages.CoverageViewColumnMissedTypes_label,
-              UIMessages.CoverageViewColumnTotalTypes_label };
-        }
-      }, new ICounterMode() {
-        public int getIdx() {
-          return 5;
-        }
-
-        public String getActionLabel() {
-          return UIMessages.CoverageViewCounterModeComplexityAction_label;
-        }
-
-        public ICounter getCounter(ICoverageNode coverage) {
-          return coverage.getComplexityCounter();
-        }
-
-        public String[] getColumnHeaders() {
-          return new String[] { UIMessages.CoverageViewColumnElement_label,
-              UIMessages.CoverageViewColumnCoverage_label,
-              UIMessages.CoverageViewColumnCoveredComplexity_label,
-              UIMessages.CoverageViewColumnMissedComplexity_label,
-              UIMessages.CoverageViewColumnTotalComplexity_label };
-        }
-      } };
 
   private static final int[] DEFAULT_COLUMNWIDTH = new int[] { 300, 80, 120,
       120, 120 };
 
   private int sortcolumn;
   private boolean reversesort;
-  private int countermode;
-  private int entrymode;
+  private CounterEntity counters;
+  private ElementType roottype;
   private boolean hideunusedtypes;
   private int[] columnwidths = new int[5];
   private boolean linked;
@@ -202,20 +109,24 @@ public class ViewSettings {
     }
   }
 
-  public ICounterMode getCounterMode() {
-    return COUNTERMODES[countermode];
+  public String[] getColumnHeaders() {
+    return COLUMNS_HEADERS.get(counters);
   }
 
-  public void setCounterMode(int idx) {
-    countermode = idx;
+  public CounterEntity getCounters() {
+    return counters;
   }
 
-  public int getEntryMode() {
-    return entrymode;
+  public void setCounters(CounterEntity counters) {
+    this.counters = counters;
   }
 
-  public void setEntryMode(int mode) {
-    entrymode = mode;
+  public ElementType getRootType() {
+    return roottype;
+  }
+
+  public void setRootType(ElementType roottype) {
+    this.roottype = roottype;
   }
 
   public boolean getHideUnusedTypes() {
@@ -241,8 +152,10 @@ public class ViewSettings {
   public void init(IMemento memento) {
     sortcolumn = getInt(memento, KEY_SORTCOLUMN, CoverageView.COLUMN_MISSED);
     reversesort = getBoolean(memento, KEY_REVERSESORT, true);
-    countermode = getInt(memento, KEY_COUNTERMODE, 0);
-    entrymode = getInt(memento, KEY_ENTRYMODE, ENTRYMODE_PROJECTS);
+    counters = getEnum(memento, KEY_COUNTERS, CounterEntity.class,
+        CounterEntity.INSTRUCTION);
+    roottype = getEnum(memento, KEY_ROOTTYPE, ElementType.class,
+        ElementType.GROUP);
     hideunusedtypes = getBoolean(memento, KEY_HIDEUNUSEDTYPES, false);
     columnwidths[0] = getInt(memento, KEY_COLUMN0, DEFAULT_COLUMNWIDTH[0]);
     columnwidths[1] = getInt(memento, KEY_COLUMN1, DEFAULT_COLUMNWIDTH[1]);
@@ -255,8 +168,8 @@ public class ViewSettings {
   public void save(IMemento memento) {
     memento.putInteger(KEY_SORTCOLUMN, sortcolumn);
     memento.putInteger(KEY_REVERSESORT, reversesort ? 1 : 0);
-    memento.putInteger(KEY_COUNTERMODE, countermode);
-    memento.putInteger(KEY_ENTRYMODE, entrymode);
+    memento.putString(KEY_COUNTERS, counters.name());
+    memento.putString(KEY_ROOTTYPE, roottype.name());
     memento.putInteger(KEY_HIDEUNUSEDTYPES, hideunusedtypes ? 1 : 0);
     memento.putInteger(KEY_COLUMN0, columnwidths[0]);
     memento.putInteger(KEY_COLUMN1, columnwidths[1]);
@@ -272,6 +185,22 @@ public class ViewSettings {
     } else {
       Integer i = memento.getInteger(key);
       return i == null ? preset : i.intValue();
+    }
+  }
+
+  private <T extends Enum<T>> T getEnum(IMemento memento, String key,
+      Class<T> type, T preset) {
+    if (memento == null) {
+      return preset;
+    }
+    final String s = memento.getString(key);
+    if (s == null) {
+      return preset;
+    }
+    try {
+      return Enum.valueOf(type, s);
+    } catch (IllegalArgumentException e) {
+      return preset;
     }
   }
 

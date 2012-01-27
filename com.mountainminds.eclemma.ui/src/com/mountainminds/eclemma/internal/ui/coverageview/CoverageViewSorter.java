@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2006, 2012 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,9 +19,9 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.jacoco.core.analysis.ICounter;
+import org.jacoco.core.analysis.ICoverageNode.CounterEntity;
 
 import com.mountainminds.eclemma.core.CoverageTools;
-import com.mountainminds.eclemma.internal.ui.coverageview.ViewSettings.ICounterMode;
 
 /**
  * Internal sorter for the coverage view.
@@ -57,9 +57,9 @@ class CoverageViewSorter extends ViewerComparator {
   }
 
   public int compare(Viewer viewer, Object e1, Object e2) {
-    ICounterMode mode = settings.getCounterMode();
-    ICounter c1 = mode.getCounter(CoverageTools.getCoverageInfo(e1));
-    ICounter c2 = mode.getCounter(CoverageTools.getCoverageInfo(e2));
+    CounterEntity counters = settings.getCounters();
+    ICounter c1 = CoverageTools.getCoverageInfo(e1).getCounter(counters);
+    ICounter c2 = CoverageTools.getCoverageInfo(e2).getCounter(counters);
     int res = 0;
     switch (settings.getSortColumn()) {
     case CoverageView.COLUMN_ELEMENT:

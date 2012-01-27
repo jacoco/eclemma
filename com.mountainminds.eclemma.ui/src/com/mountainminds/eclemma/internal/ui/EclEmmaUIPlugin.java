@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2006, 2012 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -62,10 +62,6 @@ public class EclEmmaUIPlugin extends AbstractUIPlugin {
   public static final String DLCL_RELAUNCH = "icons/full/dlcl16/relaunch.gif"; //$NON-NLS-1$
   public static final String ELCL_SESSION = "icons/full/elcl16/session.gif"; //$NON-NLS-1$
   public static final String DLCL_SESSION = "icons/full/dlcl16/session.gif"; //$NON-NLS-1$
-  public static final String ELCL_SHOWPROJECTS = "icons/full/elcl16/showprojects.gif"; //$NON-NLS-1$
-  public static final String ELCL_SHOWPACKAGEROOTS = "icons/full/elcl16/showpackageroots.gif"; //$NON-NLS-1$
-  public static final String ELCL_SHOWPACKAGES = "icons/full/elcl16/showpackages.gif"; //$NON-NLS-1$
-  public static final String ELCL_SHOWTYPES = "icons/full/elcl16/showtypes.gif"; //$NON-NLS-1$
   public static final String ELCL_COLLAPSEALL = "icons/full/elcl16/collapseall.gif"; //$NON-NLS-1$
   public static final String ELCL_LINKED = "icons/full/elcl16/linked.gif"; //$NON-NLS-1$
 

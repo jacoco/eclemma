@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2006, 2012 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -132,7 +132,7 @@ public final class CoverageAnnotationModel implements IAnnotationModel {
     modelex.removeAnnotationModel(KEY);
   }
 
-  protected void updateAnnotations(boolean force) {
+  private void updateAnnotations(boolean force) {
     final ISourceNode coverage = findSourceCoverageForEditor();
     if (coverage != null) {
       if (!annotated || force) {
@@ -147,7 +147,7 @@ public final class CoverageAnnotationModel implements IAnnotationModel {
     }
   }
 
-  protected ISourceNode findSourceCoverageForEditor() {
+  private ISourceNode findSourceCoverageForEditor() {
     if (editor.isDirty()) {
       return null;
     }
@@ -162,7 +162,7 @@ public final class CoverageAnnotationModel implements IAnnotationModel {
     return findSourceCoverageForElement(element);
   }
 
-  protected boolean hasSource(IJavaElement element) {
+  private boolean hasSource(IJavaElement element) {
     if (element instanceof ISourceReference) {
       try {
         return ((ISourceReference) element).getSourceRange() != null;
@@ -173,11 +173,12 @@ public final class CoverageAnnotationModel implements IAnnotationModel {
     return false;
   }
 
-  protected ISourceNode findSourceCoverageForElement(Object element) {
+  private ISourceNode findSourceCoverageForElement(Object element) {
     // Do we have a coverage info for the editor input?
     ICoverageNode coverage = CoverageTools.getCoverageInfo(element);
-    if (coverage == null)
+    if (coverage == null) {
       return null;
+    }
 
     // TODO check resource timestamp
     // Does the resource version (if any) corresponds to the coverage data?
@@ -195,20 +196,20 @@ public final class CoverageAnnotationModel implements IAnnotationModel {
     return null;
   }
 
-  protected void clear() {
+  private void clear() {
     AnnotationModelEvent event = new AnnotationModelEvent(this);
     clear(event);
     fireModelChanged(event);
   }
 
-  protected void clear(AnnotationModelEvent event) {
+  private void clear(AnnotationModelEvent event) {
     for (final CoverageAnnotation ca : annotations) {
       event.annotationRemoved(ca, ca.getPosition());
     }
     annotations.clear();
   }
 
-  protected void createAnnotations(ISourceNode linecoverage) {
+  private void createAnnotations(ISourceNode linecoverage) {
     AnnotationModelEvent event = new AnnotationModelEvent(this);
     clear(event);
     int firstline = linecoverage.getFirstLine();
@@ -243,7 +244,7 @@ public final class CoverageAnnotationModel implements IAnnotationModel {
     annotationModelListeners.remove(listener);
   }
 
-  protected void fireModelChanged(AnnotationModelEvent event) {
+  private void fireModelChanged(AnnotationModelEvent event) {
     event.markSealed();
     if (!event.isEmpty()) {
       for (final IAnnotationModelListener l : annotationModelListeners) {

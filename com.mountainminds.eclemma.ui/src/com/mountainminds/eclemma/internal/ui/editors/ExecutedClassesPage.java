@@ -139,7 +139,7 @@ class ExecutedClassesPage extends FormPage {
     dataTableViewer.setInput(content);
   }
 
-  public abstract static class AbstractExecutionDataColumnLabelProvider extends
+  private abstract static class AbstractExecutionDataColumnLabelProvider extends
       ColumnLabelProvider {
     public final String getText(Object element) {
       return getText((ExecutionData) element);
@@ -148,7 +148,7 @@ class ExecutedClassesPage extends FormPage {
     public abstract String getText(ExecutionData element);
   }
 
-  public static class VMNameLabelProvider extends
+  private static class VMNameLabelProvider extends
       AbstractExecutionDataColumnLabelProvider {
     @Override
     public String getText(ExecutionData element) {
@@ -156,7 +156,7 @@ class ExecutedClassesPage extends FormPage {
     }
   }
 
-  public static class ClassIdLabelProvider extends
+  private static class ClassIdLabelProvider extends
       AbstractExecutionDataColumnLabelProvider {
     @Override
     public String getText(ExecutionData element) {
@@ -169,7 +169,7 @@ class ExecutedClassesPage extends FormPage {
     }
   }
 
-  public static class TotalProbesLabelProvider extends
+  private static class TotalProbesLabelProvider extends
       AbstractExecutionDataColumnLabelProvider {
     @Override
     public String getText(ExecutionData element) {
@@ -177,7 +177,7 @@ class ExecutedClassesPage extends FormPage {
     }
   }
 
-  public static class ExecutedProbesLabelProvider extends
+  private static class ExecutedProbesLabelProvider extends
       AbstractExecutionDataColumnLabelProvider {
     @Override
     public String getText(ExecutionData element) {
