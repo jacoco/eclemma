@@ -50,6 +50,12 @@ public final class EclEmmaStatus {
     return new Status(severity, EclEmmaCorePlugin.ID, code, m, t);
   }
 
+  public IStatus getStatus(Object param1, Object param2, Throwable t) {
+    String m = NLS.bind(message, new Object[] { Integer.valueOf(code), param1,
+        param2 });
+    return new Status(severity, EclEmmaCorePlugin.ID, code, m, t);
+  }
+
   public IStatus getStatus(Object param1) {
     String m = NLS.bind(message, Integer.valueOf(code), param1);
     return new Status(severity, EclEmmaCorePlugin.ID, code, m, null);
@@ -81,10 +87,10 @@ public final class EclEmmaStatus {
       5006, IStatus.ERROR, CoreMessages.StatusEXEC_FILE_READ_ERROR_message);
 
   /**
-   * Error while reading class file.
+   * Error while analyzing a bundle of class file.
    */
-  public static final EclEmmaStatus CLASS_FILE_READ_ERROR = new EclEmmaStatus(
-      5007, IStatus.ERROR, CoreMessages.StatusCLASS_FILE_READ_ERROR_message);
+  public static final EclEmmaStatus BUNDLE_ANALYSIS_ERROR = new EclEmmaStatus(
+      5007, IStatus.ERROR, CoreMessages.StatusBUNDLE_ANALYSIS_ERROR_message);
 
   /**
    * Error while extracting coverage session.

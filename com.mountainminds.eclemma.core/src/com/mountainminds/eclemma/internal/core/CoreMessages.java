@@ -33,7 +33,7 @@ public class CoreMessages extends NLS {
   public static String StatusUNKOWN_LAUNCH_TYPE_ERROR_message;
   public static String StatusEXEC_FILE_CREATE_ERROR_message;
   public static String StatusEXEC_FILE_READ_ERROR_message;
-  public static String StatusCLASS_FILE_READ_ERROR_message;
+  public static String StatusBUNDLE_ANALYSIS_ERROR_message;
   public static String StatusEXPORT_ERROR_message;
   public static String StatusIMPORT_ERROR_message;
   public static String StatusMERGE_ERROR_message;
