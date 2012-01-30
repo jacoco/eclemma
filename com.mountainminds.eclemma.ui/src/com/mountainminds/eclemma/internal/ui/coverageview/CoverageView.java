@@ -13,17 +13,16 @@
 package com.mountainminds.eclemma.internal.ui.coverageview;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.commands.IHandler;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jdt.ui.IContextMenuConstants;
 import org.eclipse.jdt.ui.actions.IJavaEditorActionDefinitionIds;
 import org.eclipse.jdt.ui.actions.JdtActionConstants;
 import org.eclipse.jdt.ui.actions.OpenAction;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
@@ -31,11 +30,9 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IOpenListener;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.OpenEvent;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
@@ -49,6 +46,7 @@ import org.eclipse.ui.IKeyBindingService;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.IWorkbenchCommandConstants;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.dialogs.PropertyDialogAction;
@@ -57,7 +55,6 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.part.IShowInTarget;
 import org.eclipse.ui.part.ShowInContext;
 import org.eclipse.ui.part.ViewPart;
-import org.eclipse.ui.texteditor.IWorkbenchActionDefinitionIds;
 import org.jacoco.core.analysis.ICounter;
 import org.jacoco.core.analysis.ICoverageNode;
 import org.jacoco.core.analysis.ICoverageNode.ElementType;
@@ -69,10 +66,7 @@ import com.mountainminds.eclemma.core.analysis.IJavaCoverageListener;
 import com.mountainminds.eclemma.internal.ui.ContextHelp;
 import com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin;
 import com.mountainminds.eclemma.internal.ui.UIMessages;
-import com.mountainminds.eclemma.internal.ui.actions.ExportSessionAction;
-import com.mountainminds.eclemma.internal.ui.actions.ImportSessionAction;
 import com.mountainminds.eclemma.internal.ui.actions.MergeSessionsAction;
-import com.mountainminds.eclemma.internal.ui.actions.RefreshSessionAction;
 import com.mountainminds.eclemma.internal.ui.actions.RemoveActiveSessionAction;
 import com.mountainminds.eclemma.internal.ui.actions.RemoveAllSessionsAction;
 
@@ -109,16 +103,13 @@ public class CoverageView extends ViewPart implements IShowInTarget {
 
   // Actions
   private OpenAction openAction;
-  private IAction copyAction;
   private IAction relaunchSessionAction;
   private IAction removeActiveSessionAction;
   private IAction removeAllSessionsAction;
   private IAction mergeSessionsAction;
   private IAction selectSessionAction;
-  private IAction importAction;
-  private IAction exportAction;
-  private IAction refreshAction;
-  private PropertyDialogAction propertiesAction;
+
+  private final List<IHandler> handlers = new ArrayList<IHandler>();
 
   private SelectionTracker selectiontracker;
   private CoverageViewSorter sorter = new CoverageViewSorter(settings, this);
@@ -325,19 +316,13 @@ public class CoverageView extends ViewPart implements IShowInTarget {
     viewer.setContentProvider(new CoveredElementsContentProvider(settings));
     viewer.setLabelProvider(labelprovider);
     viewer.setInput(CoverageTools.getJavaModelCoverage());
-    viewer.addSelectionChangedListener(new ISelectionChangedListener() {
-      public void selectionChanged(SelectionChangedEvent event) {
-        openAction.selectionChanged((IStructuredSelection) event.getSelection());
-        propertiesAction.selectionChanged(event);
-      }
-    });
     getSite().setSelectionProvider(viewer);
 
     selectiontracker = new SelectionTracker(this, viewer);
 
+    createHandlers();
     createActions();
     updateActions();
-    createHandlers();
     configureToolbar();
 
     viewer.addOpenListener(new IOpenListener() {
@@ -349,18 +334,35 @@ public class CoverageView extends ViewPart implements IShowInTarget {
     MenuManager menuMgr = new MenuManager("#PopupMenu"); //$NON-NLS-1$
     menuMgr.setRemoveAllWhenShown(true);
     tree.setMenu(menuMgr.createContextMenu(tree));
-    menuMgr.addMenuListener(new IMenuListener() {
-      public void menuAboutToShow(IMenuManager menuMgr) {
-        configureContextMenu(menuMgr);
-      }
-    });
+    getSite().registerContextMenu(menuMgr, viewer);
 
     CoverageTools.getSessionManager().addSessionListener(listener);
     CoverageTools.addJavaCoverageListener(coverageListener);
   }
 
+  private void createHandlers() {
+    activateHandler(SelectRootElementsHandler.ID,
+        new SelectRootElementsHandler(settings, this));
+    activateHandler(SelectCountersHandler.ID, new SelectCountersHandler(
+        settings, this));
+    activateHandler(HideUnusedTypesHandler.ID, new HideUnusedTypesHandler(
+        settings, this));
+    activateHandler(IWorkbenchCommandConstants.EDIT_COPY,
+        new CopyHandler(tree.getDisplay(), settings, labelprovider, viewer));
+    activateHandler(IWorkbenchCommandConstants.FILE_REFRESH,
+        new RefreshSessionHandler(CoverageTools.getSessionManager()));
+  }
+
+  private void activateHandler(String id, IHandler handler) {
+    final IHandlerService hs = (IHandlerService) getSite().getService(
+        IHandlerService.class);
+    hs.activateHandler(id, handler);
+    handlers.add(handler);
+  }
+
   private void createActions() {
-    final IKeyBindingService kb = getSite().getKeyBindingService();
+    // For the following commands we use actions, as they are already available
+
     final IActionBars ab = getViewSite().getActionBars();
 
     openAction = new OpenAction(getSite());
@@ -368,10 +370,19 @@ public class CoverageView extends ViewPart implements IShowInTarget {
         .setActionDefinitionId(IJavaEditorActionDefinitionIds.OPEN_EDITOR);
     ab.setGlobalActionHandler(JdtActionConstants.OPEN, openAction);
     openAction.setEnabled(false);
+    viewer.addSelectionChangedListener(openAction);
 
-    copyAction = new CopyAction(tree.getDisplay(), settings, labelprovider,
+    PropertyDialogAction propertiesAction = new PropertyDialogAction(getSite(),
         viewer);
-    ab.setGlobalActionHandler(ActionFactory.COPY.getId(), copyAction);
+    propertiesAction
+        .setActionDefinitionId(IWorkbenchCommandConstants.FILE_PROPERTIES);
+    ab.setGlobalActionHandler(ActionFactory.PROPERTIES.getId(),
+        propertiesAction);
+    propertiesAction.setEnabled(false);
+    viewer.addSelectionChangedListener(propertiesAction);
+
+    // TODO: Remove old-style actions
+    final IKeyBindingService kb = getSite().getKeyBindingService();
 
     relaunchSessionAction = new RelaunchSessionAction();
     kb.registerAction(relaunchSessionAction);
@@ -389,32 +400,6 @@ public class CoverageView extends ViewPart implements IShowInTarget {
 
     selectSessionAction = new SelectSessionAction();
     kb.registerAction(selectSessionAction);
-
-    importAction = new ImportSessionAction(getSite().getWorkbenchWindow());
-    kb.registerAction(importAction);
-
-    exportAction = new ExportSessionAction(getSite().getWorkbenchWindow());
-    kb.registerAction(exportAction);
-
-    refreshAction = new RefreshSessionAction();
-    ab.setGlobalActionHandler(ActionFactory.REFRESH.getId(), refreshAction);
-
-    propertiesAction = new PropertyDialogAction(getSite(), viewer);
-    propertiesAction
-        .setActionDefinitionId(IWorkbenchActionDefinitionIds.PROPERTIES);
-    ab.setGlobalActionHandler(ActionFactory.PROPERTIES.getId(),
-        propertiesAction);
-  }
-
-  private void createHandlers() {
-    final IHandlerService hs = (IHandlerService) getSite().getService(
-        IHandlerService.class);
-    hs.activateHandler(SelectRootElementsHandler.ID,
-        new SelectRootElementsHandler(settings, this));
-    hs.activateHandler(SelectCountersHandler.ID, new SelectCountersHandler(
-        settings, this));
-    hs.activateHandler(HideUnusedTypesHandler.ID, new HideUnusedTypesHandler(
-        settings, this));
   }
 
   private void configureToolbar() {
@@ -432,24 +417,15 @@ public class CoverageView extends ViewPart implements IShowInTarget {
     tbm.add(new LinkWithSelectionAction(settings, selectiontracker));
   }
 
-  private void configureContextMenu(IMenuManager mm) {
-    mm.add(openAction);
-    mm.add(new Separator());
-    mm.add(copyAction);
-    mm.add(new Separator());
-    mm.add(importAction);
-    mm.add(exportAction);
-    mm.add(new Separator());
-    mm.add(refreshAction);
-    mm.add(new Separator(IContextMenuConstants.GROUP_ADDITIONS));
-    mm.add(propertiesAction);
-  }
-
   public void setFocus() {
     tree.setFocus();
   }
 
   public void dispose() {
+    for (IHandler h : handlers) {
+      h.dispose();
+    }
+    handlers.clear();
     CoverageTools.removeJavaCoverageListener(coverageListener);
     CoverageTools.getSessionManager().removeSessionListener(listener);
     selectiontracker.dispose();
@@ -478,8 +454,6 @@ public class CoverageView extends ViewPart implements IShowInTarget {
         boolean atLeastOne = !sessions.isEmpty();
         removeActiveSessionAction.setEnabled(atLeastOne);
         removeAllSessionsAction.setEnabled(atLeastOne);
-        exportAction.setEnabled(atLeastOne);
-        refreshAction.setEnabled(atLeastOne);
         selectSessionAction.setEnabled(atLeastOne);
         boolean atLeastTwo = sessions.size() >= 2;
         mergeSessionsAction.setEnabled(atLeastTwo);

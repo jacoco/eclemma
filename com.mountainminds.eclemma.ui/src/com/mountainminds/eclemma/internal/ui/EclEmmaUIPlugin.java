@@ -46,12 +46,6 @@ public class EclEmmaUIPlugin extends AbstractUIPlugin {
 
   // Icons used by the Plugin
 
-  public static final String ELCL_REFRESH = "icons/full/elcl16/refresh.gif"; //$NON-NLS-1$
-  public static final String DLCL_REFRESH = "icons/full/dlcl16/refresh.gif"; //$NON-NLS-1$
-  public static final String ELCL_IMPORT = "icons/full/elcl16/import.gif"; //$NON-NLS-1$
-  public static final String DLCL_IMPORT = "icons/full/dlcl16/import.gif"; //$NON-NLS-1$
-  public static final String ELCL_EXPORT = "icons/full/elcl16/export.gif"; //$NON-NLS-1$
-  public static final String DLCL_EXPORT = "icons/full/dlcl16/export.gif"; //$NON-NLS-1$
   public static final String ELCL_REMOVE = "icons/full/elcl16/remove.gif"; //$NON-NLS-1$
   public static final String DLCL_REMOVE = "icons/full/dlcl16/remove.gif"; //$NON-NLS-1$
   public static final String ELCL_REMOVEALL = "icons/full/elcl16/removeall.gif"; //$NON-NLS-1$

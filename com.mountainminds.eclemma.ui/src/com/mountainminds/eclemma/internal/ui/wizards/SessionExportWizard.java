@@ -36,6 +36,8 @@ import com.mountainminds.eclemma.internal.ui.UIMessages;
  */
 public class SessionExportWizard extends Wizard implements IExportWizard {
 
+  public static final String ID = "com.mountainminds.eclemma.ui.sessionExportWizard"; //$NON-NLS-1$
+
   private static final String SETTINGSID = "SessionExportWizard"; //$NON-NLS-1$
 
   private SessionExportPage1 page1;

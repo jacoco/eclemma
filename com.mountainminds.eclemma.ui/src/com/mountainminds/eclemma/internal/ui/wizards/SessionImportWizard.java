@@ -34,6 +34,8 @@ import com.mountainminds.eclemma.internal.ui.UIMessages;
  */
 public class SessionImportWizard extends Wizard implements IImportWizard {
 
+  public static final String ID = "com.mountainminds.eclemma.ui.sessionImportWizard"; //$NON-NLS-1$
+
   private static final String SETTINGSID = "SessionImportWizard"; //$NON-NLS-1$
 
   private SessionImportPage1 page1;

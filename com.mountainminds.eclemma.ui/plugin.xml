@@ -244,6 +244,18 @@
             id="com.mountainminds.eclemma.ui.hideUnusedTypes"
             name="%HideUnusedTypesCommand.name">
       </command>
+      <command
+            categoryId="com.mountainminds.eclemma.ui"
+            defaultHandler="com.mountainminds.eclemma.internal.ui.handlers.ImportSessionHandler"
+            id="com.mountainminds.eclemma.ui.importSession"
+            name="%ImportSessionCommand.name">
+      </command>
+      <command
+            categoryId="com.mountainminds.eclemma.ui"
+            defaultHandler="com.mountainminds.eclemma.internal.ui.handlers.ExportSessionHandler"
+            id="com.mountainminds.eclemma.ui.exportSession"
+            name="%ExportSessionCommand.name">
+      </command>
    </extension>
    
    <extension
@@ -611,7 +623,6 @@
    <extension
          point="org.eclipse.ui.menus">
       <menuContribution
-            allPopups="false"
             locationURI="menu:com.mountainminds.eclemma.ui.CoverageView">
          <command
                commandId="com.mountainminds.eclemma.ui.selectRootElements"
@@ -654,7 +665,7 @@
             </parameter>
          </command>
          <separator
-               name="separator1"
+               name="separator.counters"
                visible="true">
          </separator>
          <command
@@ -712,7 +723,7 @@
             </parameter>
          </command>
          <separator
-               name="separator2"
+               name="separator.options"
                visible="true">
          </separator>
          <command
@@ -723,6 +734,56 @@
                name="additions"
                visible="true">
          </separator>
+      </menuContribution>
+      <menuContribution
+            locationURI="popup:com.mountainminds.eclemma.ui.CoverageView">
+         <command
+               commandId="org.eclipse.jdt.ui.edit.text.java.open.editor"
+               style="push">
+         </command>
+         <separator
+               name="separator.edit"
+               visible="true">
+         </separator>
+         <command
+               commandId="org.eclipse.ui.edit.copy"
+               style="push">
+         </command>
+         <separator
+               name="separator.importexport"
+               visible="true">
+         </separator>
+         <command
+               commandId="com.mountainminds.eclemma.ui.importSession"
+               disabledIcon="icons/full/dlcl16/export.gif"
+               icon="icons/full/elcl16/import.gif"
+               style="push">
+         </command>
+         <command
+               commandId="com.mountainminds.eclemma.ui.exportSession"
+               icon="icons/full/elcl16/export.gif"
+               style="push">
+         </command>
+         <separator
+               name="separator.refresh"
+               visible="true">
+         </separator>
+         <command
+               commandId="org.eclipse.ui.file.refresh"
+               style="push">
+         </command>
+         <separator
+               name="additions"
+               visible="true">
+         </separator>
+         <separator
+               name="separator.properties"
+               visible="true">
+         </separator>
+         <command
+               commandId="org.eclipse.ui.file.properties"
+               style="push">
+         </command>
       </menuContribution>
    </extension>
 </plugin>

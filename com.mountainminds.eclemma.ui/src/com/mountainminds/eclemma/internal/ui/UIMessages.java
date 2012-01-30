@@ -24,15 +24,8 @@ public class UIMessages extends NLS {
   public static String RemoveActiveSessionAction_tooltip;
   public static String RemoveAllSessionsAction_label;
   public static String RemoveAllSessionsAction_tooltip;
-  public static String RefreshSessionAction_label;
-  public static String RefreshSessionAction_tooltip;
   public static String MergeSessionsAction_label;
   public static String MergeSessionsAction_tooltip;
-  public static String ImportSessionAction_label;
-  public static String ImportSessionAction_tooltip;
-  public static String ExportSessionAction_label;
-  public static String ExportSessionAction_tooltip;
-  public static String CopyAction_label;
   public static String BrowseAction_label;
   public static String SelectAllAction_label;
   public static String DeselectAllAction_label;
