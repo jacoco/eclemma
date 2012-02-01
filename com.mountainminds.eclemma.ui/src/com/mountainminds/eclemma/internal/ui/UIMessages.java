@@ -20,26 +20,12 @@ public class UIMessages extends NLS {
 
   private static final String BUNDLE_NAME = "com.mountainminds.eclemma.internal.ui.uimessages";//$NON-NLS-1$
 
-  public static String RemoveActiveSessionAction_label;
-  public static String RemoveActiveSessionAction_tooltip;
-  public static String RemoveAllSessionsAction_label;
-  public static String RemoveAllSessionsAction_tooltip;
-  public static String MergeSessionsAction_label;
-  public static String MergeSessionsAction_tooltip;
   public static String BrowseAction_label;
   public static String SelectAllAction_label;
   public static String DeselectAllAction_label;
   public static String CoverageLastAction_label;
 
-  public static String CoverageViewRelaunchAction_label;
-  public static String CoverageViewRelaunchAction_tooltip;
-  public static String CoverageViewSelectSessionAction_label;
-  public static String CoverageViewSelectSessionAction_looltip;
-  public static String CoverageViewSelectSessionActionEntry_label;
-  public static String CoverageViewCollapseAllAction_label;
-  public static String CoverageViewCollapseAllAction_tooltip;
-  public static String CoverageViewLinkWithSelectionAction_label;
-  public static String CoverageViewLinkWithSelectionAction_tooltip;
+  public static String CoverageViewSelectSessionMenu_label;
   public static String CoverageViewColumnElement_label;
   public static String CoverageViewColumnCoverage_label;
   public static String CoverageViewColumnCoveredInstructions_label;
@@ -67,10 +53,14 @@ public class UIMessages extends NLS {
   public static String AnnotationTextAllBranchesCovered_message;
   public static String AnnotationTextSomeBranchesMissed_message;
 
+  public static String SelectActiveSessionDialog_title;
+  public static String SelectActiveSessionDialog_message;
+
   public static String MergeSessionsDialog_title;
   public static String MergeSessionsDialogDescription_label;
   public static String MergeSessionsDialogDescriptionDefault_value;
   public static String MergeSessionsDialogSelection_label;
+  public static String MergingSessions_task;
 
   public static String CoverageTab_title;
   public static String CoverageTabAnalysisScopeGroup_label;

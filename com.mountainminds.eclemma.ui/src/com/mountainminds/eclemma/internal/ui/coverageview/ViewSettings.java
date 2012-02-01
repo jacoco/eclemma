@@ -141,7 +141,7 @@ public class ViewSettings {
     return columnwidths;
   }
 
-  public boolean getLinked() {
+  public boolean isLinked() {
     return linked;
   }
 

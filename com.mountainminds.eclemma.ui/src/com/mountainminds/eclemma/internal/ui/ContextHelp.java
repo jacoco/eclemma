@@ -38,6 +38,9 @@ public final class ContextHelp {
   public static final String COVERAGE_LAUNCH_TAB = PREFIX
       + "coverage_launch_tab_context"; //$NON-NLS-1$
 
+  public static final String SELECT_ACTIVE_SESSION = PREFIX
+      + "select_active_session_context"; //$NON-NLS-1$
+
   public static final String MERGE_SESSIONS = PREFIX + "merge_sessions_context"; //$NON-NLS-1$
 
   public static final String SESSION_EXPORT = PREFIX + "session_export_context"; //$NON-NLS-1$

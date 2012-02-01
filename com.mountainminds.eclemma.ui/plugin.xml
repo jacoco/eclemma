@@ -256,6 +256,41 @@
             id="com.mountainminds.eclemma.ui.exportSession"
             name="%ExportSessionCommand.name">
       </command>
+      <command
+            categoryId="com.mountainminds.eclemma.ui"
+            defaultHandler="com.mountainminds.eclemma.internal.ui.handlers.RelaunchSessionHandler"
+            id="com.mountainminds.eclemma.ui.relaunchSession"
+            name="%RelaunchSessionCommand.name">
+      </command>
+      <command
+            categoryId="com.mountainminds.eclemma.ui"
+            defaultHandler="com.mountainminds.eclemma.internal.ui.handlers.RemoveActiveSessionHandler"
+            id="com.mountainminds.eclemma.ui.removeActiveSession"
+            name="%RemoveActiveSessionCommand.name">
+      </command>
+      <command
+            categoryId="com.mountainminds.eclemma.ui"
+            defaultHandler="com.mountainminds.eclemma.internal.ui.handlers.RemoveAllSessionsHandler"
+            id="com.mountainminds.eclemma.ui.removeAllSessions"
+            name="%RemoveAllSessionsCommand.name">
+      </command>
+      <command
+            categoryId="com.mountainminds.eclemma.ui"
+            defaultHandler="com.mountainminds.eclemma.internal.ui.handlers.MergeSessionsHandler"
+            id="com.mountainminds.eclemma.ui.mergeSessions"
+            name="%MergeSessionsCommand.name">
+      </command>
+      <command
+            categoryId="com.mountainminds.eclemma.ui"
+            id="com.mountainminds.eclemma.ui.linkWithSelection"
+            name="%LinkWithSelectionCommand.name">
+      </command>
+      <command
+            categoryId="com.mountainminds.eclemma.ui"
+            defaultHandler="com.mountainminds.eclemma.internal.ui.handlers.SelectActiveSessionHandler"
+            id="com.mountainminds.eclemma.ui.selectActiveSession"
+            name="%SelectActiveSessionCommand.name">
+      </command>
    </extension>
    
    <extension
@@ -761,6 +796,7 @@
          </command>
          <command
                commandId="com.mountainminds.eclemma.ui.exportSession"
+               disabledIcon="icons/full/dlcl16/export.gif"
                icon="icons/full/elcl16/export.gif"
                style="push">
          </command>
@@ -784,6 +820,69 @@
                commandId="org.eclipse.ui.file.properties"
                style="push">
          </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="toolbar:com.mountainminds.eclemma.ui.CoverageView">
+         <command
+               commandId="com.mountainminds.eclemma.ui.relaunchSession"
+               disabledIcon="icons/full/dlcl16/relaunch.gif"
+               icon="icons/full/elcl16/relaunch.gif"
+               style="push">
+         </command>
+         <separator
+               name="separator.sessions"
+               visible="true">
+         </separator>
+         <command
+               commandId="com.mountainminds.eclemma.ui.removeActiveSession"
+               disabledIcon="icons/full/dlcl16/remove.gif"
+               icon="icons/full/elcl16/remove.gif"
+               style="push">
+         </command>
+         <command
+               commandId="com.mountainminds.eclemma.ui.removeAllSessions"
+               disabledIcon="icons/full/dlcl16/removeall.gif"
+               icon="icons/full/elcl16/removeall.gif"
+               style="push">
+         </command>
+         <command
+               commandId="com.mountainminds.eclemma.ui.mergeSessions"
+               disabledIcon="icons/full/dlcl16/mergesessions.gif"
+               icon="icons/full/elcl16/mergesessions.gif"
+               style="push">
+         </command>
+         <command
+               commandId="com.mountainminds.eclemma.ui.selectActiveSession"
+               disabledIcon="icons/full/dlcl16/session.gif"
+               icon="icons/full/elcl16/session.gif"
+               id="com.mountainminds.eclemma.ui.coverageView.sessionSelector"
+               style="pulldown">
+         </command>
+         <separator
+               name="separator.view"
+               visible="true">
+         </separator>
+         <command
+               commandId="org.eclipse.ui.navigate.collapseAll"
+               style="push">
+         </command>
+         <command
+               commandId="com.mountainminds.eclemma.ui.linkWithSelection"
+               icon="icons/full/elcl16/linked.gif"
+               style="toggle">
+         </command>
+         <separator
+               name="additions"
+               visible="true">
+         </separator>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:com.mountainminds.eclemma.ui.coverageView.sessionSelector">
+         <dynamic
+               class="com.mountainminds.eclemma.internal.ui.handlers.SelectActiveSessionsItems"
+               id="com.mountainminds.eclemma.ui.coverageView.sessionSelector">
+         </dynamic>
       </menuContribution>
    </extension>
 </plugin>

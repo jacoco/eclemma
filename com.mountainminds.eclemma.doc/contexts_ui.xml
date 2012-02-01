@@ -23,6 +23,10 @@
 		<description>This tab specifies the scope of the coverage analysis.</description>
  		<topic label="Launching in Coverage Mode" href="pages/launching.html"/>
 	</context>
+	<context id="select_active_session_context">
+		<description>Select the coverage session that should be displayed.</description>
+    <topic label="Managing Coverage Sessions" href="pages/sessions.html"/>
+	</context>
 	<context id="merge_sessions_context">
 		<description>Merge selected coverage sessions into a single session.</description>
     <topic label="Managing Coverage Sessions" href="pages/sessions.html"/>

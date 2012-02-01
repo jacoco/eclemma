@@ -46,18 +46,7 @@ public class EclEmmaUIPlugin extends AbstractUIPlugin {
 
   // Icons used by the Plugin
 
-  public static final String ELCL_REMOVE = "icons/full/elcl16/remove.gif"; //$NON-NLS-1$
-  public static final String DLCL_REMOVE = "icons/full/dlcl16/remove.gif"; //$NON-NLS-1$
-  public static final String ELCL_REMOVEALL = "icons/full/elcl16/removeall.gif"; //$NON-NLS-1$
-  public static final String DLCL_REMOVEALL = "icons/full/dlcl16/removeall.gif"; //$NON-NLS-1$
-  public static final String ELCL_MERGESESSIONS = "icons/full/elcl16/mergesessions.gif"; //$NON-NLS-1$
-  public static final String DLCL_MERGESESSIONS = "icons/full/dlcl16/mergesessions.gif"; //$NON-NLS-1$
-  public static final String ELCL_RELAUNCH = "icons/full/elcl16/relaunch.gif"; //$NON-NLS-1$
-  public static final String DLCL_RELAUNCH = "icons/full/dlcl16/relaunch.gif"; //$NON-NLS-1$
   public static final String ELCL_SESSION = "icons/full/elcl16/session.gif"; //$NON-NLS-1$
-  public static final String DLCL_SESSION = "icons/full/dlcl16/session.gif"; //$NON-NLS-1$
-  public static final String ELCL_COLLAPSEALL = "icons/full/elcl16/collapseall.gif"; //$NON-NLS-1$
-  public static final String ELCL_LINKED = "icons/full/elcl16/linked.gif"; //$NON-NLS-1$
 
   public static final String EVIEW_COVERAGE = "icons/full/eview16/coverage.gif"; //$NON-NLS-1$
 

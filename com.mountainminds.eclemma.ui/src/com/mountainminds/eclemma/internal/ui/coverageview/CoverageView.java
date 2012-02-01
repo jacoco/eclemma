@@ -22,10 +22,7 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.ui.actions.IJavaEditorActionDefinitionIds;
 import org.eclipse.jdt.ui.actions.JdtActionConstants;
 import org.eclipse.jdt.ui.actions.OpenAction;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IOpenListener;
@@ -42,14 +39,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.IKeyBindingService;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
-import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchCommandConstants;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.dialogs.PropertyDialogAction;
+import org.eclipse.ui.handlers.CollapseAllHandler;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.part.IShowInTarget;
@@ -66,9 +62,6 @@ import com.mountainminds.eclemma.core.analysis.IJavaCoverageListener;
 import com.mountainminds.eclemma.internal.ui.ContextHelp;
 import com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin;
 import com.mountainminds.eclemma.internal.ui.UIMessages;
-import com.mountainminds.eclemma.internal.ui.actions.MergeSessionsAction;
-import com.mountainminds.eclemma.internal.ui.actions.RemoveActiveSessionAction;
-import com.mountainminds.eclemma.internal.ui.actions.RemoveAllSessionsAction;
 
 /**
  * Implementation of the coverage view.
@@ -103,32 +96,33 @@ public class CoverageView extends ViewPart implements IShowInTarget {
 
   // Actions
   private OpenAction openAction;
-  private IAction relaunchSessionAction;
-  private IAction removeActiveSessionAction;
-  private IAction removeAllSessionsAction;
-  private IAction mergeSessionsAction;
-  private IAction selectSessionAction;
 
   private final List<IHandler> handlers = new ArrayList<IHandler>();
 
   private SelectionTracker selectiontracker;
   private CoverageViewSorter sorter = new CoverageViewSorter(settings, this);
 
-  private ISessionListener listener = new ISessionListener() {
-    public void sessionAdded(ICoverageSession newSession) {
-      updateActions();
-    }
-
-    public void sessionRemoved(ICoverageSession oldSession) {
-      updateActions();
-    }
-
+  private final ISessionListener descriptionUpdater = new ISessionListener() {
     public void sessionActivated(ICoverageSession session) {
-      updateActions();
+      getViewSite().getShell().getDisplay().asyncExec(new Runnable() {
+        public void run() {
+          final ICoverageSession active = CoverageTools.getSessionManager()
+              .getActiveSession();
+          setContentDescription(active == null ? "" : active.getDescription()); //$NON-NLS-1$
+        }
+      });
+    }
+
+    public void sessionAdded(ICoverageSession addedSession) {
+      // Nothing to do
+    }
+
+    public void sessionRemoved(ICoverageSession removedSession) {
+      // Nothing to do
     }
   };
 
-  private IJavaCoverageListener coverageListener = new IJavaCoverageListener() {
+  private final IJavaCoverageListener coverageListener = new IJavaCoverageListener() {
     public void coverageChanged() {
       tree.getDisplay().asyncExec(new Runnable() {
         public void run() {
@@ -138,7 +132,7 @@ public class CoverageView extends ViewPart implements IShowInTarget {
     }
   };
 
-  private ITableLabelProvider labelprovider = new ITableLabelProvider() {
+  private final ITableLabelProvider labelprovider = new ITableLabelProvider() {
 
     private ILabelProvider delegate = new WorkbenchLabelProvider();
 
@@ -322,8 +316,6 @@ public class CoverageView extends ViewPart implements IShowInTarget {
 
     createHandlers();
     createActions();
-    updateActions();
-    configureToolbar();
 
     viewer.addOpenListener(new IOpenListener() {
       public void open(OpenEvent event) {
@@ -336,10 +328,13 @@ public class CoverageView extends ViewPart implements IShowInTarget {
     tree.setMenu(menuMgr.createContextMenu(tree));
     getSite().registerContextMenu(menuMgr, viewer);
 
-    CoverageTools.getSessionManager().addSessionListener(listener);
+    CoverageTools.getSessionManager().addSessionListener(descriptionUpdater);
     CoverageTools.addJavaCoverageListener(coverageListener);
   }
 
+  /**
+   * Create local handlers.
+   */
   private void createHandlers() {
     activateHandler(SelectRootElementsHandler.ID,
         new SelectRootElementsHandler(settings, this));
@@ -351,6 +346,10 @@ public class CoverageView extends ViewPart implements IShowInTarget {
         new CopyHandler(tree.getDisplay(), settings, labelprovider, viewer));
     activateHandler(IWorkbenchCommandConstants.FILE_REFRESH,
         new RefreshSessionHandler(CoverageTools.getSessionManager()));
+    activateHandler(IWorkbenchCommandConstants.NAVIGATE_COLLAPSE_ALL,
+        new CollapseAllHandler(viewer));
+    activateHandler(LinkWithSelectionHandler.ID, new LinkWithSelectionHandler(
+        settings, selectiontracker));
   }
 
   private void activateHandler(String id, IHandler handler) {
@@ -380,41 +379,6 @@ public class CoverageView extends ViewPart implements IShowInTarget {
         propertiesAction);
     propertiesAction.setEnabled(false);
     viewer.addSelectionChangedListener(propertiesAction);
-
-    // TODO: Remove old-style actions
-    final IKeyBindingService kb = getSite().getKeyBindingService();
-
-    relaunchSessionAction = new RelaunchSessionAction();
-    kb.registerAction(relaunchSessionAction);
-
-    removeActiveSessionAction = new RemoveActiveSessionAction();
-    ab.setGlobalActionHandler(ActionFactory.DELETE.getId(),
-        removeActiveSessionAction);
-
-    removeAllSessionsAction = new RemoveAllSessionsAction();
-    kb.registerAction(removeAllSessionsAction);
-
-    mergeSessionsAction = new MergeSessionsAction(getSite()
-        .getWorkbenchWindow());
-    kb.registerAction(mergeSessionsAction);
-
-    selectSessionAction = new SelectSessionAction();
-    kb.registerAction(selectSessionAction);
-  }
-
-  private void configureToolbar() {
-    IToolBarManager tbm = getViewSite().getActionBars().getToolBarManager();
-    tbm.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-    tbm.add(new Separator());
-    tbm.add(relaunchSessionAction);
-    tbm.add(new Separator());
-    tbm.add(removeActiveSessionAction);
-    tbm.add(removeAllSessionsAction);
-    tbm.add(mergeSessionsAction);
-    tbm.add(selectSessionAction);
-    tbm.add(new Separator());
-    tbm.add(new CollapseAllAction(viewer));
-    tbm.add(new LinkWithSelectionAction(settings, selectiontracker));
   }
 
   public void setFocus() {
@@ -427,7 +391,7 @@ public class CoverageView extends ViewPart implements IShowInTarget {
     }
     handlers.clear();
     CoverageTools.removeJavaCoverageListener(coverageListener);
-    CoverageTools.getSessionManager().removeSessionListener(listener);
+    CoverageTools.getSessionManager().removeSessionListener(descriptionUpdater);
     selectiontracker.dispose();
     super.dispose();
   }
@@ -439,26 +403,6 @@ public class CoverageView extends ViewPart implements IShowInTarget {
     column2.setText(columns[2]);
     column3.setText(columns[3]);
     column4.setText(columns[4]);
-  }
-
-  private void updateActions() {
-    tree.getDisplay().asyncExec(new Runnable() {
-      public void run() {
-        ICoverageSession active = CoverageTools.getSessionManager()
-            .getActiveSession();
-        setContentDescription(active == null ? "" : active.getDescription()); //$NON-NLS-1$
-        relaunchSessionAction.setEnabled(active != null
-            && active.getLaunchConfiguration() != null);
-        List<ICoverageSession> sessions = CoverageTools.getSessionManager()
-            .getSessions();
-        boolean atLeastOne = !sessions.isEmpty();
-        removeActiveSessionAction.setEnabled(atLeastOne);
-        removeAllSessionsAction.setEnabled(atLeastOne);
-        selectSessionAction.setEnabled(atLeastOne);
-        boolean atLeastTwo = sessions.size() >= 2;
-        mergeSessionsAction.setEnabled(atLeastTwo);
-      }
-    });
   }
 
   protected void refreshViewer() {
