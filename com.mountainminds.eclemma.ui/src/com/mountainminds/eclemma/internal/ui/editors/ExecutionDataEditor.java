@@ -23,6 +23,8 @@ import com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin;
  */
 public class ExecutionDataEditor extends FormEditor {
 
+  public static final String ID = "com.mountainminds.eclemma.ui.editors.executiondata"; //$NON-NLS-1$
+
   private final ExecutionDataContent content = new ExecutionDataContent();
 
   @Override

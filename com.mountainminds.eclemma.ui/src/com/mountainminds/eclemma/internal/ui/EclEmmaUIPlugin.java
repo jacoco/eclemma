@@ -49,6 +49,7 @@ public class EclEmmaUIPlugin extends AbstractUIPlugin {
   public static final String ELCL_SESSION = "icons/full/elcl16/session.gif"; //$NON-NLS-1$
 
   public static final String EVIEW_COVERAGE = "icons/full/eview16/coverage.gif"; //$NON-NLS-1$
+  public static final String EVIEW_EXEC = "icons/full/eview16/exec.gif"; //$NON-NLS-1$
 
   public static final String OBJ_SESSION = "icons/full/obj16/session.gif"; //$NON-NLS-1$
   public static final String OBJ_MARKERFULL = "icons/full/obj16/markerfull.gif"; //$NON-NLS-1$

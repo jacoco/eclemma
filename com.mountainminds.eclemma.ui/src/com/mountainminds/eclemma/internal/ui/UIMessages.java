@@ -147,6 +147,7 @@ public class UIMessages extends NLS {
   public static String ExecutionDataEditorExecutedClassesPageColumnExecutedProbes_label;
   public static String ExecutionDataEditorExecutedClassesPageFilter_message;
   public static String ExecutionDataEditorExecutedClassesPageRefreshing_task;
+  public static String ExecutionDataEditorOpeningError_message;
 
   static {
     NLS.initializeMessages(BUNDLE_NAME, UIMessages.class);
