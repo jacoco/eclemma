@@ -11,13 +11,12 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.ui.editors;
 
-import java.util.regex.Pattern;
-
 import org.eclipse.jface.viewers.AcceptAllFilter;
 import org.eclipse.jface.viewers.IFilter;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.jacoco.core.data.ExecutionData;
+import org.jacoco.core.runtime.WildcardMatcher;
 
 /**
  * Filters for executed classes.
@@ -47,18 +46,17 @@ class ExecutedClassesFilters {
   }
 
   private abstract static class PatternMatchingFilter implements IFilter {
-    private Pattern pattern;
+    private WildcardMatcher matcher;
 
     public PatternMatchingFilter(String patternString) {
-      String regex = patternString.replace("*", ".*").replace("?", "."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-      pattern = Pattern.compile(regex);
+      matcher = new WildcardMatcher(patternString);
     }
 
     public boolean select(Object toTest) {
-      return pattern.matcher(getMatchedValue(toTest)).matches();
+      return matcher.matches(getMatchedValue(toTest));
     }
 
-    abstract protected CharSequence getMatchedValue(Object toTest);
+    abstract protected String getMatchedValue(Object toTest);
 
   }
 
@@ -68,7 +66,7 @@ class ExecutedClassesFilters {
     }
 
     @Override
-    protected CharSequence getMatchedValue(Object toTest) {
+    protected String getMatchedValue(Object toTest) {
       return ((ExecutionData) toTest).getName();
     }
   }
@@ -80,7 +78,7 @@ class ExecutedClassesFilters {
     }
 
     @Override
-    protected CharSequence getMatchedValue(Object toTest) {
+    protected String getMatchedValue(Object toTest) {
       return String.format(
           "0x%016x", Long.valueOf(((ExecutionData) toTest).getId())); //$NON-NLS-1$
     }
