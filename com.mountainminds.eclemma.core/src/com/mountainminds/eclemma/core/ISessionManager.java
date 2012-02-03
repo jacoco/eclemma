@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.debug.core.ILaunch;
 
 /**
  * The session manager holds a list of currently available sessions. One of the
@@ -30,18 +31,19 @@ public interface ISessionManager {
 
   /**
    * Adds the given session to this session manager. If the session is already
-   * part of this session manager the method has no effect. If the key parameter
-   * is not <code>null</code> the key is internally assigned to this session for
-   * later access.
+   * part of this session manager the method has no effect. If the optional
+   * launch parameter is not <code>null</code> the key is internally assigned to
+   * this session for later removal.
    * 
    * @param session
    *          the new session
    * @param activate
    *          if <code>true</code> the session will also be activated
-   * @param key
-   *          key object this session will be assigned to
+   * @param launch
+   *          launch this session will be assigned to or <code>null</code>
    */
-  public void addSession(ICoverageSession session, boolean activate, Object key);
+  public void addSession(ICoverageSession session, boolean activate,
+      ILaunch launch);
 
   /**
    * Merges the given sessions into a new one with the given name, then adds and
@@ -70,15 +72,15 @@ public interface ISessionManager {
   public void removeSession(ICoverageSession session);
 
   /**
-   * Removes the session that has been assigned to the given key. If there is no
-   * session for the key this method has no effect. If the removed session was
-   * the active session, the most recently added session becomes active.
+   * Removes all sessions that has been assigned to the given launch. If there
+   * is no session for the key this method has no effect. If the removed session
+   * was the active session, the most recently added session becomes active.
    * 
    * @see #addSession(ICoverageSession, boolean, Object)
-   * @param key
-   *          key object for the session to remove
+   * @param launch
+   *          launch of the sessions to remove
    */
-  public void removeSession(Object key);
+  public void removeSessionsFor(ILaunch launch);
 
   /**
    * Removes all registered sessions.
@@ -92,17 +94,6 @@ public interface ISessionManager {
    * @return list of registered session
    */
   public List<ICoverageSession> getSessions();
-
-  /**
-   * Returns the session that has been assigned to the given key. If there is no
-   * session for the key this method returns <code>null</code>.
-   * 
-   * @see #addSession(ICoverageSession, boolean, Object)
-   * @param key
-   *          key object for the session
-   * @return session object or <code>null</code>
-   */
-  public ICoverageSession getSession(Object key);
 
   /**
    * Activates the given session. If the session is not in included in this

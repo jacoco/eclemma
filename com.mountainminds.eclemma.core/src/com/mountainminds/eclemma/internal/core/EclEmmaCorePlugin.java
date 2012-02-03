@@ -59,7 +59,7 @@ public class EclEmmaCorePlugin extends Plugin {
   private ILaunchListener launchListener = new ILaunchListener() {
     public void launchRemoved(ILaunch launch) {
       if (preferences.getAutoRemoveSessions()) {
-        sessionManager.removeSession(launch);
+        sessionManager.removeSessionsFor(launch);
       }
     }
 

@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -27,6 +28,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.jacoco.core.data.ExecutionDataWriter;
@@ -41,93 +43,127 @@ import com.mountainminds.eclemma.core.ISessionManager;
  */
 public class SessionManager implements ISessionManager {
 
-  private List<ICoverageSession> sessions = new ArrayList<ICoverageSession>();
-  private Map<Object, ICoverageSession> keymap = new HashMap<Object, ICoverageSession>();
-  private ICoverageSession activeSession = null;
-  private List<ISessionListener> listeners = new ArrayList<ISessionListener>();
   private final ExecutionDataFiles executiondatafiles;
+
+  private final Object lock;
+  private final List<ISessionListener> listeners;
+
+  private final List<ICoverageSession> sessions;
+  private final Map<Object, List<ICoverageSession>> launchmap;
+  private ICoverageSession activeSession;
 
   public SessionManager(ExecutionDataFiles executiondatafiles) {
     this.executiondatafiles = executiondatafiles;
+    this.lock = new Object();
+    this.listeners = new ArrayList<ISessionListener>();
+    this.sessions = new ArrayList<ICoverageSession>();
+    this.launchmap = new HashMap<Object, List<ICoverageSession>>();
+    this.activeSession = null;
   }
 
-  public void addSession(ICoverageSession session, boolean activate, Object key) {
-    if (session == null) {
-      throw new IllegalArgumentException();
-    }
-    if (!sessions.contains(session)) {
-      sessions.add(session);
-      if (key != null) {
-        keymap.put(key, session);
+  public void addSession(ICoverageSession session, boolean activate,
+      ILaunch launch) {
+    synchronized (lock) {
+      if (session == null) {
+        throw new IllegalArgumentException();
       }
-      fireSessionAdded(session);
-    }
-    if (activate) {
-      activeSession = session;
-      fireSessionActivated(session);
+      if (!sessions.contains(session)) {
+        sessions.add(session);
+        if (launch != null) {
+          List<ICoverageSession> l = launchmap.get(launch);
+          if (l == null) {
+            l = new ArrayList<ICoverageSession>();
+            launchmap.put(launch, l);
+          }
+          l.add(session);
+        }
+        fireSessionAdded(session);
+      }
+      if (activate) {
+        activeSession = session;
+        fireSessionActivated(session);
+      }
     }
   }
 
   public void removeSession(ICoverageSession session) {
-    if (sessions.contains(session)) {
-      boolean sessionActivated = false;
-      if (session.equals(activeSession)) {
-        activeSession = null;
-        for (int i = sessions.size(); --i >= 0;) {
-          if (!session.equals(sessions.get(i))) {
-            activeSession = sessions.get(i);
-            break;
-          }
-        }
-        sessionActivated = true;
-      }
-      sessions.remove(session);
-      keymap.values().remove(session);
-      fireSessionRemoved(session);
-      if (sessionActivated) {
-        fireSessionActivated(activeSession);
-      }
+    synchronized (lock) {
+      removeSessions(Collections.singleton(session));
     }
   }
 
-  public void removeSession(Object key) {
-    removeSession(getSession(key));
+  public void removeSessionsFor(ILaunch launch) {
+    synchronized (lock) {
+      final List<ICoverageSession> sessionsToRemove = launchmap.get(launch);
+      if (sessionsToRemove != null) {
+        removeSessions(sessionsToRemove);
+      }
+    }
   }
 
   public void removeAllSessions() {
-    while (!sessions.isEmpty()) {
-      ICoverageSession session = sessions.remove(0);
-      keymap.values().remove(session);
-      fireSessionRemoved(session);
+    synchronized (lock) {
+      removeSessions(sessions);
     }
-    if (activeSession != null) {
-      activeSession = null;
-      fireSessionActivated(null);
+  }
+
+  private void removeSessions(Collection<ICoverageSession> sessionsToRemove) {
+    // Clone as in some scenarios we're modifying the caller's instance
+    sessionsToRemove = new ArrayList<ICoverageSession>(sessionsToRemove);
+
+    // Remove Sessions
+    List<ICoverageSession> removedSessions = new ArrayList<ICoverageSession>();
+    for (final ICoverageSession s : sessionsToRemove) {
+      if (sessions.remove(s)) {
+        removedSessions.add(s);
+        for (final List<ICoverageSession> mappedSessions : launchmap.values()) {
+          mappedSessions.remove(s);
+        }
+      }
+    }
+
+    // Activate other session if active session was removed:
+    final boolean actived = sessionsToRemove.contains(activeSession);
+    if (actived) {
+      final int size = sessions.size();
+      activeSession = size == 0 ? null : sessions.get(size - 1);
+    }
+
+    // Fire events:
+    for (ICoverageSession s : removedSessions) {
+      fireSessionRemoved(s);
+    }
+    if (actived) {
+      fireSessionActivated(activeSession);
     }
   }
 
   public List<ICoverageSession> getSessions() {
-    return new ArrayList<ICoverageSession>(sessions);
-  }
-
-  public ICoverageSession getSession(Object key) {
-    return keymap.get(key);
+    synchronized (lock) {
+      return new ArrayList<ICoverageSession>(sessions);
+    }
   }
 
   public void activateSession(ICoverageSession session) {
-    if (sessions.contains(session) && !session.equals(activeSession)) {
-      activeSession = session;
-      fireSessionActivated(session);
+    synchronized (lock) {
+      if (sessions.contains(session) && !session.equals(activeSession)) {
+        activeSession = session;
+        fireSessionActivated(session);
+      }
     }
   }
 
   public ICoverageSession getActiveSession() {
-    return activeSession;
+    synchronized (lock) {
+      return activeSession;
+    }
   }
 
   public void refreshActiveSession() {
-    if (activeSession != null) {
-      fireSessionActivated(activeSession);
+    synchronized (lock) {
+      if (activeSession != null) {
+        fireSessionActivated(activeSession);
+      }
     }
   }
 
@@ -164,9 +200,11 @@ public class SessionManager implements ISessionManager {
         execfile, launchconfiguration);
 
     // Update session list
-    addSession(merged, true, null);
-    for (ICoverageSession session : sessions) {
-      removeSession(session);
+    synchronized (lock) {
+      addSession(merged, true, null);
+      for (ICoverageSession session : sessions) {
+        removeSession(session);
+      }
     }
 
     monitor.done();
@@ -177,23 +215,27 @@ public class SessionManager implements ISessionManager {
     if (listener == null) {
       throw new IllegalArgumentException();
     }
-    if (!listeners.contains(listener)) {
-      listeners.add(listener);
+    synchronized (lock) {
+      if (!listeners.contains(listener)) {
+        listeners.add(listener);
+      }
     }
   }
 
   public void removeSessionListener(ISessionListener listener) {
-    listeners.remove(listener);
+    synchronized (lock) {
+      listeners.remove(listener);
+    }
   }
 
-  protected void fireSessionAdded(ICoverageSession session) {
+  private void fireSessionAdded(ICoverageSession session) {
     // copy to avoid concurrent modification issues
     for (ISessionListener l : new ArrayList<ISessionListener>(listeners)) {
       l.sessionAdded(session);
     }
   }
 
-  protected void fireSessionRemoved(ICoverageSession session) {
+  private void fireSessionRemoved(ICoverageSession session) {
     // copy to avoid concurrent modification issues
     for (ISessionListener l : new ArrayList<ISessionListener>(listeners)) {
       l.sessionRemoved(session);

@@ -34,6 +34,7 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchDelegate;
+import org.eclipse.debug.core.Launch;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.jacoco.core.data.IExecutionDataVisitor;
 import org.jacoco.core.data.ISessionInfoVisitor;
@@ -162,6 +163,7 @@ public class SessionManagerTest {
     manager.removeSession(s1);
 
     assertEquals(Arrays.asList(s0), manager.getSessions());
+    assertSame(s0, manager.getActiveSession());
     reflistener.sessionRemoved(s1);
     assertEquals(reflistener, listener);
   }
@@ -177,6 +179,7 @@ public class SessionManagerTest {
     manager.removeSession(s1);
 
     assertEquals(Arrays.asList(s0), manager.getSessions());
+    assertSame(s0, manager.getActiveSession());
     reflistener.sessionRemoved(s1);
     reflistener.sessionActivated(s0);
     assertEquals(reflistener, listener);
@@ -184,36 +187,74 @@ public class SessionManagerTest {
 
   @Test
   public void testRemoveSession4() {
-    Object key0 = new Object();
-    Object key1 = new Object();
     ICoverageSession s0 = new DummySession();
     ICoverageSession s1 = new DummySession();
-    manager.addSession(s0, false, key0);
-    manager.addSession(s1, true, key1);
+    manager.addSession(s0, true, null);
     listener.clear();
 
-    manager.removeSession(key1);
+    manager.removeSession(s1);
 
     assertEquals(Arrays.asList(s0), manager.getSessions());
+    assertSame(s0, manager.getActiveSession());
+    assertEquals(reflistener, listener);
+  }
+
+  @Test
+  public void testRemoveSessionsFor1() {
+    ILaunch launch0 = new Launch(null, null, null);
+    ILaunch launch1 = new Launch(null, null, null);
+    ICoverageSession s0 = new DummySession();
+    ICoverageSession s1 = new DummySession();
+    manager.addSession(s0, false, launch0);
+    manager.addSession(s1, true, launch1);
+    listener.clear();
+
+    manager.removeSessionsFor(launch1);
+
+    assertEquals(Arrays.asList(s0), manager.getSessions());
+    assertSame(s0, manager.getActiveSession());
     reflistener.sessionRemoved(s1);
     reflistener.sessionActivated(s0);
     assertEquals(reflistener, listener);
   }
 
   @Test
-  public void testRemoveSession5() {
-    Object key0 = new Object();
-    Object key1 = new Object();
-    Object key2 = new Object();
+  public void testRemoveSessionsFor2() {
+    ILaunch launch0 = new Launch(null, null, null);
+    ILaunch launch1 = new Launch(null, null, null);
+    ILaunch launch2 = new Launch(null, null, null);
     ICoverageSession s0 = new DummySession();
     ICoverageSession s1 = new DummySession();
-    manager.addSession(s0, false, key0);
-    manager.addSession(s1, true, key1);
+    manager.addSession(s0, false, launch0);
+    manager.addSession(s1, true, launch1);
     listener.clear();
 
-    manager.removeSession(key2);
+    manager.removeSessionsFor(launch2);
 
     assertEquals(Arrays.asList(s0, s1), manager.getSessions());
+    assertSame(s1, manager.getActiveSession());
+    assertEquals(reflistener, listener);
+  }
+
+  @Test
+  public void testRemoveSessionsFor3() {
+    ILaunch launch0 = new Launch(null, null, null);
+    ILaunch launch1 = new Launch(null, null, null);
+    ICoverageSession s0 = new DummySession();
+    ICoverageSession s1 = new DummySession();
+    ICoverageSession s2 = new DummySession();
+    manager.addSession(s0, true, launch0);
+    manager.addSession(s1, true, launch1);
+    manager.addSession(s2, true, launch1);
+    listener.clear();
+
+    manager.removeSessionsFor(launch1);
+
+    assertEquals(Arrays.asList(s0), manager.getSessions());
+    assertSame(s0, manager.getActiveSession());
+    reflistener.sessionRemoved(s1);
+    reflistener.sessionRemoved(s2);
+    reflistener.sessionActivated(s0);
     assertEquals(reflistener, listener);
   }
 
@@ -255,21 +296,6 @@ public class SessionManagerTest {
   @Test
   public void testGetSessions1() {
     assertEquals(Arrays.asList(), manager.getSessions());
-  }
-
-  @Test
-  public void testGetSession1() {
-    Object key0 = new Object();
-    Object key1 = new Object();
-    Object key2 = new Object();
-    ICoverageSession s0 = new DummySession();
-    ICoverageSession s1 = new DummySession();
-    manager.addSession(s0, false, key0);
-    manager.addSession(s1, false, key1);
-
-    assertEquals(s0, manager.getSession(key0));
-    assertEquals(s1, manager.getSession(key1));
-    assertNull(manager.getSession(key2));
   }
 
   @Test
