@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2006, 2012 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,6 +37,11 @@ public class CoreMessages extends NLS {
   public static String StatusEXPORT_ERROR_message;
   public static String StatusIMPORT_ERROR_message;
   public static String StatusMERGE_ERROR_message;
+  public static String StatusAGENTSERVER_START_ERROR_message;
+  public static String StatusAGENTSERVER_STOP_ERROR_message;
+  public static String StatusEXECDATA_DUMP_ERROR_message;
+  public static String StatusDUMP_REQUEST_ERROR_message;
+
   public static String StatusNO_COVERAGE_DATA_ERROR_message;
 
   public static String ExportFormatHTML_value;

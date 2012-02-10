@@ -17,7 +17,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.junit.Before;
@@ -56,19 +55,19 @@ public class AgentArgumentSupportTest {
 
   @Test
   public void testGetArgument() throws CoreException {
-    final String arg = support.getArgument(new Path("here/jacoco.exec"));
+    final String arg = support.getArgument(12345);
     assertTrue(arg, arg.startsWith("-javaagent:"));
     assertTrue(
         arg,
-        arg.endsWith("jacocoagent.jar=destfile=here/jacoco.exec,includes=*,excludes=,exclclassloader=sun.reflect.DelegatingClassLoader"));
+        arg.endsWith("jacocoagent.jar=includes=*,excludes=,exclclassloader=sun.reflect.DelegatingClassLoader,output=tcpclient,port=12345"));
   }
 
   @Test
   public void testAddArgument() throws CoreException {
     ConfigurationMock mock = new ConfigurationMock();
     mock.pushResult("OTHER");
-    final ILaunchConfiguration config = support.addArgument(new Path(
-        "here/jacoco.exec"), mock.getMock());
+    final ILaunchConfiguration config = support.addArgument(12345,
+        mock.getMock());
     final String arg = config.getAttribute(
         IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, "");
     assertTrue(arg, arg.startsWith("OTHER -javaagent:"));

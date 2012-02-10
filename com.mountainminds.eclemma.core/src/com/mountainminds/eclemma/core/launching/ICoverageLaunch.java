@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2006, 2012 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,7 @@ package com.mountainminds.eclemma.core.launching;
 
 import java.util.Set;
 
-import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 
@@ -24,18 +24,19 @@ import org.eclipse.jdt.core.IPackageFragmentRoot;
 public interface ICoverageLaunch extends ILaunch {
 
   /**
-   * Returns the location of the execution data file for this launch.
-   * 
-   * @return absolute path of the coverage data file
-   */
-  public IPath getExecutionDataFile();
-
-  /**
    * Returns the collection of {@link IPackageFragmentRoot} considered as the
    * scope for this launch.
    * 
    * @return package fragment roots for this launch
    */
   public Set<IPackageFragmentRoot> getScope();
+
+  /**
+   * Requests a new for this launch resulting in a new coverage session.
+   * 
+   * @param reset
+   *          if <code>true</code> execution data is reset for this launch
+   */
+  public void requestDump(boolean reset) throws CoreException;
 
 }

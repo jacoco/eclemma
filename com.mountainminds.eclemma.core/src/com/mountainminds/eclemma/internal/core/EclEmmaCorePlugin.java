@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2006, 2012 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,12 +11,7 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.core;
 
-import java.io.File;
-import java.text.MessageFormat;
-import java.util.Date;
-
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
@@ -31,9 +26,8 @@ import org.osgi.framework.BundleContext;
 
 import com.mountainminds.eclemma.core.EclEmmaStatus;
 import com.mountainminds.eclemma.core.ICorePreferences;
-import com.mountainminds.eclemma.core.ICoverageSession;
 import com.mountainminds.eclemma.core.ISessionManager;
-import com.mountainminds.eclemma.core.launching.ICoverageLaunch;
+import com.mountainminds.eclemma.internal.core.launching.CoverageLaunch;
 
 /**
  * Bundle activator for the EclEmma core.
@@ -77,36 +71,23 @@ public class EclEmmaCorePlugin extends Plugin {
             && e.getKind() == DebugEvent.TERMINATE) {
           final IProcess proc = (IProcess) e.getSource();
           final ILaunch launch = proc.getLaunch();
-          if (launch instanceof ICoverageLaunch) {
-            final ICoverageLaunch coverage = (ICoverageLaunch) launch;
-            IPath coveragedatafile = coverage.getExecutionDataFile();
-            if (checkCoverageDataFile(coveragedatafile)) {
-              Object[] args = new Object[] {
-                  launch.getLaunchConfiguration().getName(), new Date() };
-              String description = MessageFormat.format(
-                  CoreMessages.LaunchSessionDescription_value, args);
-              ICoverageSession session = new CoverageSession(description,
-                  coverage.getScope(), coveragedatafile,
-                  launch.getLaunchConfiguration());
-              sessionManager.addSession(session,
-                  preferences.getActivateNewSessions(), launch);
-            }
+          if (launch instanceof CoverageLaunch) {
+            final CoverageLaunch coverageLaunch = (CoverageLaunch) launch;
+            coverageLaunch.getAgentServer().stop();
+            checkExecutionData(coverageLaunch);
           }
         }
       }
     }
 
-    private boolean checkCoverageDataFile(IPath path) {
-      final File file = path.toFile();
-      final boolean ok = file.exists() && file.length() > 0;
-      if (!ok) {
+    private void checkExecutionData(CoverageLaunch launch) {
+      if (!launch.getAgentServer().hasDataReceived()) {
         try {
-          showPrompt(EclEmmaStatus.NO_COVERAGE_DATA_ERROR.getStatus(), path);
+          showPrompt(EclEmmaStatus.NO_COVERAGE_DATA_ERROR.getStatus(), launch);
         } catch (CoreException e) {
           getLog().log(e.getStatus());
         }
       }
-      return ok;
     }
   };
 
@@ -160,7 +141,7 @@ public class EclEmmaCorePlugin extends Plugin {
   }
 
   /**
-   * Issues an user prompt using the statis handler registered for the given
+   * Issues an user prompt using the status handler registered for the given
    * status.
    * 
    * @param status

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2006, 2012 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -109,6 +109,30 @@ public final class EclEmmaStatus {
    */
   public static final EclEmmaStatus MERGE_ERROR = new EclEmmaStatus(5010,
       IStatus.ERROR, CoreMessages.StatusMERGE_ERROR_message);
+
+  /**
+   * Error while starting the agent server.
+   */
+  public static final EclEmmaStatus AGENTSERVER_START_ERROR = new EclEmmaStatus(
+      5011, IStatus.ERROR, CoreMessages.StatusAGENTSERVER_START_ERROR_message);
+
+  /**
+   * Error while stopping the agent server.
+   */
+  public static final EclEmmaStatus AGENTSERVER_STOP_ERROR = new EclEmmaStatus(
+      5012, IStatus.ERROR, CoreMessages.StatusAGENTSERVER_STOP_ERROR_message);
+
+  /**
+   * Error while dumping coverage data.
+   */
+  public static final EclEmmaStatus EXECDATA_DUMP_ERROR = new EclEmmaStatus(
+      5013, IStatus.ERROR, CoreMessages.StatusEXECDATA_DUMP_ERROR_message);
+
+  /**
+   * Error while requesting an execution data dump.
+   */
+  public static final EclEmmaStatus DUMP_REQUEST_ERROR = new EclEmmaStatus(
+      5014, IStatus.ERROR, CoreMessages.StatusDUMP_REQUEST_ERROR_message);
 
   /**
    * No coverage data file has been created during a coverage launch. This

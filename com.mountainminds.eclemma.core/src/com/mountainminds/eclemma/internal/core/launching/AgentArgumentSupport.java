@@ -17,7 +17,6 @@ import java.net.URL;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.jacoco.agent.AgentJar;
@@ -46,23 +45,24 @@ public class AgentArgumentSupport {
    * Returns a wrapper for the given launch configuration that adds the required
    * VM argument.
    * 
-   * @param outputpath
-   *          output location for execution data
+   * @param serverPort
+   *          port of the local agent server
    * @param config
    *          launch configuration to wrap
    * @return wrapped launch configuration
    */
-  public ILaunchConfiguration addArgument(IPath outputpath,
+  public ILaunchConfiguration addArgument(int serverPort,
       ILaunchConfiguration config) throws CoreException {
-    return new AdjustedLaunchConfiguration(getArgument(outputpath), config);
+    return new AdjustedLaunchConfiguration(getArgument(serverPort), config);
   }
 
-  protected String getArgument(IPath outputpath) throws CoreException {
+  protected String getArgument(int serverPort) throws CoreException {
     final AgentOptions options = new AgentOptions();
     options.setIncludes(preferences.getAgentIncludes());
     options.setExcludes(preferences.getAgentExcludes());
     options.setExclClassloader(preferences.getAgentExclClassloader());
-    options.setDestfile(outputpath.toOSString());
+    options.setOutput(AgentOptions.OutputMode.tcpclient);
+    options.setPort(serverPort);
     return quote(options.getVMArgument(getAgentFile()));
   }
 
