@@ -75,7 +75,6 @@ class ExecutedClassesPage extends FormPage {
         | SWT.ICON_CANCEL);
     filter.addModifyListener(new ModifyListener() {
       public void modifyText(ModifyEvent e) {
-        ((Text) e.widget).getText().trim();
         triggerRefresh();
       }
     });
@@ -209,7 +208,7 @@ class ExecutedClassesPage extends FormPage {
     @Override
     public IStatus runInUIThread(IProgressMonitor monitor) {
       dataTableViewer.setFilters(new ViewerFilter[] { ExecutedClassesFilters
-          .fromPatternString(filter.getText()) });
+          .fromPatternString(filter.getText().trim()) });
       return Status.OK_STATUS;
     }
   }
