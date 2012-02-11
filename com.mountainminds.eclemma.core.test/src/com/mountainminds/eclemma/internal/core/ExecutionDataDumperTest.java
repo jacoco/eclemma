@@ -12,7 +12,9 @@
 package com.mountainminds.eclemma.internal.core;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -63,6 +65,7 @@ public class ExecutionDataDumperTest {
   public void testEmpty() throws Exception {
     out.close();
     assertNull(dumper.dump());
+    assertFalse(dumper.hasDataReceived());
   }
 
   @Test
@@ -71,12 +74,15 @@ public class ExecutionDataDumperTest {
     writer.visitClassExecution(new ExecutionData(11, "Clazz1", new boolean[8]));
     writer.sendCmdOk();
     verifyExecContent(dumper.dump(), "Clazz1");
+    assertTrue(dumper.hasDataReceived());
 
     writer.visitSessionInfo(new SessionInfo("Session", 10, 20));
     writer.visitClassExecution(new ExecutionData(11, "Clazz2", new boolean[8]));
     writer.sendCmdOk();
     out.close();
     verifyExecContent(dumper.dump(), "Clazz2");
+    assertTrue(dumper.hasDataReceived());
+
     assertNull(dumper.dump());
   }
 

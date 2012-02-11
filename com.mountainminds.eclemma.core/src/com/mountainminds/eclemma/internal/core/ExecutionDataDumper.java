@@ -32,10 +32,13 @@ public class ExecutionDataDumper {
   private final ExecutionDataReader reader;
   private final ExecutionDataFiles files;
 
+  private boolean dataReceived;
+
   public ExecutionDataDumper(ExecutionDataReader reader,
       ExecutionDataFiles files) {
     this.reader = reader;
     this.files = files;
+    this.dataReceived = false;
   }
 
   public IPath dump() throws IOException, CoreException {
@@ -47,6 +50,7 @@ public class ExecutionDataDumper {
     if (sessionInfos.isEmpty()) {
       return null;
     }
+    dataReceived = true;
     return createDataFile(sessionInfos, executionData);
   }
 
@@ -60,6 +64,10 @@ public class ExecutionDataDumper {
     executionData.accept(writer);
     out.close();
     return file;
+  }
+
+  public boolean hasDataReceived() {
+    return dataReceived;
   }
 
 }

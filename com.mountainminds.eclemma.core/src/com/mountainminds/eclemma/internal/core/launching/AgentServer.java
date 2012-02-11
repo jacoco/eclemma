@@ -50,7 +50,7 @@ public class AgentServer extends Job {
 
   private ServerSocket serverSocket;
   private RemoteControlWriter writer;
-  private boolean dataReceived;
+  private ExecutionDataDumper dumper;
 
   AgentServer(ICoverageLaunch launch, ISessionManager sessionManager,
       ExecutionDataFiles files, ICorePreferences preferences) {
@@ -60,7 +60,6 @@ public class AgentServer extends Job {
     this.launch = launch;
     this.sessionManager = sessionManager;
     this.files = files;
-    this.dataReceived = false;
   }
 
   public void start() throws CoreException {
@@ -96,7 +95,7 @@ public class AgentServer extends Job {
   }
 
   public boolean hasDataReceived() {
-    return dataReceived;
+    return dumper != null && dumper.hasDataReceived();
   }
 
   public int getPort() {
@@ -110,7 +109,7 @@ public class AgentServer extends Job {
       writer = new RemoteControlWriter(socket.getOutputStream());
       final RemoteControlReader reader = new RemoteControlReader(
           socket.getInputStream());
-      final ExecutionDataDumper dumper = new ExecutionDataDumper(reader, files);
+      dumper = new ExecutionDataDumper(reader, files);
       IPath execfile;
       while ((execfile = dumper.dump()) != null) {
         final CoverageSession session = new CoverageSession(
@@ -118,7 +117,6 @@ public class AgentServer extends Job {
             launch.getLaunchConfiguration());
         sessionManager.addSession(session,
             preferences.getActivateNewSessions(), launch);
-        dataReceived = true;
       }
     } catch (IOException e) {
       return EclEmmaStatus.EXECDATA_DUMP_ERROR.getStatus(e);
