@@ -24,6 +24,9 @@ public class UIPreferences extends AbstractPreferenceInitializer {
   public static final String PREF_SHOW_COVERAGE_VIEW = EclEmmaUIPlugin.ID
       + ".show_coverage_view"; //$NON-NLS-1$
 
+  public static final String PREF_RESET_ON_DUMP = EclEmmaUIPlugin.ID
+      + ".reset_on_dump"; //$NON-NLS-1$
+
   public static final String PREF_ACTICATE_NEW_SESSIONS = EclEmmaUIPlugin.ID
       + ".activate_new_sessions"; //$NON-NLS-1$ 
 
@@ -87,6 +90,7 @@ public class UIPreferences extends AbstractPreferenceInitializer {
   public void initializeDefaultPreferences() {
     IPreferenceStore pref = getPreferenceStore();
     pref.setDefault(PREF_SHOW_COVERAGE_VIEW, true);
+    pref.setDefault(PREF_SHOW_COVERAGE_VIEW, false);
     pref.setDefault(PREF_ACTICATE_NEW_SESSIONS,
         ICorePreferences.DEFAULT.getActivateNewSessions());
     pref.setDefault(PREF_AUTO_REMOVE_SESSIONS,

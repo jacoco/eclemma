@@ -295,7 +295,19 @@
             categoryId="com.mountainminds.eclemma.ui"
             defaultHandler="com.mountainminds.eclemma.internal.ui.handlers.OpenSessionExecutionDataHandler"
             id="com.mountainminds.eclemma.ui.openSessionExecutionData"
-            name="%OpenSessionExecutionData">
+            name="%OpenSessionExecutionData.name">
+      </command>
+      <command
+            categoryId="com.mountainminds.eclemma.ui"
+            defaultHandler="com.mountainminds.eclemma.internal.ui.handlers.DumpExecutionDataHandler"
+            id="com.mountainminds.eclemma.ui.dumpExecutionData"
+            name="%DumpExecutionData.name">
+      </command>
+      <command
+            categoryId="com.mountainminds.eclemma.ui"
+            defaultHandler="com.mountainminds.eclemma.internal.ui.handlers.ResetOnDumpHandler"
+            id="com.mountainminds.eclemma.ui.resetOnDump"
+            name="%ResetOnDump.name">
       </command>
    </extension>
    
@@ -839,6 +851,13 @@
                icon="icons/full/elcl16/relaunch.gif"
                style="push">
          </command>
+         <command
+               commandId="com.mountainminds.eclemma.ui.dumpExecutionData"
+               disabledIcon="icons/full/dlcl16/dump.gif"
+               icon="icons/full/elcl16/dump.gif"
+               id="com.mountainminds.eclemma.ui.coverageView.dumpExecutionData"
+               style="pulldown">
+         </command>
          <separator
                name="separator.sessions"
                visible="true">
@@ -893,6 +912,22 @@
                class="com.mountainminds.eclemma.internal.ui.handlers.SelectActiveSessionsItems"
                id="com.mountainminds.eclemma.ui.coverageView.sessionSelector">
          </dynamic>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:com.mountainminds.eclemma.ui.coverageView.dumpExecutionData">
+         <dynamic
+               class="com.mountainminds.eclemma.internal.ui.handlers.DumpExecutionDataItems"
+               id="com.mountainminds.eclemma.ui.coverageView.dumpExecutionDataSelector">
+         </dynamic>
+         <separator
+               name="separator.options"
+               visible="true">
+         </separator>
+         <command
+               commandId="com.mountainminds.eclemma.ui.resetOnDump"
+               style="toggle">
+         </command>
       </menuContribution>
    </extension>
 </plugin>

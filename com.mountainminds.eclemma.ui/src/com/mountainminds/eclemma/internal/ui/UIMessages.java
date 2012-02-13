@@ -56,6 +56,11 @@ public class UIMessages extends NLS {
   public static String SelectActiveSessionDialog_title;
   public static String SelectActiveSessionDialog_message;
 
+  public static String DumpExecutionDataUnknownLaunch_value;
+  public static String DumpExecutionData_task;
+  public static String DumpExecutionDataDialog_title;
+  public static String DumpExecutionDataDialog_message;
+
   public static String MergeSessionsDialog_title;
   public static String MergeSessionsDialogDescription_label;
   public static String MergeSessionsDialogDescriptionDefault_value;
@@ -122,6 +127,7 @@ public class UIMessages extends NLS {
   public static String CoveragePreferencesShowCoverageView_label;
   public static String CoveragePreferencesActivateNewSessions_label;
   public static String CoveragePreferencesAutoRemoveSessions_label;
+  public static String CoveragePreferencesResetOnDump_label;
   public static String CoveragePreferencesDefaultScope_title;
   public static String CoveragePreferencesSourceFoldersOnly_label;
   public static String CoveragePreferencesSameProjectOnly_label;

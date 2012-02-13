@@ -11,11 +11,17 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.core;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.debug.core.ILaunch;
 import org.jacoco.core.analysis.ICoverageNode;
 
 import com.mountainminds.eclemma.core.analysis.IJavaCoverageListener;
 import com.mountainminds.eclemma.core.analysis.IJavaModelCoverage;
+import com.mountainminds.eclemma.core.launching.ICoverageLaunch;
 import com.mountainminds.eclemma.internal.core.EclEmmaCorePlugin;
 import com.mountainminds.eclemma.internal.core.SessionExporter;
 import com.mountainminds.eclemma.internal.core.SessionImporter;
@@ -92,6 +98,22 @@ public final class CoverageTools {
    */
   public static void setPreferences(ICorePreferences preferences) {
     EclEmmaCorePlugin.getInstance().setPreferences(preferences);
+  }
+
+  /**
+   * Determines all current coverage launches which are running.
+   * 
+   * @return list of running coverage launches
+   */
+  public static List<ICoverageLaunch> getRunningCoverageLaunches() {
+    final List<ICoverageLaunch> result = new ArrayList<ICoverageLaunch>();
+    for (final ILaunch launch : DebugPlugin.getDefault().getLaunchManager()
+        .getLaunches()) {
+      if (launch instanceof ICoverageLaunch && !launch.isTerminated()) {
+        result.add((ICoverageLaunch) launch);
+      }
+    }
+    return result;
   }
 
   private CoverageTools() {

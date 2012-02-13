@@ -47,6 +47,7 @@ public class EclEmmaUIPlugin extends AbstractUIPlugin {
   // Icons used by the Plugin
 
   public static final String ELCL_SESSION = "icons/full/elcl16/session.gif"; //$NON-NLS-1$
+  public static final String ELCL_DUMP = "icons/full/elcl16/dump.gif"; //$NON-NLS-1$
 
   public static final String EVIEW_COVERAGE = "icons/full/eview16/coverage.gif"; //$NON-NLS-1$
   public static final String EVIEW_EXEC = "icons/full/eview16/exec.gif"; //$NON-NLS-1$

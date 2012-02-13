@@ -85,6 +85,9 @@ public class CoveragePreferencePage extends FieldEditorPreferencePage implements
     editor = new BooleanFieldEditor(UIPreferences.PREF_AUTO_REMOVE_SESSIONS,
         UIMessages.CoveragePreferencesAutoRemoveSessions_label, group);
     addField(editor);
+    editor = new BooleanFieldEditor(UIPreferences.PREF_RESET_ON_DUMP,
+        UIMessages.CoveragePreferencesResetOnDump_label, group);
+    addField(editor);
     editor.fillIntoGrid(group, 2);
     adjustGroupLayout(group);
   }
