@@ -68,13 +68,12 @@ class AdjustedLaunchConfiguration implements ILaunchConfiguration {
   }
 
   private String getVMArguments() throws CoreException {
-    final StringBuilder sb = new StringBuilder();
-    sb.append(delegate.getAttribute(KEY, "")); //$NON-NLS-1$
-    if (sb.length() > 0) {
-      sb.append(' ');
+    final String original = delegate.getAttribute(KEY, ""); //$NON-NLS-1$
+    if (original.length() > 0) {
+      return extraVMArgument + ' ' + original;
+    } else {
+      return extraVMArgument;
     }
-    sb.append(extraVMArgument);
-    return sb.toString();
   }
 
   public boolean isWorkingCopy() {

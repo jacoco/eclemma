@@ -70,7 +70,8 @@ public class AgentArgumentSupportTest {
         mock.getMock());
     final String arg = config.getAttribute(
         IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, "");
-    assertTrue(arg, arg.startsWith("OTHER -javaagent:"));
+    assertTrue(arg, arg.startsWith("-javaagent:"));
+    assertTrue(arg, arg.endsWith("OTHER"));
   }
 
 }

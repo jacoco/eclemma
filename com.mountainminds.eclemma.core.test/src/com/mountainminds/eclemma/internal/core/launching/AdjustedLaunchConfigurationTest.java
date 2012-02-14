@@ -67,9 +67,9 @@ public class AdjustedLaunchConfigurationTest {
   }
 
   @Test
-  public void testGetAttributeAppended() throws CoreException {
+  public void testGetAttributePrepended() throws CoreException {
     mock.pushResult("ORIGINAL");
-    assertEquals("ORIGINAL EXTRA", adjusted.getAttribute(
+    assertEquals("EXTRA ORIGINAL", adjusted.getAttribute(
         IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, ""));
   }
 
@@ -90,7 +90,7 @@ public class AdjustedLaunchConfigurationTest {
         new HashSet<String>(Arrays.asList("otherkey",
             IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS)), map.keySet());
     assertEquals("othervalue", map.get("otherkey"));
-    assertEquals("ORIGINAL EXTRA",
+    assertEquals("EXTRA ORIGINAL",
         map.get(IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS));
   }
 
