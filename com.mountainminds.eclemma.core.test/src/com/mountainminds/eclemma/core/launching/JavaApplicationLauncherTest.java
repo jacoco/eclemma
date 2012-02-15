@@ -55,6 +55,19 @@ public class JavaApplicationLauncherTest {
   }
 
   @Test
+  public void testNoProject() throws Exception {
+    JavaProjectKit.waitForBuild();
+
+    ILaunchConfigurationWorkingCopy configuration = getJavaApplicationType()
+        .newInstance(javaProject1.project, "test.launch");
+
+    final Collection<IPackageFragmentRoot> scope = launcher
+        .getOverallScope(configuration);
+
+    assertEquals(set(), set(scope));
+  }
+
+  @Test
   public void testProjectWithSourceFolders() throws Exception {
     IPackageFragmentRoot rootSrc1 = javaProject1.createSourceFolder("src");
     IPackageFragmentRoot rootSrc2 = javaProject1.createSourceFolder("test");

@@ -12,6 +12,7 @@
 package com.mountainminds.eclemma.core.launching;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
@@ -30,8 +31,12 @@ public class JavaApplicationLauncher extends CoverageLauncher {
   public Set<IPackageFragmentRoot> getOverallScope(
       ILaunchConfiguration configuration) throws CoreException {
     final IJavaProject project = JavaRuntime.getJavaProject(configuration);
-    return ScopeUtils.filterJREEntries(Arrays.asList(project
-        .getAllPackageFragmentRoots()));
+    if (project == null) {
+      return Collections.emptySet();
+    } else {
+      return ScopeUtils.filterJREEntries(Arrays.asList(project
+          .getAllPackageFragmentRoots()));
+    }
   }
 
 }
