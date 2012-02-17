@@ -294,13 +294,17 @@ public class CoverageView extends ViewPart implements IShowInTarget {
         if (element == LOADING_ELEMENT) {
           return true;
         } else {
-          ICoverageNode c = CoverageTools.getCoverageInfo(element);
-          if (c == null || c.getInstructionCounter().getTotalCount() == 0) {
+          final ICoverageNode c = CoverageTools.getCoverageInfo(element);
+          if (c == null) {
             return false;
           }
-          if (settings.getHideUnusedTypes()) {
-            ICounter cnt = c.getClassCounter();
-            return cnt.getTotalCount() == 0 || cnt.getCoveredCount() != 0;
+          final ICounter instructions = c.getInstructionCounter();
+          if (instructions.getTotalCount() == 0) {
+            return false;
+          }
+          if (settings.getHideUnusedElements()
+              && instructions.getCoveredCount() == 0) {
+            return false;
           }
           return true;
         }
@@ -340,8 +344,8 @@ public class CoverageView extends ViewPart implements IShowInTarget {
         new SelectRootElementsHandler(settings, this));
     activateHandler(SelectCountersHandler.ID, new SelectCountersHandler(
         settings, this));
-    activateHandler(HideUnusedTypesHandler.ID, new HideUnusedTypesHandler(
-        settings, this));
+    activateHandler(HideUnusedElementsHandler.ID,
+        new HideUnusedElementsHandler(settings, this));
     activateHandler(IWorkbenchCommandConstants.EDIT_COPY,
         new CopyHandler(tree.getDisplay(), settings, labelprovider, viewer));
     activateHandler(IWorkbenchCommandConstants.FILE_REFRESH,

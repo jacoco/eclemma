@@ -241,8 +241,8 @@
       </command>
       <command
             categoryId="com.mountainminds.eclemma.ui"
-            id="com.mountainminds.eclemma.ui.hideUnusedTypes"
-            name="%HideUnusedTypesCommand.name">
+            id="com.mountainminds.eclemma.ui.hideUnusedElements"
+            name="%HideUnusedElementsCommand.name">
       </command>
       <command
             categoryId="com.mountainminds.eclemma.ui"
@@ -780,7 +780,7 @@
                visible="true">
          </separator>
          <command
-               commandId="com.mountainminds.eclemma.ui.hideUnusedTypes"
+               commandId="com.mountainminds.eclemma.ui.hideUnusedElements"
                style="toggle">
          </command>
          <separator

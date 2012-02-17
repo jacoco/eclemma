@@ -31,7 +31,7 @@ public class ViewSettings {
   private static final String KEY_SORTCOLUMN = "sortcolumn"; //$NON-NLS-1$
   private static final String KEY_REVERSESORT = "reversesort"; //$NON-NLS-1$
   private static final String KEY_COUNTERS = "counters"; //$NON-NLS-1$
-  private static final String KEY_HIDEUNUSEDTYPES = "hideunusedtypes"; //$NON-NLS-1$
+  private static final String KEY_HIDEUNUSEDELEMENTS = "hideunusedelements"; //$NON-NLS-1$
   private static final String KEY_ROOTTYPE = "roottype"; //$NON-NLS-1$
   private static final String KEY_COLUMN0 = "column0"; //$NON-NLS-1$
   private static final String KEY_COLUMN1 = "column1"; //$NON-NLS-1$
@@ -88,7 +88,7 @@ public class ViewSettings {
   private boolean reversesort;
   private CounterEntity counters;
   private ElementType roottype;
-  private boolean hideunusedtypes;
+  private boolean hideunusedelements;
   private int[] columnwidths = new int[5];
   private boolean linked;
 
@@ -129,12 +129,12 @@ public class ViewSettings {
     this.roottype = roottype;
   }
 
-  public boolean getHideUnusedTypes() {
-    return hideunusedtypes;
+  public boolean getHideUnusedElements() {
+    return hideunusedelements;
   }
 
-  public void setHideUnusedTypes(boolean flag) {
-    hideunusedtypes = flag;
+  public void setHideUnusedElements(boolean flag) {
+    hideunusedelements = flag;
   }
 
   public int[] getColumnWidths() {
@@ -156,7 +156,7 @@ public class ViewSettings {
         CounterEntity.INSTRUCTION);
     roottype = getEnum(memento, KEY_ROOTTYPE, ElementType.class,
         ElementType.GROUP);
-    hideunusedtypes = getBoolean(memento, KEY_HIDEUNUSEDTYPES, false);
+    hideunusedelements = getBoolean(memento, KEY_HIDEUNUSEDELEMENTS, false);
     columnwidths[0] = getInt(memento, KEY_COLUMN0, DEFAULT_COLUMNWIDTH[0]);
     columnwidths[1] = getInt(memento, KEY_COLUMN1, DEFAULT_COLUMNWIDTH[1]);
     columnwidths[2] = getInt(memento, KEY_COLUMN2, DEFAULT_COLUMNWIDTH[2]);
@@ -167,16 +167,16 @@ public class ViewSettings {
 
   public void save(IMemento memento) {
     memento.putInteger(KEY_SORTCOLUMN, sortcolumn);
-    memento.putInteger(KEY_REVERSESORT, reversesort ? 1 : 0);
+    memento.putBoolean(KEY_REVERSESORT, reversesort);
     memento.putString(KEY_COUNTERS, counters.name());
     memento.putString(KEY_ROOTTYPE, roottype.name());
-    memento.putInteger(KEY_HIDEUNUSEDTYPES, hideunusedtypes ? 1 : 0);
+    memento.putBoolean(KEY_HIDEUNUSEDELEMENTS, hideunusedelements);
     memento.putInteger(KEY_COLUMN0, columnwidths[0]);
     memento.putInteger(KEY_COLUMN1, columnwidths[1]);
     memento.putInteger(KEY_COLUMN2, columnwidths[2]);
     memento.putInteger(KEY_COLUMN3, columnwidths[3]);
     memento.putInteger(KEY_COLUMN4, columnwidths[4]);
-    memento.putInteger(KEY_LINKED, linked ? 1 : 0);
+    memento.putBoolean(KEY_LINKED, linked);
   }
 
   private int getInt(IMemento memento, String key, int preset) {
@@ -185,6 +185,15 @@ public class ViewSettings {
     } else {
       Integer i = memento.getInteger(key);
       return i == null ? preset : i.intValue();
+    }
+  }
+
+  private boolean getBoolean(IMemento memento, String key, boolean preset) {
+    if (memento == null) {
+      return preset;
+    } else {
+      Boolean b = memento.getBoolean(key);
+      return b == null ? preset : b.booleanValue();
     }
   }
 
@@ -202,10 +211,6 @@ public class ViewSettings {
     } catch (IllegalArgumentException e) {
       return preset;
     }
-  }
-
-  private boolean getBoolean(IMemento memento, String key, boolean preset) {
-    return getInt(memento, key, preset ? 1 : 0) == 1;
   }
 
 }

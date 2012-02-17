@@ -22,27 +22,28 @@ import org.eclipse.ui.menus.UIElement;
 /**
  * Handler to toggle hide unused types in the coverage tree.
  */
-class HideUnusedTypesHandler extends AbstractHandler implements IElementUpdater {
+class HideUnusedElementsHandler extends AbstractHandler implements
+    IElementUpdater {
 
-  public static final String ID = "com.mountainminds.eclemma.ui.hideUnusedTypes"; //$NON-NLS-1$
+  public static final String ID = "com.mountainminds.eclemma.ui.hideUnusedElements"; //$NON-NLS-1$
 
   private final ViewSettings settings;
   private final CoverageView view;
 
-  public HideUnusedTypesHandler(ViewSettings settings, CoverageView view) {
+  public HideUnusedElementsHandler(ViewSettings settings, CoverageView view) {
     this.settings = settings;
     this.view = view;
   }
 
   public Object execute(ExecutionEvent event) throws ExecutionException {
-    settings.setHideUnusedTypes(!settings.getHideUnusedTypes());
+    settings.setHideUnusedElements(!settings.getHideUnusedElements());
     view.refreshViewer();
     return null;
   }
 
   public void updateElement(UIElement element,
       @SuppressWarnings("rawtypes") Map parameters) {
-    element.setChecked(settings.getHideUnusedTypes());
+    element.setChecked(settings.getHideUnusedElements());
   }
 
 }
