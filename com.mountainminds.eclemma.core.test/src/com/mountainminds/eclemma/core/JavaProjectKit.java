@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2006, 2012 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,9 +11,12 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.core;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.Reader;
 
 import junit.framework.Assert;
@@ -127,6 +130,24 @@ public class JavaProjectKit {
     jarfile.create(source, true, null);
     IPackageFragmentRoot packageRoot = javaProject
         .getPackageFragmentRoot(jarfile);
+    addClassPathEntry(JavaCore.newLibraryEntry(packageRoot.getPath(),
+        sourceAttachmentPath, sourceAttachmentRootPath));
+    return packageRoot;
+  }
+
+  public IPackageFragmentRoot createExternalJAR(String jarsrc,
+      IPath sourceAttachmentPath, IPath sourceAttachmentRootPath)
+      throws CoreException, IOException {
+    File jarfile = File.createTempFile("test", ".jar");
+    InputStream source = openTestResource(new Path(jarsrc));
+    OutputStream out = new FileOutputStream(jarfile);
+    byte[] buffer = new byte[1024];
+    int len;
+    while ((len = source.read(buffer)) != -1) {
+      out.write(buffer, 0, len);
+    }
+    IPackageFragmentRoot packageRoot = javaProject
+        .getPackageFragmentRoot(jarfile.getAbsolutePath());
     addClassPathEntry(JavaCore.newLibraryEntry(packageRoot.getPath(),
         sourceAttachmentPath, sourceAttachmentRootPath));
     return packageRoot;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2006, 2012 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
@@ -33,61 +32,81 @@ import com.mountainminds.eclemma.core.EclEmmaStatus;
 final class PackageFragementRootAnalyzer {
 
   private final ExecutionDataStore executiondata;
-  private final Map<IPath, AnalyzedNodes> cache;
+  private final Map<Object, AnalyzedNodes> cache;
 
   PackageFragementRootAnalyzer(final ExecutionDataStore executiondata) {
     this.executiondata = executiondata;
-    this.cache = new HashMap<IPath, AnalyzedNodes>();
+    this.cache = new HashMap<Object, AnalyzedNodes>();
   }
 
   AnalyzedNodes analyze(final IPackageFragmentRoot root) throws CoreException {
-    final IPath path = getClassfilesLocation(root);
-    AnalyzedNodes nodes = cache.get(path);
-    if (nodes == null) {
-      nodes = analyze(root, path);
-      cache.put(path, nodes);
+    if (root.isExternal()) {
+      return analyzeExternal(root);
+    } else {
+      return analyzeInternal(root);
     }
-    return nodes;
   }
 
-  private AnalyzedNodes analyze(final IPackageFragmentRoot root,
-      final IPath path) throws CoreException {
-    final CoverageBuilder builder = new CoverageBuilder();
-    final Analyzer analyzer = new Analyzer(executiondata, builder);
-
+  private AnalyzedNodes analyzeInternal(final IPackageFragmentRoot root)
+      throws CoreException {
+    IResource location = null;
     try {
-      analyzer.analyzeAll(path.toFile());
+      location = getClassfilesLocation(root);
+
+      AnalyzedNodes nodes = cache.get(location);
+      if (nodes != null) {
+        return nodes;
+      }
+
+      final CoverageBuilder builder = new CoverageBuilder();
+      final Analyzer analyzer = new Analyzer(executiondata, builder);
+      new ResourceTreeWalker(analyzer).walk(location);
+      nodes = new AnalyzedNodes(builder.getClasses(), builder.getSourceFiles());
+      cache.put(location, nodes);
+      return nodes;
     } catch (Exception e) {
       throw new CoreException(EclEmmaStatus.BUNDLE_ANALYSIS_ERROR.getStatus(
-          root.getElementName(), path, e));
+          root.getElementName(), location, e));
     }
-
-    return new AnalyzedNodes(builder.getClasses(), builder.getSourceFiles());
   }
 
-  private IPath getClassfilesLocation(IPackageFragmentRoot root)
+  private AnalyzedNodes analyzeExternal(final IPackageFragmentRoot root)
+      throws CoreException {
+    IPath location = null;
+    try {
+      location = root.getPath();
+
+      AnalyzedNodes nodes = cache.get(location);
+      if (nodes != null) {
+        return nodes;
+      }
+
+      final CoverageBuilder builder = new CoverageBuilder();
+      final Analyzer analyzer = new Analyzer(executiondata, builder);
+      new ResourceTreeWalker(analyzer).walk(location);
+      nodes = new AnalyzedNodes(builder.getClasses(), builder.getSourceFiles());
+      cache.put(location, nodes);
+      return nodes;
+    } catch (Exception e) {
+      throw new CoreException(EclEmmaStatus.BUNDLE_ANALYSIS_ERROR.getStatus(
+          root.getElementName(), location, e));
+    }
+  }
+
+  private IResource getClassfilesLocation(IPackageFragmentRoot root)
       throws CoreException {
 
-    // 1. Find path depending on root type (source/binary)
-    IPath path;
-    if (root.getKind() == IPackageFragmentRoot.K_SOURCE) {
-      path = root.getRawClasspathEntry().getOutputLocation();
-      if (path == null) {
-        path = root.getJavaProject().getOutputLocation();
-      }
-    } else {
-      path = root.getPath();
+    // For binary roots the underlying resource directly points to class files:
+    if (root.getKind() == IPackageFragmentRoot.K_BINARY) {
+      return root.getResource();
     }
 
-    // 2. Determine absolute path
-    if (path.getDevice() == null) {
-      final IWorkspace ws = root.getJavaProject().getProject().getWorkspace();
-      final IResource res = ws.getRoot().findMember(path);
-      if (res != null) {
-        return res.getLocation();
-      }
+    // For source roots we need to find the corresponding output folder:
+    IPath path = root.getRawClasspathEntry().getOutputLocation();
+    if (path == null) {
+      path = root.getJavaProject().getOutputLocation();
     }
-    return path;
+    return root.getResource().getWorkspace().getRoot().findMember(path);
   }
 
 }
