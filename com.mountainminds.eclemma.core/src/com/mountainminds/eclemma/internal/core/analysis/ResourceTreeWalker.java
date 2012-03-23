@@ -47,12 +47,12 @@ class ResourceTreeWalker {
         in.close();
       }
     } else {
-      walkResource(resource);
+      walkResource(resource, true);
     }
   }
 
-  private void walkResource(IResource resource) throws CoreException,
-      IOException {
+  private void walkResource(IResource resource, boolean root)
+      throws CoreException, IOException {
     switch (resource.getType()) {
     case IResource.FILE:
       if (resource.getName().endsWith(".class")) { //$NON-NLS-1$
@@ -67,11 +67,11 @@ class ResourceTreeWalker {
       break;
     case IResource.FOLDER:
     case IResource.PROJECT:
-      // Do not traverse into folders like ".svn"
-      if (isJavaIdentifier(resource.getName())) {
+      // Do not traverse into sub-folders like ".svn"
+      if (root || isJavaIdentifier(resource.getName())) {
         final IContainer container = (IContainer) resource;
         for (final IResource child : container.members()) {
-          walkResource(child);
+          walkResource(child, false);
         }
       }
       break;
@@ -88,11 +88,11 @@ class ResourceTreeWalker {
         in.close();
       }
     } else {
-      walkFile(file);
+      walkFile(file, true);
     }
   }
 
-  private void walkFile(File file) throws IOException {
+  private void walkFile(File file, boolean root) throws IOException {
     if (file.isFile()) {
       if (file.getName().endsWith(".class")) { //$NON-NLS-1$
         final InputStream in = open(file);
@@ -104,9 +104,9 @@ class ResourceTreeWalker {
       }
     } else {
       // Do not traverse into folders like ".svn"
-      if (isJavaIdentifier(file.getName())) {
+      if (root || isJavaIdentifier(file.getName())) {
         for (final File child : file.listFiles()) {
-          walkFile(child);
+          walkFile(child, false);
         }
       }
     }
