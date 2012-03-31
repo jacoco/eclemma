@@ -157,11 +157,11 @@ public class ViewSettings {
     roottype = getEnum(memento, KEY_ROOTTYPE, ElementType.class,
         ElementType.GROUP);
     hideunusedelements = getBoolean(memento, KEY_HIDEUNUSEDELEMENTS, false);
-    columnwidths[0] = getInt(memento, KEY_COLUMN0, DEFAULT_COLUMNWIDTH[0]);
-    columnwidths[1] = getInt(memento, KEY_COLUMN1, DEFAULT_COLUMNWIDTH[1]);
-    columnwidths[2] = getInt(memento, KEY_COLUMN2, DEFAULT_COLUMNWIDTH[2]);
-    columnwidths[3] = getInt(memento, KEY_COLUMN3, DEFAULT_COLUMNWIDTH[3]);
-    columnwidths[4] = getInt(memento, KEY_COLUMN4, DEFAULT_COLUMNWIDTH[4]);
+    columnwidths[0] = getWidth(memento, KEY_COLUMN0, DEFAULT_COLUMNWIDTH[0]);
+    columnwidths[1] = getWidth(memento, KEY_COLUMN1, DEFAULT_COLUMNWIDTH[1]);
+    columnwidths[2] = getWidth(memento, KEY_COLUMN2, DEFAULT_COLUMNWIDTH[2]);
+    columnwidths[3] = getWidth(memento, KEY_COLUMN3, DEFAULT_COLUMNWIDTH[3]);
+    columnwidths[4] = getWidth(memento, KEY_COLUMN4, DEFAULT_COLUMNWIDTH[4]);
     linked = getBoolean(memento, KEY_LINKED, false);
   }
 
@@ -177,6 +177,11 @@ public class ViewSettings {
     memento.putInteger(KEY_COLUMN3, columnwidths[3]);
     memento.putInteger(KEY_COLUMN4, columnwidths[4]);
     memento.putBoolean(KEY_LINKED, linked);
+  }
+
+  private int getWidth(IMemento memento, String key, int preset) {
+    final int w = getInt(memento, key, preset);
+    return w == 0 ? preset : w;
   }
 
   private int getInt(IMemento memento, String key, int preset) {
