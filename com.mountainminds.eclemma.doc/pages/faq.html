@@ -30,6 +30,7 @@
   <li><a href="#trouble03">My application does not run with EclEmma!</a></li>
   <li><a href="#trouble04">My Eclipse workbench window has no toolbar button for coverage launches!</a></li>
   <li><a href="#trouble05">Why are JUnit4 test cases with expected exceptions shown as not covered?</a></li>
+  <li><a href="#trouble06">The <i>Coverage</i> view stays empty and there is no source highlighting. Why?</a></li>
 </ul>
 
 
@@ -134,6 +135,16 @@
   executed. For successful test cases marked with <code>@Test{expected=...}</code>
   this is not the case. See also <a href="#trouble02">"Code with exceptions
   shows no coverage. Why?"</a>.
+</p>
+
+<h3><a name="trouble06">The <i>Coverage</i> view stays empty and there is no source highlighting. Why?</a></h3>
+<p>
+  In Eclipse preferences there is an option <i>Launch in debug mode when
+  workspace contains breakpoints</i> under <i>Run/Debug</i> &rarr;
+  <i>Launching</i>. If this option is enabled and there are breakpoints in your
+  workspace <i>coverage</i> mode will not work, because it is automatically
+  replaced with <i>debug</i> mode. Set this option to <i>Never</i> if you want
+  to run code coverage analysis. 
 </p>
 
 </body>
