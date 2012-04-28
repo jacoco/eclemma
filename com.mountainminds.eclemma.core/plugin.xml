@@ -62,16 +62,23 @@
             type="org.testng.eclipse.launchconfig"/>
       <launchDelegate
             delegate="com.mountainminds.eclemma.core.launching.EclipseLauncher"
-            id="com.mountainminds.eclemma.ui.RAPJUnitLauncher"
+            id="com.mountainminds.eclemma.core.RAPJUnitLauncher"
             modes="coverage"
             name="%junitRAPDelegateName"
             type="org.eclipse.rap.ui.launch.RAPJUnitTestLauncher"/>
       <launchDelegate
             delegate="com.mountainminds.eclemma.core.launching.EclipseLauncher"
-            id="com.mountainminds.eclemma.ui.SWTBotJUnitLauncher"
+            id="com.mountainminds.eclemma.core.SWTBotJUnitLauncher"
             modes="coverage"
             name="%swtBotJunitDelegateName"
             type="org.eclipse.swtbot.eclipse.ui.launcher.JunitLaunchConfig"/>
+      <launchDelegate
+            delegate="com.mountainminds.eclemma.core.launching.JavaApplicationLauncher"
+            id="com.mountainminds.eclemma.core.scalaApplicationLauncher"
+            modes="coverage"
+            name="%scalaDelegateName"
+            type="scala.application">
+      </launchDelegate>
    </extension>
    <extension
          point="org.eclipse.core.contenttype.contentTypes">

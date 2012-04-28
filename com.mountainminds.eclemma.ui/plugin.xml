@@ -117,7 +117,25 @@
                </with>
             </enablement>
          </contextualLaunch>
-      </shortcut>      
+      </shortcut>
+      <shortcut
+            class="com.mountainminds.eclemma.ui.launching.CoverageLaunchShortcut:org.eclipse.shortcut.scala"
+            icon="$nl$/icons/full/etool16/scala_launch.gif"
+            id="com.mountainminds.eclemma.ui.scalaShortcut"
+            label="%ScalaApplicationShortcut.label"
+            modes="coverage">
+         <contextualLaunch>
+            <enablement>
+               <with
+                     variable="selection">
+                  <test
+                        args="org.eclipse.shortcut.scala"
+                        property="com.mountainminds.eclemma.ui.launchable">
+                  </test>
+               </with>
+            </enablement>
+         </contextualLaunch>
+      </shortcut>
    </extension>
    
    <extension
@@ -220,6 +238,12 @@
             name="%CoverageSWTBotJUnitCommand.name">
       </command>
       <command
+            categoryId="org.eclipse.debug.ui.category.run"
+            description="%CoverageScalaApplicationCommand.description"
+            id="com.mountainminds.eclemma.ui.scalaShortcut.coverage"
+            name="%CoverageScalaApplicationCommand.name">
+      </command>
+      <command
             categoryId="com.mountainminds.eclemma.ui"
             id="com.mountainminds.eclemma.ui.selectRootElements"
             name="%SelectRootElementsCommand.name">
@@ -319,6 +343,12 @@
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M3+M2+E J"/>
       <key
+            commandId="com.mountainminds.eclemma.ui.scalaShortcut.coverage"
+            contextId="org.eclipse.ui.globalScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M3+M2+E L">
+      </key>
+      <key
             commandId="com.mountainminds.eclemma.ui.junitShortcut.coverage"
             contextId="org.eclipse.ui.globalScope"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
@@ -389,6 +419,10 @@
          <showInPart id="com.mountainminds.eclemma.ui.CoverageView"/>
       </perspectiveExtension>
       <perspectiveExtension targetID="org.eclipse.jst.j2ee.J2EEPerspective">
+         <actionSet id="com.mountainminds.eclemma.ui.CoverageActionSet"/>
+         <showInPart id="com.mountainminds.eclemma.ui.CoverageView"/>
+      </perspectiveExtension>
+      <perspectiveExtension targetID="org.scala-ide.sdt.core.perspective">
          <actionSet id="com.mountainminds.eclemma.ui.CoverageActionSet"/>
          <showInPart id="com.mountainminds.eclemma.ui.CoverageView"/>
       </perspectiveExtension>
@@ -553,6 +587,16 @@
             type="org.eclipse.swtbot.eclipse.ui.launcher.JunitLaunchConfig">
          <launchMode
                description="%swtBotJUnitTabGroupDescription.coverage"
+               mode="coverage">
+         </launchMode>
+      </launchConfigurationTabGroup>
+      <launchConfigurationTabGroup
+            class="com.mountainminds.eclemma.ui.launching.CoverageTabGroup"
+            helpContextId="com.mountainminds.eclemma.ui.coverage_launch_context"
+            id="com.mountainminds.eclemma.ui.ScalaApplicationTabGroup"
+            type="scala.application">
+         <launchMode
+               description="%scalaApplicationTabGroupDescription.coverage"
                mode="coverage">
          </launchMode>
       </launchConfigurationTabGroup>
