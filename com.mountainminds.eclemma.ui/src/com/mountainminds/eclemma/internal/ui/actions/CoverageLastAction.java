@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2006, 2012 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,7 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.ui.actions;
 
-import org.eclipse.debug.internal.ui.actions.RelaunchLastAction;
+import org.eclipse.debug.ui.actions.RelaunchLastAction;
 
 import com.mountainminds.eclemma.core.CoverageTools;
 import com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin;
