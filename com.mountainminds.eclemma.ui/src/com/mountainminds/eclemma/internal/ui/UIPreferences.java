@@ -90,7 +90,7 @@ public class UIPreferences extends AbstractPreferenceInitializer {
   public void initializeDefaultPreferences() {
     IPreferenceStore pref = getPreferenceStore();
     pref.setDefault(PREF_SHOW_COVERAGE_VIEW, true);
-    pref.setDefault(PREF_SHOW_COVERAGE_VIEW, false);
+    pref.setDefault(PREF_RESET_ON_DUMP, false);
     pref.setDefault(PREF_ACTICATE_NEW_SESSIONS,
         ICorePreferences.DEFAULT.getActivateNewSessions());
     pref.setDefault(PREF_AUTO_REMOVE_SESSIONS,
