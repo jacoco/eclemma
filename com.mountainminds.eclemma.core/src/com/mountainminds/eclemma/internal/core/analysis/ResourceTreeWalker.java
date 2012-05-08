@@ -112,8 +112,7 @@ class ResourceTreeWalker {
     }
   }
 
-  private BufferedInputStream open(final File file)
-      throws FileNotFoundException {
+  private InputStream open(final File file) throws FileNotFoundException {
     return new BufferedInputStream(new FileInputStream(file));
   }
 

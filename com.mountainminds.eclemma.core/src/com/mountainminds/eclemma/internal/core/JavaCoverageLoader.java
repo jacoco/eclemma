@@ -44,7 +44,6 @@ public class JavaCoverageLoader {
   private ISessionListener sessionListener = new ISessionListener() {
 
     public void sessionActivated(ICoverageSession session) {
-      // TODO Looks like this has no effect
       Job.getJobManager().cancel(LOADJOB);
       if (session == null) {
         coverage = null;
@@ -77,7 +76,7 @@ public class JavaCoverageLoader {
     }
 
     protected IStatus run(IProgressMonitor monitor) {
-      IJavaModelCoverage c;
+      final IJavaModelCoverage c;
       try {
         c = new SessionAnalyzer().processSession(session, monitor);
       } catch (CoreException e) {
