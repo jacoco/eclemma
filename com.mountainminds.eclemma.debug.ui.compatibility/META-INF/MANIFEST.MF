@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: EclEmma debug.ui API fix
 Bundle-SymbolicName: com.mountainminds.eclemma.debug.ui.compatibility;singleton:=true
-Bundle-Version: 2.1.2.qualifier
+Bundle-Version: 2.1.3.qualifier
 Bundle-Vendor: Mountainminds GmbH & Co. KG
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.eclipse.debug.ui.actions
