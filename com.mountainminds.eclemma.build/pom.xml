@@ -78,7 +78,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-    <tycho.version>0.13.0</tycho.version>
+    <tycho.version>0.14.0</tycho.version>
 
     <orbit-repository-url>http://download.eclipse.org/tools/orbit/downloads/drops/R20110523182458/repository/</orbit-repository-url>
 
