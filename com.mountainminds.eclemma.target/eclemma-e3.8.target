@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde version="3.6"?>
+
+<target name="eclemma-e3.8" sequenceNumber="1">
+<locations>
+<location includeAllPlatforms="false" includeMode="planner" includeSource="false" type="InstallableUnit">
+<unit id="org.eclipse.jdt.feature.group" version="3.8.0.v20120429-1635-8-8nFpCFNOfwK7Wad4VDgZ7BC834"/>
+<repository location="http://download.eclipse.org/releases/juno/"/>
+</location>
+<location includeAllPlatforms="false" includeMode="planner" includeSource="false" type="InstallableUnit">
+<unit id="org.objectweb.asm" version="3.3.1.v201105211655"/>
+<unit id="org.junit" version="4.8.2.v4_8_2_v20110321-1705"/>
+<repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20110523182458/repository"/>
+</location>
+</locations>
+</target>

@@ -228,6 +228,19 @@
         <platform-repository-url>http://download.eclipse.org/releases/indigo/</platform-repository-url>
       </properties>
     </profile>
+    <profile>
+      <id>e3.8</id>
+      <activation>
+        <property>
+          <name>target-profile</name>
+          <value>e3.8</value>
+         </property>
+      </activation>
+      <properties>
+        <target-platform>eclemma-e3.8</target-platform>
+        <platform-repository-url>http://download.eclipse.org/releases/juno/</platform-repository-url>
+      </properties>
+    </profile>
 
     <profile>
       <id>explicit-target</id>
