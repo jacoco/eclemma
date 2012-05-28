@@ -12,7 +12,6 @@ Export-Package: com.mountainminds.eclemma.core,
  com.mountainminds.eclemma.internal.core.analysis;x-internal:=true,
  com.mountainminds.eclemma.internal.core.launching;x-internal:=true
 Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.core.resources,
  org.eclipse.debug.core,
  org.eclipse.jdt.core,
  org.eclipse.jdt.launching,

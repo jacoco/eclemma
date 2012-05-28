@@ -107,6 +107,12 @@ This Agreement is governed by the laws of the State of New York and the intellec
       <update label="EclEmma Updates" url="http://update.eclemma.org/"/>
    </url>
 
+   <requires>
+      <import feature="org.eclipse.jdt" version="3.5.0" match="greaterOrEqual"/>
+      <import feature="org.eclipse.rcp" version="3.5.0" match="greaterOrEqual"/>
+      <import feature="org.eclipse.platform" version="3.5.0" match="greaterOrEqual"/>
+   </requires>
+
    <plugin
          id="com.mountainminds.eclemma.core"
          download-size="0"
