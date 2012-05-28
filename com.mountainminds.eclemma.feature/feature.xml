@@ -7,7 +7,7 @@
       plugin="com.mountainminds.eclemma.ui">
 
    <description url="http://www.eclemma.org/">
-      EclEmma plug-ins for Eclipse with online help.
+      EclEmma Java Code Coverage for Eclipse
    </description>
 
    <copyright url="http://www.eclemma.org/">
