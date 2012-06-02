@@ -26,7 +26,6 @@ public class CoreMessages extends NLS {
   public static String AnalyzingCoverageSession_task;
   public static String ExportingSession_task;
   public static String ImportingSession_task;
-  public static String ReadingExecutionDataFile_task;
   public static String MergingCoverageSessions_task;
 
   public static String StatusNO_LOCAL_AGENTJAR_ERROR_message;
@@ -36,7 +35,6 @@ public class CoreMessages extends NLS {
   public static String StatusBUNDLE_ANALYSIS_ERROR_message;
   public static String StatusEXPORT_ERROR_message;
   public static String StatusIMPORT_ERROR_message;
-  public static String StatusMERGE_ERROR_message;
   public static String StatusAGENTSERVER_START_ERROR_message;
   public static String StatusAGENTSERVER_STOP_ERROR_message;
   public static String StatusEXECDATA_DUMP_ERROR_message;

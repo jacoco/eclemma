@@ -453,8 +453,8 @@ public class SessionManagerTest {
       return Collections.emptySet();
     }
 
-    public void readExecutionData(IExecutionDataVisitor executionDataVisitor,
-        ISessionInfoVisitor sessionInfoVisitor, IProgressMonitor monitor) {
+    public void accept(IExecutionDataVisitor executionDataVisitor,
+        ISessionInfoVisitor sessionInfoVisitor) {
     }
 
     public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {

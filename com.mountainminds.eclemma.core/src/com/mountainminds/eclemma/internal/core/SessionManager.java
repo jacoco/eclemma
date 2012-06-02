@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2006, 2012 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,10 +11,6 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.core;
 
-import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -25,16 +21,13 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
-import org.jacoco.core.data.ExecutionDataWriter;
 
-import com.mountainminds.eclemma.core.EclEmmaStatus;
 import com.mountainminds.eclemma.core.ICoverageSession;
+import com.mountainminds.eclemma.core.IExecutionDataSource;
 import com.mountainminds.eclemma.core.ISessionListener;
 import com.mountainminds.eclemma.core.ISessionManager;
 
@@ -171,33 +164,27 @@ public class SessionManager implements ISessionManager {
       String description, IProgressMonitor monitor) throws CoreException {
     monitor.beginTask(CoreMessages.MergingCoverageSessions_task,
         sessions.size());
+
+    // Merge all sessions
     final Set<IPackageFragmentRoot> scope = new HashSet<IPackageFragmentRoot>();
     final Set<ILaunchConfiguration> launches = new HashSet<ILaunchConfiguration>();
-    final IPath execfile = executiondatafiles.newFile();
-    try {
-      final OutputStream out = new BufferedOutputStream(new FileOutputStream(
-          execfile.toFile()));
-      final ExecutionDataWriter writer = new ExecutionDataWriter(out);
-
-      // Merge all sessions
-      for (ICoverageSession session : sessions) {
-        scope.addAll(session.getScope());
-        if (session.getLaunchConfiguration() != null) {
-          launches.add(session.getLaunchConfiguration());
-        }
-        final SubProgressMonitor submonitor = new SubProgressMonitor(monitor, 1);
-        session.readExecutionData(writer, writer, submonitor);
+    final MemoryExecutionDataSource memory = new MemoryExecutionDataSource();
+    for (ICoverageSession session : sessions) {
+      scope.addAll(session.getScope());
+      if (session.getLaunchConfiguration() != null) {
+        launches.add(session.getLaunchConfiguration());
       }
-      out.close();
-    } catch (IOException e) {
-      throw new CoreException(EclEmmaStatus.MERGE_ERROR.getStatus(e));
+      session.accept(memory, memory);
+      monitor.worked(1);
     }
+    final IExecutionDataSource executionDataSource = executiondatafiles
+        .newFile(memory);
 
     // Adopt launch configuration only if there is exactly one
     final ILaunchConfiguration launchconfiguration = launches.size() == 1 ? launches
         .iterator().next() : null;
     final ICoverageSession merged = new CoverageSession(description, scope,
-        execfile, launchconfiguration);
+        executionDataSource, launchconfiguration);
 
     // Update session list
     synchronized (lock) {

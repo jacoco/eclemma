@@ -105,12 +105,6 @@ public final class EclEmmaStatus {
       IStatus.ERROR, CoreMessages.StatusIMPORT_ERROR_message);
 
   /**
-   * Error while importing external coverage session.
-   */
-  public static final EclEmmaStatus MERGE_ERROR = new EclEmmaStatus(5010,
-      IStatus.ERROR, CoreMessages.StatusMERGE_ERROR_message);
-
-  /**
    * Error while starting the agent server.
    */
   public static final EclEmmaStatus AGENTSERVER_START_ERROR = new EclEmmaStatus(

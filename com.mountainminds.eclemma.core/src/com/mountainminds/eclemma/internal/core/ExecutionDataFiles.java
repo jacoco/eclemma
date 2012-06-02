@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2006, 2012 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,14 +11,18 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.core;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
+import org.jacoco.core.data.ExecutionDataWriter;
 
 import com.mountainminds.eclemma.core.EclEmmaStatus;
+import com.mountainminds.eclemma.core.IExecutionDataSource;
 
 /**
  * Internal utility to create and cleanup execution data files manage files in
@@ -46,14 +50,23 @@ public final class ExecutionDataFiles {
   }
 
   /**
-   * Create a new empty file to store execution data in.
+   * Creates a new execution data file containing the content of the given
+   * source.
    * 
-   * @return path to execution data file
+   * @param source
+   *          source to dump into the file
+   * @return created file
    */
-  public IPath newFile() throws CoreException {
+  public IExecutionDataSource newFile(IExecutionDataSource source)
+      throws CoreException {
     try {
       final File file = File.createTempFile("session", ".exec", folder); //$NON-NLS-1$ //$NON-NLS-2$
-      return Path.fromOSString(file.getAbsolutePath());
+      final OutputStream out = new BufferedOutputStream(new FileOutputStream(
+          file));
+      final ExecutionDataWriter writer = new ExecutionDataWriter(out);
+      source.accept(writer, writer);
+      out.close();
+      return new URLExecutionDataSource(file.toURL());
     } catch (IOException e) {
       throw new CoreException(EclEmmaStatus.EXEC_FILE_CREATE_ERROR.getStatus(e));
     }

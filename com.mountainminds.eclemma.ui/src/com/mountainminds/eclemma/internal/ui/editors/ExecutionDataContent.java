@@ -20,7 +20,6 @@ import java.util.List;
 
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.IStorageEditorInput;
@@ -52,8 +51,7 @@ class ExecutionDataContent {
     try {
       if (input instanceof CoverageSessionInput) {
         final CoverageSessionInput csi = (CoverageSessionInput) input;
-        csi.getSession().readExecutionData(executionData, sessionData,
-            new NullProgressMonitor());
+        csi.getSession().accept(executionData, sessionData);
       } else {
         final InputStream stream = openStream(input);
         final ExecutionDataReader reader = new ExecutionDataReader(stream);

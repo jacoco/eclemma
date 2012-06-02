@@ -19,7 +19,6 @@ import java.text.MessageFormat;
 import java.util.Date;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -34,8 +33,8 @@ import com.mountainminds.eclemma.core.launching.ICoverageLaunch;
 import com.mountainminds.eclemma.internal.core.CoreMessages;
 import com.mountainminds.eclemma.internal.core.CoverageSession;
 import com.mountainminds.eclemma.internal.core.EclEmmaCorePlugin;
-import com.mountainminds.eclemma.internal.core.ExecutionDataDumper;
 import com.mountainminds.eclemma.internal.core.ExecutionDataFiles;
+import com.mountainminds.eclemma.internal.core.MemoryExecutionDataSource;
 
 /**
  * Internal TCP/IP server for the JaCoCo agent to connect to.
@@ -50,7 +49,7 @@ public class AgentServer extends Job {
 
   private ServerSocket serverSocket;
   private RemoteControlWriter writer;
-  private ExecutionDataDumper dumper;
+  private boolean dataReceived;
 
   AgentServer(ICoverageLaunch launch, ISessionManager sessionManager,
       ExecutionDataFiles files, ICorePreferences preferences) {
@@ -60,6 +59,7 @@ public class AgentServer extends Job {
     this.launch = launch;
     this.sessionManager = sessionManager;
     this.files = files;
+    this.dataReceived = false;
   }
 
   public void start() throws CoreException {
@@ -95,7 +95,7 @@ public class AgentServer extends Job {
   }
 
   public boolean hasDataReceived() {
-    return dumper != null && dumper.hasDataReceived();
+    return dataReceived;
   }
 
   public int getPort() {
@@ -109,11 +109,15 @@ public class AgentServer extends Job {
       writer = new RemoteControlWriter(socket.getOutputStream());
       final RemoteControlReader reader = new RemoteControlReader(
           socket.getInputStream());
-      dumper = new ExecutionDataDumper(reader, files);
-      IPath execfile;
-      while ((execfile = dumper.dump()) != null) {
+      while (true) {
+        final MemoryExecutionDataSource memory = new MemoryExecutionDataSource();
+        memory.readFrom(reader);
+        if (memory.isEmpty()) {
+          return Status.OK_STATUS;
+        }
+        dataReceived = true;
         final CoverageSession session = new CoverageSession(
-            createDescription(), launch.getScope(), execfile,
+            createDescription(), launch.getScope(), files.newFile(memory),
             launch.getLaunchConfiguration());
         sessionManager.addSession(session,
             preferences.getActivateNewSessions(), launch);
@@ -123,7 +127,6 @@ public class AgentServer extends Job {
     } catch (CoreException e) {
       return e.getStatus();
     }
-    return Status.OK_STATUS;
   }
 
   private String createDescription() {

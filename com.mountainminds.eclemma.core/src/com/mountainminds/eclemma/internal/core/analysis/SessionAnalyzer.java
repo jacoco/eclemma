@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2011 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2006, 2012 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -66,8 +66,8 @@ public class SessionAnalyzer {
             session.getDescription()), 1 + roots.size());
     executiondatastore = new ExecutionDataStore();
     sessioninfostore = new SessionInfoStore();
-    session.readExecutionData(executiondatastore, sessioninfostore,
-        new SubProgressMonitor(monitor, 1));
+    session.accept(executiondatastore, sessioninfostore);
+    monitor.worked(1);
 
     final PackageFragementRootAnalyzer analyzer = new PackageFragementRootAnalyzer(
         executiondatastore);
