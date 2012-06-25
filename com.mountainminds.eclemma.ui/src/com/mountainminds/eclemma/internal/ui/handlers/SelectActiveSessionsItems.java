@@ -31,20 +31,27 @@ import com.mountainminds.eclemma.internal.ui.UIMessages;
 public class SelectActiveSessionsItems extends ContributionItem {
 
   @Override
-  public void fill(final Menu menu, final int index) {
+  public boolean isDynamic() {
+    return true;
+  }
+
+  @Override
+  public void fill(final Menu menu, int index) {
     final ISessionManager sm = CoverageTools.getSessionManager();
     final ICoverageSession activeSession = sm.getActiveSession();
-    int idx = 0;
+    int position = 1;
     for (ICoverageSession session : sm.getSessions()) {
-      createItem(menu, session, session == activeSession, ++idx, sm);
+      createItem(menu, index++, session, session == activeSession, position++,
+          sm);
     }
   }
 
-  private void createItem(final Menu parent, final ICoverageSession session,
-      final boolean selected, final int idx, final ISessionManager sm) {
-    final MenuItem item = new MenuItem(parent, SWT.RADIO);
+  private void createItem(final Menu parent, final int index,
+      final ICoverageSession session, final boolean selected,
+      final int position, final ISessionManager sm) {
+    final MenuItem item = new MenuItem(parent, SWT.RADIO, index);
     item.setImage(EclEmmaUIPlugin.getImage(EclEmmaUIPlugin.ELCL_SESSION));
-    item.setText(getLabel(session, idx));
+    item.setText(getLabel(session, position));
     item.setSelection(selected);
     item.addSelectionListener(new SelectionAdapter() {
       @Override
@@ -55,9 +62,8 @@ public class SelectActiveSessionsItems extends ContributionItem {
   }
 
   private String getLabel(ICoverageSession session, int idx) {
-    final Object[] values = new Object[] { Integer.valueOf(idx),
-        session.getDescription() };
-    return NLS.bind(UIMessages.CoverageViewSelectSessionMenu_label, values);
+    return NLS.bind(UIMessages.CoverageViewSelectSessionMenu_label,
+        Integer.valueOf(idx), session.getDescription());
   }
 
 }

@@ -29,14 +29,20 @@ import com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin;
 public class DumpExecutionDataItems extends ContributionItem {
 
   @Override
-  public void fill(final Menu menu, final int index) {
+  public boolean isDynamic() {
+    return true;
+  }
+
+  @Override
+  public void fill(final Menu menu, int index) {
     for (ICoverageLaunch launch : CoverageTools.getRunningCoverageLaunches()) {
-      createItem(menu, launch);
+      createItem(menu, index++, launch);
     }
   }
 
-  private void createItem(final Menu parent, final ICoverageLaunch launch) {
-    final MenuItem item = new MenuItem(parent, SWT.PUSH);
+  private void createItem(final Menu parent, final int index,
+      final ICoverageLaunch launch) {
+    final MenuItem item = new MenuItem(parent, SWT.PUSH, index);
     item.setImage(EclEmmaUIPlugin.getImage(EclEmmaUIPlugin.ELCL_DUMP));
     item.setText(LaunchLabelProvider.getLaunchText(launch));
     item.addSelectionListener(new SelectionAdapter() {
