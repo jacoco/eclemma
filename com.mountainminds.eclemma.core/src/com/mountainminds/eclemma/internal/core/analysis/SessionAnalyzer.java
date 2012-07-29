@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jdt.core.IClassFile;
@@ -99,16 +100,20 @@ public class SessionAnalyzer {
     final TypeVisitor visitor = new TypeVisitor(analyzer.analyze(root));
     new TypeTraverser(root).process(visitor, monitor);
 
-    String name = root.getElementName();
-    if (name.length() == 0) {
-      // for project roots take project name:
-      name = root.getParent().getElementName();
-    }
-
-    IBundleCoverage bundle = new BundleCoverageImpl(name, visitor.getClasses(),
-        visitor.getSources());
+    final IBundleCoverage bundle = new BundleCoverageImpl(getName(root),
+        visitor.getClasses(), visitor.getSources());
     modelcoverage.putFragmentRoot(root, bundle);
     putPackages(bundle.getPackages(), root);
+  }
+
+  // package private for testing
+  String getName(IPackageFragmentRoot root) {
+    IPath path = root.getPath();
+    if (!root.isExternal() && path.segmentCount() > 1) {
+      return path.removeFirstSegments(1).toString();
+    } else {
+      return path.lastSegment();
+    }
   }
 
   private void putPackages(Collection<IPackageCoverage> packages,

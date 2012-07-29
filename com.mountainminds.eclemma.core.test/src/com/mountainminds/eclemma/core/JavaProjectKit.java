@@ -146,6 +146,7 @@ public class JavaProjectKit {
     while ((len = source.read(buffer)) != -1) {
       out.write(buffer, 0, len);
     }
+    out.close();
     IPackageFragmentRoot packageRoot = javaProject
         .getPackageFragmentRoot(jarfile.getAbsolutePath());
     addClassPathEntry(JavaCore.newLibraryEntry(packageRoot.getPath(),
@@ -210,11 +211,9 @@ public class JavaProjectKit {
     if (markers.length > 0) {
       for (int i = 0; i < markers.length; i++) {
         Integer severity = (Integer) markers[i].getAttribute(IMarker.SEVERITY);
-        if (severity != null) {
-          Assert.assertTrue(
-              String.valueOf(markers[i].getAttribute(IMarker.MESSAGE)),
-              severity.intValue() < IMarker.SEVERITY_ERROR);
-        }
+        Assert.assertTrue(
+            String.valueOf(markers[i].getAttribute(IMarker.MESSAGE)),
+            severity.intValue() < IMarker.SEVERITY_ERROR);
       }
     }
   }
