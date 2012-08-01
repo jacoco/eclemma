@@ -767,7 +767,7 @@
          </separator>
          <command
                commandId="com.mountainminds.eclemma.ui.selectCounters"
-               label="%SelectInstructionsMenu.label"
+               label="%SelectInstructionCountersMenu.label"
                style="radio">
             <parameter
                   name="type"
@@ -776,7 +776,7 @@
          </command>
          <command
                commandId="com.mountainminds.eclemma.ui.selectCounters"
-               label="%SelectBranchesMenu.label"
+               label="%SelectBranchCountersMenu.label"
                style="radio">
             <parameter
                   name="type"
@@ -785,7 +785,7 @@
          </command>
          <command
                commandId="com.mountainminds.eclemma.ui.selectCounters"
-               label="%SelectLinesMenu.label"
+               label="%SelectLineCountersMenu.label"
                style="radio">
             <parameter
                   name="type"
@@ -794,7 +794,7 @@
          </command>
          <command
                commandId="com.mountainminds.eclemma.ui.selectCounters"
-               label="%SelectMethodsMenu.label"
+               label="%SelectMethodCountersMenu.label"
                style="radio">
             <parameter
                   name="type"
@@ -803,7 +803,7 @@
          </command>
          <command
                commandId="com.mountainminds.eclemma.ui.selectCounters"
-               label="%SelectTypesMenu.label"
+               label="%SelectTypeCountersMenu.label"
                style="radio">
             <parameter
                   name="type"
@@ -812,7 +812,7 @@
          </command>
          <command
                commandId="com.mountainminds.eclemma.ui.selectCounters"
-               label="%SelectComplexityMenu.label"
+               label="%SelectComplexityCountersMenu.label"
                style="radio">
             <parameter
                   name="type"
