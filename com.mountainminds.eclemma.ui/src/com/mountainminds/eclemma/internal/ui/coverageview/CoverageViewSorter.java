@@ -12,6 +12,7 @@
 package com.mountainminds.eclemma.internal.ui.coverageview;
 
 import org.eclipse.jdt.ui.JavaElementComparator;
+import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
@@ -37,12 +38,15 @@ class CoverageViewSorter extends ViewerComparator {
     this.view = view;
   }
 
-  void addColumn(final TreeColumn column, final int columnidx) {
+  void addColumn(final TreeViewerColumn viewerColumn, final int columnidx) {
+    final TreeColumn column = viewerColumn.getColumn();
+    if (settings.getSortColumn() == columnidx) {
+      setSortColumnAndDirection(column, settings.isReverseSort());
+    }
     column.addSelectionListener(new SelectionListener() {
       public void widgetSelected(SelectionEvent e) {
         settings.toggleSortColumn(columnidx);
-        setSortColumnAndDirection(column, settings.isReverseSort() ? SWT.DOWN
-            : SWT.UP);
+        setSortColumnAndDirection(column, settings.isReverseSort());
         view.refreshViewer();
       }
 
@@ -51,9 +55,9 @@ class CoverageViewSorter extends ViewerComparator {
     });
   }
 
-  void setSortColumnAndDirection(TreeColumn sortColumn, int direction) {
+  private void setSortColumnAndDirection(TreeColumn sortColumn, boolean reverse) {
     sortColumn.getParent().setSortColumn(sortColumn);
-    sortColumn.getParent().setSortDirection(direction);
+    sortColumn.getParent().setSortDirection(reverse ? SWT.DOWN : SWT.UP);
   }
 
   public int compare(Viewer viewer, Object e1, Object e2) {

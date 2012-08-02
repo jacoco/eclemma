@@ -12,32 +12,30 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.ui.coverageview;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.commands.IHandler;
-import org.eclipse.jdt.core.IPackageFragmentRoot;
-import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.ui.actions.IJavaEditorActionDefinitionIds;
 import org.eclipse.jdt.ui.actions.JdtActionConstants;
 import org.eclipse.jdt.ui.actions.OpenAction;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IOpenListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.OpenEvent;
+import org.eclipse.jface.viewers.OwnerDrawLabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Tree;
-import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
@@ -53,14 +51,13 @@ import org.eclipse.ui.part.ShowInContext;
 import org.eclipse.ui.part.ViewPart;
 import org.jacoco.core.analysis.ICounter;
 import org.jacoco.core.analysis.ICoverageNode;
-import org.jacoco.core.analysis.ICoverageNode.ElementType;
 
 import com.mountainminds.eclemma.core.CoverageTools;
 import com.mountainminds.eclemma.core.ICoverageSession;
 import com.mountainminds.eclemma.core.ISessionListener;
 import com.mountainminds.eclemma.core.analysis.IJavaCoverageListener;
 import com.mountainminds.eclemma.internal.ui.ContextHelp;
-import com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin;
+import com.mountainminds.eclemma.internal.ui.RedGreenBar;
 import com.mountainminds.eclemma.internal.ui.UIMessages;
 
 /**
@@ -75,10 +72,12 @@ public class CoverageView extends ViewPart implements IShowInTarget {
    */
   public static final Object LOADING_ELEMENT = new Object();
 
-  private static final DecimalFormat COVERAGE_VALUE = new DecimalFormat(
-      UIMessages.CoverageView_columnCoverageValue);
+  private final ViewSettings settings = new ViewSettings();
 
-  private ViewSettings settings = new ViewSettings();
+  private final CellTextConverter cellTextConverter = new CellTextConverter(
+      settings);
+
+  private final MaxTotalCache maxTotalCache = new MaxTotalCache(settings);
 
   protected static final int COLUMN_ELEMENT = 0;
   protected static final int COLUMN_RATIO = 1;
@@ -86,12 +85,6 @@ public class CoverageView extends ViewPart implements IShowInTarget {
   protected static final int COLUMN_MISSED = 3;
   protected static final int COLUMN_TOTAL = 4;
 
-  private Tree tree;
-  private TreeColumn column0;
-  private TreeColumn column1;
-  private TreeColumn column2;
-  private TreeColumn column3;
-  private TreeColumn column4;
   private TreeViewer viewer;
 
   // Actions
@@ -124,106 +117,12 @@ public class CoverageView extends ViewPart implements IShowInTarget {
 
   private final IJavaCoverageListener coverageListener = new IJavaCoverageListener() {
     public void coverageChanged() {
-      tree.getDisplay().asyncExec(new Runnable() {
+      getSite().getShell().getDisplay().asyncExec(new Runnable() {
         public void run() {
+          maxTotalCache.reset();
           viewer.setInput(CoverageTools.getJavaModelCoverage());
         }
       });
-    }
-  };
-
-  private final ITableLabelProvider labelprovider = new ITableLabelProvider() {
-
-    private ILabelProvider delegate = new WorkbenchLabelProvider();
-
-    public Image getColumnImage(Object element, int columnIndex) {
-      if (element == LOADING_ELEMENT) {
-        return null;
-      }
-      switch (columnIndex) {
-      case COLUMN_ELEMENT:
-        return delegate.getImage(element);
-      case COLUMN_RATIO:
-        ICounter counter = CoverageTools.getCoverageInfo(element).getCounter(
-            settings.getCounters());
-        if (counter.getTotalCount() == 0) {
-          return null;
-        } else {
-          return EclEmmaUIPlugin.getCoverageImage(counter.getCoveredRatio());
-        }
-      }
-      return null;
-    }
-
-    private String getSimpleTextForJavaElement(Object element) {
-      if (element instanceof IPackageFragmentRoot) {
-        final IPackageFragmentRoot root = (IPackageFragmentRoot) element;
-        // tweak label if the package fragment root is the project itself:
-        if (root.getElementName().length() == 0) {
-          element = root.getJavaProject();
-        }
-        // shorten JAR references
-        try {
-          if (root.getKind() == IPackageFragmentRoot.K_BINARY) {
-            return root.getPath().lastSegment();
-          }
-        } catch (JavaModelException e) {
-          EclEmmaUIPlugin.log(e);
-        }
-      }
-      return delegate.getText(element);
-    }
-
-    private String getTextForJavaElement(Object element) {
-      String text = getSimpleTextForJavaElement(element);
-      if (element instanceof IPackageFragmentRoot
-          && ElementType.BUNDLE.equals(settings.getRootType())) {
-        text += " - " + getTextForJavaElement(((IPackageFragmentRoot) element).getJavaProject()); //$NON-NLS-1$
-      }
-      return text;
-    }
-
-    public String getColumnText(Object element, int columnIndex) {
-      if (element == LOADING_ELEMENT) {
-        return columnIndex == COLUMN_ELEMENT ? UIMessages.CoverageView_loadingMessage
-            : ""; //$NON-NLS-1$
-      }
-      ICounter counter = CoverageTools.getCoverageInfo(element).getCounter(
-          settings.getCounters());
-      switch (columnIndex) {
-      case COLUMN_ELEMENT:
-        return getTextForJavaElement(element);
-      case COLUMN_RATIO:
-        if (counter.getTotalCount() == 0) {
-          return ""; //$NON-NLS-1$
-        } else {
-          return COVERAGE_VALUE
-              .format(Double.valueOf(counter.getCoveredRatio()));
-        }
-      case COLUMN_COVERED:
-        return String.valueOf(counter.getCoveredCount());
-      case COLUMN_MISSED:
-        return String.valueOf(counter.getMissedCount());
-      case COLUMN_TOTAL:
-        return String.valueOf(counter.getTotalCount());
-      }
-      return ""; //$NON-NLS-1$
-    }
-
-    public boolean isLabelProperty(Object element, String property) {
-      return delegate.isLabelProperty(element, property);
-    }
-
-    public void addListener(ILabelProviderListener listener) {
-      delegate.addListener(listener);
-    }
-
-    public void removeListener(ILabelProviderListener listener) {
-      delegate.removeListener(listener);
-    }
-
-    public void dispose() {
-      delegate.dispose();
     }
   };
 
@@ -233,62 +132,110 @@ public class CoverageView extends ViewPart implements IShowInTarget {
   }
 
   public void saveState(IMemento memento) {
-    int[] widths = settings.getColumnWidths();
-    widths[0] = column0.getWidth();
-    widths[1] = column1.getWidth();
-    widths[2] = column2.getWidth();
-    widths[3] = column3.getWidth();
-    widths[4] = column4.getWidth();
+    settings.storeColumnWidth(viewer);
     settings.save(memento);
     super.saveState(memento);
   }
 
   public void createPartControl(Composite parent) {
     ContextHelp.setHelp(parent, ContextHelp.COVERAGE_VIEW);
-    tree = new Tree(parent, SWT.MULTI);
+    Tree tree = new Tree(parent, SWT.MULTI);
     tree.setHeaderVisible(true);
     tree.setLinesVisible(true);
-    int[] widths = settings.getColumnWidths();
-    column0 = new TreeColumn(tree, SWT.NONE);
-    column0.setWidth(widths[0]);
-    sorter.addColumn(column0, COLUMN_ELEMENT);
-    column1 = new TreeColumn(tree, SWT.RIGHT);
-    column1.setWidth(widths[1]);
-    sorter.addColumn(column1, COLUMN_RATIO);
-    column2 = new TreeColumn(tree, SWT.RIGHT);
-    column2.setWidth(widths[2]);
-    sorter.addColumn(column2, COLUMN_COVERED);
-    column3 = new TreeColumn(tree, SWT.RIGHT);
-    column3.setWidth(widths[3]);
-    sorter.addColumn(column3, COLUMN_MISSED);
-    column4 = new TreeColumn(tree, SWT.RIGHT);
-    column4.setWidth(widths[4]);
-    sorter.addColumn(column4, COLUMN_TOTAL);
-    updateColumnHeaders();
-
-    TreeColumn sortColumn = null;
-    switch (settings.getSortColumn()) {
-    case COLUMN_ELEMENT:
-      sortColumn = column0;
-      break;
-    case COLUMN_RATIO:
-      sortColumn = column1;
-      break;
-    case COLUMN_COVERED:
-      sortColumn = column2;
-      break;
-    case COLUMN_MISSED:
-      sortColumn = column3;
-      break;
-    case COLUMN_TOTAL:
-      sortColumn = column4;
-      break;
-    }
-
-    sorter.setSortColumnAndDirection(sortColumn,
-        settings.isReverseSort() ? SWT.DOWN : SWT.UP);
 
     viewer = new TreeViewer(tree);
+    final TreeViewerColumn column0 = new TreeViewerColumn(viewer, SWT.LEFT);
+    column0.setLabelProvider(new CellLabelProvider() {
+
+      private final ILabelProvider delegate = new WorkbenchLabelProvider();
+
+      @Override
+      public void update(ViewerCell cell) {
+        if (cell.getElement() == LOADING_ELEMENT) {
+          cell.setText(UIMessages.CoverageView_loadingMessage);
+          cell.setImage(null);
+        } else {
+          cell.setText(cellTextConverter.getElementName(cell.getElement()));
+          cell.setImage(delegate.getImage(cell.getElement()));
+        }
+      }
+    });
+    sorter.addColumn(column0, COLUMN_ELEMENT);
+
+    final TreeViewerColumn column1 = new TreeViewerColumn(viewer, SWT.RIGHT);
+    column1.setLabelProvider(new OwnerDrawLabelProvider() {
+
+      @Override
+      public void update(ViewerCell cell) {
+        if (cell.getElement() == LOADING_ELEMENT) {
+          cell.setText(""); //$NON-NLS-1$
+        } else {
+          cell.setText(cellTextConverter.getRatio(cell.getElement()));
+        }
+      }
+
+      @Override
+      protected void erase(Event event, Object element) {
+      }
+
+      @Override
+      protected void measure(Event event, Object element) {
+      }
+
+      @Override
+      protected void paint(Event event, Object element) {
+        if (element != LOADING_ELEMENT) {
+          ICounter counter = CoverageTools.getCoverageInfo(element).getCounter(
+              settings.getCounters());
+          RedGreenBar.draw(event, column1.getColumn().getWidth(), counter,
+              maxTotalCache.getMaxTotal(element));
+        }
+      }
+    });
+    sorter.addColumn(column1, COLUMN_RATIO);
+
+    final TreeViewerColumn column2 = new TreeViewerColumn(viewer, SWT.RIGHT);
+    column2.setLabelProvider(new CellLabelProvider() {
+
+      @Override
+      public void update(ViewerCell cell) {
+        if (cell.getElement() == LOADING_ELEMENT) {
+          cell.setText(""); //$NON-NLS-1$
+        } else {
+          cell.setText(cellTextConverter.getCovered(cell.getElement()));
+        }
+      }
+    });
+    sorter.addColumn(column2, COLUMN_COVERED);
+
+    final TreeViewerColumn column3 = new TreeViewerColumn(viewer, SWT.RIGHT);
+    column3.setLabelProvider(new CellLabelProvider() {
+
+      @Override
+      public void update(ViewerCell cell) {
+        if (cell.getElement() == LOADING_ELEMENT) {
+          cell.setText(""); //$NON-NLS-1$
+        } else {
+          cell.setText(cellTextConverter.getMissed(cell.getElement()));
+        }
+      }
+    });
+    sorter.addColumn(column3, COLUMN_MISSED);
+
+    final TreeViewerColumn column4 = new TreeViewerColumn(viewer, SWT.RIGHT);
+    column4.setLabelProvider(new CellLabelProvider() {
+
+      @Override
+      public void update(ViewerCell cell) {
+        if (cell.getElement() == LOADING_ELEMENT) {
+          cell.setText(""); //$NON-NLS-1$
+        } else {
+          cell.setText(cellTextConverter.getTotal(cell.getElement()));
+        }
+      }
+    });
+    sorter.addColumn(column4, COLUMN_TOTAL);
+
     viewer.addFilter(new ViewerFilter() {
       public boolean select(Viewer viewer, Object parentElement, Object element) {
         if (element == LOADING_ELEMENT) {
@@ -310,9 +257,10 @@ public class CoverageView extends ViewPart implements IShowInTarget {
         }
       }
     });
+    settings.updateColumnHeaders(viewer);
+    settings.restoreColumnWidth(viewer);
     viewer.setComparator(sorter);
     viewer.setContentProvider(new CoveredElementsContentProvider(settings));
-    viewer.setLabelProvider(labelprovider);
     viewer.setInput(CoverageTools.getJavaModelCoverage());
     getSite().setSelectionProvider(viewer);
 
@@ -346,8 +294,8 @@ public class CoverageView extends ViewPart implements IShowInTarget {
         settings, this));
     activateHandler(HideUnusedElementsHandler.ID,
         new HideUnusedElementsHandler(settings, this));
-    activateHandler(IWorkbenchCommandConstants.EDIT_COPY,
-        new CopyHandler(tree.getDisplay(), settings, labelprovider, viewer));
+    activateHandler(IWorkbenchCommandConstants.EDIT_COPY, new CopyHandler(
+        settings, getSite().getShell().getDisplay(), viewer));
     activateHandler(IWorkbenchCommandConstants.FILE_REFRESH,
         new RefreshSessionHandler(CoverageTools.getSessionManager()));
     activateHandler(IWorkbenchCommandConstants.NAVIGATE_COLLAPSE_ALL,
@@ -386,7 +334,7 @@ public class CoverageView extends ViewPart implements IShowInTarget {
   }
 
   public void setFocus() {
-    tree.setFocus();
+    viewer.getTree().setFocus();
   }
 
   public void dispose() {
@@ -400,16 +348,9 @@ public class CoverageView extends ViewPart implements IShowInTarget {
     super.dispose();
   }
 
-  protected void updateColumnHeaders() {
-    String[] columns = settings.getColumnHeaders();
-    column0.setText(columns[0]);
-    column1.setText(columns[1]);
-    column2.setText(columns[2]);
-    column3.setText(columns[3]);
-    column4.setText(columns[4]);
-  }
-
   protected void refreshViewer() {
+    maxTotalCache.reset();
+    settings.updateColumnHeaders(viewer);
     viewer.refresh();
   }
 

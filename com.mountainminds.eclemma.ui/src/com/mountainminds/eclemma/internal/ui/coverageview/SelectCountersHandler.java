@@ -40,7 +40,6 @@ class SelectCountersHandler extends AbstractHandler implements IElementUpdater {
   public Object execute(ExecutionEvent event) throws ExecutionException {
     final CounterEntity type = getType(event.getParameters());
     settings.setCounters(type);
-    view.updateColumnHeaders();
     view.refreshViewer();
     return null;
   }

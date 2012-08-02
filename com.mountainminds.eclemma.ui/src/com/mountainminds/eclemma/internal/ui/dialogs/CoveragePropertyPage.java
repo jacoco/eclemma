@@ -12,22 +12,24 @@
 package com.mountainminds.eclemma.internal.ui.dialogs;
 
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.CellLabelProvider;
+import org.eclipse.jface.viewers.OwnerDrawLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.jacoco.core.analysis.ICounter;
@@ -36,7 +38,7 @@ import org.jacoco.core.analysis.ICoverageNode;
 import com.mountainminds.eclemma.core.CoverageTools;
 import com.mountainminds.eclemma.core.ICoverageSession;
 import com.mountainminds.eclemma.internal.ui.ContextHelp;
-import com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin;
+import com.mountainminds.eclemma.internal.ui.RedGreenBar;
 import com.mountainminds.eclemma.internal.ui.UIMessages;
 
 /**
@@ -44,14 +46,11 @@ import com.mountainminds.eclemma.internal.ui.UIMessages;
  */
 public class CoveragePropertyPage extends PropertyPage {
 
-  private static final int COLUMN_COUNTER = 0;
-  private static final int COLUMN_COVERAGE = 1;
-  private static final int COLUMN_COVERED = 2;
-  private static final int COLUMN_MISSED = 3;
-  private static final int COLUMN_TOTAL = 4;
-
-  private static final DecimalFormat COVERAGE_VALUE = new DecimalFormat(
+  private static final NumberFormat COVERAGE_VALUE = new DecimalFormat(
       UIMessages.CoveragePropertyPageColumnCoverage_value);
+
+  private static final NumberFormat COUNTER_VALUE = DecimalFormat
+      .getIntegerInstance();
 
   protected Control createContents(Composite parent) {
     ContextHelp.setHelp(parent, ContextHelp.COVERAGE_PROPERTIES);
@@ -89,21 +88,71 @@ public class CoveragePropertyPage extends PropertyPage {
   }
 
   private Control createTable(Composite parent) {
-    Table table = new Table(parent, SWT.BORDER);
+    final Table table = new Table(parent, SWT.BORDER);
     initializeDialogUnits(table);
     table.setHeaderVisible(true);
     table.setLinesVisible(true);
-    createColumn(table, SWT.LEFT, 24,
-        UIMessages.CoveragePropertyPageColumnCounter_label);
-    createColumn(table, SWT.RIGHT, 16,
-        UIMessages.CoveragePropertyPageColumnCoverage_label);
-    createColumn(table, SWT.RIGHT, 16,
-        UIMessages.CoveragePropertyPageColumnCovered_label);
-    createColumn(table, SWT.RIGHT, 16,
-        UIMessages.CoveragePropertyPageColumnMissed_label);
-    createColumn(table, SWT.RIGHT, 16,
-        UIMessages.CoveragePropertyPageColumnTotal_label);
     TableViewer viewer = new TableViewer(table);
+    createColumn(viewer, SWT.LEFT, 20,
+        UIMessages.CoveragePropertyPageColumnCounter_label,
+        new CellLabelProvider() {
+          @Override
+          public void update(ViewerCell cell) {
+            final Line line = (Line) cell.getElement();
+            cell.setText(line.label);
+          }
+        });
+    createColumn(viewer, SWT.RIGHT, 20,
+        UIMessages.CoveragePropertyPageColumnCoverage_label,
+        new OwnerDrawLabelProvider() {
+          @Override
+          public void update(ViewerCell cell) {
+            final Line line = (Line) cell.getElement();
+            cell.setText(COVERAGE_VALUE.format(line.counter.getCoveredRatio()));
+          }
+
+          @Override
+          protected void paint(Event event, Object element) {
+            final Line line = (Line) element;
+            RedGreenBar
+                .draw(event, table.getColumn(1).getWidth(), line.counter);
+          }
+
+          @Override
+          protected void erase(Event event, Object element) {
+          }
+
+          @Override
+          protected void measure(Event event, Object element) {
+          }
+        });
+    createColumn(viewer, SWT.RIGHT, 16,
+        UIMessages.CoveragePropertyPageColumnCovered_label,
+        new CellLabelProvider() {
+          @Override
+          public void update(ViewerCell cell) {
+            final Line line = (Line) cell.getElement();
+            cell.setText(COUNTER_VALUE.format(line.counter.getCoveredCount()));
+          }
+        });
+    createColumn(viewer, SWT.RIGHT, 16,
+        UIMessages.CoveragePropertyPageColumnMissed_label,
+        new CellLabelProvider() {
+          @Override
+          public void update(ViewerCell cell) {
+            final Line line = (Line) cell.getElement();
+            cell.setText(COUNTER_VALUE.format(line.counter.getMissedCount()));
+          }
+        });
+    createColumn(viewer, SWT.RIGHT, 16,
+        UIMessages.CoveragePropertyPageColumnTotal_label,
+        new CellLabelProvider() {
+          @Override
+          public void update(ViewerCell cell) {
+            final Line line = (Line) cell.getElement();
+            cell.setText(COUNTER_VALUE.format(line.counter.getTotalCount()));
+          }
+        });
     viewer.setContentProvider(new ArrayContentProvider());
     viewer.addFilter(new ViewerFilter() {
       public boolean select(Viewer viewer, Object parentElement, Object element) {
@@ -111,14 +160,15 @@ public class CoveragePropertyPage extends PropertyPage {
       }
     });
     viewer.setInput(getLines());
-    viewer.setLabelProvider(new CounterLabelProvider());
     return table;
   }
 
-  private void createColumn(Table table, int align, int width, String caption) {
-    TableColumn column = new TableColumn(table, align);
-    column.setText(caption);
-    column.setWidth(convertWidthInCharsToPixels(width));
+  private void createColumn(TableViewer viewer, int align, int width,
+      String caption, CellLabelProvider labelProvider) {
+    TableViewerColumn column = new TableViewerColumn(viewer, align);
+    column.getColumn().setText(caption);
+    column.getColumn().setWidth(convertWidthInCharsToPixels(width));
+    column.setLabelProvider(labelProvider);
   }
 
   private Line[] getLines() {
@@ -150,38 +200,6 @@ public class CoveragePropertyPage extends PropertyPage {
       this.label = label;
       this.counter = counter;
     }
-  }
-
-  private static class CounterLabelProvider extends LabelProvider implements
-      ITableLabelProvider {
-
-    public Image getColumnImage(Object element, int columnIndex) {
-      if (columnIndex == COLUMN_COUNTER) {
-        Line l = (Line) element;
-        return EclEmmaUIPlugin.getCoverageImage(l.counter.getCoveredRatio());
-      } else {
-        return null;
-      }
-    }
-
-    public String getColumnText(Object element, int columnIndex) {
-      Line l = (Line) element;
-      switch (columnIndex) {
-      case COLUMN_COUNTER:
-        return l.label;
-      case COLUMN_COVERAGE:
-        return COVERAGE_VALUE.format(l.counter.getCoveredRatio());
-      case COLUMN_COVERED:
-        return String.valueOf(l.counter.getCoveredCount());
-      case COLUMN_MISSED:
-        return String.valueOf(l.counter.getMissedCount());
-      case COLUMN_TOTAL:
-        return String.valueOf(l.counter.getTotalCount());
-      default:
-        return ""; //$NON-NLS-1$
-      }
-    }
-
   }
 
 }

@@ -15,6 +15,8 @@ package com.mountainminds.eclemma.internal.ui.coverageview;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IMemento;
 import org.jacoco.core.analysis.ICoverageNode;
 import org.jacoco.core.analysis.ICoverageNode.CounterEntity;
@@ -137,8 +139,26 @@ public class ViewSettings {
     hideunusedelements = flag;
   }
 
-  public int[] getColumnWidths() {
-    return columnwidths;
+  public void storeColumnWidth(TreeViewer viewer) {
+    final TreeColumn[] columns = viewer.getTree().getColumns();
+    for (int i = 0; i < columnwidths.length; i++) {
+      columnwidths[i] = columns[i].getWidth();
+    }
+  }
+
+  public void restoreColumnWidth(TreeViewer viewer) {
+    final TreeColumn[] columns = viewer.getTree().getColumns();
+    for (int i = 0; i < columnwidths.length; i++) {
+      columns[i].setWidth(columnwidths[i]);
+    }
+  }
+
+  public void updateColumnHeaders(TreeViewer viewer) {
+    final String[] headers = COLUMNS_HEADERS.get(counters);
+    final TreeColumn[] columns = viewer.getTree().getColumns();
+    for (int i = 0; i < headers.length; i++) {
+      columns[i].setText(headers[i]);
+    }
   }
 
   public boolean isLinked() {

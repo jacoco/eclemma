@@ -18,7 +18,6 @@ import org.eclipse.core.commands.HandlerEvent;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.Clipboard;
@@ -33,16 +32,16 @@ import org.eclipse.swt.widgets.Text;
  */
 class CopyHandler extends AbstractHandler implements ISelectionChangedListener {
 
-  private final Display display;
   private final ViewSettings settings;
-  private final ITableLabelProvider labelprovider;
+  private final CellTextConverter converter;
+  private final Display display;
   private final ISelectionProvider selectionSource;
 
-  public CopyHandler(Display display, ViewSettings settings,
-      ITableLabelProvider labelprovider, ISelectionProvider selectionSource) {
-    this.display = display;
+  public CopyHandler(ViewSettings settings, Display display,
+      ISelectionProvider selectionSource) {
     this.settings = settings;
-    this.labelprovider = labelprovider;
+    this.converter = new CellTextConverter(settings);
+    this.display = display;
     this.selectionSource = selectionSource;
     selectionSource.addSelectionChangedListener(this);
   }
@@ -53,7 +52,7 @@ class CopyHandler extends AbstractHandler implements ISelectionChangedListener {
   }
 
   public Object execute(ExecutionEvent event) throws ExecutionException {
-    final StringBuffer sb = new StringBuffer();
+    final StringBuilder sb = new StringBuilder();
 
     // Header
     final String[] headers = settings.getColumnHeaders();
@@ -67,21 +66,15 @@ class CopyHandler extends AbstractHandler implements ISelectionChangedListener {
     final IStructuredSelection selection = (IStructuredSelection) selectionSource
         .getSelection();
     for (final Object element : selection.toList()) {
-      appendColumn(sb, element, CoverageView.COLUMN_ELEMENT).append(SWT.TAB);
-      appendColumn(sb, element, CoverageView.COLUMN_RATIO).append(SWT.TAB);
-      appendColumn(sb, element, CoverageView.COLUMN_COVERED).append(SWT.TAB);
-      appendColumn(sb, element, CoverageView.COLUMN_MISSED).append(SWT.TAB);
-      appendColumn(sb, element, CoverageView.COLUMN_TOTAL).append(
-          Text.DELIMITER);
+      sb.append(converter.getElementName(element)).append(SWT.TAB);
+      sb.append(converter.getRatio(element)).append(SWT.TAB);
+      sb.append(converter.getCovered(element)).append(SWT.TAB);
+      sb.append(converter.getMissed(element)).append(SWT.TAB);
+      sb.append(converter.getTotal(element)).append(Text.DELIMITER);
     }
 
     copy(sb.toString());
     return null;
-  }
-
-  private StringBuffer appendColumn(StringBuffer sb, Object element, int column) {
-    sb.append(labelprovider.getColumnText(element, column));
-    return sb;
   }
 
   private void copy(String text) {

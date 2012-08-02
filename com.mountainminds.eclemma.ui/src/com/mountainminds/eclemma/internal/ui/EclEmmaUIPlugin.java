@@ -57,22 +57,6 @@ public class EclEmmaUIPlugin extends AbstractUIPlugin {
   public static final String OBJ_MARKERNO = "icons/full/obj16/markerno.gif"; //$NON-NLS-1$
   public static final String OBJ_MARKERPARTIAL = "icons/full/obj16/markerpartial.gif"; //$NON-NLS-1$
 
-  private static final String[] OBJ_COVERAGE = new String[] {
-      "icons/full/obj16/coverage00.gif", //$NON-NLS-1$
-      "icons/full/obj16/coverage01.gif", //$NON-NLS-1$
-      "icons/full/obj16/coverage02.gif", //$NON-NLS-1$
-      "icons/full/obj16/coverage03.gif", //$NON-NLS-1$
-      "icons/full/obj16/coverage04.gif", //$NON-NLS-1$
-      "icons/full/obj16/coverage05.gif", //$NON-NLS-1$
-      "icons/full/obj16/coverage06.gif", //$NON-NLS-1$
-      "icons/full/obj16/coverage07.gif", //$NON-NLS-1$
-      "icons/full/obj16/coverage08.gif", //$NON-NLS-1$
-      "icons/full/obj16/coverage09.gif", //$NON-NLS-1$
-      "icons/full/obj16/coverage10.gif", //$NON-NLS-1$
-      "icons/full/obj16/coverage11.gif", //$NON-NLS-1$
-      "icons/full/obj16/coverage12.gif" //$NON-NLS-1$
-  };
-
   private static final String[] OBJ_COVERAGE_OVERLAY = new String[] {
       "icons/full/ovr16/coverage00.gif", //$NON-NLS-1$
       "icons/full/ovr16/coverage01.gif", //$NON-NLS-1$
@@ -86,6 +70,9 @@ public class EclEmmaUIPlugin extends AbstractUIPlugin {
 
   public static final String WIZBAN_EXPORT_SESSION = "icons/full/wizban/export_session.gif"; //$NON-NLS-1$
   public static final String WIZBAN_IMPORT_SESSION = "icons/full/wizban/import_session.gif"; //$NON-NLS-1$
+
+  public static final String DGM_REDBAR = "icons/full/dgm/redbar.gif"; //$NON-NLS-1$
+  public static final String DGM_GREENBAR = "icons/full/dgm/greenbar.gif"; //$NON-NLS-1$
 
   private static EclEmmaUIPlugin instance;
 
@@ -171,15 +158,6 @@ public class EclEmmaUIPlugin extends AbstractUIPlugin {
 
   public static Image getImage(String key) {
     return loadImage(key).get(key);
-  }
-
-  public static Image getCoverageImage(double ratio) {
-    int idx = (int) Math.round(ratio * OBJ_COVERAGE.length);
-    if (idx < 0)
-      idx = 0;
-    if (idx >= OBJ_COVERAGE.length)
-      idx = OBJ_COVERAGE.length - 1;
-    return getImage(OBJ_COVERAGE[idx]);
   }
 
   public static ImageDescriptor getCoverageOverlay(double ratio) {
