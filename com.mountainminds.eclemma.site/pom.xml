@@ -20,7 +20,7 @@
     <relativePath>../com.mountainminds.eclemma.build</relativePath>
   </parent>
 
-  <artifactId>com.mountainminds.eclemma.site</artifactId>
-  <packaging>eclipse-update-site</packaging>
+  <artifactId>EclEmma</artifactId>
+  <packaging>eclipse-repository</packaging>
 
 </project>

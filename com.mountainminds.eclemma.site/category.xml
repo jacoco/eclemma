@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/com.mountainminds.eclemma.feature" id="com.mountainminds.eclemma.feature" version="0.0.0">
+      <category name="EclEmma"/>
+   </feature>
+   <category-def name="EclEmma" label="EclEmma">
+      <description>
+         EclEmma is a free Java code coverage tool for Eclipse, available under the Eclipse Public License. It is based on the JaCoCo library and brings code coverage analysis directly into the Eclipse workbench.
+      </description>
+   </category-def>
+</site>
