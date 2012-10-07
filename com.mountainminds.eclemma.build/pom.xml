@@ -82,7 +82,8 @@
 
     <orbit-repository-url>http://download.eclipse.org/tools/orbit/downloads/drops/R20110523182458/repository/</orbit-repository-url>
 
-    <jacoco.version>0.5.10.201208310627</jacoco.version>
+    <jacoco.version>0.6.0.201210061924</jacoco.version>
+    <asm.version>4.0</asm.version>
     <tycho.testArgLine>-Xmx800m</tycho.testArgLine>
 
     <!-- Sonar -->
@@ -109,6 +110,11 @@
       <groupId>org.jacoco</groupId>
       <artifactId>org.jacoco.report</artifactId>
       <version>${jacoco.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm-all</artifactId>
+      <version>${asm.version}</version>
     </dependency>
   </dependencies>
 
@@ -137,6 +143,10 @@
           <groupId>org.eclipse.tycho</groupId>
           <artifactId>target-platform-configuration</artifactId>
           <version>${tycho.version}</version>
+          <configuration>
+            <resolver>p2</resolver>
+            <pomDependencies>consider</pomDependencies>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>org.eclipse.tycho</groupId>
