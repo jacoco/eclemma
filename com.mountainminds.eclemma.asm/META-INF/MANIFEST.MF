@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %pluginName
+Bundle-SymbolicName: com.mountainminds.eclemma.asm
+Bundle-Version: 2.1.5.qualifier
+Bundle-Vendor: %providerName
+Bundle-Localization: plugin
+Export-Package: org.objectweb.asm;version=4.0,
+ org.objectweb.asm.signature;version=4.0,
+ org.objectweb.asm.commons;version=4.0,
+ org.objectweb.asm.tree;version=4.0,
+ org.objectweb.asm.tree.analysis;version=4.0,
+ org.objectweb.asm.util;version=4.0,
+ org.objectweb.asm.xml;version=4.0
+Bundle-RequiredExecutionEnvironment: J2SE-1.5

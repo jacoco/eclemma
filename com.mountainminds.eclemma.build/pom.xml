@@ -66,6 +66,7 @@
 
   <modules>
     <module>../com.mountainminds.eclemma.target</module>
+    <module>../com.mountainminds.eclemma.asm</module>
     <module>../com.mountainminds.eclemma.core</module>
     <module>../com.mountainminds.eclemma.core.test</module>
     <module>../com.mountainminds.eclemma.debug.ui.compatibility</module>
@@ -82,7 +83,7 @@
 
     <orbit-repository-url>http://download.eclipse.org/tools/orbit/downloads/drops/R20110523182458/repository/</orbit-repository-url>
 
-    <jacoco.version>0.5.10.201208310627</jacoco.version>
+    <jacoco.version>0.6.0.201210061924</jacoco.version>
     <tycho.testArgLine>-Xmx800m</tycho.testArgLine>
 
     <!-- Sonar -->
@@ -121,6 +122,11 @@
           <version>${jacoco.version}</version>
         </plugin>
         <!-- Apache plugins -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>2.5.1</version>
+        </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jarsigner-plugin</artifactId>
