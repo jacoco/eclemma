@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: EclEmma Core Tests
 Bundle-SymbolicName: com.mountainminds.eclemma.core.test
-Bundle-Version: 2.1.5.qualifier
+Bundle-Version: 2.2.0.qualifier
 Bundle-Vendor: Mountainminds GmbH & Co. KG
 Fragment-Host: com.mountainminds.eclemma.core;bundle-version="[2.1.2,3.0.0)"
 Require-Bundle: org.junit;bundle-version="4.0.0"

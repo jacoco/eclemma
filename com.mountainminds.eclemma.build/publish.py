@@ -34,7 +34,7 @@ def upload_current(bucket, dry_run, source_dir):
                 key.set_acl('public-read')
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-source_dir = basedir + "/../com.mountainminds.eclemma.site/target/site"
+source_dir = basedir + "/../com.mountainminds.eclemma.site/target/repository"
 
 # prevent accidental execution
 dry_run = True
@@ -45,10 +45,10 @@ if dry_run:
     print "DRY RUN: specify option '-x' for actual execution"
 
 # sanity check
-if not os.path.isfile(source_dir + "/site.xml"):
-    sys.exit("site.xml not found in %s" % source_dir)
+if not os.path.isfile(source_dir + "/content.jar"):
+    sys.exit("content.jar not found in %s" % source_dir)
 
-connection = S3Connection()
+connection = S3Connection('AKIAJITWFJUZ4YRWC2HA', 'y2XMrMpdkl4bmy4eTSmP2OmEBa9TvOjW8AvN1mlw')
 bucket = connection.get_bucket(BUCKET)
 
 delete_previous(bucket, dry_run)
