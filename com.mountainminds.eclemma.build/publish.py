@@ -48,7 +48,7 @@ if dry_run:
 if not os.path.isfile(source_dir + "/content.jar"):
     sys.exit("content.jar not found in %s" % source_dir)
 
-connection = S3Connection('AKIAJITWFJUZ4YRWC2HA', 'y2XMrMpdkl4bmy4eTSmP2OmEBa9TvOjW8AvN1mlw')
+connection = S3Connection()
 bucket = connection.get_bucket(BUCKET)
 
 delete_previous(bucket, dry_run)
