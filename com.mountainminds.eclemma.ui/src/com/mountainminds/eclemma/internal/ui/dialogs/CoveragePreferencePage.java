@@ -14,6 +14,7 @@ package com.mountainminds.eclemma.internal.ui.dialogs;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.preference.BooleanFieldEditor;
+import org.eclipse.jface.preference.ComboFieldEditor;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.StringFieldEditor;
@@ -33,6 +34,9 @@ import com.mountainminds.eclemma.internal.ui.ContextHelp;
 import com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin;
 import com.mountainminds.eclemma.internal.ui.UIMessages;
 import com.mountainminds.eclemma.internal.ui.UIPreferences;
+import com.mountainminds.eclemma.internal.ui.barpainters.EclEmmaBarPainter;
+import com.mountainminds.eclemma.internal.ui.barpainters.EclEmmaCleanBarPainter;
+import com.mountainminds.eclemma.internal.ui.barpainters.JaCoCoBarPainter;
 
 /**
  * Implementation of the "Code Coverage" preferences page.
@@ -58,6 +62,7 @@ public class CoveragePreferencePage extends FieldEditorPreferencePage implements
     createSessionManagementGroup(result);
     createDefaultScopeGroup(result);
     createCoverageRuntimeGroup(result);
+    createAppearanceGroup(result);
 
     // Links:
     createLink(result, UIMessages.CoveragePreferencesDecoratorsLink_label,
@@ -132,6 +137,25 @@ public class CoveragePreferencePage extends FieldEditorPreferencePage implements
     Label hint = new Label(group, SWT.WRAP);
     GridDataFactory.fillDefaults().span(2, 1).applyTo(hint);
     hint.setText(UIMessages.CoveragePreferencesCoverageRuntime_message);
+    adjustGroupLayout(group);
+  }
+
+  private void createAppearanceGroup(Composite parent) {
+    FieldEditor editor;
+    final Group group = createGroup(parent,
+        UIMessages.CoveragePreferencesAppearance_title);
+
+    String[][] entryNamesAndValues = {
+        { "JaCoCo Reports", JaCoCoBarPainter.class.getName() }, //$NON-NLS-1$
+        { "EclEmma", EclEmmaBarPainter.class.getName() }, //$NON-NLS-1$
+        { "EclEmma - Clean", EclEmmaCleanBarPainter.class.getName() } }; //$NON-NLS-1$
+
+    editor = new ComboFieldEditor(UIPreferences.PREF_BAR_PAINTER,
+        UIMessages.CoveragePreferencesBarStyle_label,
+        entryNamesAndValues, group);
+
+    addField(editor);
+    editor.fillIntoGrid(group, 2);
     adjustGroupLayout(group);
   }
 

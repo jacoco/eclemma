@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 import com.mountainminds.eclemma.core.ICorePreferences;
+import com.mountainminds.eclemma.internal.ui.barpainters.JaCoCoBarPainter;
 
 /**
  * Constants and initializer for the preference store.
@@ -49,7 +50,10 @@ public class UIPreferences extends AbstractPreferenceInitializer {
       + ".agent_excludes"; //$NON-NLS-1$ 
 
   public static final String PREF_AGENT_EXCLCLASSLOADER = EclEmmaUIPlugin.ID
-      + ".agent_exclclassloader"; //$NON-NLS-1$ 
+      + ".agent_exclclassloader"; //$NON-NLS-1$
+
+  public static final String PREF_BAR_PAINTER = EclEmmaUIPlugin.ID
+      + ".bar_style"; //$NON-NLS-1$ 
 
   public static final ICorePreferences CORE_PREFERENCES = new ICorePreferences() {
     public boolean getActivateNewSessions() {
@@ -107,6 +111,7 @@ public class UIPreferences extends AbstractPreferenceInitializer {
         ICorePreferences.DEFAULT.getAgentExcludes());
     pref.setDefault(PREF_AGENT_EXCLCLASSLOADER,
         ICorePreferences.DEFAULT.getAgentExclClassloader());
+    pref.setDefault(PREF_BAR_PAINTER, JaCoCoBarPainter.class.getName());
   }
 
   private static IPreferenceStore getPreferenceStore() {

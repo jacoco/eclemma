@@ -38,8 +38,9 @@ import org.jacoco.core.analysis.ICoverageNode;
 import com.mountainminds.eclemma.core.CoverageTools;
 import com.mountainminds.eclemma.core.ICoverageSession;
 import com.mountainminds.eclemma.internal.ui.ContextHelp;
-import com.mountainminds.eclemma.internal.ui.RedGreenBar;
 import com.mountainminds.eclemma.internal.ui.UIMessages;
+import com.mountainminds.eclemma.internal.ui.barpainters.BarPainter;
+import com.mountainminds.eclemma.internal.ui.barpainters.BarPainterFactory;
 
 /**
  * Property page for coverage details of a Java element.
@@ -52,6 +53,14 @@ public class CoveragePropertyPage extends PropertyPage {
   private static final NumberFormat COUNTER_VALUE = DecimalFormat
       .getIntegerInstance();
 
+  private BarPainter barPainter;
+
+  @Override
+  public void dispose() {
+    super.dispose();
+    barPainter.dispose();
+  }
+
   protected Control createContents(Composite parent) {
     ContextHelp.setHelp(parent, ContextHelp.COVERAGE_PROPERTIES);
     noDefaultAndApplyButton();
@@ -61,6 +70,8 @@ public class CoveragePropertyPage extends PropertyPage {
     layout.marginWidth = 0;
     layout.marginHeight = 0;
     parent.setLayout(layout);
+
+    barPainter = BarPainterFactory.newBarPainter();
 
     Label l1 = new Label(parent, SWT.NONE);
     l1.setText(UIMessages.CoveragePropertyPageSession_label);
@@ -114,8 +125,8 @@ public class CoveragePropertyPage extends PropertyPage {
           @Override
           protected void paint(Event event, Object element) {
             final Line line = (Line) element;
-            RedGreenBar
-                .draw(event, table.getColumn(1).getWidth(), line.counter);
+            barPainter
+                .paint(event, table.getColumn(1).getWidth(), line.counter);
           }
 
           @Override
