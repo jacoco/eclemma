@@ -20,6 +20,8 @@ import org.eclipse.jdt.ui.actions.IJavaEditorActionDefinitionIds;
 import org.eclipse.jdt.ui.actions.JdtActionConstants;
 import org.eclipse.jdt.ui.actions.OpenAction;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IOpenListener;
@@ -57,8 +59,11 @@ import com.mountainminds.eclemma.core.ICoverageSession;
 import com.mountainminds.eclemma.core.ISessionListener;
 import com.mountainminds.eclemma.core.analysis.IJavaCoverageListener;
 import com.mountainminds.eclemma.internal.ui.ContextHelp;
-import com.mountainminds.eclemma.internal.ui.RedGreenBar;
+import com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin;
 import com.mountainminds.eclemma.internal.ui.UIMessages;
+import com.mountainminds.eclemma.internal.ui.UIPreferences;
+import com.mountainminds.eclemma.internal.ui.barpainters.BarPainter;
+import com.mountainminds.eclemma.internal.ui.barpainters.BarPainterFactory;
 
 /**
  * Implementation of the coverage view.
@@ -95,6 +100,8 @@ public class CoverageView extends ViewPart implements IShowInTarget {
   private SelectionTracker selectiontracker;
   private CoverageViewSorter sorter = new CoverageViewSorter(settings, this);
 
+  private BarPainter barPainter;
+
   private final ISessionListener descriptionUpdater = new ISessionListener() {
     public void sessionActivated(ICoverageSession session) {
       getViewSite().getShell().getDisplay().asyncExec(new Runnable() {
@@ -126,6 +133,17 @@ public class CoverageView extends ViewPart implements IShowInTarget {
     }
   };
 
+  private final IPropertyChangeListener barPainterPreferenceListener = new IPropertyChangeListener() {
+
+    public void propertyChange(PropertyChangeEvent event) {
+      if (UIPreferences.PREF_BAR_PAINTER.equals(event.getProperty())) {
+        barPainter.dispose();
+        barPainter = BarPainterFactory.newBarPainter();
+        viewer.getControl().redraw();
+      }
+    }
+  };
+
   public void init(IViewSite site, IMemento memento) throws PartInitException {
     super.init(site, memento);
     settings.init(memento);
@@ -139,6 +157,11 @@ public class CoverageView extends ViewPart implements IShowInTarget {
 
   public void createPartControl(Composite parent) {
     ContextHelp.setHelp(parent, ContextHelp.COVERAGE_VIEW);
+
+    barPainter = BarPainterFactory.newBarPainter();
+    EclEmmaUIPlugin.getInstance().getPreferenceStore()
+        .addPropertyChangeListener(barPainterPreferenceListener);
+
     Tree tree = new Tree(parent, SWT.MULTI);
     tree.setHeaderVisible(true);
     tree.setLinesVisible(true);
@@ -187,7 +210,7 @@ public class CoverageView extends ViewPart implements IShowInTarget {
         if (element != LOADING_ELEMENT) {
           ICounter counter = CoverageTools.getCoverageInfo(element).getCounter(
               settings.getCounters());
-          RedGreenBar.draw(event, column1.getColumn().getWidth(), counter,
+          barPainter.paint(event, column1.getColumn().getWidth(), counter,
               maxTotalCache.getMaxTotal(element));
         }
       }
@@ -345,6 +368,9 @@ public class CoverageView extends ViewPart implements IShowInTarget {
     CoverageTools.removeJavaCoverageListener(coverageListener);
     CoverageTools.getSessionManager().removeSessionListener(descriptionUpdater);
     selectiontracker.dispose();
+    barPainter.dispose();
+    EclEmmaUIPlugin.getInstance().getPreferenceStore()
+        .removePropertyChangeListener(barPainterPreferenceListener);
     super.dispose();
   }
 

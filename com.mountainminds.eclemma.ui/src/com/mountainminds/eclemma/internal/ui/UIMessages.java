@@ -139,6 +139,8 @@ public class UIMessages extends NLS {
   public static String CoveragePreferencesCoverageRuntime_message;
   public static String CoveragePreferencesDecoratorsLink_label;
   public static String CoveragePreferencesAnnotationsLink_label;
+  public static String CoveragePreferencesAppearance_title;
+  public static String CoveragePreferencesBarStyle_label;
 
   public static String ClassesViewerEntry_label;
 
