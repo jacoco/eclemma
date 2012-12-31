@@ -173,8 +173,10 @@ public class TypeTraverser {
       if (monitor.isCanceled()) {
         break;
       }
-      final IType type = (IType) element;
-      processType(visitor, btn.nest(type), type, monitor);
+      if (element.getElementType() == IJavaElement.TYPE) {
+        final IType type = (IType) element;
+        processType(visitor, btn.nest(type), type, monitor);
+      }
     }
   }
 
