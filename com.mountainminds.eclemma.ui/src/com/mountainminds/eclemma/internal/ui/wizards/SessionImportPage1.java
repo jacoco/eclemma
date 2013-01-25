@@ -11,17 +11,31 @@
  ******************************************************************************/
 package com.mountainminds.eclemma.internal.ui.wizards;
 
-import java.io.File;
-import java.text.MessageFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Set;
+import static com.mountainminds.eclemma.internal.ui.UIMessages.BrowseAction_label;
+import static com.mountainminds.eclemma.internal.ui.UIMessages.ImportReportPage1NoExecutionDataAddress_message;
+import static com.mountainminds.eclemma.internal.ui.UIMessages.ImportReportPage1NoExecutionDataFile_message;
+import static com.mountainminds.eclemma.internal.ui.UIMessages.ImportReportPage1NoExecutionDataPort_message;
+import static com.mountainminds.eclemma.internal.ui.UIMessages.ImportReportPage1NoExecutionDataUrl_message;
+import static com.mountainminds.eclemma.internal.ui.UIMessages.ImportSessionPage1BrowseDialog_title;
+import static com.mountainminds.eclemma.internal.ui.UIMessages.ImportSessionPage1Copy_label;
+import static com.mountainminds.eclemma.internal.ui.UIMessages.ImportSessionPage1ExecutionDataAddress_label;
+import static com.mountainminds.eclemma.internal.ui.UIMessages.ImportSessionPage1ExecutionDataFile_label;
+import static com.mountainminds.eclemma.internal.ui.UIMessages.ImportSessionPage1ExecutionDataPort_label;
+import static com.mountainminds.eclemma.internal.ui.UIMessages.ImportSessionPage1ExecutionDataReset_label;
+import static com.mountainminds.eclemma.internal.ui.UIMessages.ImportSessionPage1ExecutionDataUrl_label;
+import static com.mountainminds.eclemma.internal.ui.UIMessages.ImportSessionPage1ModeGroup_label;
+import static com.mountainminds.eclemma.internal.ui.UIMessages.ImportSessionPage1Reference_label;
+import static com.mountainminds.eclemma.internal.ui.UIMessages.ImportSessionPage1_description;
+import static com.mountainminds.eclemma.internal.ui.UIMessages.ImportSessionPage1_title;
 
-import org.eclipse.jdt.core.IPackageFragmentRoot;
-import org.eclipse.jdt.core.JavaModelException;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IDialogSettings;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -37,12 +51,12 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.jacoco.core.runtime.AgentOptions;
 
-import com.mountainminds.eclemma.core.ScopeUtils;
+import com.mountainminds.eclemma.core.AgentExecutionDataSource;
+import com.mountainminds.eclemma.core.IExecutionDataSource;
+import com.mountainminds.eclemma.core.URLExecutionDataSource;
 import com.mountainminds.eclemma.internal.ui.ContextHelp;
-import com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin;
-import com.mountainminds.eclemma.internal.ui.ScopeViewer;
-import com.mountainminds.eclemma.internal.ui.UIMessages;
 
 /**
  * This wizard page allows selecting a coverage file and class path entries for
@@ -53,22 +67,28 @@ public class SessionImportPage1 extends WizardPage {
   private static final String ID = "SessionImportPage1"; //$NON-NLS-1$
 
   private static final String STORE_PREFIX = ID + "."; //$NON-NLS-1$
+  private static final String STORE_SOURCE = STORE_PREFIX + "source"; //$NON-NLS-1$
   private static final String STORE_FILES = STORE_PREFIX + "files"; //$NON-NLS-1$
-  private static final String STORE_SCOPE = STORE_PREFIX + "scope"; //$NON-NLS-1$
-  private static final String STORE_BINARIES = STORE_PREFIX + "binaries"; //$NON-NLS-1$
+  private static final String STORE_URLS = STORE_PREFIX + "urls"; //$NON-NLS-1$
+  private static final String STORE_ADDRESS = STORE_PREFIX + "address"; //$NON-NLS-1$
+  private static final String STORE_PORT = STORE_PREFIX + "port"; //$NON-NLS-1$
+  private static final String STORE_RESET = STORE_PREFIX + "reset"; //$NON-NLS-1$
   private static final String STORE_COPY = STORE_PREFIX + "copy"; //$NON-NLS-1$
 
-  private Text descriptiontext;
+  private Button fileradio, urlradio, agentradio;
   private Combo filecombo;
-  private ScopeViewer scopeviewer;
-  private Button binariescheck;
-  private Button referenceradio;
-  private Button copyradio;
+  private Button browsebutton;
+  private Combo urlcombo;
+  private Text addresstext, porttext;
+  private Button resetcheck;
+  private Button referenceradio, copyradio;
+
+  private IExecutionDataSource dataSource;
 
   protected SessionImportPage1() {
     super(ID);
-    setTitle(UIMessages.ImportSessionPage1_title);
-    setDescription(UIMessages.ImportSessionPage1_description);
+    setTitle(ImportSessionPage1_title);
+    setDescription(ImportSessionPage1_description);
   }
 
   public void createControl(Composite parent) {
@@ -76,48 +96,46 @@ public class SessionImportPage1 extends WizardPage {
     parent = new Composite(parent, SWT.NONE);
     GridLayout layout = new GridLayout(1, false);
     parent.setLayout(layout);
-    createNameAndFileBlock(parent);
-    createScopeBlock(parent);
-    createButtonsBlock(parent);
+    Composite sourceGroup = new Composite(parent, SWT.NONE);
+    GridDataFactory.swtDefaults().grab(true, false)
+        .align(SWT.FILL, SWT.BEGINNING).applyTo(sourceGroup);
+    GridLayoutFactory.swtDefaults().numColumns(5).applyTo(sourceGroup);
+    createFileBlock(sourceGroup);
+    createUrlBlock(sourceGroup);
+    createAgentBlock(sourceGroup);
     createOptionsBlock(parent);
     setControl(parent);
     ContextHelp.setHelp(parent, ContextHelp.SESSION_IMPORT);
     restoreWidgetValues();
-    update();
+    updateStatus();
   }
 
-  private void createNameAndFileBlock(Composite parent) {
-    parent = new Composite(parent, SWT.NONE);
-    GridLayout layout = new GridLayout(3, false);
-    layout.marginWidth = 0;
-    layout.marginHeight = 0;
-    parent.setLayout(layout);
-    parent.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-    new Label(parent, SWT.NONE)
-        .setText(UIMessages.ImportSessionPage1Description_label);
-    descriptiontext = new Text(parent, SWT.BORDER);
-    descriptiontext.addModifyListener(new ModifyListener() {
-      public void modifyText(ModifyEvent e) {
-        update();
+  private void createFileBlock(Composite parent) {
+    fileradio = new Button(parent, SWT.RADIO);
+    fileradio.setText(ImportSessionPage1ExecutionDataFile_label);
+    fileradio.addSelectionListener(new SelectionAdapter() {
+      @Override
+      public void widgetSelected(SelectionEvent e) {
+        updateEnablement();
+        updateStatus();
       }
     });
-    GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-    gd.horizontalSpan = 2;
-    descriptiontext.setLayoutData(gd);
-    new Label(parent, SWT.NONE)
-        .setText(UIMessages.ImportSessionPage1ExecutionDataFile_label);
     filecombo = new Combo(parent, SWT.BORDER);
     filecombo.addModifyListener(new ModifyListener() {
       public void modifyText(ModifyEvent e) {
-        update();
+        updateStatus();
       }
     });
-    gd = new GridData(GridData.FILL_HORIZONTAL);
-    gd.widthHint = convertHorizontalDLUsToPixels(100);
-    filecombo.setLayoutData(gd);
-    Button browsebutton = new Button(parent, SWT.NONE);
-    browsebutton.setText(UIMessages.BrowseAction_label);
-    setButtonLayoutData(browsebutton);
+    GridDataFactory.swtDefaults().span(3, 1).grab(true, false)
+        .align(SWT.FILL, SWT.CENTER)
+        .hint(convertHorizontalDLUsToPixels(80), SWT.DEFAULT)
+        .applyTo(filecombo);
+    browsebutton = new Button(parent, SWT.NONE);
+    browsebutton.setText(BrowseAction_label);
+    GridDataFactory
+        .swtDefaults()
+        .hint(convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH),
+            SWT.DEFAULT).applyTo(browsebutton);
     browsebutton.addSelectionListener(new SelectionAdapter() {
       public void widgetSelected(SelectionEvent e) {
         openBrowseDialog();
@@ -125,75 +143,77 @@ public class SessionImportPage1 extends WizardPage {
     });
   }
 
-  private void createScopeBlock(Composite parent) {
-    scopeviewer = new ScopeViewer(parent, SWT.BORDER);
-    try {
-      scopeviewer.setInput(ScopeUtils.getWorkspaceScope());
-    } catch (JavaModelException e) {
-      EclEmmaUIPlugin.log(e);
-    }
-    scopeviewer.addSelectionChangedListener(new ISelectionChangedListener() {
-      public void selectionChanged(SelectionChangedEvent event) {
-        update();
+  private void createUrlBlock(Composite parent) {
+    urlradio = new Button(parent, SWT.RADIO);
+    urlradio.setText(ImportSessionPage1ExecutionDataUrl_label);
+    urlradio.addSelectionListener(new SelectionAdapter() {
+      @Override
+      public void widgetSelected(SelectionEvent e) {
+        updateEnablement();
+        updateStatus();
       }
     });
-    GridData gd = new GridData(GridData.FILL_BOTH);
-    gd.widthHint = convertHorizontalDLUsToPixels(120);
-    gd.heightHint = convertHeightInCharsToPixels(8);
-    scopeviewer.getTable().setLayoutData(gd);
+    urlcombo = new Combo(parent, SWT.BORDER);
+    urlcombo.addModifyListener(new ModifyListener() {
+      public void modifyText(ModifyEvent e) {
+        updateStatus();
+      }
+    });
+    GridDataFactory.swtDefaults().span(4, 1).align(SWT.FILL, SWT.CENTER)
+        .applyTo(urlcombo);
   }
 
-  private void createButtonsBlock(Composite parent) {
-    parent = new Composite(parent, SWT.NONE);
-    GridLayout layout = new GridLayout(3, false);
-    layout.marginWidth = 0;
-    layout.marginHeight = 0;
-    parent.setLayout(layout);
-    parent.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-    binariescheck = new Button(parent, SWT.CHECK);
-    binariescheck.setText(UIMessages.ImportSessionPage1Binaries_label);
-    binariescheck.addSelectionListener(new SelectionAdapter() {
+  private void createAgentBlock(Composite parent) {
+    agentradio = new Button(parent, SWT.RADIO);
+    agentradio.setText(ImportSessionPage1ExecutionDataAddress_label);
+    agentradio.addSelectionListener(new SelectionAdapter() {
+      @Override
       public void widgetSelected(SelectionEvent e) {
-        scopeviewer.setIncludeBinaries(binariescheck.getSelection());
-        update();
+        updateStatus();
+        updateEnablement();
       }
     });
-    binariescheck.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL));
-    Button buttonSelectAll = new Button(parent, SWT.PUSH);
-    buttonSelectAll.setText(UIMessages.SelectAllAction_label);
-    buttonSelectAll.addSelectionListener(new SelectionAdapter() {
-      public void widgetSelected(SelectionEvent e) {
-        scopeviewer.selectAll();
-        update();
+    addresstext = new Text(parent, SWT.BORDER);
+    addresstext.addModifyListener(new ModifyListener() {
+      public void modifyText(ModifyEvent e) {
+        updateStatus();
       }
     });
-    setButtonLayoutData(buttonSelectAll);
-    Button buttonDeselectAll = new Button(parent, SWT.PUSH);
-    buttonDeselectAll.setText(UIMessages.DeselectAllAction_label);
-    buttonDeselectAll.addSelectionListener(new SelectionAdapter() {
-      public void widgetSelected(SelectionEvent e) {
-        scopeviewer.deselectAll();
-        update();
+    GridDataFactory.swtDefaults().grab(true, false).align(SWT.FILL, SWT.CENTER)
+        .applyTo(addresstext);
+    new Label(parent, SWT.NONE)
+        .setText(ImportSessionPage1ExecutionDataPort_label);
+    porttext = new Text(parent, SWT.BORDER);
+    porttext.addModifyListener(new ModifyListener() {
+      public void modifyText(ModifyEvent e) {
+        updateStatus();
       }
     });
-    setButtonLayoutData(buttonDeselectAll);
+    resetcheck = new Button(parent, SWT.CHECK);
+    resetcheck.setText(ImportSessionPage1ExecutionDataReset_label);
+    resetcheck.addSelectionListener(new SelectionAdapter() {
+      @Override
+      public void widgetSelected(SelectionEvent e) {
+        updateStatus();
+      }
+    });
   }
 
   private void createOptionsBlock(Composite parent) {
     parent.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
     Group group = new Group(parent, SWT.NONE);
-    group.setText(UIMessages.ImportSessionPage1ModeGroup_label);
+    group.setText(ImportSessionPage1ModeGroup_label);
     group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
     group.setLayout(new GridLayout());
     referenceradio = new Button(group, SWT.RADIO);
-    referenceradio.setText(UIMessages.ImportSessionPage1Reference_label);
+    referenceradio.setText(ImportSessionPage1Reference_label);
     copyradio = new Button(group, SWT.RADIO);
-    copyradio.setText(UIMessages.ImportSessionPage1Copy_label);
+    copyradio.setText(ImportSessionPage1Copy_label);
   }
 
   private void openBrowseDialog() {
     FileDialog fd = new FileDialog(getShell(), SWT.OPEN);
-    fd.setText(UIMessages.ImportSessionPage1BrowseDialog_title);
+    fd.setText(ImportSessionPage1BrowseDialog_title);
     fd.setFileName(filecombo.getText());
     fd.setFilterExtensions(new String[] { "*.exec", "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
     String file = fd.open();
@@ -202,68 +222,91 @@ public class SessionImportPage1 extends WizardPage {
     }
   }
 
-  private void update() {
-    if (getSessionDescription().length() == 0) {
-      setMessage(UIMessages.ImportReportPage1NoDescription_message);
-      setPageComplete(false);
-      return;
+  private void updateEnablement() {
+    filecombo.setEnabled(fileradio.getSelection());
+    browsebutton.setEnabled(fileradio.getSelection());
+    urlcombo.setEnabled(urlradio.getSelection());
+    addresstext.setEnabled(agentradio.getSelection());
+    porttext.setEnabled(agentradio.getSelection());
+    resetcheck.setEnabled(agentradio.getSelection());
+  }
+
+  private void updateStatus() {
+    dataSource = null;
+    if (fileradio.getSelection()) {
+      File execfile = new File(filecombo.getText());
+      if (!execfile.exists() || !execfile.isFile()) {
+        setErrorMessage(ImportReportPage1NoExecutionDataFile_message);
+        setPageComplete(false);
+        return;
+      }
+      try {
+        dataSource = new URLExecutionDataSource(execfile.toURL());
+      } catch (MalformedURLException e) {
+        setErrorMessage(ImportReportPage1NoExecutionDataFile_message);
+        setPageComplete(false);
+        return;
+      }
     }
-    File cf = new File(getCoverageFile());
-    if (!cf.exists() || !cf.isFile()) {
-      setMessage(UIMessages.ImportReportPage1NoExecutionDataFile_message);
-      setPageComplete(false);
-      return;
+    if (urlradio.getSelection()) {
+      try {
+        dataSource = new URLExecutionDataSource(new URL(urlcombo.getText()));
+      } catch (MalformedURLException e) {
+        setErrorMessage(ImportReportPage1NoExecutionDataUrl_message);
+        setPageComplete(false);
+        return;
+      }
     }
-    if (getScope().isEmpty()) {
-      setMessage(UIMessages.ImportReportPage1NoClassFiles_message);
-      setPageComplete(false);
-      return;
+    if (agentradio.getSelection()) {
+      final String address = addresstext.getText();
+      if (address.length() == 0) {
+        setErrorMessage(ImportReportPage1NoExecutionDataAddress_message);
+        setPageComplete(false);
+        return;
+      }
+      try {
+        int port = Integer.parseInt(porttext.getText());
+        dataSource = new AgentExecutionDataSource(address, port,
+            resetcheck.getSelection());
+      } catch (NumberFormatException e) {
+        setErrorMessage(ImportReportPage1NoExecutionDataPort_message);
+        setPageComplete(false);
+        return;
+      }
     }
     setErrorMessage(null);
-    setMessage(null);
     setPageComplete(true);
   }
 
   private void restoreWidgetValues() {
-    String descr = UIMessages.ImportSessionPage1Description_value;
-    Object[] arg = new Object[] { new Date() };
-    descriptiontext.setText(MessageFormat.format(descr, arg));
     IDialogSettings settings = getDialogSettings();
-    ComboHistory.restore(settings, STORE_FILES, filecombo);
-    boolean binaries = settings.getBoolean(STORE_BINARIES);
-    scopeviewer.setIncludeBinaries(binaries);
-    binariescheck.setSelection(binaries);
-    String[] classes = settings.getArray(STORE_SCOPE);
-    if (classes != null) {
-      scopeviewer
-          .setSelectedScope(ScopeUtils.readScope(Arrays.asList(classes)));
-    }
-    boolean copy = settings.getBoolean(STORE_COPY);
-    referenceradio.setSelection(!copy);
-    copyradio.setSelection(copy);
+    WidgetHistory.restoreRadio(settings, STORE_SOURCE, fileradio, urlradio,
+        agentradio);
+    WidgetHistory.restoreCombo(settings, STORE_FILES, filecombo);
+    WidgetHistory.restoreCombo(settings, STORE_URLS, urlcombo);
+    WidgetHistory
+        .restoreText(settings, STORE_ADDRESS, addresstext, "127.0.0.1"); //$NON-NLS-1$
+    WidgetHistory.restoreText(settings, STORE_PORT, porttext,
+        String.valueOf(AgentOptions.DEFAULT_PORT));
+    WidgetHistory.restoreCheck(settings, STORE_RESET, resetcheck);
+    WidgetHistory.restoreRadio(settings, STORE_COPY, referenceradio, copyradio);
+    updateEnablement();
   }
 
   public void saveWidgetValues() {
     IDialogSettings settings = getDialogSettings();
-    ComboHistory.save(settings, STORE_FILES, filecombo);
-    settings.put(
-        STORE_SCOPE,
-        ScopeUtils.writeScope(scopeviewer.getSelectedScope()).toArray(
-            new String[0]));
-    settings.put(STORE_BINARIES, binariescheck.getSelection());
-    settings.put(STORE_COPY, copyradio.getSelection());
+    WidgetHistory.saveRadio(settings, STORE_SOURCE, fileradio, urlradio,
+        agentradio);
+    WidgetHistory.saveCombo(settings, STORE_FILES, filecombo);
+    WidgetHistory.saveCombo(settings, STORE_URLS, urlcombo);
+    WidgetHistory.saveText(settings, STORE_ADDRESS, addresstext);
+    WidgetHistory.saveText(settings, STORE_PORT, porttext);
+    WidgetHistory.saveCheck(settings, STORE_RESET, resetcheck);
+    WidgetHistory.saveRadio(settings, STORE_COPY, referenceradio, copyradio);
   }
 
-  public String getSessionDescription() {
-    return descriptiontext.getText().trim();
-  }
-
-  public String getCoverageFile() {
-    return filecombo.getText();
-  }
-
-  public Set<IPackageFragmentRoot> getScope() {
-    return scopeviewer.getSelectedScope();
+  public IExecutionDataSource getExecutionDataSource() {
+    return dataSource;
   }
 
   public boolean getCreateCopy() {

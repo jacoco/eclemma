@@ -20,32 +20,36 @@
 
 <p>
   If your program is launched outside the Eclipse debugging environment, you
-  might import JaCoCo coverage files (<code>*.exec</code>) from these launches.
-  This allows to study the coverage results directly in your source code.
-  The <i>Coverage Session</i> import wizard can be activated form the
-  <i>File &rarr; Import...</i> menu or from the <i>Coverage</i> view's context
-  menu.
+  might import JaCoCo execution data from these launches. This allows to study
+  the coverage results directly in your source code. The <i>Coverage Session</i>
+  import wizard can be activated form the <i>File &rarr; Import...</i> menu or
+  from the <i>Coverage</i> view's context menu.
 </p>
 
 <p>
-  <img src="images/importdialog.png" alt="Import Dialog"/>
-</p>
-
-<p>
-  The wizard dialog requires you to specify the following information:
+  The wizard dialog requires you to specify the source of the execution data on
+  its first page. There are three possible sources:
 </p>
 
 <ul>
-  <li>Name of the imported session</li>
-  <li>Coverage (<code>*.ec</code>) or session file (<code>*.es</code>)</li>
-  <li>Source folders or libraries that should be considered</li>
+  <li>Local <code>*.exec</code> file location.</li>
+  <li>Remote <code>*.exec</code> file URL.</li>
+  <li>IP address and port of a
+      <a href="http://www.eclemma.org/jacoco/trunk/doc/agent.html">JaCoCo agent</a>
+      attached to a running process. You can also specify whether the execution
+      data should be reset in the target VM when dumping the data.</li>
 </ul>
 
 <p>
-  If you keep a reference to the original coverage file (check the corresponding
-  import option) you can simply reload the coverage data after a new program
-  run. For this use the <i>Refresh</i> option from the context menu of the
+  If you keep a reference to the original execution data source (check the
+  corresponding import option) you can simply re-import the data as often as you
+  want. For this use the <i>Refresh</i> option from the context menu of the
   <i>Coverage</i> view or simply hit the <code>F5</code> key.
+</p>
+
+<p>
+  On the second page you can specify session name and the scope, which are the
+  source folders and libraries that should be considered.
 </p>
 
 <p>
@@ -77,10 +81,6 @@
   <i>File &rarr; Export...</i> menu or from the <i>Coverage</i> view's context
   menu. There must be at least one coverage session available to use the export
   wizard.
-</p>
-
-<p>
-  <img src="images/exportdialog.png" alt="Export Dialog"/>
 </p>
 
 <p>

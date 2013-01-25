@@ -23,6 +23,7 @@ import org.jacoco.core.data.ExecutionDataWriter;
 
 import com.mountainminds.eclemma.core.EclEmmaStatus;
 import com.mountainminds.eclemma.core.IExecutionDataSource;
+import com.mountainminds.eclemma.core.URLExecutionDataSource;
 
 /**
  * Internal utility to create and cleanup execution data files manage files in

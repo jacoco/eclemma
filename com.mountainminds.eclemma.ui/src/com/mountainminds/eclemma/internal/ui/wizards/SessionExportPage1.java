@@ -205,7 +205,7 @@ public class SessionExportPage1 extends WizardPage {
   private void restoreWidgetValues() {
     IDialogSettings settings = getDialogSettings();
     formatcombo.setSelection(new StructuredSelection(readFormat(settings)));
-    ComboHistory.restore(settings, STORE_DESTINATIONS, destinationcombo);
+    WidgetHistory.restoreCombo(settings, STORE_DESTINATIONS, destinationcombo);
   }
 
   private ExportFormat readFormat(IDialogSettings settings) {
@@ -223,7 +223,7 @@ public class SessionExportPage1 extends WizardPage {
   public void saveWidgetValues() {
     IDialogSettings settings = getDialogSettings();
     settings.put(STORE_FORMAT, getExportFormat().name());
-    ComboHistory.save(settings, STORE_DESTINATIONS, destinationcombo);
+    WidgetHistory.saveCombo(settings, STORE_DESTINATIONS, destinationcombo);
   }
 
   public ICoverageSession getSelectedSession() {

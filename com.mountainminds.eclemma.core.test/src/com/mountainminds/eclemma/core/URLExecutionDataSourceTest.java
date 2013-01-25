@@ -9,7 +9,7 @@
  *    Marc R. Hoffmann - initial API and implementation
  *    
  ******************************************************************************/
-package com.mountainminds.eclemma.internal.core;
+package com.mountainminds.eclemma.core;
 
 import static org.junit.Assert.assertEquals;
 
@@ -30,6 +30,7 @@ import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 
 import com.mountainminds.eclemma.core.IExecutionDataSource;
+import com.mountainminds.eclemma.core.URLExecutionDataSource;
 
 /**
  * Tests for {@link URLExecutionDataSource}.

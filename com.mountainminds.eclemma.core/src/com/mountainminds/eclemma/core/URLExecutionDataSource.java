@@ -9,7 +9,7 @@
  *    Marc R. Hoffmann - initial API and implementation
  *    
  ******************************************************************************/
-package com.mountainminds.eclemma.internal.core;
+package com.mountainminds.eclemma.core;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -21,8 +21,6 @@ import org.jacoco.core.data.ExecutionDataReader;
 import org.jacoco.core.data.IExecutionDataVisitor;
 import org.jacoco.core.data.ISessionInfoVisitor;
 
-import com.mountainminds.eclemma.core.EclEmmaStatus;
-import com.mountainminds.eclemma.core.IExecutionDataSource;
 
 /**
  * {@link IExecutionDataSource} implementation based on a *.exec file obtained

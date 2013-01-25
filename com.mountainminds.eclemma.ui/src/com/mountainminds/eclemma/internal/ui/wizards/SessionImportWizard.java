@@ -39,6 +39,7 @@ public class SessionImportWizard extends Wizard implements IImportWizard {
   private static final String SETTINGSID = "SessionImportWizard"; //$NON-NLS-1$
 
   private SessionImportPage1 page1;
+  private SessionImportPage2 page2;
 
   public SessionImportWizard() {
     super();
@@ -60,20 +61,21 @@ public class SessionImportWizard extends Wizard implements IImportWizard {
   }
 
   public void addPages() {
-    page1 = new SessionImportPage1();
-    addPage(page1);
+    addPage(page1 = new SessionImportPage1());
+    addPage(page2 = new SessionImportPage2());
   }
 
   public boolean performFinish() {
     page1.saveWidgetValues();
+    page2.saveWidgetValues();
     return importSession();
   }
 
   private boolean importSession() {
     final ISessionImporter importer = CoverageTools.getImporter();
-    importer.setDescription(page1.getSessionDescription());
-    importer.setExecutionDataFile(page1.getCoverageFile());
-    importer.setScope(page1.getScope());
+    importer.setDescription(page2.getSessionDescription());
+    importer.setExecutionDataSource(page1.getExecutionDataSource());
+    importer.setScope(page2.getScope());
     importer.setCopy(page1.getCreateCopy());
     IRunnableWithProgress op = new IRunnableWithProgress() {
       public void run(IProgressMonitor monitor)

@@ -32,12 +32,12 @@ public interface ISessionImporter {
   public void setDescription(String description);
 
   /**
-   * Sets the path to the execution data file to import.
+   * Sets the source for execution data.
    * 
-   * @param file
-   *          execution data file to import
+   * @param source
+   *          execution data source
    */
-  public void setExecutionDataFile(String file);
+  public void setExecutionDataSource(IExecutionDataSource source);
 
   /**
    * Sets the set of package fragment roots that should be considered for

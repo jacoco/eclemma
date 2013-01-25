@@ -78,13 +78,19 @@ public final class EclEmmaStatus {
    * The execution data file can not be created.
    */
   public static final EclEmmaStatus EXEC_FILE_CREATE_ERROR = new EclEmmaStatus(
-      5005, IStatus.ERROR, CoreMessages.StatusEXEC_FILE_CREATE_ERROR_message);
+      5004, IStatus.ERROR, CoreMessages.StatusEXEC_FILE_CREATE_ERROR_message);
 
   /**
    * Error while reading coverage data file.
    */
   public static final EclEmmaStatus EXEC_FILE_READ_ERROR = new EclEmmaStatus(
-      5006, IStatus.ERROR, CoreMessages.StatusEXEC_FILE_READ_ERROR_message);
+      5005, IStatus.ERROR, CoreMessages.StatusEXEC_FILE_READ_ERROR_message);
+
+  /**
+   * Error while reading coverage data file.
+   */
+  public static final EclEmmaStatus AGENT_CONNECT_ERROR = new EclEmmaStatus(
+      5006, IStatus.ERROR, CoreMessages.StatusAGENT_CONNECT_ERROR_message);
 
   /**
    * Error while analyzing a bundle of class file.
