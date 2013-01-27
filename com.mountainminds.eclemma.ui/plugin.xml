@@ -59,6 +59,42 @@
          </contextualLaunch>
       </shortcut>
       <shortcut
+            class="com.mountainminds.eclemma.ui.launching.CoverageLaunchShortcut:org.testng.eclipse.shortcut"
+            icon="$nl$/icons/full/etool16/testng_launch.gif"
+            id="com.mountainminds.eclemma.ui.testNgShortcut"
+            label="%TestNgShortcut.label"
+            modes="coverage">
+         <contextualLaunch>
+            <enablement>
+               <with
+                     variable="selection">
+                  <test
+                        args="org.testng.eclipse.shortcut"
+                        property="com.mountainminds.eclemma.ui.launchable">
+                  </test>
+               </with>
+            </enablement>
+         </contextualLaunch>
+      </shortcut>
+      <shortcut
+            class="com.mountainminds.eclemma.ui.launching.CoverageLaunchShortcut:org.testng.eclipse.shortcut.testngSuite"
+            icon="$nl$/icons/full/etool16/testng_launch.gif"
+            id="com.mountainminds.eclemma.ui.testNgSuiteShortcut"
+            label="%TestNgSuiteShortcut.label"
+            modes="coverage">
+         <contextualLaunch>
+            <enablement>
+               <with
+                     variable="selection">
+                  <test
+                        args="org.testng.eclipse.shortcut.testngSuite"
+                        property="com.mountainminds.eclemma.ui.launchable">
+                  </test>
+               </with>
+            </enablement>
+         </contextualLaunch>
+      </shortcut>
+      <shortcut
             label="%EclipseApplicationShortcut.label"
             icon="$nl$/icons/full/etool16/eclipse_launch.gif"
             modes="coverage"
@@ -217,6 +253,16 @@
             name="%CoverageJUnitTestCommand.name"/>
       <command
             categoryId="org.eclipse.debug.ui.category.run"
+            description="%CoverageTestNGCommand.description"
+            id="com.mountainminds.eclemma.ui.testNgShortcut.coverage"
+            name="%CoverageTestNGCommand.name"/>
+      <command
+            categoryId="org.eclipse.debug.ui.category.run"
+            description="%CoverageTestNGSuiteCommand.description"
+            id="com.mountainminds.eclemma.ui.testNgSuiteShortcut.coverage"
+            name="%CoverageTestNGSuiteCommand.name"/>
+      <command
+            categoryId="org.eclipse.debug.ui.category.run"
             description="%CoverageEclipseApplicationCommand.description"
             id="com.mountainminds.eclemma.ui.workbenchShortcut.coverage"
             name="%CoverageEclipseApplicationCommand.name"/>
@@ -353,6 +399,18 @@
             contextId="org.eclipse.ui.globalScope"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M3+M2+E T"/>
+      <key
+            commandId="com.mountainminds.eclemma.ui.testNgShortcut.coverage"
+            contextId="org.eclipse.ui.globalScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M3+M2+E N">
+      </key>
+      <key
+            commandId="com.mountainminds.eclemma.ui.testNgSuiteShortcut.coverage"
+            contextId="org.eclipse.ui.globalScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M3+M2+E G">
+      </key>
       <key
             commandId="com.mountainminds.eclemma.ui.workbenchShortcut.coverage"
             contextId="org.eclipse.ui.globalScope"
