@@ -12,6 +12,7 @@
 package com.mountainminds.eclemma.internal.core.analysis;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,6 +24,10 @@ import org.jacoco.core.analysis.ISourceFileCoverage;
  * {@link ISourceFileCoverage} nodes.
  */
 final class AnalyzedNodes {
+
+  static final AnalyzedNodes EMPTY = new AnalyzedNodes(
+      Collections.<IClassCoverage> emptySet(),
+      Collections.<ISourceFileCoverage> emptySet());
 
   private final Map<String, IClassCoverage> classmap;
   private final Map<String, ISourceFileCoverage> sourcemap;

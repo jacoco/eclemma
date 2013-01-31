@@ -23,6 +23,8 @@ import org.jacoco.core.analysis.CoverageBuilder;
 import org.jacoco.core.data.ExecutionDataStore;
 
 import com.mountainminds.eclemma.core.EclEmmaStatus;
+import com.mountainminds.eclemma.internal.core.DebugOptions;
+import com.mountainminds.eclemma.internal.core.DebugOptions.ITracer;
 
 /**
  * Analyzes the class files that belong to given package fragment roots. This
@@ -30,6 +32,8 @@ import com.mountainminds.eclemma.core.EclEmmaStatus;
  * analyzed before.
  */
 final class PackageFragementRootAnalyzer {
+
+  private static final ITracer TRACER = DebugOptions.ANALYSISTRACER;
 
   private final ExecutionDataStore executiondata;
   private final Map<Object, AnalyzedNodes> cache;
@@ -52,6 +56,12 @@ final class PackageFragementRootAnalyzer {
     IResource location = null;
     try {
       location = getClassfilesLocation(root);
+
+      if (location == null) {
+        TRACER.trace("No class files found for package fragment root {0}", //$NON-NLS-1$
+            root.getPath());
+        return AnalyzedNodes.EMPTY;
+      }
 
       AnalyzedNodes nodes = cache.get(location);
       if (nodes != null) {
