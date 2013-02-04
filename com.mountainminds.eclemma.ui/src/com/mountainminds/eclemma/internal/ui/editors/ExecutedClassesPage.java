@@ -172,7 +172,7 @@ class ExecutedClassesPage extends FormPage {
       AbstractExecutionDataColumnLabelProvider {
     @Override
     public String getText(ExecutionData element) {
-      return Integer.toString(element.getData().length);
+      return Integer.toString(element.getProbes().length);
     }
   }
 
@@ -181,7 +181,7 @@ class ExecutedClassesPage extends FormPage {
     @Override
     public String getText(ExecutionData element) {
       int executed = 0;
-      boolean[] data = element.getData();
+      boolean[] data = element.getProbes();
       for (int i = 0; i < data.length; i++) {
         if (data[i]) {
           executed++;
