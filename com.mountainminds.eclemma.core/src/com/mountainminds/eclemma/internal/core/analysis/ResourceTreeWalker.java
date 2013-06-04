@@ -42,7 +42,7 @@ class ResourceTreeWalker {
       final IFile file = (IFile) resource;
       final InputStream in = file.getContents(true);
       try {
-        analyzer.analyzeArchive(in);
+        analyzer.analyzeAll(in, resource.getName());
       } finally {
         in.close();
       }
@@ -59,7 +59,7 @@ class ResourceTreeWalker {
         final IFile file = (IFile) resource;
         final InputStream in = file.getContents(true);
         try {
-          analyzer.analyzeAll(in);
+          analyzer.analyzeAll(in, resource.getName());
         } finally {
           in.close();
         }
@@ -83,7 +83,7 @@ class ResourceTreeWalker {
     if (file.isFile()) {
       final InputStream in = open(file);
       try {
-        analyzer.analyzeArchive(in);
+        analyzer.analyzeAll(in, path.toString());
       } finally {
         in.close();
       }
@@ -97,7 +97,7 @@ class ResourceTreeWalker {
       if (file.getName().endsWith(".class")) { //$NON-NLS-1$
         final InputStream in = open(file);
         try {
-          analyzer.analyzeAll(in);
+          analyzer.analyzeAll(in, file.toString());
         } finally {
           in.close();
         }
