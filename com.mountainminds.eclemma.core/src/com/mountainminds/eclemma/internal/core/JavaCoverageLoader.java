@@ -99,8 +99,9 @@ public class JavaCoverageLoader {
   }
 
   public void addJavaCoverageListener(IJavaCoverageListener l) {
-    if (l == null)
-      throw new NullPointerException();
+    if (l == null) {
+      throw new IllegalArgumentException();
+    }
     if (!listeners.contains(l)) {
       listeners.add(l);
     }

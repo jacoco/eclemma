@@ -70,7 +70,7 @@ public class CoverageTabGroup implements ILaunchConfigurationTabGroup,
       }
     }
     if (element == null) {
-      String msg = "No tab group registered to run " + type; //$NON-NLS-1$;
+      String msg = "No tab group registered to run " + type; //$NON-NLS-1$
       throw new CoreException(EclEmmaUIPlugin.errorStatus(msg, null));
     } else {
       return (ILaunchConfigurationTabGroup) element

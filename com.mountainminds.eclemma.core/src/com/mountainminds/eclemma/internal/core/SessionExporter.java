@@ -146,8 +146,10 @@ public class SessionExporter implements ISessionExporter {
     case CSV:
       final CSVFormatter csvFormatter = new CSVFormatter();
       return csvFormatter.createVisitor(out);
+    default:
+      out.close();
+      throw new AssertionError("Unexpected format " + format); //$NON-NLS-1$
     }
-    throw new AssertionError("Unexpected format " + format); //$NON-NLS-1$
   }
 
   private ISourceFileLocator createSourceFileLocator(IPackageFragmentRoot root)

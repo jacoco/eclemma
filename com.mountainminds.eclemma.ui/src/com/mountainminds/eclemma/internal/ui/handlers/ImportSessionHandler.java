@@ -47,8 +47,6 @@ public class ImportSessionHandler extends AbstractSessionManagerHandler {
         event.getTrigger(), event.getApplicationContext());
     try {
       command.executeWithChecks(importEvent);
-    } catch (ExecutionException e) {
-      throw e;
     } catch (CommandException e) {
       EclEmmaUIPlugin.log(e);
     }

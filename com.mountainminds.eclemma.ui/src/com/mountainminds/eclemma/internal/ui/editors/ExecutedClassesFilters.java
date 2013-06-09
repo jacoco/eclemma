@@ -21,7 +21,7 @@ import org.jacoco.core.runtime.WildcardMatcher;
 /**
  * Filters for executed classes.
  */
-class ExecutedClassesFilters {
+final class ExecutedClassesFilters {
 
   public static ViewerFilter fromPatternString(final String pattern) {
     return new ViewerFilter() {
@@ -84,4 +84,9 @@ class ExecutedClassesFilters {
     }
 
   }
+
+  // No instances
+  private ExecutedClassesFilters() {
+  }
+
 }

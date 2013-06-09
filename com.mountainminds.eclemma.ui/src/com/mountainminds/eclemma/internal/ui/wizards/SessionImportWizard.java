@@ -61,8 +61,10 @@ public class SessionImportWizard extends Wizard implements IImportWizard {
   }
 
   public void addPages() {
-    addPage(page1 = new SessionImportPage1());
-    addPage(page2 = new SessionImportPage2());
+    page1 = new SessionImportPage1();
+    addPage(page1);
+    page2 = new SessionImportPage2();
+    addPage(page2);
   }
 
   public boolean performFinish() {

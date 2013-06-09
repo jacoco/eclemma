@@ -12,7 +12,6 @@
 package com.mountainminds.eclemma.core;
 
 import org.jacoco.core.runtime.AgentOptions;
-import org.jacoco.core.runtime.WildcardMatcher;
 
 /**
  * Clients may implement this interface to customize the behavior of the EclEmma
@@ -109,7 +108,7 @@ public interface ICorePreferences {
    * Returns the wildcard expression for classes to include.
    * 
    * @return wildcard expression for classes to include
-   * @see WildcardMatcher
+   * @see org.jacoco.core.runtime.WildcardMatcher
    */
   public String getAgentIncludes();
 
@@ -117,7 +116,7 @@ public interface ICorePreferences {
    * Returns the wildcard expression for classes to exclude.
    * 
    * @return wildcard expression for classes to exclude
-   * @see WildcardMatcher
+   * @see org.jacoco.core.runtime.WildcardMatcher
    */
   public String getAgentExcludes();
 
@@ -125,7 +124,7 @@ public interface ICorePreferences {
    * Returns the wildcard expression for excluded class loaders.
    * 
    * @return expression for excluded class loaders
-   * @see WildcardMatcher
+   * @see org.jacoco.core.runtime.WildcardMatcher
    */
   public String getAgentExclClassloader();
 

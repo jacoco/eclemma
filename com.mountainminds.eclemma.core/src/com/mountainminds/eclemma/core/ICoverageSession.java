@@ -14,7 +14,6 @@ package com.mountainminds.eclemma.core;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 
@@ -31,8 +30,8 @@ import org.eclipse.jdt.core.IPackageFragmentRoot;
  * 
  * This interface is not intended to be implemented by clients.
  * 
- * @see CoverageTools#createCoverageSession(String, IClassFiles[], IPath[],
- *      ILaunchConfiguration)
+ * @see CoverageTools#createCoverageSession(String, IClassFiles[],
+ *      org.eclipse.core.runtime.IPath[], ILaunchConfiguration)
  */
 public interface ICoverageSession extends IAdaptable, IExecutionDataSource {
 

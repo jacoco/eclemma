@@ -258,8 +258,9 @@ public final class CoverageAnnotationModel implements IAnnotationModel {
   }
 
   public void connect(IDocument document) {
-    if (this.document != document)
-      throw new RuntimeException("Can't connect to different document."); //$NON-NLS-1$
+    if (this.document != document) {
+      throw new IllegalArgumentException("Can't connect to different document."); //$NON-NLS-1$
+    }
     for (final CoverageAnnotation ca : annotations) {
       try {
         document.addPosition(ca.getPosition());
@@ -274,8 +275,10 @@ public final class CoverageAnnotationModel implements IAnnotationModel {
   }
 
   public void disconnect(IDocument document) {
-    if (this.document != document)
-      throw new RuntimeException("Can't disconnect from different document."); //$NON-NLS-1$
+    if (this.document != document) {
+      throw new IllegalArgumentException(
+          "Can't disconnect from different document."); //$NON-NLS-1$
+    }
     for (final CoverageAnnotation ca : annotations) {
       document.removePosition(ca.getPosition());
     }
