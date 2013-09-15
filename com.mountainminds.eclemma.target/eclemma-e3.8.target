@@ -4,7 +4,7 @@
 <target name="eclemma-e3.8" sequenceNumber="1">
 <locations>
 <location includeAllPlatforms="false" includeMode="planner" includeSource="false" type="InstallableUnit">
-<unit id="org.eclipse.jdt.feature.group" version="3.8.0.v20120429-1635-8-8nFpCFNOfwK7Wad4VDgZ7BC834"/>
+<unit id="org.eclipse.jdt.feature.group" version="3.8.2.v20130116-090414-8-8nFu3FNOfwKLRuqgXKIy9z0I83"/>
 <repository location="http://download.eclipse.org/releases/juno/"/>
 </location>
 <location includeAllPlatforms="false" includeMode="planner" includeSource="false" type="InstallableUnit">
