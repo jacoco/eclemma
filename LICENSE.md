@@ -1,7 +1,7 @@
 License
 =======
 
-Copyright (c) 2009, 2012 Mountainminds GmbH & Co. KG and Contributors
+Copyright (c) 2009, 2014 Mountainminds GmbH & Co. KG and Contributors
 
 The EclEmma Eclipse plug-in and all included documentation is made available by
 Mountainminds GmbH & Co. KG, Munich. Except indicated below, the Content is
