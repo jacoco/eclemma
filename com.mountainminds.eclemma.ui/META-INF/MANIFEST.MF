@@ -6,7 +6,7 @@ Bundle-Version: 2.2.2.qualifier
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Require-Bundle: com.mountainminds.eclemma.core,
- org.jacoco.core;bundle-version="[0.6.3,0.6.4)",
+ org.jacoco.core;bundle-version="[0.7.0,0.7.1)",
  org.eclipse.core.expressions,
  org.eclipse.core.runtime,
  org.eclipse.debug.ui,
