@@ -13,3 +13,6 @@ Export-Package: org.objectweb.asm;version=5.0.1,
  org.objectweb.asm.util;version=5.0.1,
  org.objectweb.asm.xml;version=5.0.1
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Import-Package: org.objectweb.asm;version="5.0.1",
+ org.objectweb.asm.signature;version="5.0.1",
+ org.objectweb.asm.tree;version="5.0.1"
