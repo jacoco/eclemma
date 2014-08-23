@@ -184,9 +184,9 @@ public class CoverageView extends ViewPart implements IShowInTarget {
 
       @Override
       protected void paint(Event event, Object element) {
-        if (element != LOADING_ELEMENT) {
-          ICounter counter = CoverageTools.getCoverageInfo(element).getCounter(
-              settings.getCounters());
+        final ICoverageNode coverage = CoverageTools.getCoverageInfo(element);
+        if (coverage != null) {
+          final ICounter counter = coverage.getCounter(settings.getCounters());
           RedGreenBar.draw(event, column1.getColumn().getWidth(), counter,
               maxTotalCache.getMaxTotal(element));
         }
