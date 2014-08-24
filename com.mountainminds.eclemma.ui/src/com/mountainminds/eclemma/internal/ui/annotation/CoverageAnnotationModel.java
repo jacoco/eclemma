@@ -176,20 +176,6 @@ public final class CoverageAnnotationModel implements IAnnotationModel {
   private ISourceNode findSourceCoverageForElement(Object element) {
     // Do we have a coverage info for the editor input?
     ICoverageNode coverage = CoverageTools.getCoverageInfo(element);
-    if (coverage == null) {
-      return null;
-    }
-
-    // TODO check resource timestamp
-    // Does the resource version (if any) corresponds to the coverage data?
-    // IResource resource = (IResource) ((IAdaptable) element)
-    // .getAdapter(IResource.class);
-    // if (resource != null) {
-    // if (resource.getModificationStamp() != coverage
-    // .getResourceModificationStamp())
-    // return null;
-    // }
-
     if (coverage instanceof ISourceNode) {
       return (ISourceNode) coverage;
     }
@@ -209,20 +195,19 @@ public final class CoverageAnnotationModel implements IAnnotationModel {
     annotations.clear();
   }
 
-  private void createAnnotations(ISourceNode linecoverage) {
+  private void createAnnotations(final ISourceNode linecoverage) {
     AnnotationModelEvent event = new AnnotationModelEvent(this);
     clear(event);
-    int firstline = linecoverage.getFirstLine();
-    int lastline = linecoverage.getLastLine();
+    final int firstline = linecoverage.getFirstLine();
+    final int lastline = Math.min(linecoverage.getLastLine(),
+        document.getNumberOfLines());
     try {
       for (int l = firstline; l <= lastline; l++) {
         final ILine line = linecoverage.getLine(l);
         if (line.getStatus() != ICounter.EMPTY) {
-          IRegion region = document.getLineInformation(l - 1);
-          int docoffset = region.getOffset();
-          int doclength = region.getLength();
-          CoverageAnnotation ca = new CoverageAnnotation(docoffset, doclength,
-              line);
+          final IRegion region = document.getLineInformation(l - 1);
+          final CoverageAnnotation ca = new CoverageAnnotation(
+              region.getOffset(), region.getLength(), line);
           annotations.add(ca);
           event.annotationAdded(ca);
         }
