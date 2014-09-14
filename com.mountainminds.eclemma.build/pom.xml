@@ -16,7 +16,7 @@
   <groupId>com.mountainminds.eclemma</groupId>
   <artifactId>com.mountainminds.eclemma.build</artifactId>
   <packaging>pom</packaging>
-  <version>2.3.2-SNAPSHOT</version>
+  <version>2.3.3-SNAPSHOT</version>
 
   <name>EclEmma</name>
   <description>Java Code Coverage for Eclipse</description>
@@ -68,7 +68,6 @@
     <module>../com.mountainminds.eclemma.target</module>
     <module>../com.mountainminds.eclemma.asm</module>
     <module>../com.mountainminds.eclemma.core</module>
-    <module>../com.mountainminds.eclemma.core.test</module>
     <module>../com.mountainminds.eclemma.debug.ui.compatibility</module>
     <module>../com.mountainminds.eclemma.ui</module>
     <module>../com.mountainminds.eclemma.doc</module>
