@@ -5,5 +5,6 @@ Bundle-SymbolicName: com.mountainminds.eclemma.core.test
 Bundle-Version: 2.3.3.qualifier
 Bundle-Vendor: Mountainminds GmbH & Co. KG
 Fragment-Host: com.mountainminds.eclemma.core;bundle-version="[2.3.3,3.0.0)"
-Require-Bundle: org.junit;bundle-version="4.0.0"
+Require-Bundle: org.junit;bundle-version="4.0.0",
+ org.hamcrest.core
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
