@@ -357,10 +357,6 @@
                 <goals>
                   <goal>sign</goal>
                 </goals>
-                <configuration>
-                  <tsa>${jarsigner.tsa}</tsa>
-                  <tsacert>${jarsigner.tsacert}</tsacert>
-                </configuration>
               </execution>
             </executions>
           </plugin>
