@@ -35,6 +35,7 @@ import org.eclipse.ui.dialogs.ListDialog;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 import com.mountainminds.eclemma.core.CoverageTools;
+import com.mountainminds.eclemma.core.EclEmmaStatus;
 import com.mountainminds.eclemma.core.launching.ICoverageLaunch;
 import com.mountainminds.eclemma.internal.ui.ContextHelp;
 import com.mountainminds.eclemma.internal.ui.EclEmmaUIPlugin;
@@ -122,7 +123,7 @@ public class DumpExecutionDataHandler extends AbstractHandler {
               .getBoolean(UIPreferences.PREF_RESET_ON_DUMP);
           launch.requestDump(reset);
         } catch (CoreException e) {
-          return e.getStatus();
+          return EclEmmaStatus.DUMP_REQUEST_ERROR.getStatus(e);
         }
         return Status.OK_STATUS;
       }

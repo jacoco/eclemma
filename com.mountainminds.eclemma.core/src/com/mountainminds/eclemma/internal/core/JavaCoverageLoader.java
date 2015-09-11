@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osgi.util.NLS;
 
+import com.mountainminds.eclemma.core.EclEmmaStatus;
 import com.mountainminds.eclemma.core.ICoverageSession;
 import com.mountainminds.eclemma.core.ISessionListener;
 import com.mountainminds.eclemma.core.ISessionManager;
@@ -80,7 +81,7 @@ public class JavaCoverageLoader {
       try {
         c = new SessionAnalyzer().processSession(session, monitor);
       } catch (CoreException e) {
-        return e.getStatus();
+        return EclEmmaStatus.SESSION_LOAD_ERROR.getStatus(e);
       }
       coverage = monitor.isCanceled() ? null : c;
       fireCoverageChanged();

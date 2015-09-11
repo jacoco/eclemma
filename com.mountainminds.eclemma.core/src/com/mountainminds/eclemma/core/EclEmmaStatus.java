@@ -23,11 +23,11 @@ import com.mountainminds.eclemma.internal.core.EclEmmaCorePlugin;
  */
 public final class EclEmmaStatus {
 
-  public final int code;
+  final int code;
 
-  public final int severity;
+  final int severity;
 
-  public final String message;
+  final String message;
 
   private EclEmmaStatus(int code, int severity, String message) {
     this.code = code;
@@ -69,10 +69,22 @@ public final class EclEmmaStatus {
       5000, IStatus.ERROR, CoreMessages.StatusNO_LOCAL_AGENTJAR_ERROR_message);
 
   /**
+   * Error while loading a coverage session.
+   */
+  public static final EclEmmaStatus SESSION_LOAD_ERROR = new EclEmmaStatus(
+      5001, IStatus.ERROR, CoreMessages.StatusSESSION_LOAD_ERROR_message);
+
+  /**
    * The requested launch type is not known.
    */
   public static final EclEmmaStatus UNKOWN_LAUNCH_TYPE_ERROR = new EclEmmaStatus(
       5002, IStatus.ERROR, CoreMessages.StatusUNKOWN_LAUNCH_TYPE_ERROR_message);
+
+  /**
+   * Error while merging sessions.
+   */
+  public static final EclEmmaStatus MERGE_SESSIONS_ERROR = new EclEmmaStatus(
+      5003, IStatus.ERROR, CoreMessages.StatusMERGE_SESSIONS_ERROR_message);
 
   /**
    * The execution data file can not be created.
@@ -103,12 +115,6 @@ public final class EclEmmaStatus {
    */
   public static final EclEmmaStatus EXPORT_ERROR = new EclEmmaStatus(5008,
       IStatus.ERROR, CoreMessages.StatusEXPORT_ERROR_message);
-
-  /**
-   * Error while importing external coverage session.
-   */
-  public static final EclEmmaStatus IMPORT_ERROR = new EclEmmaStatus(5009,
-      IStatus.ERROR, CoreMessages.StatusIMPORT_ERROR_message);
 
   /**
    * Error while starting the agent server.
