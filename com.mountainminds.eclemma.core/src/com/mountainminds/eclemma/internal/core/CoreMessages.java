@@ -29,13 +29,14 @@ public class CoreMessages extends NLS {
   public static String MergingCoverageSessions_task;
 
   public static String StatusNO_LOCAL_AGENTJAR_ERROR_message;
+  public static String StatusSESSION_LOAD_ERROR_message;
   public static String StatusUNKOWN_LAUNCH_TYPE_ERROR_message;
+  public static String StatusMERGE_SESSIONS_ERROR_message;
   public static String StatusEXEC_FILE_CREATE_ERROR_message;
   public static String StatusEXEC_FILE_READ_ERROR_message;
   public static String StatusAGENT_CONNECT_ERROR_message;
   public static String StatusBUNDLE_ANALYSIS_ERROR_message;
   public static String StatusEXPORT_ERROR_message;
-  public static String StatusIMPORT_ERROR_message;
   public static String StatusAGENTSERVER_START_ERROR_message;
   public static String StatusAGENTSERVER_STOP_ERROR_message;
   public static String StatusEXECDATA_DUMP_ERROR_message;

@@ -13,7 +13,6 @@ package com.mountainminds.eclemma.internal.ui.wizards;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -98,13 +97,8 @@ public class SessionImportWizard extends Wizard implements IImportWizard {
       EclEmmaUIPlugin.log(ex);
       final String title = UIMessages.ImportReportErrorDialog_title;
       final String msg = UIMessages.ImportReportErrorDialog_message;
-      final IStatus status;
-      if (ex instanceof CoreException) {
-        status = ((CoreException) ex).getStatus();
-      } else {
-        status = EclEmmaUIPlugin.errorStatus(String.valueOf(ex.getMessage()),
-            ex);
-      }
+      final IStatus status = EclEmmaUIPlugin.errorStatus(
+          String.valueOf(ex.getMessage()), ex);
       ErrorDialog.openError(getShell(), title, msg, status);
       return false;
     }

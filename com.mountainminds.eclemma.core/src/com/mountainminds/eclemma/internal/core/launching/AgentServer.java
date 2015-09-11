@@ -125,7 +125,7 @@ public class AgentServer extends Job {
     } catch (IOException e) {
       return EclEmmaStatus.EXECDATA_DUMP_ERROR.getStatus(e);
     } catch (CoreException e) {
-      return e.getStatus();
+      return EclEmmaStatus.EXECDATA_DUMP_ERROR.getStatus(e);
     }
   }
 

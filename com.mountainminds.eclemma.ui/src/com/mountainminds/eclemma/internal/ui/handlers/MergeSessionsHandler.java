@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 import com.mountainminds.eclemma.core.CoverageTools;
+import com.mountainminds.eclemma.core.EclEmmaStatus;
 import com.mountainminds.eclemma.core.ICoverageSession;
 import com.mountainminds.eclemma.core.ISessionManager;
 import com.mountainminds.eclemma.internal.ui.UIMessages;
@@ -70,7 +71,7 @@ public class MergeSessionsHandler extends AbstractSessionManagerHandler {
         try {
           sm.mergeSessions(sessions, description, monitor);
         } catch (CoreException e) {
-          return e.getStatus();
+          return EclEmmaStatus.MERGE_SESSIONS_ERROR.getStatus(e);
         }
         return Status.OK_STATUS;
       }
