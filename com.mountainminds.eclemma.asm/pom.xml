@@ -40,7 +40,7 @@
                 <artifactItem>
                   <groupId>org.ow2.asm</groupId>
                   <artifactId>asm-all</artifactId>
-                  <version>5.0.1</version>
+                  <version>5.0.4</version>
                   <type>jar</type>
                   <overWrite>false</overWrite>
                   <outputDirectory>${project.build.directory}/classes</outputDirectory>
