@@ -41,7 +41,7 @@ public class AnalyzedNodesTest {
   @Test
   public void testGetClassCoverage() {
     final ClassCoverageImpl c = new ClassCoverageImpl("package/MyClass", 0,
-        false, null, "java/lang/Object", new String[0]);
+        false);
     classes.add(c);
 
     final AnalyzedNodes nodes = new AnalyzedNodes(classes, sourcefiles);
