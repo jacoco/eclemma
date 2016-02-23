@@ -54,7 +54,7 @@ public final class SignatureResolver {
     if (method.isBinary()) {
       return getParameters(method.getSignature());
     }
-    final StringBuffer buffer = new StringBuffer();
+    final StringBuilder buffer = new StringBuilder();
     final String[] parameterTypes = method.getParameterTypes();
     for (final String t : parameterTypes) {
       resolveArrayParameterType(method, t, buffer);
@@ -63,7 +63,7 @@ public final class SignatureResolver {
   }
 
   private static final void resolveArrayParameterType(final IMethod method,
-      final String parameterType, final StringBuffer result)
+      final String parameterType, final StringBuilder result)
       throws JavaModelException {
     final int arrayCount = Signature.getArrayCount(parameterType);
     for (int i = 0; i < arrayCount; i++) {
@@ -73,7 +73,7 @@ public final class SignatureResolver {
   }
 
   private static final void resolveParameterType(final IMethod method,
-      final String parameterType, final StringBuffer result)
+      final String parameterType, final StringBuilder result)
       throws JavaModelException {
     final char kind = parameterType.charAt(0);
     switch (kind) {
@@ -92,7 +92,7 @@ public final class SignatureResolver {
   }
 
   private static final boolean resolveType(final IType scope,
-      final String identifier, final StringBuffer result)
+      final String identifier, final StringBuilder result)
       throws JavaModelException {
     final String[][] types = scope.resolveType(Signature
         .getTypeErasure(identifier));
@@ -111,7 +111,7 @@ public final class SignatureResolver {
   }
 
   private static final boolean resolveTypeParameter(final IMethod method,
-      final String identifier, final StringBuffer result)
+      final String identifier, final StringBuilder result)
       throws JavaModelException {
     IType type = method.getDeclaringType();
     if (resolveTypeParameter(type, method.getTypeParameters(), identifier,
@@ -130,7 +130,7 @@ public final class SignatureResolver {
 
   private static final boolean resolveTypeParameter(final IType context,
       final ITypeParameter[] typeParameters, final String identifier,
-      final StringBuffer result) throws JavaModelException {
+      final StringBuilder result) throws JavaModelException {
     for (final ITypeParameter p : typeParameters) {
       if (identifier.equals(p.getElementName())) {
         final String[] bounds = p.getBounds();
@@ -146,7 +146,7 @@ public final class SignatureResolver {
   }
 
   private static final void replace(final String source, final char oldChar,
-      final char newChar, final StringBuffer result) {
+      final char newChar, final StringBuilder result) {
     final int len = source.length();
     for (int i = 0; i < len; i++) {
       final char c = source.charAt(i);

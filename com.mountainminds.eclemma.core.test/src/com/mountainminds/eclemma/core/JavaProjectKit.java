@@ -177,7 +177,7 @@ public class JavaProjectKit {
     String pkgname = typepath.removeLastSegments(1).toString()
         .replace('/', '.');
     IPackageFragment fragment = createPackage(fragmentRoot, pkgname);
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     InputStream source = openTestResource(new Path(testsrc).append(typepath));
     Reader r = new InputStreamReader(source);
     int c;

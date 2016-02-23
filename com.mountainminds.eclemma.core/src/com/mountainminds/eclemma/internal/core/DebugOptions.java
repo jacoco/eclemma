@@ -166,9 +166,10 @@ public final class DebugOptions {
     }
 
     public void trace(String message) {
-      StringBuffer sb = new StringBuffer();
-      sb.append('[').append(channel).append("] ").append(message); //$NON-NLS-1$
-      out.println(sb);
+      out.print("["); //$NON-NLS-1$
+      out.print(channel);
+      out.print("] "); //$NON-NLS-1$
+      out.println(message);
     }
 
     private void trace(String message, Object[] params) {
