@@ -1,1 +1,9 @@
 language: java
+
+# Skip "install" stage:
+install: true
+
+# Use container-based infrastructure:
+sudo: false
+
+script: mvn -V -B -e verify
