@@ -499,18 +499,21 @@ public class SessionManagerTest {
       return 0;
     }
 
-    public List<?> getAttribute(String attributeName,
-        @SuppressWarnings("rawtypes") List defaultValue) throws CoreException {
+    @SuppressWarnings("rawtypes")
+    public List getAttribute(String attributeName, List defaultValue)
+        throws CoreException {
       return null;
     }
 
-    public Set<?> getAttribute(String attributeName,
-        @SuppressWarnings("rawtypes") Set defaultValue) throws CoreException {
+    @SuppressWarnings("rawtypes")
+    public Set getAttribute(String attributeName, Set defaultValue)
+        throws CoreException {
       return null;
     }
 
-    public Map<?, ?> getAttribute(String attributeName,
-        @SuppressWarnings("rawtypes") Map defaultValue) throws CoreException {
+    @SuppressWarnings("rawtypes")
+    public Map getAttribute(String attributeName, Map defaultValue)
+        throws CoreException {
       return null;
     }
 
@@ -519,7 +522,8 @@ public class SessionManagerTest {
       return null;
     }
 
-    public Map<?, ?> getAttributes() throws CoreException {
+    @SuppressWarnings("rawtypes")
+    public Map getAttributes() throws CoreException {
       return null;
     }
 
@@ -547,7 +551,8 @@ public class SessionManagerTest {
       return null;
     }
 
-    public Set<?> getModes() throws CoreException {
+    @SuppressWarnings("rawtypes")
+    public Set getModes() throws CoreException {
       return null;
     }
 

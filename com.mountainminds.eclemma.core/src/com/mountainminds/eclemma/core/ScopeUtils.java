@@ -107,8 +107,9 @@ public final class ScopeUtils {
   public static Set<IPackageFragmentRoot> getConfiguredScope(
       final ILaunchConfiguration configuration) throws CoreException {
     final Set<IPackageFragmentRoot> all = getOverallScope(configuration);
+    @SuppressWarnings("rawtypes")
     final List<?> selection = configuration.getAttribute(
-        ICoverageLaunchConfigurationConstants.ATTR_SCOPE_IDS, (List<?>) null);
+        ICoverageLaunchConfigurationConstants.ATTR_SCOPE_IDS, (List) null);
     if (selection == null) {
       final DefaultScopeFilter filter = new DefaultScopeFilter(
           EclEmmaCorePlugin.getInstance().getPreferences());
