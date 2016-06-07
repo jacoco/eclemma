@@ -96,8 +96,9 @@ public class ExecutionDataFilesTest {
       public void accept(IExecutionDataVisitor executionDataVisitor,
           ISessionInfoVisitor sessionInfoVisitor) throws CoreException {
         sessionInfoVisitor.visitSessionInfo(new SessionInfo("id", 1, 2));
-        executionDataVisitor.visitClassExecution(new ExecutionData(123,
-            "MyClass", 15));
+        ExecutionData executionData = new ExecutionData(123, "MyClass", 15);
+        executionData.getProbes()[0] = true;
+        executionDataVisitor.visitClassExecution(executionData);
       }
     };
   }

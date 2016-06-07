@@ -72,7 +72,9 @@ public class URLExecutionDataSourceTest {
     OutputStream out = new FileOutputStream(execfile);
     ExecutionDataWriter writer = new ExecutionDataWriter(out);
     writer.visitSessionInfo(new SessionInfo("id", 1, 2));
-    writer.visitClassExecution(new ExecutionData(123, "MyClass", 15));
+    ExecutionData executionData = new ExecutionData(123, "MyClass", 15);
+    executionData.getProbes()[0] = true;
+    writer.visitClassExecution(executionData);
     out.close();
     return new URLExecutionDataSource(execfile.toURL());
   }
