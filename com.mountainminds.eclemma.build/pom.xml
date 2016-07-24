@@ -86,11 +86,8 @@
     <jacoco.version>0.7.7.201606060606</jacoco.version>
     <tycho.testArgLine>-Xmx800m</tycho.testArgLine>
 
-    <!-- Sonar -->
-    <sonar.skippedModules>com.mountainminds.eclemma.target,com.mountainminds.eclemma.core.test,com.mountainminds.eclemma.doc,com.mountainminds.eclemma.feature,com.mountainminds.eclemma.site</sonar.skippedModules>
-
-    <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
-    <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+    <!-- SonarQube -->
+    <sonar.java.source>1.5</sonar.java.source>
     <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
     <sonar.surefire.reportsPath>../${project.artifactId}.test/target/surefire-reports/</sonar.surefire.reportsPath>
   </properties>
