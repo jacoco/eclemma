@@ -82,8 +82,8 @@ public class ScopeViewer implements ISelectionProvider {
     public int compare(Viewer viewer, Object e1, Object e2) {
       IPackageFragmentRoot root1 = (IPackageFragmentRoot) e1;
       IPackageFragmentRoot root2 = (IPackageFragmentRoot) e2;
-      @SuppressWarnings("unchecked")
-      final Comparator<Object> comparator = getComparator();
+      @SuppressWarnings("rawtypes")
+      final Comparator comparator = getComparator();
       int result = comparator.compare(root1.getJavaProject().getElementName(),
           root2.getJavaProject().getElementName());
       if (result != 0)

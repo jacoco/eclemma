@@ -287,7 +287,7 @@ public final class CoverageAnnotationModel implements IAnnotationModel {
     throw new UnsupportedOperationException();
   }
 
-  public Iterator<?> getAnnotationIterator() {
+  public Iterator getAnnotationIterator() {
     return annotations.iterator();
   }
 
