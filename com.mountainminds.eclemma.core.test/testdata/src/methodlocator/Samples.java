@@ -2,8 +2,6 @@
  * Copyright (c) 2006, 2016 Mountainminds GmbH & Co. KG
  * This software is provided under the terms of the Eclipse Public License v1.0
  * See http://www.eclipse.org/legal/epl-v10.html.
- *
- * $Id:  $
  ******************************************************************************/
 package methodlocator;
 
@@ -11,9 +9,6 @@ import java.util.Date;
 
 /**
  * Collections of methods with different Signatures.
- * 
- * @author  Marc R. Hoffmann
- * @version $Revision: 13 $
  */
 public class Samples {
 

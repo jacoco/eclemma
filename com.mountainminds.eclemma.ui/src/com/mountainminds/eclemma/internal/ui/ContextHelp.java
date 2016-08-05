@@ -16,9 +16,6 @@ import org.eclipse.ui.PlatformUI;
 
 /**
  * Constants and utility methods for context help.
- * 
- * @author Marc R. Hoffmann
- * @version $Revision: $
  */
 public final class ContextHelp {
 

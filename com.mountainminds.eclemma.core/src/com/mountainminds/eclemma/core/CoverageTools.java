@@ -29,9 +29,6 @@ import com.mountainminds.eclemma.internal.core.SessionImporter;
 /**
  * For central access to the tools provided by the coverage core plug-in this
  * class offers several static methods.
- * 
- * @author Marc R. Hoffmann
- * @version $Revision$
  */
 public final class CoverageTools {
 
