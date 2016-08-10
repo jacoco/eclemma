@@ -45,6 +45,9 @@ import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.launching.JavaRuntime;
+import org.eclipse.jdt.launching.IVMInstall;
+import org.eclipse.jdt.launching.environments.IExecutionEnvironment;
+import org.eclipse.jdt.launching.environments.IExecutionEnvironmentsManager;
 
 import com.mountainminds.eclemma.internal.core.EclEmmaCorePlugin;
 
@@ -76,7 +79,21 @@ public class JavaProjectKit {
     project.setDescription(description, null);
     javaProject = JavaCore.create(project);
     javaProject.setRawClasspath(new IClasspathEntry[0], null);
-    addClassPathEntry(JavaRuntime.getDefaultJREContainerEntry());
+
+    IVMInstall vmInstall = getExecutionEnvironment("J2SE-1.5").getCompatibleVMs()[0];
+    IPath containerPath = new Path(JavaRuntime.JRE_CONTAINER);
+    IPath vmPath = containerPath.append(vmInstall.getVMInstallType().getId()).append(vmInstall.getName());
+    addClassPathEntry(JavaCore.newContainerEntry(vmPath));
+  }
+
+  private IExecutionEnvironment getExecutionEnvironment(String environmentId) {
+    IExecutionEnvironmentsManager manager = JavaRuntime.getExecutionEnvironmentsManager();
+    for (IExecutionEnvironment environment : manager.getExecutionEnvironments()) {
+      if (environment.getId().equals(environmentId)) {
+        return environment;
+      }
+    }
+    return null;
   }
 
   public void enableJava5() {
